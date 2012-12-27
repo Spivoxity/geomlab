@@ -47,10 +47,6 @@ import java.io.Reader;
  *  the GeomLab system is working, this class is no longer needed, so
  *  the error handling is deliberately spartan. */
 public class BootLoader {
-    @SuppressWarnings("unused")
-	private static final String svnid =
-	"$Id: BootLoader.java 629 2012-06-01 22:15:43Z mike $";
-
     private Scanner scanner;
     
     public BootLoader(Reader r) {

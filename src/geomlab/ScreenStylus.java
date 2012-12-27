@@ -38,10 +38,6 @@ import plugins.*;
 
 /** Painting context for drawing on the screen */
 public class ScreenStylus extends Stylus {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: ScreenStylus.java 635 2012-06-20 08:33:15Z mike $";
-
     private Graphics2D gcxt;
 
     public ScreenStylus(Graphics2D g, float slider) {

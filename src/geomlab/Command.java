@@ -43,10 +43,6 @@ import java.io.IOException;
 /** A command that may be appear on a menu.  Static methods of this class
  *  create the menus for the application */
 public abstract class Command extends AbstractAction {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Command.java 635 2012-06-20 08:33:15Z mike $";
-    
     private GeomLab app;
     
     private static int modifier =

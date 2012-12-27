@@ -42,10 +42,6 @@ import funbase.Value;
  *  language, but the compiler makes heavy use of them for convenience.
  *  Do as I day, not as I do! */
 public class Cell extends Value {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Cell.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 
     /** Contents of the cell */

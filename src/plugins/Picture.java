@@ -53,10 +53,6 @@ import funbase.Value;
 
 /** A rectangular graphical object of scalable size but fixed aspect ratio */
 public class Picture extends Value implements Stylus.Drawable {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Picture.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 
     public final float aspect;	       // = width / height

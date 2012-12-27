@@ -33,10 +33,6 @@ package funbase;
 import java.io.*;
 
 public class Scanner {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Scanner.java 629 2012-06-01 22:15:43Z mike $";
-    
     public Name tok;
     public Value sym;
     

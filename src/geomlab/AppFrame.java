@@ -40,10 +40,6 @@ import plugins.Stylus;
 
 /** The main GUI frame for the GeomLab application */
 public class AppFrame extends JFrame {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: AppFrame.java 635 2012-06-20 08:33:15Z mike $";
-
     protected final CodeInput input = new CodeInput(20, 50);
     protected final MyTextArea results = new MyTextArea(20, 50);
     protected final GraphBox arena = new GraphBox();

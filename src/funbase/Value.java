@@ -39,10 +39,6 @@ import funbase.Evaluator.*;
 
 /** Abstract superclass of all values in GeomLab */
 public abstract class Value implements Serializable {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Value.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 	
     /* The actual classes used to represent values are those contained

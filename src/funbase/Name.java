@@ -45,10 +45,6 @@ import java.util.Collections;
  *  These contain a shallow binding to their value in the global
  *  environment. */
 public final class Name extends Value implements Comparable<Name> {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Name.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 	
     /** The name as a string */

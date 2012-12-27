@@ -58,10 +58,6 @@ import javax.swing.UIManager.*;
  *  know any details of how pictures are made up.
  */
 public class GeomLab extends GeomBase {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: GeomLab.java 635 2012-06-20 08:33:15Z mike $";
-
     public final AppFrame frame = new AppFrame();
     
     public boolean antialiased = false;

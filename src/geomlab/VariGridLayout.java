@@ -39,10 +39,6 @@ import java.awt.*;
  * with (thankfully) a simple interface.
  */
 public class VariGridLayout extends GridBagLayout {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: VariGridLayout.java 561 2012-03-08 09:47:58Z mike $";
-    
     private int ncols;
     private int row = 0, col = 0;
     private GridBagConstraints gbc = new GridBagConstraints();

@@ -48,10 +48,6 @@ import funbase.Value;
 
 /** Common superclass for classes that provide a read-eval-print loop */
 public class GeomBase {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: GeomBase.java 632 2012-06-05 09:50:47Z mike $";
-
     protected boolean statsFlag = false;
     protected String errtag = "";
     protected int status = 0;

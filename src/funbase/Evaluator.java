@@ -35,10 +35,6 @@ import java.io.PrintWriter;
 /** This class provides the context for evaluating paragraphs: it imposes
  *  resource limits, and deals with errors that occur during evaluation. */
 public class Evaluator {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Evaluator.java 633 2012-06-06 16:06:57Z mike $";
-    
     protected boolean runFlag = true;
     private int steps = 0;
     private int conses = 0;

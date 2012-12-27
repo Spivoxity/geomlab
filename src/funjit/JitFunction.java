@@ -39,10 +39,6 @@ import funbase.Evaluator.EvalException;
 /** Superclass for all JIT-compiled functions */
 public abstract class JitFunction extends Function.Closure 
     		implements Function.Factory, Cloneable {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: JitFunction.java 429 2010-04-30 15:24:54Z mike $";
-
     /** Name of the function (used for error messages) */
     protected final String name;
 

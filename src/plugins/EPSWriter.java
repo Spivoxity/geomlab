@@ -43,10 +43,6 @@ import funbase.Value;
 
 /** Picture context that outputs Encapsulated PostScript */
 public class EPSWriter extends Stylus {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: EPSWriter.java 633 2012-06-06 16:06:57Z mike $";
-
     private PrintWriter pr;
 
     public EPSWriter(float width, float height, float slider, Writer out) {

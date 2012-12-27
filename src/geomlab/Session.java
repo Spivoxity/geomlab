@@ -48,10 +48,6 @@ import java.util.Set;
  *  Other bits of global state that are not saved: the time and space
  *  limits in Evaluator, the palette of colours in Picture. */
 public class Session {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Session.java 642 2012-07-15 22:31:52Z mike $";
-
     /** Signature for saved sessions (spells "GEOM") */
     private static final int SIG = 0x47454f4d;
     

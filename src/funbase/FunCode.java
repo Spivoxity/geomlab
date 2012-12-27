@@ -35,10 +35,6 @@ import java.util.*;
 
 /** Code for a function body. */
 public class FunCode extends Value {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: FunCode.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 
     /** Enumerated type of opcodes for the Fun machine */

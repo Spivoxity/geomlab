@@ -38,10 +38,6 @@ import java.io.Serializable;
     that cannot be called; subclasses represent primitives and functions
     defined in the Fun languages. */
 public class Function implements Serializable {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Function.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
     
     public final int arity;

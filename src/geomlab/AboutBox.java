@@ -34,10 +34,6 @@ import javax.swing.*;
 
 /** A dialog box showing the version number, credits and licence information */
 public class AboutBox {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: AboutBox.java 617 2012-05-16 16:03:27Z mike $";
-
     /** Command -- show the about box */
     public static void aboutBox(GeomLab app) {
         String version =

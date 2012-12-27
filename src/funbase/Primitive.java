@@ -39,10 +39,6 @@ import funbase.Evaluator.*;
  *  
  *  Direct concrete subclasses should implement the invoke method. */
 public abstract class Primitive extends Function {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Primitive.java 642 2012-07-15 22:31:52Z mike $";
-    
     /** Name of the primitive */
     public final String name;
 

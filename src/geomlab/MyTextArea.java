@@ -36,10 +36,6 @@ import javax.swing.text.Document;
 
 /** Like JTextArea, but implements antialiasing */
 public class MyTextArea extends JTextArea {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: MyTextArea.java 621 2012-05-28 21:37:21Z mike $";
-    
     /** Whether the text is antialiased */
     private boolean antialiased = false;
     

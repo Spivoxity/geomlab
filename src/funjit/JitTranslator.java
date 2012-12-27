@@ -41,10 +41,6 @@ import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
 
 public class JitTranslator implements FunCode.Jit {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Translator.java 429 2010-04-30 15:24:54Z mike $";
-
     private String className;
     private ClassFile cf;
     protected Method code;

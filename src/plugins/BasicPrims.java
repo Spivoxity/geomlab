@@ -45,10 +45,6 @@ import funbase.Scanner;
 
 /** Basic primitives for handling numbers, booleans and lists */
 public class BasicPrims {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: BasicPrims.java 630 2012-06-02 12:59:18Z mike $";
-
     public static final Primitive primitives[] = {
 	new Primitive.Prim2("=") {
 	    @Override

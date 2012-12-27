@@ -35,10 +35,6 @@ import funbase.Value;
 
 /** A picture with fills and strokes specified by lists of coordinates */
 public class TilePicture extends Picture {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: TilePicture.java 642 2012-07-15 22:31:52Z mike $";
-
     private static final long serialVersionUID = 1L;
 
     private static int ntiles = 0;

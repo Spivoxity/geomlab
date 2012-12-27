@@ -45,10 +45,6 @@ import geomlab.Command.CommandException;
 
 /** A panel for displaying a Picture object */
 public class GraphBox extends JPanel {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: GraphBox.java 635 2012-06-20 08:33:15Z mike $";
-    
     protected Stylus.Drawable picture = null;
     protected boolean antialiased = false;
 

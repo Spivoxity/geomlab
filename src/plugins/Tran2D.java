@@ -40,10 +40,6 @@ import funbase.ErrContext;
  *  [x'] = [m_xx  m_xy] [x] + [m_x]
  *  [y']   [m_yx  m_yy] [y]   [m_y] */
 public class Tran2D extends Value {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Tran2D.java 642 2012-07-15 22:31:52Z mike $";
-
     private static final long serialVersionUID = 1L;
     
     /* There's a library class for transformations, but it contains lots

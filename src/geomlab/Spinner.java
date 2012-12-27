@@ -43,10 +43,6 @@ import javax.swing.JComponent;
 
 /** A spinner that can be displayed during long-running evaluations. */
 public class Spinner extends JComponent implements Runnable {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: Spinner.java 635 2012-06-20 08:33:15Z mike $";
-
     protected boolean running = false;
     protected int level = 0;
     protected int angle = 0;

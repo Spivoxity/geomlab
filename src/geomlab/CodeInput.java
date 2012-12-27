@@ -49,10 +49,6 @@ import javax.swing.undo.UndoManager;
  *  highlighting the region between brackets when a closing bracket is
  *  typed. */
 public class CodeInput extends MyTextArea {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: CodeInput.java 635 2012-06-20 08:33:15Z mike $";
-    
     private ActionListener actionListener = null;
     private MyHighlightPainter lowlightPainter = new MyHighlightPainter();
     private Object lowlight = null;

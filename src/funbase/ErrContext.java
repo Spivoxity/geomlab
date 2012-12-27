@@ -43,10 +43,6 @@ import funbase.Value.WrongKindException;
  *  detected. 
  */
 public class ErrContext implements Serializable {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: ErrContext.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 
     private String func, parent, prim;

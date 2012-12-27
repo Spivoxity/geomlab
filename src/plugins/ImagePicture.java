@@ -43,10 +43,6 @@ import funbase.Value;
 
 /** A picture defined by a bitmap. */
 public class ImagePicture extends Picture {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: ImagePicture.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
     
     /** The bitmap itself, represented in a platform-dependent way. */

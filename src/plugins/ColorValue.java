@@ -38,10 +38,6 @@ import funbase.ErrContext;
 
 /** A colour wrapped as a value */
 public class ColorValue extends Picture {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: ColorValue.java 642 2012-07-15 22:31:52Z mike $";
-    
     private static final long serialVersionUID = 1L;
 
     /* The most computationally intensive use of colours is in

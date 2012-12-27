@@ -34,10 +34,6 @@ import funbase.Primitive;
 import funbase.Value;
 
 public class StringPrims {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: StringPrims.java 617 2012-05-16 16:03:27Z mike $";
-
     public static final Primitive primitives[] = {	
 	new Primitive.Prim2("^") {
 	    /** Concatenate two strings */

@@ -1,4 +1,6 @@
 syntax: glob
+.compiled
+obj
 misc/bmark/BMark$Name.class
 misc/bmark/BMark.class
 misc/bmark/OMark.k

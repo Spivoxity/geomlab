@@ -32,10 +32,6 @@ package plugins;
 
 /** An abstract drawing tablet on which a picture can be drawn */
 public abstract class Stylus {
-    @SuppressWarnings("unused")
-    private static String svnid =
-	"$Id: Stylus.java 635 2012-06-20 08:33:15Z mike $";
-    
     protected final ColorValue palette[];
     protected Tran2D trans;
 

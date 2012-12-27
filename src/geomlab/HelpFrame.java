@@ -41,10 +41,6 @@ import java.util.Stack;
 
 /** A mini-browser for help texts */
 public class HelpFrame extends JFrame {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: HelpFrame.java 635 2012-06-20 08:33:15Z mike $";
-    
     protected static boolean antialiased = false;
     
     private JEditorPane browser = new JEditorPane() {

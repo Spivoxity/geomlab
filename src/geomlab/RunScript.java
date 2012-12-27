@@ -42,10 +42,6 @@ import java.io.*;
  * It is also capable of bootstrapping the compiler from a text file
  * containing a dump of the object code. */
 public class RunScript extends GeomBase {
-    @SuppressWarnings("unused")
-    private static final String svnid =
-	"$Id: RunScript.java 628 2012-06-01 16:00:36Z mike $";
-
     public void evalString(String exp) {
 	StringReader reader = new StringReader(exp);
 	eval_loop(reader, true);
