@@ -1,0 +1,311 @@
+\input slimac
+
+\newdimen\picwidth \picwidth=108truept
+
+\def\picture#1{\hbox{\epsfbox{pics/oview-#1.eps}}}
+
+\def\demo{\vskip\parskip
+  \begingroup
+    \afterassignment\demoi\count255=}
+\def\demoi{\catcode`\$=12 \catcode`\&=12 \demoii}
+\def\demoii#1{\line{\setbox0=\picture{\the\count255}%
+%  \vbox to\ht0{\vss \hbox{\strut\vsf #1} \vss}%
+   \vbox to\ht0{\vss \halign{\strut\vsf ##\cr#1\crcr} \vss}%
+    \hfil
+    \hbox to\picwidth{%
+      \hskip 0pt plus 1fil minus 1fil
+      \box0
+      \hskip 0pt plus 1fil}}
+  \endgroup}
+
+%> define digits = explode("0123456789");
+%>
+%> define select(0, x:xs) = x
+%>   | select(n+1, x:xs) = select(n, xs);
+%>
+%> define digit(d) = select(d, digits);
+%>
+%> define num(n) = digit(n) when n < 10
+%>   | num(n) = num(n div 10) ^ digit(n mod 10);
+%>
+%> define picture(n, p, r) = 
+%>   epswrite(p, "pics/oview-" ^ num(n) ^ ".eps", r, 0, 0.95);
+%>
+%> define pic(n, p) = picture(n, p, 36);
+%> define medpic(n, p) = picture(n, p, 72);
+%> define bigpic(n, p) = picture(n, p, 108);
+%>
+%> { Picture of specified height. }
+%> define htpic(n, p) = picture(n, p, 72*sqrt(aspect(p)));
+
+
+%%%%%%%%%%%%%%%%
+
+\blankslide
+
+{\baselineskip=2\grid\twentysfb
+\incolour\headingcolour{GeomLab: Exploring\hfil\break\null\qquad
+Computer Science}\par}
+\vfill
+{\twelvepoint\sf\noindent
+Michael Spivey\par
+\noindent
+\sfi Computer Science Tutor\hfil\break
+Oriel College, Oxford}
+
+\slide{What's computer programming like?}
+
+The old-fashioned view:
+
+\item A program is a list of commands.
+\item Computer memory is boxes that contain numbers.
+\item Algorithms are designed with flowcharts.
+\item It's all ones and zeros!
+
+\slide{What's it really like?}
+
+A modern view:
+
+\item A program is an artificial world.
+\item Objects behave according to precise rules.
+\item By combining simple behaviours, a complex whole emerges.
+\item We can use things without thinking about how they are made.
+
+\slide{A world of pictures}
+
+\begingroup
+  \divide\hsize by2 \advance\hsize by-\fontquad
+  \valign{&\vss#\vss\cr
+    \demo1{man}&\demo3{man $ woman}\cr
+    \noalign{\qquad}
+    \demo2{woman}&\demo4{man & man}\cr}
+\endgroup
+
+%> pic(1, man);
+%> pic(2, woman);
+%> pic(3, man $ woman);
+%> pic(4, man & man);
+
+\slide{The algebra of pictures}
+
+\demo5{man $ (woman & tree)}
+\demo6{(man $ woman) & tree}
+
+%> pic(5, man $ (woman & tree));
+%> pic(6, (man $ woman) & tree);
+
+\slide{Defining functions}
+
+\verb/define f(x) = x $ (x & x)/
+
+\demo7{f(man)}
+\demo8{f(woman)}
+\demo9{f(man $ tree)}
+
+%> define f(x) = x $ (x & x);
+%> pic(7, f(man));
+%> pic(8, f(woman));
+%> pic(9, f(man $ tree));
+
+\slide{Composing functions}
+
+\demo10{f(f(man))}
+\demo101{f(f(f(man)))}
+
+%> medpic(10, f(f(man)));
+%> medpic(101, let p = f(f(f(man))) in _blank(aspect(p)));
+
+\slide{Composing functions}
+
+\demo10{f(f(man))}
+\demo11{f(f(f(man)))}
+
+%> medpic(11, f(f(f(man))));
+
+\slide{Using recursion}
+
+Suppose we want to draw a row of trees:
+\medskip
+\picture{12}
+We could write \verb/tree $ tree $ tree $ ... $ tree/.
+
+But is there a better way?
+
+%> define trees(1) = tree | trees(n+1) = trees(n) $ tree;
+
+%> bigpic(12, trees(10));
+
+\slide{Using recursion}
+
+\item A row of one tree is just a tree: \verb/trees(1) = tree/
+
+\item An a row of \verb/n+1/ trees is a row of \verb/n/ trees with an
+extra tree at the end: \verb/trees(n+1) = trees(n) $ tree/.
+
+So we write:
+\verbatim
+define trees(1) = tree
+  | trees(n+1) = trees(n) $ tree
+\endverb
+
+\slide{Unwinding the recursion}
+
+Now we (or the computer) can calculate:
+\verbatim
+trees(5) = trees(4) $ tree
+  = trees(3) $ tree $ tree
+  = trees(2) $ tree $ tree $ tree
+  = trees(1) $ tree $ tree $ tree $ tree
+  = tree $ tree $ tree $ tree $ tree
+\endverb
+\medskip
+\centerline{\picture{13}}
+
+%> bigpic(13, trees(5));
+
+\slide{Many trees make a forest}
+
+%> define forest(1, c) = trees(c)
+%>   | forest(r+1, c) = forest(r, c+1) & trees(c);
+
+%> bigpic(14, forest(10, 10));
+
+How can we draw this picture?
+\medskip
+\centerline{\picture{14}}
+
+\slide{Recursion again}
+
+Let's write \verb/forest(r, c)/ for a forest with \verb/r/ rows,
+and \verb/c/ trees in the bottom row.
+
+\item First, we see that \verb/forest(1, c) = trees(c)/.
+
+\item Second, \verb/forest(r+1, c)/ has a bottom row that is
+\verb/trees(c)/, and the rest is \verb/forest(r, c+1)/.
+
+So we write
+\verbatim
+define forest(1, c) = trees(c)
+  | forest(r+1, c) = 
+      forest(r, c+1) & trees(c)
+\endverb
+
+\slide{As big as you like}
+
+\demo15{forest(2, 2)}
+\demo17{forest(20, 20)}
+
+%> pic(15, forest(2, 2));
+%> pic(16, forest(4, 6));
+%> medpic(17, forest(20, 20));
+
+\slide{More recursive patterns}
+
+Using \picture{20} and \picture{21}, we can making tiling patterns:
+\bigskip
+\centerline{\picture{22}\hfil\picture{23}}
+\medskip
+These too can be described by short programs.
+
+%> picture(20, bend, 18);
+%> picture(21, straight, 18);
+%> medpic(22, spiral(10));
+%> medpic(23, zagzig(10));
+
+\slide{The big challenge}
+
+Suppose we have a tile that fits next to itself at half scale:
+
+\demo118{(T & blank) $ T}
+
+%> htpic(118, (T & blank) $ T);
+
+\slide{The big challenge}
+
+Suppose we have a tile that fits next to itself at half scale:
+
+\demo119{(T & blank) $ T}
+
+%> htpic(119, colour((T & blank) $ T));
+
+\slide{The big challenge}
+
+\dots and another copy fits here:
+
+\demo120{(T & rot(T)) $ T}
+
+%> htpic(120, colour((T & rot(T)) $ T));
+
+\slide{The big challenge}
+
+Then we can add another layer:
+
+\demo121{side(2) $ T}
+
+%> htpic(121, colour(side(2) $ T));
+
+\slide{The big challenge}
+
+\dots and arrange four copies around a central square:
+
+\demo122{frame(blank, side(2), U)}
+
+%> bigpic(122, colour(frame(blank, side(2), U)));
+
+\slide{The big challenge}
+
+Finally, find something to fill in the corners:
+
+\demo123{frame(corner(2),\cr\qquad side(2), U)}
+
+%> bigpic(123, colour(frame(corner(2), side(2), U)));
+
+(A picture that Escher drew, and another that he didn't.)
+
+\slide{Functional programming}
+
+\item No `programming' variables -- use mathematical variables instead.
+\item No loop commands -- use recursion instead
+
+Two benefits:
+
+\item Easier to make programs from independent pieces.
+\item Easier to reason about them mathematically.
+
+\slide{Abstract data types}
+
+A set of values with operations defined on them.
+
+\item The operations obey rules that can be specified algebraically.
+\item The computer representation of values is hidden.
+
+\slide{Abstract data types}
+
+Example: pictures with \verb/$/, \verb/&/, \verb/rot/.
+
+\item {\vsf rot($p$ \$ $q$) = rot($q$) \& rot($p$)}.
+\item {\vsf aspect(rot($p$)) = 1/aspect($p$)}.
+
+Pictures are represented using coordinates and transformation matrices
+in a way that is hidden.
+
+\slide{Enriching school mathematics}
+
+\item There's more to algebra than ``$x$ is the unknown''.
+\item There's more to recurrences than ``guess the next number in the
+series''.
+\item May we dream of a world where survival depends on mathematics?
+
+\slide{The GeomLab site}
+
+\verb@http://web.comlab.ox.ac.uk/geomlab@
+
+The software:
+\item runs from the web page.
+\item Java-based -- no installation required.
+
+Teaching materials:
+\item full set of worksheets for a 1--2 day activity.
+
+\bye

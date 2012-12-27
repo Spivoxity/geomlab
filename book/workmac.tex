@@ -1,0 +1,40 @@
+\def\fonts{5} % Basic cmss
+\input jmsmac
+\pagewidth=6in
+\textwidth=\pagewidth
+\stretchpage
+
+\twelvepoint
+
+\normalparskip=\medskipamount
+\parindent=0pt
+\resetpar
+
+\newdimen\codesurround \codesurround=2pt
+
+\def\code#1{\leavevmode\kern\codesurround{\tt #1}\kern\codesurround\relax}
+
+\def\example{\setbox0=\vbox\bgroup\def\\{\cr}%
+  \halign\bgroup\hskip\blockindent ##\hfil\cr}
+\def\gives#1\end{\crcr\egroup\egroup
+  \beforedisplay
+  \hbox to\pagewidth{\valign{##\cr
+    \vfil\box0\vfil\cr
+    \noalign{\hfil}
+    \hbox{\def\epsfsize##1##2{0.5##1}\epsfbox{#1.eps}}\cr
+    \noalign{\hskip\parindent}}}
+  \afterdisplay\ignorespaces}
+
+% \bigspace is indeed big enough to write something
+\def\bigspace{\par\nobreak\vskip 8\baselineskip}
+
+\def\rhead{\lhead}
+
+\def\sheet#1{\clearpage\nonumchap{#1}{}\xdef\lhead{#1}\blanktrue}
+
+% The @verb@ convention
+\catcode`\@=\active
+\def@{\begingroup\uncatcodespecials\progfont\obeyspaces\doat}
+\def\doat#1@{#1\endgroup}
+
+

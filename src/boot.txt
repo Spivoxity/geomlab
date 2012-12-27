@@ -1,0 +1,7565 @@
+{*
+ * boot.txt
+ * 
+ * This file is part of GeomLab
+ * Copyright (c) 2008 J. M. Spivey
+ * All rights reserved
+ * 
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, 
+ *    this list of conditions and the following disclaimer.      
+ * 2. Redistributions in binary form must reproduce the above copyright notice, 
+ *    this list of conditions and the following disclaimer in the documentation 
+ *    and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products 
+ *    derived from this software without specific prior written permission.
+ *    
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR 
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES 
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *}
+ 
+global #* primitive "*"
+global #+ primitive "+"
+global #++ closure funcode "++" 2 25 1 2 5
+  ARG 0
+  TRAP 5
+  MNIL 0
+  ARG 1
+  RETURN 0
+  ARG 0
+  TRAP 24
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #:
+{ end of ++ }
+global #- primitive "-"
+global #/ primitive "/"
+global #: primitive ":"
+global #< primitive "<"
+global #<= primitive "<="
+global #<> primitive "<>"
+global #= primitive "="
+global #> primitive ">"
+global #>= primitive ">="
+global #^ primitive "^"
+global #__token primitive "token"
+global #__top closure funcode "__top" 0 653 103 106 13
+  GLOBAL 0
+  PREP 1
+  QUOTE 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  GLOBAL 0
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  BIND 1
+  GLOBAL 0
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  BIND 2
+  GLOBAL 0
+  PREP 1
+  QUOTE 4
+  PUTARG 0
+  CALL 1
+  BIND 3
+  GLOBAL 0
+  PREP 1
+  QUOTE 5
+  PUTARG 0
+  CALL 1
+  BIND 4
+  GLOBAL 0
+  PREP 1
+  QUOTE 6
+  PUTARG 0
+  CALL 1
+  BIND 5
+  GLOBAL 0
+  PREP 1
+  QUOTE 7
+  PUTARG 0
+  CALL 1
+  BIND 6
+  GLOBAL 0
+  PREP 1
+  QUOTE 8
+  PUTARG 0
+  CALL 1
+  BIND 7
+  GLOBAL 0
+  PREP 1
+  QUOTE 9
+  PUTARG 0
+  CALL 1
+  BIND 8
+  GLOBAL 0
+  PREP 1
+  QUOTE 10
+  PUTARG 0
+  CALL 1
+  BIND 9
+  QUOTE 11
+  LOCAL 9
+  LOCAL 8
+  CLOSURE 2
+  BIND 10
+  QUOTE 12
+  CLOSURE 0
+  BIND 11
+  QUOTE 13
+  CLOSURE 0
+  BIND 12
+  QUOTE 14
+  CLOSURE 0
+  BIND 13
+  QUOTE 15
+  CLOSURE 0
+  BIND 14
+  QUOTE 16
+  CLOSURE 0
+  BIND 15
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 16
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 17
+  QUOTE 19
+  LOCAL 0
+  LOCAL 16
+  LOCAL 13
+  LOCAL 17
+  LOCAL 14
+  CLOSURE 5
+  BIND 18
+  QUOTE 20
+  LOCAL 11
+  CLOSURE 1
+  BIND 19
+  QUOTE 21
+  LOCAL 16
+  CLOSURE 1
+  BIND 20
+  QUOTE 22
+  LOCAL 20
+  LOCAL 18
+  LOCAL 1
+  LOCAL 15
+  CLOSURE 4
+  BIND 21
+  QUOTE 23
+  LOCAL 20
+  LOCAL 18
+  CLOSURE 2
+  BIND 22
+  QUOTE 24
+  LOCAL 16
+  CLOSURE 1
+  BIND 23
+  QUOTE 25
+  LOCAL 17
+  LOCAL 21
+  CLOSURE 2
+  BIND 24
+  QUOTE 26
+  LOCAL 21
+  CLOSURE 1
+  BIND 25
+  QUOTE 27
+  LOCAL 21
+  CLOSURE 1
+  BIND 26
+  QUOTE 28
+  LOCAL 22
+  CLOSURE 1
+  BIND 27
+  QUOTE 29
+  LOCAL 27
+  CLOSURE 1
+  BIND 28
+  QUOTE 30
+  LOCAL 20
+  LOCAL 28
+  CLOSURE 2
+  BIND 29
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 30
+  QUOTE 31
+  LOCAL 30
+  CLOSURE 1
+  BIND 31
+  QUOTE 32
+  LOCAL 31
+  CLOSURE 1
+  BIND 32
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 33
+  QUOTE 33
+  LOCAL 33
+  CLOSURE 1
+  BIND 34
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 35
+  QUOTE 34
+  LOCAL 35
+  CLOSURE 1
+  BIND 36
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 37
+  QUOTE 35
+  LOCAL 37
+  CLOSURE 1
+  BIND 38
+  QUOTE 36
+  CLOSURE 0
+  BIND 39
+  QUOTE 37
+  LOCAL 29
+  LOCAL 36
+  CLOSURE 2
+  BIND 40
+  QUOTE 38
+  LOCAL 1
+  LOCAL 36
+  LOCAL 25
+  LOCAL 21
+  LOCAL 40
+  LOCAL 26
+  LOCAL 20
+  LOCAL 24
+  LOCAL 23
+  CLOSURE 9
+  BIND 41
+  QUOTE 39
+  LOCAL 41
+  LOCAL 22
+  CLOSURE 2
+  BIND 42
+  QUOTE 40
+  LOCAL 24
+  LOCAL 22
+  LOCAL 42
+  CLOSURE 3
+  BIND 43
+  QUOTE 41
+  LOCAL 26
+  LOCAL 40
+  CLOSURE 2
+  BIND 44
+  QUOTE 42
+  LOCAL 29
+  LOCAL 32
+  CLOSURE 2
+  BIND 45
+  QUOTE 43
+  LOCAL 7
+  CLOSURE 1
+  BIND 46
+  QUOTE 44
+  LOCAL 36
+  LOCAL 21
+  LOCAL 32
+  CLOSURE 3
+  BIND 47
+  QUOTE 45
+  LOCAL 23
+  LOCAL 21
+  LOCAL 32
+  LOCAL 47
+  CLOSURE 4
+  BIND 48
+  QUOTE 46
+  LOCAL 20
+  LOCAL 32
+  LOCAL 48
+  LOCAL 46
+  LOCAL 21
+  LOCAL 27
+  LOCAL 23
+  CLOSURE 7
+  BIND 49
+  QUOTE 47
+  LOCAL 19
+  LOCAL 16
+  LOCAL 31
+  LOCAL 24
+  LOCAL 2
+  LOCAL 20
+  LOCAL 34
+  LOCAL 14
+  CLOSURE 8
+  BIND 50
+  QUOTE 48
+  LOCAL 1
+  LOCAL 49
+  LOCAL 50
+  LOCAL 25
+  LOCAL 45
+  LOCAL 26
+  LOCAL 20
+  LOCAL 24
+  LOCAL 23
+  CLOSURE 9
+  BIND 51
+  QUOTE 49
+  LOCAL 51
+  LOCAL 20
+  LOCAL 21
+  LOCAL 24
+  LOCAL 23
+  CLOSURE 5
+  BIND 52
+  QUOTE 50
+  CLOSURE 0
+  BIND 53
+  QUOTE 51
+  LOCAL 53
+  LOCAL 14
+  LOCAL 34
+  LOCAL 20
+  LOCAL 21
+  LOCAL 13
+  LOCAL 2
+  LOCAL 17
+  LOCAL 19
+  LOCAL 16
+  LOCAL 52
+  CLOSURE 11
+  BIND 54
+  QUOTE 52
+  LOCAL 22
+  LOCAL 21
+  LOCAL 34
+  CLOSURE 3
+  BIND 55
+  QUOTE 53
+  LOCAL 22
+  LOCAL 55
+  LOCAL 44
+  LOCAL 32
+  LOCAL 38
+  LOCAL 21
+  LOCAL 23
+  CLOSURE 7
+  BIND 56
+  QUOTE 54
+  LOCAL 19
+  LOCAL 16
+  LOCAL 20
+  LOCAL 24
+  CLOSURE 4
+  BIND 57
+  QUOTE 55
+  LOCAL 21
+  LOCAL 32
+  LOCAL 22
+  CLOSURE 3
+  BIND 58
+  QUOTE 56
+  LOCAL 57
+  LOCAL 1
+  LOCAL 44
+  LOCAL 58
+  CLOSURE 4
+  BIND 59
+  QUOTE 57
+  LOCAL 57
+  LOCAL 20
+  LOCAL 21
+  LOCAL 32
+  LOCAL 44
+  LOCAL 58
+  LOCAL 27
+  LOCAL 59
+  CLOSURE 8
+  BIND 60
+  QUOTE 58
+  LOCAL 20
+  LOCAL 22
+  LOCAL 38
+  LOCAL 32
+  LOCAL 1
+  CLOSURE 5
+  BIND 61
+  GLOBAL 59
+  PREP 2
+  LOCAL 30
+  PUTARG 0
+  LOCAL 56
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 59
+  PREP 2
+  LOCAL 33
+  PUTARG 0
+  LOCAL 54
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 59
+  PREP 2
+  LOCAL 35
+  PUTARG 0
+  LOCAL 43
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 59
+  PREP 2
+  LOCAL 37
+  PUTARG 0
+  LOCAL 60
+  PUTARG 1
+  CALL 2
+  POP 0
+  QUOTE 60
+  LOCAL 18
+  LOCAL 61
+  CLOSURE 2
+  BIND 62
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 63
+  QUOTE 61
+  LOCAL 63
+  CLOSURE 1
+  BIND 64
+  QUOTE 62
+  CLOSURE 0
+  BIND 65
+  QUOTE 63
+  CLOSURE 0
+  BIND 66
+  QUOTE 64
+  CLOSURE 0
+  BIND 67
+  QUOTE 65
+  CLOSURE 0
+  BIND 68
+  QUOTE 66
+  CLOSURE 0
+  BIND 69
+  QUOTE 67
+  CLOSURE 0
+  BIND 70
+  QUOTE 68
+  CLOSURE 0
+  BIND 71
+  QUOTE 69
+  CLOSURE 0
+  BIND 72
+  QUOTE 70
+  CLOSURE 0
+  BIND 73
+  QUOTE 71
+  CLOSURE 0
+  BIND 74
+  QUOTE 72
+  CLOSURE 0
+  BIND 75
+  QUOTE 73
+  CLOSURE 0
+  BIND 76
+  QUOTE 74
+  LOCAL 73
+  LOCAL 75
+  LOCAL 74
+  CLOSURE 3
+  BIND 77
+  QUOTE 75
+  LOCAL 76
+  LOCAL 74
+  CLOSURE 2
+  BIND 78
+  QUOTE 76
+  CLOSURE 0
+  BIND 79
+  QUOTE 77
+  LOCAL 70
+  LOCAL 67
+  CLOSURE 2
+  BIND 80
+  QUOTE 78
+  LOCAL 67
+  LOCAL 70
+  CLOSURE 2
+  BIND 81
+  QUOTE 79
+  CLOSURE 0
+  BIND 82
+  QUOTE 80
+  LOCAL 75
+  LOCAL 79
+  LOCAL 70
+  LOCAL 67
+  CLOSURE 4
+  BIND 83
+  QUOTE 81
+  CLOSURE 0
+  BIND 84
+  QUOTE 82
+  LOCAL 13
+  LOCAL 14
+  CLOSURE 2
+  BIND 85
+  QUOTE 83
+  LOCAL 64
+  LOCAL 85
+  LOCAL 80
+  LOCAL 83
+  LOCAL 77
+  LOCAL 12
+  LOCAL 39
+  CLOSURE 7
+  BIND 86
+  QUOTE 84
+  LOCAL 80
+  LOCAL 75
+  LOCAL 85
+  LOCAL 86
+  CLOSURE 4
+  BIND 87
+  QUOTE 85
+  LOCAL 12
+  LOCAL 87
+  LOCAL 13
+  LOCAL 14
+  CLOSURE 4
+  BIND 88
+  GLOBAL 17
+  PREP 1
+  QUOTE 18
+  PUTARG 0
+  CALL 1
+  BIND 89
+  QUOTE 86
+  LOCAL 89
+  LOCAL 88
+  LOCAL 82
+  LOCAL 13
+  LOCAL 14
+  LOCAL 64
+  CLOSURE 6
+  BIND 90
+  QUOTE 87
+  CLOSURE 0
+  BIND 91
+  QUOTE 88
+  LOCAL 90
+  LOCAL 13
+  LOCAL 14
+  LOCAL 84
+  LOCAL 91
+  CLOSURE 5
+  BIND 92
+  QUOTE 89
+  LOCAL 69
+  LOCAL 65
+  LOCAL 92
+  LOCAL 72
+  LOCAL 10
+  LOCAL 3
+  LOCAL 83
+  CLOSURE 7
+  BIND 93
+  QUOTE 90
+  CLOSURE 0
+  BIND 94
+  QUOTE 91
+  LOCAL 94
+  LOCAL 83
+  LOCAL 81
+  LOCAL 71
+  LOCAL 12
+  LOCAL 64
+  LOCAL 75
+  LOCAL 76
+  LOCAL 77
+  LOCAL 78
+  LOCAL 93
+  LOCAL 39
+  CLOSURE 12
+  BIND 95
+  GLOBAL 59
+  PREP 2
+  LOCAL 89
+  PUTARG 0
+  LOCAL 95
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 0
+  PREP 1
+  QUOTE 92
+  PUTARG 0
+  CALL 1
+  BIND 96
+  GLOBAL 0
+  PREP 1
+  QUOTE 93
+  PUTARG 0
+  CALL 1
+  BIND 97
+  GLOBAL 0
+  PREP 1
+  QUOTE 94
+  PUTARG 0
+  CALL 1
+  BIND 98
+  GLOBAL 0
+  PREP 1
+  QUOTE 95
+  PUTARG 0
+  CALL 1
+  BIND 99
+  GLOBAL 0
+  PREP 1
+  QUOTE 96
+  PUTARG 0
+  CALL 1
+  BIND 100
+  GLOBAL 0
+  PREP 1
+  QUOTE 97
+  PUTARG 0
+  CALL 1
+  BIND 101
+  QUOTE 98
+  LOCAL 65
+  LOCAL 92
+  LOCAL 69
+  LOCAL 10
+  LOCAL 99
+  LOCAL 3
+  CLOSURE 6
+  BIND 102
+  QUOTE 99
+  LOCAL 100
+  LOCAL 67
+  LOCAL 101
+  LOCAL 75
+  LOCAL 76
+  LOCAL 102
+  CLOSURE 6
+  BIND 103
+  QUOTE 100
+  LOCAL 4
+  LOCAL 5
+  LOCAL 6
+  CLOSURE 3
+  BIND 104
+  QUOTE 101
+  LOCAL 104
+  LOCAL 97
+  LOCAL 103
+  LOCAL 68
+  LOCAL 102
+  LOCAL 96
+  CLOSURE 6
+  BIND 105
+  QUOTE 102
+  LOCAL 62
+  LOCAL 98
+  LOCAL 10
+  LOCAL 63
+  LOCAL 105
+  CLOSURE 5
+  RETURN 0
+name #_primitive
+string "scan"
+string "synerror"
+string "priority"
+string "assemble"
+string "frozen"
+string "error"
+string "spelling"
+string "gensym"
+string "print"
+string "debug"
+funcode "debug" 2 18 1 0 3
+  GLOBAL 0
+  PREP 2
+  FVAR 1
+  PREP 0
+  CALL 0
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  JFALSE 16
+  FVAR 2
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  NIL 0
+  RETURN 0
+name #>
+{ end of debug }
+funcode "member" 2 24 3 2 3
+  ARG 1
+  TRAP 5
+  MNIL 0
+  GLOBAL 0
+  RETURN 0
+  ARG 1
+  TRAP 23
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  JFALSE 20
+  QUOTE 2
+  RETURN 0
+  ARG 0
+  LOCAL 1
+  TCALL 2
+  FAIL 0
+name #false
+name #=
+boolean 1
+{ end of member }
+funcode "zipwith" 3 41 1 4 6
+  ARG 1
+  TRAP 8
+  MNIL 0
+  ARG 2
+  TRAP 8
+  MNIL 0
+  NIL 0
+  RETURN 0
+  ARG 1
+  TRAP 40
+  MCONS 0
+  BIND 0
+  BIND 1
+  ARG 2
+  TRAP 40
+  MCONS 0
+  BIND 2
+  BIND 3
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  LOCAL 2
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  FVAR 0
+  PREP 3
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  LOCAL 3
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #:
+{ end of zipwith }
+funcode "fst" 1 12 0 2 2
+  ARG 0
+  TRAP 11
+  MCONS 0
+  BIND 0
+  TRAP 11
+  MCONS 0
+  BIND 1
+  TRAP 11
+  MNIL 0
+  LOCAL 0
+  RETURN 0
+  FAIL 0
+{ end of fst }
+funcode "snd" 1 12 0 2 2
+  ARG 0
+  TRAP 11
+  MCONS 0
+  BIND 0
+  TRAP 11
+  MCONS 0
+  BIND 1
+  TRAP 11
+  MNIL 0
+  LOCAL 1
+  RETURN 0
+  FAIL 0
+{ end of snd }
+funcode "describe" 1 187 62 0 2
+  ARG 0
+  TRAP 6
+  QUOTE 0
+  MEQ 0
+  QUOTE 1
+  RETURN 0
+  ARG 0
+  TRAP 12
+  QUOTE 2
+  MEQ 0
+  QUOTE 3
+  RETURN 0
+  ARG 0
+  TRAP 18
+  QUOTE 4
+  MEQ 0
+  QUOTE 5
+  RETURN 0
+  ARG 0
+  TRAP 24
+  QUOTE 6
+  MEQ 0
+  QUOTE 7
+  RETURN 0
+  ARG 0
+  TRAP 30
+  QUOTE 8
+  MEQ 0
+  QUOTE 9
+  RETURN 0
+  ARG 0
+  TRAP 36
+  QUOTE 10
+  MEQ 0
+  QUOTE 11
+  RETURN 0
+  ARG 0
+  TRAP 42
+  QUOTE 12
+  MEQ 0
+  QUOTE 13
+  RETURN 0
+  ARG 0
+  TRAP 48
+  QUOTE 14
+  MEQ 0
+  QUOTE 15
+  RETURN 0
+  ARG 0
+  TRAP 54
+  QUOTE 16
+  MEQ 0
+  QUOTE 17
+  RETURN 0
+  ARG 0
+  TRAP 60
+  QUOTE 18
+  MEQ 0
+  QUOTE 19
+  RETURN 0
+  ARG 0
+  TRAP 66
+  QUOTE 20
+  MEQ 0
+  QUOTE 21
+  RETURN 0
+  ARG 0
+  TRAP 72
+  QUOTE 22
+  MEQ 0
+  QUOTE 23
+  RETURN 0
+  ARG 0
+  TRAP 78
+  QUOTE 24
+  MEQ 0
+  QUOTE 25
+  RETURN 0
+  ARG 0
+  TRAP 84
+  QUOTE 26
+  MEQ 0
+  QUOTE 27
+  RETURN 0
+  ARG 0
+  TRAP 90
+  QUOTE 28
+  MEQ 0
+  QUOTE 29
+  RETURN 0
+  ARG 0
+  TRAP 96
+  QUOTE 30
+  MEQ 0
+  QUOTE 31
+  RETURN 0
+  ARG 0
+  TRAP 102
+  QUOTE 32
+  MEQ 0
+  QUOTE 33
+  RETURN 0
+  ARG 0
+  TRAP 108
+  QUOTE 34
+  MEQ 0
+  QUOTE 35
+  RETURN 0
+  ARG 0
+  TRAP 114
+  QUOTE 36
+  MEQ 0
+  QUOTE 37
+  RETURN 0
+  ARG 0
+  TRAP 120
+  QUOTE 38
+  MEQ 0
+  QUOTE 39
+  RETURN 0
+  ARG 0
+  TRAP 126
+  QUOTE 40
+  MEQ 0
+  QUOTE 41
+  RETURN 0
+  ARG 0
+  TRAP 132
+  QUOTE 42
+  MEQ 0
+  QUOTE 43
+  RETURN 0
+  ARG 0
+  TRAP 138
+  QUOTE 44
+  MEQ 0
+  QUOTE 45
+  RETURN 0
+  ARG 0
+  TRAP 144
+  QUOTE 46
+  MEQ 0
+  QUOTE 47
+  RETURN 0
+  ARG 0
+  TRAP 150
+  QUOTE 48
+  MEQ 0
+  QUOTE 49
+  RETURN 0
+  ARG 0
+  TRAP 156
+  QUOTE 50
+  MEQ 0
+  QUOTE 51
+  RETURN 0
+  ARG 0
+  TRAP 162
+  QUOTE 52
+  MEQ 0
+  QUOTE 53
+  RETURN 0
+  ARG 0
+  TRAP 168
+  QUOTE 54
+  MEQ 0
+  QUOTE 55
+  RETURN 0
+  ARG 0
+  TRAP 174
+  QUOTE 56
+  MEQ 0
+  QUOTE 57
+  RETURN 0
+  ARG 0
+  TRAP 180
+  QUOTE 58
+  MEQ 0
+  QUOTE 59
+  RETURN 0
+  ARG 0
+  TRAP 186
+  QUOTE 60
+  MEQ 0
+  QUOTE 61
+  RETURN 0
+  FAIL 0
+name #ident
+string "an identifier"
+name #number
+string "a number"
+name #atom
+string "an atom"
+name #lpar
+string "'('"
+name #rpar
+string "')'"
+name #comma
+string "','"
+name #=
+string "'='"
+name #semi
+string "';'"
+name #bra
+string "'['"
+name #ket
+string "']'"
+name #-
+string "'-'"
+name #+
+string "'+'"
+name #vbar
+string "'|'"
+name #>>
+string "'>>'"
+name #..
+string "'..'"
+name #string
+string "a string constant"
+name #binop
+string "a binary operator"
+name #monop
+string "a unary operator"
+name #if
+string "'if'"
+name #then
+string "'then'"
+name #else
+string "'else'"
+name #let
+string "'let'"
+name #define
+string "'define'"
+name #in
+string "'in'"
+name #function
+string "'function'"
+name #when
+string "'when'"
+name #:
+string "':'"
+name #_
+string "'_'"
+name #rbrace
+string "'}'"
+name #eol
+string "end of line"
+name #eof
+string "end of input"
+{ end of describe }
+name #_new
+integer 0
+funcode "scan" 0 28 1 1 4
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 0
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  FVAR 3
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 0
+  PREP 2
+  FVAR 4
+  PUTARG 0
+  FVAR 5
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #_set
+{ end of scan }
+funcode "isbinop" 1 18 5 0 8
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 0
+  QUOTE 1
+  QUOTE 2
+  QUOTE 3
+  QUOTE 4
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #binop
+name #=
+name #-
+name #+
+name #:
+{ end of isbinop }
+funcode "see" 1 12 2 0 3
+  GLOBAL 0
+  PREP 2
+  GLOBAL 1
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #=
+name #_get
+{ end of see }
+funcode "eat" 1 34 4 0 6
+  FVAR 1
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  JFALSE 10
+  FVAR 2
+  PREP 0
+  CALL 0
+  RETURN 0
+  FVAR 3
+  PREP 2
+  GLOBAL 0
+  PREP 2
+  GLOBAL 0
+  PREP 2
+  QUOTE 1
+  PUTARG 0
+  FVAR 4
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  QUOTE 2
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #^
+string "I expected "
+string " here"
+string "#eat"
+{ end of eat }
+funcode "can_eat" 1 14 2 0 2
+  FVAR 1
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  JFALSE 12
+  FVAR 2
+  PREP 0
+  CALL 0
+  POP 0
+  GLOBAL 0
+  RETURN 0
+  GLOBAL 1
+  RETURN 0
+name #true
+name #false
+{ end of can_eat }
+funcode "whichever" 1 10 1 0 3
+  ARG 0
+  PREP 1
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #_get
+{ end of whichever }
+funcode "p_sym" 1 14 1 1 2
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 2
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  LOCAL 0
+  RETURN 0
+name #_get
+{ end of p_sym }
+funcode "brack" 3 18 0 1 2
+  FVAR 1
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  ARG 1
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 1
+  PREP 1
+  ARG 2
+  PUTARG 0
+  CALL 1
+  POP 0
+  LOCAL 0
+  RETURN 0
+{ end of brack }
+funcode "brack1" 3 20 0 1 2
+  FVAR 1
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  ARG 1
+  PREP 1
+  ARG 2
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 1
+  PREP 1
+  ARG 2
+  PUTARG 0
+  CALL 1
+  POP 0
+  LOCAL 0
+  RETURN 0
+{ end of brack1 }
+funcode "p_tail" 2 26 1 1 5
+  FVAR 1
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  JFALSE 24
+  ARG 0
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  NIL 0
+  RETURN 0
+name #:
+{ end of p_tail }
+funcode "p_list1" 1 18 2 1 5
+  ARG 0
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #:
+name #comma
+{ end of p_list1 }
+funcode "p_list" 2 22 2 0 2
+  FVAR 1
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  JFALSE 8
+  QUOTE 0
+  JUMP 13
+  FVAR 1
+  PREP 1
+  QUOTE 1
+  PUTARG 0
+  CALL 1
+  JFALSE 16
+  NIL 0
+  RETURN 0
+  FVAR 2
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+boolean 1
+name #eof
+{ end of p_list }
+funcode "p_expr0" 1 12 1 1 2
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  LOCAL 0
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #_get
+{ end of p_expr0 }
+funcode "p_expr" 0 6 1 0 2
+  FVAR 1
+  PREP 1
+  GLOBAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #false
+{ end of p_expr }
+funcode "p_term" 2 14 1 1 3
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  LOCAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #_get
+{ end of p_term }
+funcode "p_pattern" 0 10 1 1 2
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  LOCAL 0
+  PREP 0
+  CALL 0
+  RETURN 0
+name #_get
+{ end of p_pattern }
+funcode "p_defn" 0 10 1 1 2
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  LOCAL 0
+  PREP 0
+  CALL 0
+  RETURN 0
+name #_get
+{ end of p_defn }
+funcode "listify" 1 13 3 0 4
+  GLOBAL 0
+  PREP 3
+  QUOTE 1
+  CLOSURE 0
+  PUTARG 0
+  QUOTE 2
+  NIL 0
+  CONS 0
+  PUTARG 1
+  ARG 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+name #foldr
+funcode "<function>" 2 8 1 0 4
+  QUOTE 0
+  ARG 0
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #cons
+{ end of <function> }
+name #nil
+{ end of listify }
+funcode "p_patterns" 1 8 0 0 3
+  FVAR 1
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+{ end of p_patterns }
+funcode "p_patprim" 0 17 1 1 9
+  QUOTE 0
+  FVAR 8
+  FVAR 7
+  FVAR 6
+  FVAR 5
+  FVAR 4
+  FVAR 3
+  FVAR 2
+  FVAR 1
+  CLOSURE 8
+  BIND 0
+  FVAR 9
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 170 20 1 8
+  ARG 0
+  TRAP 48
+  QUOTE 0
+  MEQ 0
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  BIND 0
+  GLOBAL 1
+  PREP 1
+  FVAR 2
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 26
+  QUOTE 3
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  GLOBAL 4
+  PREP 2
+  QUOTE 5
+  PUTARG 0
+  GLOBAL 4
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 3
+  PREP 3
+  QUOTE 2
+  PUTARG 0
+  FVAR 4
+  PUTARG 1
+  QUOTE 6
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  ARG 0
+  TRAP 62
+  QUOTE 7
+  MEQ 0
+  QUOTE 8
+  FVAR 1
+  PREP 1
+  QUOTE 7
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 76
+  QUOTE 9
+  MEQ 0
+  FVAR 5
+  PREP 1
+  QUOTE 9
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 10
+  NIL 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 90
+  QUOTE 11
+  MEQ 0
+  QUOTE 8
+  FVAR 1
+  PREP 1
+  QUOTE 11
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 114
+  QUOTE 12
+  MEQ 0
+  FVAR 5
+  PREP 1
+  QUOTE 12
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 8
+  GLOBAL 13
+  PREP 1
+  FVAR 1
+  PREP 1
+  QUOTE 11
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 128
+  QUOTE 14
+  MEQ 0
+  QUOTE 8
+  FVAR 1
+  PREP 1
+  QUOTE 14
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 142
+  QUOTE 2
+  MEQ 0
+  FVAR 6
+  PREP 3
+  QUOTE 2
+  PUTARG 0
+  FVAR 7
+  PUTARG 1
+  QUOTE 6
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  ARG 0
+  TRAP 162
+  QUOTE 15
+  MEQ 0
+  GLOBAL 4
+  PREP 2
+  QUOTE 16
+  PUTARG 0
+  FVAR 3
+  PREP 3
+  QUOTE 15
+  PUTARG 0
+  FVAR 4
+  PUTARG 1
+  QUOTE 17
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FVAR 8
+  PREP 2
+  QUOTE 18
+  PUTARG 0
+  QUOTE 19
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #ident
+name #not
+name #lpar
+name #var
+name #:
+name #prim
+name #rpar
+name #atom
+name #const
+name #_
+name #anon
+name #number
+name #-
+name #_uminus
+name #string
+name #bra
+name #list
+name #ket
+string "I don't recognise this pattern"
+string "#pattern"
+{ end of case }
+{ end of p_patprim }
+funcode "p_patfactor" 0 22 2 1 4
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 2
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  JFALSE 20
+  QUOTE 1
+  LOCAL 0
+  FVAR 0
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  LOCAL 0
+  RETURN 0
+name #:
+name #cons
+{ end of p_patfactor }
+funcode "p_pattern1" 0 13 1 1 3
+  QUOTE 0
+  FVAR 2
+  FVAR 1
+  CLOSURE 2
+  BIND 0
+  LOCAL 0
+  PREP 1
+  FVAR 3
+  PREP 0
+  CALL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "chain" 1 20 3 0 4
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  JFALSE 18
+  QUOTE 1
+  ARG 0
+  FVAR 2
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  TCALL 1
+  ARG 0
+  RETURN 0
+name #+
+name #plus
+name #number
+{ end of chain }
+{ end of p_pattern1 }
+funcode "p_formals" 0 10 2 0 4
+  FVAR 1
+  PREP 3
+  QUOTE 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  QUOTE 1
+  PUTARG 2
+  CALL 3
+  RETURN 0
+name #lpar
+name #rpar
+{ end of p_formals }
+funcode "p_exprs" 1 8 0 0 3
+  FVAR 1
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+{ end of p_exprs }
+funcode "expanda" 3 206 10 4 9
+  ARG 1
+  TRAP 11
+  MNIL 0
+  QUOTE 0
+  ARG 0
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 1
+  TRAP 92
+  MCONS 0
+  TRAP 91
+  MCONS 0
+  TRAP 90
+  QUOTE 1
+  MEQ 0
+  TRAP 91
+  MCONS 0
+  TRAP 90
+  MCONS 0
+  TRAP 89
+  QUOTE 2
+  MEQ 0
+  TRAP 90
+  MCONS 0
+  BIND 0
+  TRAP 90
+  MNIL 0
+  TRAP 91
+  MCONS 0
+  BIND 1
+  TRAP 91
+  MNIL 0
+  BIND 2
+  QUOTE 2
+  FVAR 1
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  BIND 3
+  QUOTE 3
+  QUOTE 2
+  QUOTE 4
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 5
+  QUOTE 6
+  QUOTE 2
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 0
+  PREP 3
+  ARG 0
+  PUTARG 0
+  LOCAL 2
+  PUTARG 1
+  LOCAL 3
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  LOCAL 1
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  POP 0
+  POP 0
+  ARG 1
+  TRAP 171
+  MCONS 0
+  TRAP 170
+  MCONS 0
+  TRAP 169
+  QUOTE 1
+  MEQ 0
+  TRAP 170
+  MCONS 0
+  BIND 0
+  TRAP 170
+  MCONS 0
+  BIND 1
+  TRAP 170
+  MNIL 0
+  BIND 2
+  QUOTE 2
+  FVAR 1
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  BIND 3
+  QUOTE 3
+  QUOTE 2
+  QUOTE 4
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 5
+  QUOTE 6
+  LOCAL 0
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 0
+  PREP 3
+  ARG 0
+  PUTARG 0
+  LOCAL 2
+  PUTARG 1
+  LOCAL 3
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 7
+  NIL 0
+  CONS 0
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  LOCAL 1
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 1
+  TRAP 205
+  MCONS 0
+  TRAP 204
+  MCONS 0
+  TRAP 203
+  QUOTE 8
+  MEQ 0
+  TRAP 204
+  MCONS 0
+  BIND 0
+  TRAP 204
+  MNIL 0
+  BIND 1
+  QUOTE 9
+  LOCAL 0
+  FVAR 0
+  PREP 3
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  POP 0
+  FAIL 0
+name #cons
+name #gen
+name #var
+name #apply
+name #_flatmapa
+name #function
+integer 2
+name #anon
+name #when
+name #if
+{ end of expanda }
+funcode "p_gen" 0 20 2 1 4
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 2
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 1
+  LOCAL 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #<-
+name #gen
+{ end of p_gen }
+funcode "p_gens" 0 21 2 2 5
+  QUOTE 0
+  FVAR 4
+  FVAR 3
+  FVAR 2
+  FVAR 1
+  CLOSURE 4
+  BIND 0
+  FVAR 4
+  PREP 0
+  CALL 0
+  BIND 1
+  GLOBAL 1
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  LOCAL 0
+  PREP 0
+  CALL 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+funcode "p_tail" 0 13 1 1 5
+  QUOTE 0
+  FVAR 3
+  FVAR 2
+  FVAR 0
+  FVAR 1
+  CLOSURE 4
+  BIND 0
+  FVAR 4
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 54 3 1 4
+  ARG 0
+  TRAP 28
+  QUOTE 0
+  MEQ 0
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 1
+  PREP 2
+  QUOTE 0
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  ARG 0
+  TRAP 52
+  QUOTE 2
+  MEQ 0
+  FVAR 1
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 4
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 1
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  NIL 0
+  RETURN 0
+name #when
+name #:
+name #comma
+{ end of case }
+{ end of p_tail }
+name #:
+{ end of p_gens }
+funcode "p_listexp" 0 29 3 2 7
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  JFALSE 10
+  QUOTE 1
+  NIL 0
+  CONS 0
+  RETURN 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  BIND 0
+  QUOTE 2
+  LOCAL 0
+  FVAR 6
+  FVAR 2
+  FVAR 5
+  FVAR 4
+  FVAR 3
+  CLOSURE 6
+  BIND 1
+  FVAR 7
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #ket
+name #nil
+funcode "case" 1 84 10 0 7
+  ARG 0
+  TRAP 24
+  QUOTE 0
+  MEQ 0
+  GLOBAL 1
+  PREP 2
+  QUOTE 2
+  PUTARG 0
+  GLOBAL 1
+  PREP 2
+  FVAR 1
+  PUTARG 0
+  FVAR 2
+  PREP 2
+  FVAR 3
+  PUTARG 0
+  QUOTE 0
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  ARG 0
+  TRAP 50
+  QUOTE 3
+  MEQ 0
+  FVAR 4
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 4
+  QUOTE 5
+  QUOTE 6
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 1
+  FVAR 3
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 74
+  QUOTE 7
+  MEQ 0
+  FVAR 4
+  PREP 1
+  QUOTE 7
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 5
+  PREP 3
+  FVAR 1
+  PUTARG 0
+  FVAR 6
+  PREP 0
+  CALL 0
+  PUTARG 1
+  QUOTE 8
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  QUOTE 9
+  FVAR 1
+  QUOTE 8
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #comma
+name #:
+name #list
+name #..
+name #apply
+name #var
+name #_range
+name #vbar
+name #nil
+name #cons
+{ end of case }
+{ end of p_listexp }
+funcode "p_parenexp" 0 76 8 2 6
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PREP 1
+  GLOBAL 1
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 20
+  FVAR 3
+  PREP 1
+  GLOBAL 2
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  FVAR 4
+  PREP 1
+  GLOBAL 1
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 5
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  BIND 1
+  FVAR 6
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  JFALSE 48
+  QUOTE 4
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  QUOTE 5
+  QUOTE 4
+  QUOTE 6
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 4
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 7
+  PREP 2
+  FVAR 8
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  GLOBAL 7
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #not
+name #_get
+name #true
+name #rpar
+name #var
+name #apply
+name #_rsect
+name #false
+{ end of p_parenexp }
+funcode "p_primary" 0 17 1 1 9
+  QUOTE 0
+  FVAR 8
+  FVAR 7
+  FVAR 6
+  FVAR 5
+  FVAR 4
+  FVAR 3
+  FVAR 2
+  FVAR 1
+  CLOSURE 8
+  BIND 0
+  FVAR 9
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 142 18 1 8
+  ARG 0
+  TRAP 14
+  QUOTE 0
+  MEQ 0
+  QUOTE 1
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 28
+  QUOTE 2
+  MEQ 0
+  QUOTE 1
+  FVAR 1
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 42
+  QUOTE 3
+  MEQ 0
+  QUOTE 1
+  FVAR 1
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 94
+  QUOTE 4
+  MEQ 0
+  FVAR 1
+  PREP 1
+  QUOTE 4
+  PUTARG 0
+  CALL 1
+  BIND 0
+  GLOBAL 5
+  PREP 1
+  FVAR 2
+  PREP 1
+  QUOTE 6
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 68
+  QUOTE 7
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  GLOBAL 8
+  PREP 2
+  QUOTE 9
+  PUTARG 0
+  GLOBAL 8
+  PREP 2
+  QUOTE 7
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 3
+  PREP 3
+  QUOTE 6
+  PUTARG 0
+  FVAR 4
+  PUTARG 1
+  QUOTE 10
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  ARG 0
+  TRAP 108
+  QUOTE 6
+  MEQ 0
+  FVAR 5
+  PREP 3
+  QUOTE 6
+  PUTARG 0
+  FVAR 6
+  PUTARG 1
+  QUOTE 10
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  ARG 0
+  TRAP 122
+  QUOTE 11
+  MEQ 0
+  FVAR 5
+  PREP 3
+  QUOTE 11
+  PUTARG 0
+  FVAR 7
+  PUTARG 1
+  QUOTE 12
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  ARG 0
+  TRAP 134
+  QUOTE 13
+  MEQ 0
+  FVAR 8
+  PREP 2
+  QUOTE 14
+  PUTARG 0
+  QUOTE 15
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FVAR 8
+  PREP 2
+  QUOTE 16
+  PUTARG 0
+  QUOTE 17
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #number
+name #const
+name #atom
+name #string
+name #ident
+name #not
+name #lpar
+name #var
+name #:
+name #apply
+name #rpar
+name #bra
+name #ket
+name #eof
+string "I expected an expression here"
+string "#exp"
+string "I don't recognise this expression"
+string "#badexp"
+{ end of case }
+{ end of p_primary }
+funcode "p_factor" 0 14 1 1 6
+  QUOTE 0
+  FVAR 4
+  FVAR 0
+  FVAR 3
+  FVAR 2
+  FVAR 1
+  CLOSURE 5
+  BIND 0
+  FVAR 5
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 72 7 1 4
+  ARG 0
+  TRAP 24
+  QUOTE 0
+  MEQ 0
+  QUOTE 1
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  BIND 0
+  QUOTE 2
+  LOCAL 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 68
+  QUOTE 3
+  MEQ 0
+  FVAR 3
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 4
+  PREP 1
+  QUOTE 4
+  PUTARG 0
+  CALL 1
+  JFALSE 54
+  QUOTE 5
+  GLOBAL 6
+  PREP 1
+  FVAR 1
+  PREP 1
+  QUOTE 4
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  QUOTE 2
+  QUOTE 1
+  QUOTE 6
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FVAR 5
+  PREP 0
+  CALL 0
+  RETURN 0
+name #monop
+name #var
+name #apply
+name #-
+name #number
+name #const
+name #_uminus
+{ end of case }
+{ end of p_factor }
+funcode "makebin" 3 58 9 0 6
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  JFALSE 22
+  QUOTE 2
+  ARG 1
+  ARG 2
+  QUOTE 3
+  GLOBAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 5
+  PUTARG 1
+  CALL 2
+  JFALSE 44
+  QUOTE 2
+  ARG 1
+  QUOTE 3
+  GLOBAL 6
+  NIL 0
+  CONS 0
+  CONS 0
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  QUOTE 7
+  QUOTE 8
+  ARG 0
+  NIL 0
+  CONS 0
+  CONS 0
+  ARG 1
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #=
+name #and
+name #if
+name #const
+name #false
+name #or
+name #true
+name #apply
+name #var
+{ end of makebin }
+funcode "p_term1" 2 24 1 1 12
+  QUOTE 0
+  FVAR 10
+  FVAR 9
+  FVAR 8
+  FVAR 7
+  FVAR 6
+  FVAR 5
+  ARG 1
+  FVAR 4
+  FVAR 3
+  FVAR 2
+  FVAR 1
+  CLOSURE 11
+  BIND 0
+  LOCAL 0
+  PREP 2
+  FVAR 11
+  PREP 0
+  CALL 0
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+funcode "p_termcont" 2 101 9 4 5
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  GLOBAL 1
+  PREP 1
+  FVAR 2
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 18
+  ARG 0
+  RETURN 0
+  GLOBAL 0
+  PREP 1
+  FVAR 3
+  PUTARG 0
+  CALL 1
+  BIND 1
+  FVAR 4
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  BIND 2
+  GLOBAL 2
+  PREP 2
+  FVAR 5
+  PREP 1
+  LOCAL 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  JFALSE 44
+  ARG 0
+  RETURN 0
+  FVAR 6
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 7
+  JFALSE 58
+  FVAR 8
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  JUMP 59
+  QUOTE 4
+  JFALSE 78
+  QUOTE 5
+  QUOTE 6
+  QUOTE 7
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 6
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  ARG 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FVAR 9
+  PREP 2
+  FVAR 10
+  PREP 1
+  LOCAL 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  GLOBAL 8
+  PUTARG 1
+  CALL 2
+  BIND 3
+  FVAR 11
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  LOCAL 3
+  PUTARG 2
+  CALL 3
+  ARG 1
+  TCALL 2
+name #_get
+name #not
+name #<
+name #rpar
+boolean 0
+name #apply
+name #var
+name #_lsect
+name #false
+{ end of p_termcont }
+{ end of p_term1 }
+funcode "p_cond" 1 54 5 3 5
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  JFALSE 46
+  FVAR 0
+  PREP 1
+  GLOBAL 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 2
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 0
+  PREP 1
+  GLOBAL 1
+  PUTARG 0
+  CALL 1
+  BIND 1
+  FVAR 2
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 0
+  PREP 1
+  GLOBAL 1
+  PUTARG 0
+  CALL 1
+  BIND 2
+  QUOTE 0
+  LOCAL 0
+  LOCAL 1
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FVAR 3
+  PREP 2
+  QUOTE 4
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #if
+name #false
+name #then
+name #else
+integer 1
+{ end of p_cond }
+funcode "p_expr1" 1 16 1 1 8
+  QUOTE 0
+  FVAR 6
+  FVAR 5
+  FVAR 4
+  FVAR 3
+  FVAR 2
+  ARG 0
+  FVAR 1
+  CLOSURE 7
+  BIND 0
+  FVAR 7
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 88 6 1 5
+  ARG 0
+  TRAP 30
+  QUOTE 0
+  MEQ 0
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 1
+  PREP 1
+  QUOTE 1
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 0
+  LOCAL 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 64
+  QUOTE 2
+  MEQ 0
+  FVAR 1
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 4
+  PREP 0
+  CALL 0
+  BIND 0
+  QUOTE 2
+  GLOBAL 3
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  LOCAL 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FVAR 5
+  PREP 1
+  FVAR 6
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 7
+  PREP 1
+  QUOTE 4
+  PUTARG 0
+  CALL 1
+  JFALSE 86
+  QUOTE 5
+  LOCAL 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  LOCAL 0
+  RETURN 0
+name #let
+name #in
+name #function
+name #length
+name #>>
+name #seq
+{ end of case }
+{ end of p_expr1 }
+funcode "p_name" 0 34 4 0 3
+  FVAR 1
+  PREP 1
+  GLOBAL 0
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 12
+  QUOTE 1
+  JUMP 17
+  FVAR 3
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  JFALSE 28
+  FVAR 4
+  PREP 1
+  GLOBAL 0
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  FVAR 4
+  PREP 1
+  QUOTE 3
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #_get
+boolean 1
+name #monop
+name #ident
+{ end of p_name }
+funcode "p_rhs" 1 32 2 1 4
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 3
+  PREP 1
+  QUOTE 1
+  PUTARG 0
+  CALL 1
+  JFALSE 26
+  ARG 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #=
+name #when
+{ end of p_rhs }
+funcode "p_rule" 2 54 6 2 3
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  JFALSE 14
+  NIL 0
+  JUMP 21
+  FVAR 2
+  PREP 2
+  QUOTE 1
+  PUTARG 0
+  QUOTE 2
+  PUTARG 1
+  CALL 2
+  POP 0
+  FVAR 3
+  PREP 0
+  CALL 0
+  BIND 1
+  GLOBAL 0
+  PREP 2
+  GLOBAL 3
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  JFALSE 40
+  NIL 0
+  JUMP 47
+  FVAR 2
+  PREP 2
+  QUOTE 4
+  PUTARG 0
+  QUOTE 5
+  PUTARG 1
+  CALL 2
+  POP 0
+  FVAR 4
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #=
+string "the same function name should appear in each clause"
+string "#names"
+name #length
+string "each clause should have the same number of arguments"
+string "#arity"
+{ end of p_rule }
+funcode "p_defn1" 0 72 9 4 10
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 0
+  PREP 1
+  FVAR 2
+  PREP 1
+  QUOTE 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 30
+  FVAR 3
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 3
+  LOCAL 0
+  FVAR 4
+  PREP 0
+  CALL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FVAR 5
+  PREP 0
+  CALL 0
+  BIND 1
+  GLOBAL 4
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  BIND 2
+  FVAR 6
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  BIND 3
+  QUOTE 5
+  LOCAL 0
+  LOCAL 2
+  GLOBAL 6
+  PREP 2
+  LOCAL 3
+  PUTARG 0
+  FVAR 7
+  PREP 2
+  QUOTE 7
+  FVAR 8
+  LOCAL 0
+  LOCAL 2
+  CLOSURE 3
+  PUTARG 0
+  QUOTE 8
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #not
+name #lpar
+name #=
+name #val
+name #length
+name #fun
+name #:
+funcode "<function>" 0 8 0 0 3
+  FVAR 1
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  FVAR 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+{ end of <function> }
+name #vbar
+{ end of p_defn1 }
+funcode "p_para" 0 84 13 1 3
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  JFALSE 8
+  QUOTE 0
+  RETURN 0
+  FVAR 2
+  PREP 1
+  QUOTE 1
+  PUTARG 0
+  CALL 1
+  JFALSE 18
+  FVAR 3
+  PREP 0
+  CALL 0
+  JUMP 21
+  FVAR 4
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 1
+  PREP 1
+  QUOTE 2
+  PUTARG 0
+  CALL 1
+  JFALSE 36
+  FVAR 5
+  PREP 2
+  QUOTE 3
+  PUTARG 0
+  QUOTE 4
+  PUTARG 1
+  CALL 2
+  JUMP 81
+  FVAR 1
+  PREP 1
+  QUOTE 5
+  PUTARG 0
+  CALL 1
+  JFALSE 50
+  FVAR 5
+  PREP 2
+  QUOTE 6
+  PUTARG 0
+  QUOTE 7
+  PUTARG 1
+  CALL 2
+  JUMP 81
+  GLOBAL 8
+  PREP 1
+  FVAR 1
+  PREP 1
+  QUOTE 9
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JFALSE 70
+  GLOBAL 8
+  PREP 1
+  FVAR 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  JUMP 71
+  QUOTE 10
+  JFALSE 80
+  FVAR 5
+  PREP 2
+  QUOTE 11
+  PUTARG 0
+  QUOTE 12
+  PUTARG 1
+  CALL 2
+  JUMP 81
+  NIL 0
+  POP 0
+  LOCAL 0
+  RETURN 0
+name #eof
+name #define
+name #rpar
+string "Can't find matching '('"
+string "#parenmatch"
+name #ket
+string "Can't find matching '['"
+string "#bramatch"
+name #not
+name #semi
+boolean 0
+string "extra text appears after the end of the expression"
+string "#junk"
+{ end of p_para }
+name #_set
+funcode "parser" 0 8 0 0 1
+  FVAR 1
+  PREP 0
+  CALL 0
+  POP 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  RETURN 0
+{ end of parser }
+funcode "label" 0 18 4 0 5
+  GLOBAL 0
+  PREP 2
+  FVAR 1
+  PUTARG 0
+  GLOBAL 1
+  PREP 2
+  GLOBAL 2
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #_set
+name #+
+name #_get
+integer 1
+{ end of label }
+funcode "flatten" 1 11 1 1 3
+  QUOTE 0
+  CLOSURE 0
+  BIND 0
+  LOCAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+funcode "flat" 2 31 3 1 4
+  ARG 0
+  TRAP 5
+  MNIL 0
+  ARG 1
+  RETURN 0
+  ARG 0
+  TRAP 23
+  MCONS 0
+  TRAP 22
+  QUOTE 0
+  MEQ 0
+  BIND 0
+  GLOBAL 1
+  PREP 3
+  FVAR 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  LOCAL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  GLOBAL 2
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #seq
+name #foldr
+name #:
+{ end of flat }
+{ end of flatten }
+funcode "integer" 1 20 4 0 4
+  GLOBAL 0
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  JFALSE 18
+  GLOBAL 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  GLOBAL 2
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  QUOTE 3
+  RETURN 0
+name #numeric
+name #=
+name #int
+boolean 0
+{ end of integer }
+funcode "lookup" 2 31 2 1 4
+  ARG 1
+  TRAP 30
+  MCONS 0
+  POP 0
+  TRAP 30
+  MCONS 0
+  POP 0
+  TRAP 30
+  MCONS 0
+  BIND 0
+  TRAP 30
+  MCONS 0
+  POP 0
+  TRAP 30
+  MCONS 0
+  POP 0
+  TRAP 30
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  GLOBAL 1
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #assoc
+name #_get
+{ end of lookup }
+funcode "empty" 0 24 2 0 6
+  QUOTE 0
+  QUOTE 0
+  GLOBAL 1
+  PREP 1
+  NIL 0
+  PUTARG 0
+  CALL 1
+  GLOBAL 1
+  PREP 1
+  NIL 0
+  PUTARG 0
+  CALL 1
+  GLOBAL 1
+  PREP 1
+  QUOTE 0
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+integer 0
+name #_new
+{ end of empty }
+funcode "newblock" 3 89 9 3 7
+  ARG 2
+  TRAP 88
+  MCONS 0
+  BIND 0
+  TRAP 88
+  MCONS 0
+  POP 0
+  TRAP 88
+  MCONS 0
+  BIND 1
+  TRAP 88
+  MCONS 0
+  POP 0
+  TRAP 88
+  MCONS 0
+  POP 0
+  TRAP 88
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  JFALSE 28
+  NIL 0
+  JUMP 47
+  ARG 0
+  GLOBAL 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  QUOTE 4
+  QUOTE 5
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  BIND 2
+  GLOBAL 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  ARG 1
+  GLOBAL 6
+  PREP 1
+  GLOBAL 7
+  PREP 2
+  LOCAL 2
+  PUTARG 0
+  GLOBAL 8
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  GLOBAL 6
+  PREP 1
+  NIL 0
+  PUTARG 0
+  CALL 1
+  GLOBAL 6
+  PREP 1
+  QUOTE 5
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FAIL 0
+name #=
+string "<function>"
+name #+
+integer 1
+name #FVAR
+integer 0
+name #_new
+name #++
+name #_get
+{ end of newblock }
+funcode "e_level" 1 21 0 1 2
+  ARG 0
+  TRAP 20
+  MCONS 0
+  BIND 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MNIL 0
+  LOCAL 0
+  RETURN 0
+  FAIL 0
+{ end of e_level }
+funcode "e_arity" 1 21 0 1 2
+  ARG 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MCONS 0
+  BIND 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MCONS 0
+  POP 0
+  TRAP 20
+  MNIL 0
+  LOCAL 0
+  RETURN 0
+  FAIL 0
+{ end of e_arity }
+funcode "e_fvars" 1 25 1 1 2
+  ARG 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  BIND 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MNIL 0
+  GLOBAL 0
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  FAIL 0
+name #_get
+{ end of e_fvars }
+funcode "e_size" 1 25 1 1 2
+  ARG 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  POP 0
+  TRAP 24
+  MCONS 0
+  BIND 0
+  TRAP 24
+  MNIL 0
+  GLOBAL 0
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  FAIL 0
+name #_get
+{ end of e_size }
+funcode "inc_size" 2 37 3 1 5
+  ARG 0
+  TRAP 36
+  MCONS 0
+  POP 0
+  TRAP 36
+  MCONS 0
+  POP 0
+  TRAP 36
+  MCONS 0
+  POP 0
+  TRAP 36
+  MCONS 0
+  POP 0
+  TRAP 36
+  MCONS 0
+  BIND 0
+  TRAP 36
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  GLOBAL 1
+  PREP 2
+  GLOBAL 2
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #_set
+name #+
+name #_get
+{ end of inc_size }
+funcode "bind" 4 47 3 2 8
+  ARG 3
+  TRAP 46
+  MCONS 0
+  BIND 0
+  TRAP 46
+  MCONS 0
+  POP 0
+  TRAP 46
+  MCONS 0
+  BIND 1
+  TRAP 46
+  MCONS 0
+  POP 0
+  TRAP 46
+  MCONS 0
+  POP 0
+  TRAP 46
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  GLOBAL 1
+  PREP 2
+  ARG 0
+  LOCAL 0
+  ARG 1
+  ARG 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  GLOBAL 2
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #_set
+name #:
+name #_get
+{ end of bind }
+funcode "unbind" 2 39 3 2 5
+  ARG 1
+  TRAP 38
+  MCONS 0
+  POP 0
+  TRAP 38
+  MCONS 0
+  POP 0
+  TRAP 38
+  MCONS 0
+  BIND 0
+  TRAP 38
+  MCONS 0
+  POP 0
+  TRAP 38
+  MCONS 0
+  POP 0
+  TRAP 38
+  MNIL 0
+  QUOTE 0
+  ARG 0
+  CLOSURE 1
+  BIND 1
+  GLOBAL 1
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  LOCAL 1
+  PREP 1
+  GLOBAL 2
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+funcode "h" 1 46 2 2 4
+  ARG 0
+  TRAP 23
+  MCONS 0
+  TRAP 22
+  MCONS 0
+  BIND 0
+  TRAP 22
+  MCONS 0
+  POP 0
+  TRAP 22
+  MNIL 0
+  BIND 1
+  GLOBAL 0
+  PREP 2
+  FVAR 1
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  JFALSE 23
+  LOCAL 1
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 40
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 1
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  ARG 0
+  TRAP 45
+  MNIL 0
+  NIL 0
+  RETURN 0
+  FAIL 0
+name #=
+name #:
+{ end of h }
+name #_set
+name #_get
+{ end of unbind }
+funcode "alloc" 2 28 2 1 5
+  FVAR 1
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 2
+  PREP 4
+  ARG 0
+  PUTARG 0
+  QUOTE 0
+  PUTARG 1
+  LOCAL 0
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  POP 0
+  FVAR 3
+  PREP 2
+  ARG 1
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  LOCAL 0
+  RETURN 0
+name #LOCAL
+integer 1
+{ end of alloc }
+funcode "dealloc" 2 16 1 0 3
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  FVAR 2
+  PREP 2
+  ARG 1
+  PUTARG 0
+  QUOTE 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+integer -1
+{ end of dealloc }
+funcode "alloc_fv" 2 57 6 2 6
+  ARG 1
+  TRAP 56
+  MCONS 0
+  POP 0
+  TRAP 56
+  MCONS 0
+  POP 0
+  TRAP 56
+  MCONS 0
+  POP 0
+  TRAP 56
+  MCONS 0
+  BIND 0
+  TRAP 56
+  MCONS 0
+  POP 0
+  TRAP 56
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  GLOBAL 1
+  PREP 1
+  GLOBAL 2
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  BIND 1
+  GLOBAL 4
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  GLOBAL 5
+  PREP 2
+  GLOBAL 2
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  ARG 0
+  NIL 0
+  CONS 0
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  POP 0
+  LOCAL 1
+  RETURN 0
+  FAIL 0
+name #+
+name #length
+name #_get
+integer 1
+name #_set
+name #++
+{ end of alloc_fv }
+funcode "islocal" 2 17 1 1 4
+  QUOTE 0
+  FVAR 1
+  ARG 1
+  CLOSURE 2
+  BIND 0
+  LOCAL 0
+  PREP 1
+  FVAR 2
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 44 5 2 4
+  ARG 0
+  TRAP 42
+  MCONS 0
+  BIND 0
+  TRAP 42
+  MCONS 0
+  BIND 1
+  TRAP 42
+  MCONS 0
+  POP 0
+  TRAP 42
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  JFALSE 22
+  QUOTE 2
+  JUMP 29
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  JFALSE 42
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 1
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  GLOBAL 4
+  RETURN 0
+name #=
+name #LOCAL
+boolean 1
+name #ARG
+name #false
+{ end of case }
+{ end of islocal }
+funcode "selfrec" 2 24 3 0 6
+  GLOBAL 0
+  PREP 2
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  FVAR 2
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  QUOTE 1
+  QUOTE 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #=
+name #FVAR
+integer 0
+{ end of selfrec }
+funcode "reset" 1 49 5 4 6
+  ARG 0
+  TRAP 48
+  MCONS 0
+  BIND 0
+  TRAP 48
+  MCONS 0
+  POP 0
+  TRAP 48
+  MCONS 0
+  BIND 1
+  TRAP 48
+  MCONS 0
+  POP 0
+  TRAP 48
+  MCONS 0
+  BIND 2
+  TRAP 48
+  MNIL 0
+  QUOTE 0
+  LOCAL 0
+  CLOSURE 1
+  BIND 3
+  GLOBAL 1
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  GLOBAL 2
+  PREP 2
+  LOCAL 3
+  PUTARG 0
+  GLOBAL 3
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 1
+  PREP 2
+  LOCAL 2
+  PUTARG 0
+  QUOTE 4
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+funcode "h" 1 48 6 2 3
+  ARG 0
+  TRAP 46
+  MCONS 0
+  POP 0
+  TRAP 46
+  MCONS 0
+  TRAP 45
+  MCONS 0
+  BIND 0
+  TRAP 45
+  MCONS 0
+  BIND 1
+  TRAP 45
+  MCONS 0
+  POP 0
+  TRAP 45
+  MNIL 0
+  TRAP 46
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  JFALSE 29
+  QUOTE 2
+  JUMP 36
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  JFALSE 46
+  GLOBAL 4
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  GLOBAL 5
+  RETURN 0
+name #=
+name #LOCAL
+boolean 1
+name #ARG
+name #<
+name #true
+{ end of h }
+name #_set
+name #filter
+name #_get
+integer 0
+{ end of reset }
+funcode "c_ref" 2 20 1 1 6
+  QUOTE 0
+  FVAR 3
+  ARG 1
+  FVAR 2
+  ARG 0
+  FVAR 1
+  CLOSURE 5
+  BIND 0
+  LOCAL 0
+  PREP 1
+  FVAR 4
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  RETURN 0
+funcode "case" 1 88 5 3 5
+  ARG 0
+  TRAP 40
+  MCONS 0
+  BIND 0
+  TRAP 40
+  MCONS 0
+  BIND 1
+  TRAP 40
+  MCONS 0
+  BIND 2
+  TRAP 40
+  MNIL 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 1
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  JFALSE 26
+  QUOTE 1
+  JUMP 33
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  QUOTE 2
+  PUTARG 1
+  CALL 2
+  JFALSE 40
+  LOCAL 1
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 78
+  MCONS 0
+  POP 0
+  TRAP 78
+  MCONS 0
+  POP 0
+  TRAP 78
+  MCONS 0
+  POP 0
+  TRAP 78
+  MNIL 0
+  FVAR 3
+  PREP 2
+  FVAR 4
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  CALL 2
+  BIND 0
+  FVAR 5
+  PREP 4
+  FVAR 4
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  LOCAL 0
+  PUTARG 2
+  FVAR 2
+  PUTARG 3
+  CALL 4
+  POP 0
+  QUOTE 3
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 87
+  MNIL 0
+  QUOTE 4
+  FVAR 4
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FAIL 0
+name #=
+boolean 1
+name #QUOTE
+name #FVAR
+name #GLOBAL
+{ end of case }
+{ end of c_ref }
+funcode "trapsort" 1 13 2 1 4
+  QUOTE 0
+  CLOSURE 0
+  BIND 0
+  GLOBAL 1
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  ARG 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+funcode "insert" 2 95 2 5 6
+  ARG 0
+  TRAP 20
+  MCONS 0
+  BIND 0
+  TRAP 20
+  MCONS 0
+  BIND 1
+  TRAP 20
+  MNIL 0
+  ARG 1
+  TRAP 20
+  MNIL 0
+  LOCAL 0
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 94
+  MCONS 0
+  BIND 0
+  TRAP 94
+  MCONS 0
+  BIND 1
+  TRAP 94
+  MNIL 0
+  ARG 1
+  TRAP 94
+  MCONS 0
+  TRAP 93
+  MCONS 0
+  BIND 2
+  TRAP 93
+  MCONS 0
+  BIND 3
+  TRAP 93
+  MNIL 0
+  BIND 4
+  GLOBAL 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  LOCAL 3
+  PUTARG 1
+  CALL 2
+  JFALSE 71
+  GLOBAL 1
+  PREP 2
+  LOCAL 0
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  GLOBAL 1
+  PREP 2
+  LOCAL 2
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  LOCAL 4
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  GLOBAL 1
+  PREP 2
+  LOCAL 2
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  LOCAL 0
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  LOCAL 4
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  FAIL 0
+name #<=
+name #:
+{ end of insert }
+name #foldr
+{ end of trapsort }
+funcode "pgen" 3 40 5 0 7
+  QUOTE 0
+  ARG 0
+  GLOBAL 1
+  PREP 2
+  QUOTE 0
+  PUTARG 0
+  GLOBAL 2
+  PREP 2
+  FVAR 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  GLOBAL 3
+  PREP 2
+  ARG 2
+  PUTARG 0
+  GLOBAL 4
+  PREP 1
+  GLOBAL 2
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #seq
+name #:
+name #map
+name #++
+name #concat
+{ end of pgen }
+funcode "c_patt" 3 441 25 4 12
+  ARG 0
+  TRAP 50
+  MCONS 0
+  TRAP 49
+  QUOTE 0
+  MEQ 0
+  TRAP 50
+  MCONS 0
+  BIND 0
+  TRAP 50
+  MNIL 0
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 1
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 2
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 3
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 4
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  LOCAL 1
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 134
+  MCONS 0
+  TRAP 133
+  QUOTE 5
+  MEQ 0
+  TRAP 134
+  MCONS 0
+  BIND 0
+  TRAP 134
+  MNIL 0
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 1
+  FVAR 3
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  JFALSE 109
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 2
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 4
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  QUOTE 4
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  LOCAL 1
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 6
+  FVAR 5
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 155
+  MCONS 0
+  TRAP 154
+  QUOTE 7
+  MEQ 0
+  TRAP 155
+  MNIL 0
+  FVAR 2
+  PREP 3
+  QUOTE 8
+  NIL 0
+  CONS 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 247
+  MCONS 0
+  TRAP 246
+  QUOTE 9
+  MEQ 0
+  TRAP 247
+  MCONS 0
+  BIND 0
+  BIND 1
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 2
+  GLOBAL 10
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  BIND 3
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 2
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 4
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  QUOTE 11
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  GLOBAL 12
+  PREP 1
+  FVAR 6
+  PREP 3
+  QUOTE 13
+  FVAR 0
+  ARG 2
+  CLOSURE 2
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  GLOBAL 14
+  PREP 2
+  ARG 1
+  PUTARG 0
+  GLOBAL 15
+  PREP 2
+  GLOBAL 16
+  PREP 2
+  ARG 1
+  PUTARG 0
+  LOCAL 3
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  QUOTE 17
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  PUTARG 2
+  CALL 3
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  LOCAL 2
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 320
+  MCONS 0
+  TRAP 319
+  QUOTE 18
+  MEQ 0
+  TRAP 320
+  MCONS 0
+  BIND 0
+  TRAP 320
+  MCONS 0
+  BIND 1
+  TRAP 320
+  MNIL 0
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 2
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 2
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 19
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  GLOBAL 16
+  PREP 2
+  ARG 1
+  PUTARG 0
+  QUOTE 17
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  FVAR 0
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 1
+  LOCAL 2
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 361
+  MCONS 0
+  TRAP 360
+  QUOTE 20
+  MEQ 0
+  TRAP 361
+  MNIL 0
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 2
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 21
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  LOCAL 0
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 377
+  MCONS 0
+  TRAP 376
+  QUOTE 22
+  MEQ 0
+  BIND 0
+  FVAR 7
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  ARG 1
+  ARG 2
+  TCALL 3
+  POP 0
+  ARG 0
+  TRAP 440
+  MCONS 0
+  TRAP 439
+  QUOTE 23
+  MEQ 0
+  TRAP 440
+  MCONS 0
+  BIND 0
+  TRAP 440
+  MCONS 0
+  BIND 1
+  TRAP 440
+  MNIL 0
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 2
+  FVAR 2
+  PREP 3
+  QUOTE 1
+  QUOTE 2
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 3
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  QUOTE 24
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  PUTARG 1
+  LOCAL 2
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  FAIL 0
+name #const
+name #seq
+name #TRAP
+name #QUOTE
+name #MEQ
+name #var
+name #BIND
+name #anon
+name #POP
+name #prim
+name #length
+name #MPRIM
+name #reverse
+funcode "<function>" 2 10 0 0 4
+  FVAR 1
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  FVAR 2
+  PUTARG 2
+  CALL 3
+  RETURN 0
+{ end of <function> }
+name #_range
+name #-
+name #+
+integer 1
+name #cons
+name #MCONS
+name #nil
+name #MNIL
+name #list
+name #plus
+name #MPLUS
+{ end of c_patt }
+funcode "c_arg" 3 93 6 1 6
+  ARG 0
+  TRAP 46
+  MCONS 0
+  TRAP 45
+  QUOTE 0
+  MEQ 0
+  TRAP 46
+  MCONS 0
+  BIND 0
+  TRAP 46
+  MNIL 0
+  GLOBAL 1
+  PREP 1
+  FVAR 1
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  JFALSE 46
+  FVAR 2
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  QUOTE 2
+  PUTARG 1
+  ARG 1
+  PUTARG 2
+  ARG 2
+  PUTARG 3
+  CALL 4
+  POP 0
+  FVAR 3
+  PREP 3
+  NIL 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 65
+  MCONS 0
+  TRAP 64
+  QUOTE 3
+  MEQ 0
+  TRAP 65
+  MNIL 0
+  FVAR 3
+  PREP 3
+  NIL 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  FVAR 3
+  PREP 3
+  QUOTE 4
+  QUOTE 2
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 4
+  PREP 3
+  ARG 0
+  PUTARG 0
+  QUOTE 5
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+name #var
+name #not
+name #ARG
+name #anon
+name #seq
+integer 0
+{ end of c_arg }
+funcode "c_match" 2 57 10 1 8
+  FVAR 1
+  PREP 3
+  QUOTE 0
+  FVAR 2
+  ARG 1
+  CLOSURE 2
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  GLOBAL 1
+  PREP 2
+  QUOTE 2
+  PUTARG 0
+  GLOBAL 3
+  PREP 2
+  GLOBAL 4
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  QUOTE 5
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  PUTARG 2
+  CALL 3
+  BIND 0
+  GLOBAL 6
+  PREP 2
+  QUOTE 7
+  PUTARG 0
+  GLOBAL 8
+  PREP 2
+  FVAR 3
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  GLOBAL 9
+  PREP 1
+  GLOBAL 8
+  PREP 2
+  FVAR 4
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+funcode "<function>" 2 10 0 0 4
+  FVAR 1
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  FVAR 2
+  PUTARG 2
+  CALL 3
+  RETURN 0
+{ end of <function> }
+name #_range
+integer 0
+name #-
+name #length
+integer 1
+name #:
+name #seq
+name #map
+name #concat
+{ end of c_match }
+funcode "c_rule" 2 154 7 8 6
+  ARG 0
+  TRAP 59
+  MCONS 0
+  BIND 0
+  TRAP 59
+  MCONS 0
+  BIND 1
+  TRAP 59
+  MNIL 0
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 2
+  FVAR 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 3
+  LOCAL 2
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 1
+  PUTARG 2
+  CALL 3
+  BIND 4
+  FVAR 3
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 2
+  FVAR 4
+  PREP 1
+  LOCAL 3
+  PUTARG 0
+  CALL 1
+  LOCAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  FVAR 5
+  PREP 1
+  LOCAL 3
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 153
+  MCONS 0
+  BIND 0
+  TRAP 153
+  MCONS 0
+  BIND 1
+  TRAP 153
+  MCONS 0
+  BIND 2
+  TRAP 153
+  MNIL 0
+  FVAR 6
+  PREP 0
+  CALL 0
+  BIND 3
+  GLOBAL 0
+  PREP 1
+  FVAR 1
+  PUTARG 0
+  CALL 1
+  BIND 4
+  FVAR 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 5
+  LOCAL 4
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 3
+  PUTARG 2
+  CALL 3
+  BIND 6
+  LOCAL 4
+  PREP 3
+  LOCAL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 1
+  PUTARG 2
+  CALL 3
+  BIND 7
+  FVAR 3
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  POP 0
+  QUOTE 2
+  FVAR 4
+  PREP 1
+  LOCAL 5
+  PUTARG 0
+  CALL 1
+  LOCAL 6
+  QUOTE 4
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  LOCAL 7
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  GLOBAL 5
+  PREP 2
+  LOCAL 3
+  QUOTE 6
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  FVAR 5
+  PREP 1
+  LOCAL 5
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FAIL 0
+name #_get
+name #true
+name #seq
+name #false
+name #JFALSE
+name #:
+integer 0
+{ end of c_rule }
+funcode "c_traps" 1 19 4 1 6
+  QUOTE 0
+  CLOSURE 0
+  BIND 0
+  GLOBAL 1
+  PREP 2
+  QUOTE 2
+  PUTARG 0
+  LOCAL 0
+  PREP 3
+  QUOTE 3
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+funcode "h" 3 65 5 3 5
+  ARG 1
+  TRAP 5
+  MNIL 0
+  ARG 2
+  RETURN 0
+  ARG 1
+  TRAP 64
+  MCONS 0
+  TRAP 63
+  MCONS 0
+  BIND 0
+  TRAP 63
+  MCONS 0
+  BIND 1
+  TRAP 63
+  MNIL 0
+  BIND 2
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  CALL 2
+  JFALSE 35
+  LOCAL 1
+  LOCAL 2
+  GLOBAL 1
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  TCALL 3
+  GLOBAL 2
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  GLOBAL 1
+  PREP 2
+  LOCAL 0
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  LOCAL 2
+  PUTARG 1
+  CALL 2
+  GLOBAL 1
+  PREP 2
+  QUOTE 4
+  NIL 0
+  CONS 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  TCALL 3
+  POP 0
+  FAIL 0
+name #=
+name #:
+name #+
+integer 1
+name #POP
+{ end of h }
+name #:
+name #seq
+integer 0
+{ end of c_traps }
+funcode "c_body" 2 81 4 5 7
+  ARG 0
+  TRAP 7
+  MNIL 0
+  QUOTE 0
+  NIL 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  TRAP 80
+  MCONS 0
+  BIND 0
+  BIND 1
+  FVAR 1
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 2
+  GLOBAL 1
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  FVAR 3
+  PREP 1
+  LOCAL 2
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  BIND 3
+  FVAR 4
+  PREP 1
+  FVAR 3
+  PREP 1
+  LOCAL 2
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  CALL 1
+  BIND 4
+  QUOTE 2
+  FVAR 2
+  PREP 1
+  LOCAL 2
+  PUTARG 0
+  CALL 1
+  GLOBAL 3
+  PREP 2
+  LOCAL 4
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  CALL 2
+  JFALSE 58
+  NIL 0
+  JUMP 75
+  QUOTE 2
+  FVAR 5
+  PREP 1
+  LOCAL 4
+  PUTARG 0
+  CALL 1
+  FVAR 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  FAIL 0
+name #FAIL
+name #map
+name #seq
+name #=
+{ end of c_body }
+funcode "c_closure" 4 85 8 4 8
+  FVAR 1
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 3
+  PUTARG 2
+  CALL 3
+  BIND 0
+  FVAR 2
+  PREP 1
+  FVAR 3
+  PREP 2
+  ARG 2
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  BIND 1
+  FVAR 4
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  BIND 2
+  GLOBAL 0
+  PREP 1
+  LOCAL 2
+  PUTARG 0
+  CALL 1
+  BIND 3
+  FVAR 5
+  PREP 2
+  QUOTE 1
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  QUOTE 2
+  QUOTE 3
+  FVAR 6
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  LOCAL 1
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  GLOBAL 4
+  PREP 2
+  QUOTE 2
+  PUTARG 0
+  GLOBAL 5
+  PREP 3
+  QUOTE 6
+  FVAR 7
+  ARG 3
+  CLOSURE 2
+  PUTARG 0
+  LOCAL 2
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  QUOTE 7
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #length
+integer 1
+name #seq
+name #QUOTE
+name #:
+name #_flatmapa
+funcode "<function>" 2 10 0 0 3
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  CALL 2
+  ARG 1
+  CONS 0
+  RETURN 0
+{ end of <function> }
+name #CLOSURE
+{ end of c_closure }
+funcode "yield" 2 14 2 0 4
+  ARG 1
+  JFALSE 12
+  QUOTE 0
+  ARG 0
+  QUOTE 1
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  ARG 0
+  RETURN 0
+name #seq
+name #RETURN
+{ end of yield }
+funcode "c_exp" 3 730 36 7 15
+  ARG 0
+  TRAP 24
+  MCONS 0
+  TRAP 23
+  QUOTE 0
+  MEQ 0
+  TRAP 24
+  MCONS 0
+  BIND 0
+  TRAP 24
+  MNIL 0
+  FVAR 1
+  PREP 2
+  QUOTE 1
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 50
+  MCONS 0
+  TRAP 49
+  QUOTE 2
+  MEQ 0
+  TRAP 50
+  MCONS 0
+  BIND 0
+  TRAP 50
+  MNIL 0
+  FVAR 1
+  PREP 2
+  FVAR 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 134
+  MCONS 0
+  TRAP 133
+  QUOTE 3
+  MEQ 0
+  TRAP 134
+  MCONS 0
+  TRAP 133
+  MCONS 0
+  TRAP 132
+  QUOTE 2
+  MEQ 0
+  TRAP 133
+  MCONS 0
+  BIND 0
+  TRAP 133
+  MNIL 0
+  BIND 1
+  ARG 2
+  JFALSE 79
+  FVAR 3
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  JUMP 80
+  QUOTE 4
+  JFALSE 97
+  GLOBAL 5
+  PREP 2
+  GLOBAL 6
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  FVAR 4
+  PREP 1
+  ARG 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  JUMP 98
+  QUOTE 4
+  JFALSE 134
+  QUOTE 7
+  GLOBAL 8
+  PREP 2
+  QUOTE 7
+  PUTARG 0
+  GLOBAL 9
+  PREP 3
+  QUOTE 10
+  FVAR 0
+  ARG 1
+  CLOSURE 2
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  QUOTE 11
+  GLOBAL 6
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 218
+  MCONS 0
+  TRAP 217
+  QUOTE 3
+  MEQ 0
+  TRAP 218
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 6
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  BIND 2
+  FVAR 1
+  PREP 2
+  QUOTE 7
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  QUOTE 7
+  QUOTE 13
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  GLOBAL 8
+  PREP 2
+  QUOTE 7
+  PUTARG 0
+  FVAR 5
+  PREP 3
+  QUOTE 14
+  FVAR 0
+  ARG 1
+  CLOSURE 2
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  GLOBAL 15
+  PREP 2
+  QUOTE 16
+  PUTARG 0
+  GLOBAL 17
+  PREP 2
+  LOCAL 2
+  PUTARG 0
+  QUOTE 18
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  QUOTE 19
+  LOCAL 2
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 338
+  MCONS 0
+  TRAP 337
+  QUOTE 20
+  MEQ 0
+  TRAP 338
+  MCONS 0
+  BIND 0
+  TRAP 338
+  MCONS 0
+  BIND 1
+  TRAP 338
+  MCONS 0
+  BIND 2
+  TRAP 338
+  MNIL 0
+  FVAR 6
+  PREP 0
+  CALL 0
+  BIND 3
+  FVAR 6
+  PREP 0
+  CALL 0
+  BIND 4
+  ARG 2
+  JFALSE 287
+  QUOTE 7
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  QUOTE 21
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 0
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 22
+  PUTARG 2
+  CALL 3
+  LOCAL 3
+  FVAR 0
+  PREP 3
+  LOCAL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 22
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  QUOTE 7
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  QUOTE 21
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  FVAR 0
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  QUOTE 23
+  LOCAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  LOCAL 3
+  FVAR 0
+  PREP 3
+  LOCAL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  LOCAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 408
+  MCONS 0
+  TRAP 407
+  QUOTE 24
+  MEQ 0
+  TRAP 408
+  MCONS 0
+  TRAP 407
+  MCONS 0
+  TRAP 406
+  QUOTE 25
+  MEQ 0
+  TRAP 407
+  MCONS 0
+  BIND 0
+  TRAP 407
+  MCONS 0
+  TRAP 406
+  MCONS 0
+  TRAP 405
+  QUOTE 0
+  MEQ 0
+  TRAP 406
+  MCONS 0
+  BIND 1
+  TRAP 406
+  MNIL 0
+  TRAP 407
+  MNIL 0
+  TRAP 408
+  MCONS 0
+  BIND 2
+  TRAP 408
+  MNIL 0
+  FVAR 7
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  LOCAL 1
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  POP 0
+  FVAR 0
+  PREP 3
+  LOCAL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  BIND 3
+  FVAR 8
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  LOCAL 3
+  RETURN 0
+  POP 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 486
+  MCONS 0
+  TRAP 485
+  QUOTE 24
+  MEQ 0
+  TRAP 486
+  MCONS 0
+  TRAP 485
+  MCONS 0
+  TRAP 484
+  QUOTE 25
+  MEQ 0
+  TRAP 485
+  MCONS 0
+  BIND 0
+  TRAP 485
+  MCONS 0
+  BIND 1
+  TRAP 485
+  MNIL 0
+  TRAP 486
+  MCONS 0
+  BIND 2
+  TRAP 486
+  MNIL 0
+  FVAR 0
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  BIND 3
+  FVAR 9
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 4
+  FVAR 0
+  PREP 3
+  LOCAL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  BIND 5
+  FVAR 10
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  QUOTE 7
+  LOCAL 3
+  QUOTE 26
+  LOCAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  LOCAL 5
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 569
+  MCONS 0
+  TRAP 568
+  QUOTE 24
+  MEQ 0
+  TRAP 569
+  MCONS 0
+  TRAP 568
+  MCONS 0
+  TRAP 567
+  QUOTE 27
+  MEQ 0
+  TRAP 568
+  MCONS 0
+  BIND 0
+  TRAP 568
+  MCONS 0
+  BIND 1
+  TRAP 568
+  MCONS 0
+  BIND 2
+  TRAP 568
+  MNIL 0
+  TRAP 569
+  MCONS 0
+  BIND 3
+  TRAP 569
+  MNIL 0
+  FVAR 11
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  LOCAL 2
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  BIND 4
+  FVAR 9
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 5
+  FVAR 0
+  PREP 3
+  LOCAL 3
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  BIND 6
+  FVAR 10
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  QUOTE 7
+  LOCAL 4
+  QUOTE 26
+  LOCAL 5
+  NIL 0
+  CONS 0
+  CONS 0
+  LOCAL 6
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 602
+  MCONS 0
+  TRAP 601
+  QUOTE 28
+  MEQ 0
+  TRAP 602
+  MCONS 0
+  BIND 0
+  TRAP 602
+  MCONS 0
+  BIND 1
+  TRAP 602
+  MNIL 0
+  FVAR 1
+  PREP 2
+  FVAR 11
+  PREP 4
+  QUOTE 29
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  LOCAL 1
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 651
+  MCONS 0
+  TRAP 650
+  QUOTE 30
+  MEQ 0
+  TRAP 651
+  MCONS 0
+  BIND 0
+  TRAP 651
+  MCONS 0
+  BIND 1
+  TRAP 651
+  MNIL 0
+  FVAR 1
+  PREP 2
+  QUOTE 7
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  FVAR 0
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  QUOTE 31
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 670
+  MCONS 0
+  TRAP 669
+  QUOTE 32
+  MEQ 0
+  TRAP 670
+  MNIL 0
+  FVAR 1
+  PREP 2
+  QUOTE 33
+  NIL 0
+  CONS 0
+  PUTARG 0
+  ARG 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 686
+  MCONS 0
+  TRAP 685
+  QUOTE 34
+  MEQ 0
+  BIND 0
+  FVAR 12
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  ARG 1
+  ARG 2
+  TCALL 3
+  POP 0
+  ARG 0
+  TRAP 729
+  MCONS 0
+  TRAP 728
+  QUOTE 7
+  MEQ 0
+  TRAP 729
+  MCONS 0
+  BIND 0
+  TRAP 729
+  MCONS 0
+  BIND 1
+  TRAP 729
+  MNIL 0
+  QUOTE 7
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  GLOBAL 12
+  PUTARG 2
+  CALL 3
+  QUOTE 35
+  NIL 0
+  CONS 0
+  FVAR 0
+  PREP 3
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+  POP 0
+  FAIL 0
+name #const
+name #QUOTE
+name #var
+name #apply
+boolean 0
+name #=
+name #length
+name #seq
+name #:
+name #_flatmapa
+funcode "<function>" 2 12 1 0 4
+  FVAR 1
+  PREP 3
+  ARG 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  GLOBAL 0
+  PUTARG 2
+  CALL 3
+  ARG 1
+  CONS 0
+  RETURN 0
+name #false
+{ end of <function> }
+name #TCALL
+name #false
+name #PREP
+funcode "<function>" 2 20 3 0 5
+  QUOTE 0
+  FVAR 1
+  PREP 3
+  ARG 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  GLOBAL 1
+  PUTARG 2
+  CALL 3
+  QUOTE 2
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  RETURN 0
+name #seq
+name #false
+name #PUTARG
+{ end of <function> }
+name #_range
+integer 0
+name #-
+integer 1
+name #CALL
+name #if
+name #JFALSE
+name #true
+name #JUMP
+name #let
+name #val
+name #BIND
+name #fun
+name #function
+string "<function>"
+name #cons
+name #CONS
+name #nil
+name #NIL
+name #list
+name #POP
+{ end of c_exp }
+string "topval"
+string "topdef"
+string "toptext"
+string "closure"
+string "glodef"
+string "apply"
+funcode "i_func" 4 42 1 1 7
+  FVAR 1
+  PREP 1
+  FVAR 2
+  PREP 2
+  ARG 2
+  PUTARG 0
+  FVAR 3
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  ARG 3
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  BIND 0
+  FVAR 4
+  PREP 2
+  QUOTE 0
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  POP 0
+  FVAR 5
+  PREP 1
+  FVAR 6
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  LOCAL 0
+  PUTARG 2
+  CALL 3
+  PUTARG 0
+  CALL 1
+  RETURN 0
+integer 1
+{ end of i_func }
+funcode "interp" 2 367 19 5 8
+  ARG 0
+  TRAP 14
+  MCONS 0
+  TRAP 13
+  QUOTE 0
+  MEQ 0
+  TRAP 14
+  MCONS 0
+  BIND 0
+  TRAP 14
+  MNIL 0
+  LOCAL 0
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 43
+  MCONS 0
+  TRAP 42
+  QUOTE 1
+  MEQ 0
+  TRAP 43
+  MCONS 0
+  BIND 0
+  TRAP 43
+  MNIL 0
+  QUOTE 2
+  FVAR 1
+  LOCAL 0
+  CLOSURE 2
+  BIND 1
+  LOCAL 1
+  PREP 1
+  FVAR 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 79
+  MCONS 0
+  TRAP 78
+  QUOTE 3
+  MEQ 0
+  TRAP 79
+  MCONS 0
+  BIND 0
+  BIND 1
+  FVAR 3
+  PREP 2
+  FVAR 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  GLOBAL 4
+  PREP 3
+  QUOTE 5
+  FVAR 0
+  ARG 1
+  CLOSURE 2
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 111
+  MCONS 0
+  TRAP 110
+  QUOTE 6
+  MEQ 0
+  TRAP 111
+  MCONS 0
+  BIND 0
+  TRAP 111
+  MCONS 0
+  BIND 1
+  TRAP 111
+  MCONS 0
+  BIND 2
+  TRAP 111
+  MNIL 0
+  FVAR 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  JFALSE 107
+  LOCAL 1
+  ARG 1
+  TCALL 2
+  LOCAL 2
+  ARG 1
+  TCALL 2
+  POP 0
+  ARG 0
+  TRAP 175
+  MCONS 0
+  TRAP 174
+  QUOTE 7
+  MEQ 0
+  TRAP 175
+  MCONS 0
+  TRAP 174
+  MCONS 0
+  TRAP 173
+  QUOTE 8
+  MEQ 0
+  TRAP 174
+  MCONS 0
+  BIND 0
+  TRAP 174
+  MCONS 0
+  BIND 1
+  TRAP 174
+  MNIL 0
+  TRAP 175
+  MCONS 0
+  BIND 2
+  TRAP 175
+  MNIL 0
+  FVAR 4
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  QUOTE 9
+  PUTARG 1
+  FVAR 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  POP 0
+  FVAR 0
+  PREP 2
+  LOCAL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 3
+  FVAR 5
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  LOCAL 3
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 246
+  MCONS 0
+  TRAP 245
+  QUOTE 7
+  MEQ 0
+  TRAP 246
+  MCONS 0
+  TRAP 245
+  MCONS 0
+  TRAP 244
+  QUOTE 10
+  MEQ 0
+  TRAP 245
+  MCONS 0
+  BIND 0
+  TRAP 245
+  MCONS 0
+  BIND 1
+  TRAP 245
+  MCONS 0
+  BIND 2
+  TRAP 245
+  MNIL 0
+  TRAP 246
+  MCONS 0
+  BIND 3
+  TRAP 246
+  MNIL 0
+  FVAR 4
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  QUOTE 9
+  PUTARG 1
+  FVAR 6
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  LOCAL 2
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  POP 0
+  FVAR 0
+  PREP 2
+  LOCAL 3
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  BIND 4
+  FVAR 5
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  LOCAL 4
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 273
+  MCONS 0
+  TRAP 272
+  QUOTE 11
+  MEQ 0
+  TRAP 273
+  MCONS 0
+  BIND 0
+  TRAP 273
+  MCONS 0
+  BIND 1
+  TRAP 273
+  MNIL 0
+  FVAR 6
+  PREP 4
+  QUOTE 12
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  LOCAL 1
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 308
+  MCONS 0
+  TRAP 307
+  QUOTE 13
+  MEQ 0
+  TRAP 308
+  MCONS 0
+  BIND 0
+  TRAP 308
+  MCONS 0
+  BIND 1
+  TRAP 308
+  MNIL 0
+  GLOBAL 14
+  PREP 2
+  FVAR 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 319
+  MCONS 0
+  TRAP 318
+  QUOTE 15
+  MEQ 0
+  TRAP 319
+  MNIL 0
+  NIL 0
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 340
+  MCONS 0
+  TRAP 339
+  QUOTE 16
+  MEQ 0
+  BIND 0
+  GLOBAL 4
+  PREP 3
+  QUOTE 17
+  FVAR 0
+  ARG 1
+  CLOSURE 2
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  NIL 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 366
+  MCONS 0
+  TRAP 365
+  QUOTE 18
+  MEQ 0
+  TRAP 366
+  MCONS 0
+  BIND 0
+  TRAP 366
+  MCONS 0
+  BIND 1
+  TRAP 366
+  MNIL 0
+  FVAR 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  POP 0
+  LOCAL 1
+  ARG 1
+  TCALL 2
+  POP 0
+  FAIL 0
+name #const
+name #var
+funcode "case" 1 27 1 1 3
+  ARG 0
+  TRAP 17
+  MCONS 0
+  POP 0
+  TRAP 17
+  MCONS 0
+  TRAP 16
+  QUOTE 0
+  MEQ 0
+  TRAP 17
+  MCONS 0
+  BIND 0
+  TRAP 17
+  MNIL 0
+  LOCAL 0
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 26
+  MNIL 0
+  FVAR 1
+  PREP 1
+  FVAR 2
+  PUTARG 0
+  CALL 1
+  RETURN 0
+  FAIL 0
+name #QUOTE
+{ end of case }
+name #apply
+name #_flatmapa
+funcode "<function>" 2 10 0 0 3
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  CALL 2
+  ARG 1
+  CONS 0
+  RETURN 0
+{ end of <function> }
+name #if
+name #let
+name #val
+name #QUOTE
+name #fun
+name #function
+string "<function>"
+name #cons
+name #:
+name #nil
+name #list
+funcode "<function>" 2 10 0 0 3
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  CALL 2
+  ARG 1
+  CONS 0
+  RETURN 0
+{ end of <function> }
+name #seq
+{ end of interp }
+funcode "redefine" 1 32 4 0 6
+  FVAR 1
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  JFALSE 30
+  FVAR 2
+  PREP 2
+  GLOBAL 0
+  PREP 2
+  GLOBAL 0
+  PREP 2
+  QUOTE 1
+  PUTARG 0
+  FVAR 3
+  PREP 1
+  ARG 0
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  QUOTE 2
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  NIL 0
+  RETURN 0
+name #^
+string "can't replace built-in definition of '"
+string "'"
+string "#redef"
+{ end of redefine }
+funcode "top_level" 1 95 2 3 7
+  ARG 0
+  TRAP 37
+  MCONS 0
+  TRAP 36
+  QUOTE 0
+  MEQ 0
+  TRAP 37
+  MCONS 0
+  BIND 0
+  TRAP 37
+  MCONS 0
+  BIND 1
+  TRAP 37
+  MNIL 0
+  FVAR 1
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 3
+  PREP 2
+  LOCAL 1
+  PUTARG 0
+  FVAR 4
+  PREP 0
+  CALL 0
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  ARG 0
+  TRAP 81
+  MCONS 0
+  TRAP 80
+  QUOTE 1
+  MEQ 0
+  TRAP 81
+  MCONS 0
+  BIND 0
+  TRAP 81
+  MCONS 0
+  BIND 1
+  TRAP 81
+  MCONS 0
+  BIND 2
+  TRAP 81
+  MNIL 0
+  FVAR 1
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  FVAR 2
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 5
+  PREP 4
+  LOCAL 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  LOCAL 2
+  PUTARG 2
+  FVAR 4
+  PREP 0
+  CALL 0
+  PUTARG 3
+  CALL 4
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  POP 0
+  FVAR 6
+  PREP 1
+  FVAR 3
+  PREP 2
+  ARG 0
+  PUTARG 0
+  FVAR 4
+  PREP 0
+  CALL 0
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  CALL 1
+  RETURN 0
+name #val
+name #fun
+{ end of top_level }
+funcode "<function>" 0 42 6 1 3
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 0
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  CALL 2
+  JFALSE 14
+  GLOBAL 2
+  RETURN 0
+  FVAR 2
+  PREP 0
+  CALL 0
+  POP 0
+  FVAR 3
+  PREP 2
+  QUOTE 3
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  POP 0
+  GLOBAL 4
+  PREP 2
+  FVAR 4
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  POP 0
+  FVAR 5
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  POP 0
+  GLOBAL 5
+  RETURN 0
+name #=
+name #eof
+name #false
+integer 0
+name #_set
+name #true
+{ end of <function> }
+{ end of __top }
+global #_flatmapa closure funcode "_flatmapa" 3 27 0 2 6
+  ARG 1
+  TRAP 5
+  MNIL 0
+  ARG 2
+  RETURN 0
+  ARG 1
+  TRAP 26
+  MCONS 0
+  BIND 0
+  BIND 1
+  ARG 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 3
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+{ end of _flatmapa }
+global #_get primitive "!"
+global #_infixl closure funcode "_infixl" 2 18 4 0 7
+  GLOBAL 0
+  PREP 4
+  ARG 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  ARG 1
+  PUTARG 2
+  GLOBAL 2
+  PREP 2
+  ARG 1
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  PUTARG 3
+  CALL 4
+  RETURN 0
+name #__token
+name #binop
+name #+
+integer 1
+{ end of _infixl }
+global #_infixr closure funcode "_infixr" 2 12 2 0 5
+  GLOBAL 0
+  PREP 4
+  ARG 0
+  PUTARG 0
+  QUOTE 1
+  PUTARG 1
+  ARG 1
+  PUTARG 2
+  ARG 1
+  PUTARG 3
+  CALL 4
+  RETURN 0
+name #__token
+name #binop
+{ end of _infixr }
+global #_lsect closure funcode "_lsect" 2 5 1 0 3
+  QUOTE 0
+  ARG 0
+  ARG 1
+  CLOSURE 2
+  RETURN 0
+funcode "<function>" 1 8 0 0 3
+  FVAR 1
+  PREP 2
+  FVAR 2
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+{ end of <function> }
+{ end of _lsect }
+global #_new primitive "new"
+global #_primitive primitive "primitive"
+global #_range closure funcode "_range" 2 30 4 0 6
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  JFALSE 10
+  NIL 0
+  RETURN 0
+  GLOBAL 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  GLOBAL 2
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 3
+  PUTARG 1
+  CALL 2
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+name #>
+name #:
+name #+
+integer 1
+{ end of _range }
+global #_rsect closure funcode "_rsect" 2 5 1 0 3
+  QUOTE 0
+  ARG 0
+  ARG 1
+  CLOSURE 2
+  RETURN 0
+funcode "<function>" 1 8 0 0 3
+  FVAR 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  FVAR 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+{ end of <function> }
+{ end of _rsect }
+global #_set primitive ":="
+global #_token closure funcode "_token" 1 12 2 0 5
+  GLOBAL 0
+  PREP 4
+  ARG 0
+  PUTARG 0
+  ARG 0
+  PUTARG 1
+  QUOTE 1
+  PUTARG 2
+  QUOTE 1
+  PUTARG 3
+  CALL 4
+  RETURN 0
+name #__token
+integer 0
+{ end of _token }
+global #_top closure funcode "_top" 0 8 1 1 1
+  GLOBAL 0
+  PREP 0
+  CALL 0
+  BIND 0
+  LOCAL 0
+  PREP 0
+  CALL 0
+  RETURN 0
+name #__top
+{ end of _top }
+global #_uminus primitive "uminus"
+global #assoc closure funcode "assoc" 2 32 1 3 3
+  ARG 1
+  TRAP 5
+  MNIL 0
+  NIL 0
+  RETURN 0
+  ARG 1
+  TRAP 31
+  MCONS 0
+  TRAP 30
+  MCONS 0
+  BIND 0
+  TRAP 30
+  MCONS 0
+  BIND 1
+  TRAP 30
+  MNIL 0
+  BIND 2
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 0
+  PUTARG 1
+  CALL 2
+  JFALSE 27
+  LOCAL 1
+  RETURN 0
+  ARG 0
+  LOCAL 2
+  TCALL 2
+  POP 0
+  FAIL 0
+name #=
+{ end of assoc }
+global #concat closure funcode "concat" 1 23 1 2 4
+  ARG 0
+  TRAP 5
+  MNIL 0
+  NIL 0
+  RETURN 0
+  ARG 0
+  TRAP 22
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #++
+{ end of concat }
+global #false boolean 0
+global #filter closure funcode "filter" 2 34 1 2 5
+  ARG 1
+  TRAP 5
+  MNIL 0
+  NIL 0
+  RETURN 0
+  ARG 1
+  TRAP 33
+  MCONS 0
+  BIND 0
+  BIND 1
+  ARG 0
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  JFALSE 30
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  ARG 0
+  LOCAL 1
+  TCALL 2
+  FAIL 0
+name #:
+{ end of filter }
+global #flatmap closure funcode "flatmap" 2 29 1 2 5
+  ARG 1
+  TRAP 5
+  MNIL 0
+  NIL 0
+  RETURN 0
+  ARG 1
+  TRAP 28
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #++
+{ end of flatmap }
+global #foldr closure funcode "foldr" 3 27 0 2 6
+  ARG 2
+  TRAP 5
+  MNIL 0
+  ARG 1
+  RETURN 0
+  ARG 2
+  TRAP 26
+  MCONS 0
+  BIND 0
+  BIND 1
+  ARG 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  FVAR 0
+  PREP 3
+  ARG 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  LOCAL 1
+  PUTARG 2
+  CALL 3
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+{ end of foldr }
+global #head primitive "head"
+global #int primitive "int"
+global #it nil
+global #length closure funcode "length" 1 23 3 2 3
+  ARG 0
+  TRAP 5
+  MNIL 0
+  QUOTE 0
+  RETURN 0
+  ARG 0
+  TRAP 22
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 1
+  PREP 2
+  FVAR 0
+  PREP 1
+  LOCAL 1
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  QUOTE 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+integer 0
+name #+
+integer 1
+{ end of length }
+global #map closure funcode "map" 2 29 1 2 5
+  ARG 1
+  TRAP 5
+  MNIL 0
+  NIL 0
+  RETURN 0
+  ARG 1
+  TRAP 28
+  MCONS 0
+  BIND 0
+  BIND 1
+  GLOBAL 0
+  PREP 2
+  ARG 0
+  PREP 1
+  LOCAL 0
+  PUTARG 0
+  CALL 1
+  PUTARG 0
+  FVAR 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  LOCAL 1
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  CALL 2
+  RETURN 0
+  FAIL 0
+name #:
+{ end of map }
+global #not closure funcode "not" 1 6 2 0 1
+  ARG 0
+  JFALSE 4
+  GLOBAL 0
+  RETURN 0
+  GLOBAL 1
+  RETURN 0
+name #false
+name #true
+{ end of not }
+global #numeric primitive "numeric"
+global #reverse closure funcode "reverse" 1 11 1 1 3
+  QUOTE 0
+  CLOSURE 0
+  BIND 0
+  LOCAL 0
+  PREP 2
+  ARG 0
+  PUTARG 0
+  NIL 0
+  PUTARG 1
+  CALL 2
+  RETURN 0
+funcode "reva" 2 20 1 2 4
+  ARG 0
+  TRAP 5
+  MNIL 0
+  ARG 1
+  RETURN 0
+  ARG 0
+  TRAP 19
+  MCONS 0
+  BIND 0
+  BIND 1
+  LOCAL 1
+  GLOBAL 0
+  PREP 2
+  LOCAL 0
+  PUTARG 0
+  ARG 1
+  PUTARG 1
+  CALL 2
+  TCALL 2
+  FAIL 0
+name #:
+{ end of reva }
+{ end of reverse }
+global #tail primitive "tail"
+global #true boolean 1
+quit

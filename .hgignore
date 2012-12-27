@@ -1,0 +1,10 @@
+syntax: glob
+misc/bmark/BMark$Name.class
+misc/bmark/BMark.class
+misc/bmark/OMark.k
+misc/bmark/cmark
+misc/bmark/hmark
+misc/bmark/hmark.hi
+misc/bmark/hmark.o
+misc/bmark/omark
+misc/bmark/pmark

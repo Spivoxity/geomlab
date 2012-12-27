@@ -1,0 +1,3 @@
+define mkframe(n, N, x) =
+  let pic = colour(T $ rot3(T) & rot(T) $ rot2(T)) in
+  savepic(pic, "frame" ^ x ^ ".png", 135, n/(2*N), 1.0);

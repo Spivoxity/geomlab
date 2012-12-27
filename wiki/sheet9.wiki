@@ -1,0 +1,76 @@
+{{GeomLab}}
+All the colours that can be shown on a computer screen are made up of a mixture of the three primary colours red, green and blue.
+GeomLab uses the notation @rgb(r, g, b)@ for a colour that contains an amount @r@ of red, an amount @g@ of green and an amount @b@ of blue, with the three numbers @r@, @g@ and @b@ varying between 0 and 1.
+For example, the colour @rgb(1, 0, 0)@ is pure, bright red:
+{{GeomPic|9010|rgb(1, 0, 0)|red}}
+(if you type an expression that yields a colour, then GeomLab both prints the colour in the form @rgb(...)@ and shows a circle filled with that colour.)  For convenience, @red@ is a predefined constant with this colour as its value, and other constants @green@, @blue@, @white@ and @black@ are also defined.  Try them!
+
+Apart from these pure colours, many other can be made as mixtures.
+For example, the colour @rgb(1, 0.5, 0.5)@ is a shade of pink:
+{{GeomPic|9020|rgb(1, 0.5, 0.5)|*}}
+This colour is halfway between pure red, @rgb(1, 0, 0)$, and white, @rgb(1, 1, 1)@.  Adding a bit more green than blue gives an apricot colour:
+{{GeomPic|9030|rgb(1, 0.6, 0.4)|*}}
+On the other hand, increasing the amount of blue gives a colour that is more like shocking pink than rose-petal:
+{{GeomPic|9040|rgb(1, 0.4, 0.6)|*}}
+See if you can find the right mixture to form bright yellow:
+{{GeomPic|9050||rgb(1, 1, 0)}}
+or deep turquoise:
+{{GeomPic|9060||rgb(0, 0.5, 0.5)}}
+or dark brown:
+{{GeomPic|9070||rgb(0.4, 0, 0)}}
+If your computer's operating system lets you choose the colour of the screen background, then it probably has a control that lets you choose a colour with the mouse.  The colours we are making here are the same, except that often the three components @r@, @g@ and @b@ are specified in the range from 0 up to 255, and we are using the range from 0 up to&nbsp;1.  You might like to find some colours using your operating system's controls, then see if you can make the same colours in GeomLab.  You can always write an expression like @rgb(255/255, 127/255, 127/255)@ to get nearly the same pink we made before.
+
+In fact, computer monitors cannot show all the colours that the human eye can tell apart, because with three primary colours you can reach only the interior of a triangle in "colour space" that has the three primaries at the corners, and inevitably some colours fall outside that triangle.  That's why high-end colour printers use more than three or four colours of ink.
+
+Making colours is all very well, but it quickly becomes boring unless we can create pictures that contain more than one colour.  The key to doing that in GeomLab is to define a function that takes a pair of coordinates and gives a colour.  For example, here is a function that produces different strengths of pure pink, depending on the value of&nbsp;@x@:
+:@define rose(x, y) = rgb(1, x/200, x/200)@
+For example, for any value of @y@, the value of @rose(0, y)@ is @rgb(1, 0, 0)@, pure red.  The value of @rose(100, y)@ is @rgb(1, 0.5, 0.5)@, the pink colour we first made.  And @rose(200, y) = rgb(1, 1, 1)@ is pure white.  GeomLab lets us show all these colours in a single picture by writing an expression such as
+{{GeomPic|9080|image(200, 200, rose)|!image(144, 144, function (x, y) rgb(1, x/144, x/144))}}
+It's worth pausing a moment to spell out what is going on here.  Like all computer images, this one is made up of a rectangular array of coloured dots: in this case, the array contains 200 by 200 dots. In this picture, the colour of each dot is determined by the function @rose@ that we supply, so that the dot in the bottom left hand corner has a colour given by @rose(0, 0) = rgb(1, 0, 0)@, and going along the bottom row, successive dots have the colours
+ rose(1, 0) = rgb(1, 0.05, 0.05)
+ rose(2, 0) = rgb(1, 0.10, 0.10)
+ rose(3, 0) = rgb(1, 0.15, 0.15)
+  ...
+ rose(199, 0) = rgb(1, 0.95, 0.95)
+Because the image is 200 pixels wide rather than 201, we never quite reach pure white, @rgb(1, 1, 1)@.  If you like, try replacing 200 by 201 in the expression that made the picture: in practice, it makes little difference.  Or replace 200 by 400 both in the definition of @rose@ and in the expression to get a bigger image.
+Since the value of @rose(x, y)@ doesn't depend on @y@, we see that all the dots in each column of the array have the same colour.
+
+We can make a bigger range of colours by letting the amount of green and the amount of blue vary independently, say by increasing the green along the @x@ axis and the blue along the @y@ axis.  Let's make the definition
+ define palette(x, y) = rgb(1, x/200, y/200)
+Now we can write
+{{GeomPic|9090|image(200, 200, palette)|!image(144, 144, function (x, y) rgb(1, x/144, y/144))}}
+The colours in this image are pure red at the bottom left corner, tending towards pure yellow, @rgb(1, 1, 0)@ in the bottom right, pure magenta, @rgb(1, 0, 1)@, in the top left, and white, @rgb(1, 1, 1)@ in the top right.
+
+----
+
+Pythagoras' theorem tells us that the distance between the two points with coordinates @(x, y)@ and @(u, v)@ is
+:{{IfWiki|<tt>sqrt((x-u)<sup>2</sup> + (y-v)<sup>2</sup>)</tt>|$\sqrt{(x-u)^2+(y-v)^2$}}.
+Let's define a function to compute this distance:
+ define dist([x, y], [u, v]) =
+   let dx = x - u in let dy = y - v in
+   sqrt(dx*dx + dy*dy)
+Now the quantity
+:@1 - dist([x, y], [200, 200])/200@
+is 1 if @(x, y) = (200, 200)@ and decreases as we move away from that point, reaching zero at any point that is 200 units away.
+If we make the definition
+ define redglow(x, y) =
+   let r = 1 - dist([x, y], [200, 200])/200 in
+   rgb(r, 0, 0)
+then this makes a picture where a red light appears to be shining at (200, 200), with its glow spread out as if in a fog:
+{{GeomPic|9310|image(400, 400, redglow)|!image(144, 144, redglowlet)}}
+(For points that are further than 200 units from (200, 200), the computed value of @r@ is negative; but luckily that doesn't matter, because GeomLab treats the @r@, @g@, @b@ components of a colour as 0 if they a negative value is given, and as 1 if the value given is greater than&nbsp;1.)
+
+Here is another picture that contains both red and green lights:
+{{GeomPic|9320|image(400, 400, twolights)|!image(144, 144, twinslet)}}
+Notice that the green glow is smaller in diameter than the red glow.  Can you produce something similar?
+
+----
+
+A picture:
+{{GeomPic|9920|image(300, 400, mike)|!image(125, 167, mikelet)}}
+A transformation:
+ define noblue(rgb(r, g, b)) = rgb(r, g, 0)
+Applying it:
+ define sepia(x, y) = noblue(mike(x, y))
+The result:
+{{GeomPic|9930|image(300, 400, sepia)|!image(125, 167, mappixels(noblue, mikelet))}}

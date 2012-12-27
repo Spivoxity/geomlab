@@ -1,0 +1,171 @@
+{ Solutions to GeomLab worksheets }
+
+{ Sheet 3 }
+
+define f(p) = p $ (p & p);
+
+define g(p, q) = (p & q) $ (q & p);
+
+
+{Sheet 4}
+
+define row(0, p) = null | row(n+1, p) = p $ row(n, p);
+
+define manrow(1) = man | manrow(n+1) = manrow(n) $ man;
+
+define crowd(m,m) = manrow(m) | crowd(m,n+1) = manrow(n+1) & crowd(m,n);
+
+define r4 = manrow(4);
+define r5 = manrow(5);
+
+
+{ Sheet 5 }
+
+define s = straight;
+define s1 = rot(s);
+define b = bend;
+define b1 = rot(b);
+define b2 = rot(b1);
+define b3 = rot(b2);
+
+define arm(n) = arm(n-1) $ straight when n > 1
+  | arm(1) = bend;
+
+define spiral(n) = arm(n) & (rot(arm(n-1)) $ rot2(spiral(n-1))) when n > 1
+  | spiral(1) = bend;
+  
+define special1 = 
+  (bend $ stretch(2.2, straight))
+  & solid(16, white) 
+  & (rot(arm(2)) $ solid(0.1, white) $ rot2(spiral(2)));
+
+define special2 = 
+  (bend $ stretch(3.3, straight))
+  & solid(43/3, white) 
+  & (rot(arm(3)) $ solid(0.1, white) $ rot2(spiral(3)));
+
+define zig(n) = bend $ zzig(n-1);
+define zzig(1) = rot2(bend) | zzig(n+1) = straight $ zzig(n);
+
+define zigzag(m, 1) = zig(m) | zigzag(m, n+1) = zig(m) & flip(zigzag(m, n));
+
+define zagzig(1) = rot(straight)
+  | zagzig(n+1) = bend $ rot2(arm(n)) & rot(arm(n)) $ rot(flip(zagzig(n)));
+
+
+{ Sheet 6 }
+
+define side(n) = 
+      let s = side(n-1) in (s $ T) & (s $ rot(T)) when n > 1
+  | side(1) = T & rot(T);
+    
+define corner(n) =
+      let c = corner(n-1) in let s = side(n-1) in
+      (c $ rot3(s)) & (s $ U) when n > 1
+  | corner(1) = U;
+  
+define corner2 = corner(2);
+define corner3 = corner(3);
+
+define limit(n) = frame(corner(n), side(n), U);
+
+define V = (E $ F) & (rot2(F) $ rot2(E));
+
+define invcentre(n) = 
+    if n = 0 then blank else
+    (V $ rot2(T)) & (rot2(T) $ invcentre(n-1));
+    
+define invcorner(n) =
+    (rot2(T) $ rot(T)) & (rot3(T) $ invcentre(n));
+    
+define invlimit(n) =
+    cycle(invcorner(n));
+
+
+{ Sheet 7 }
+
+define hilbert(0) = straight 
+  | hilbert(n) =
+    let bx = hilbend(n-1) in 
+    (flip(bx) $ bx) & (rot3(bx) $ rot(flip(bx))) when n > 0;
+  
+define hilbend(0) = flip(bend)
+  | hilbend(n) =
+    let bx = hilbend(n-1) in let sx = hilbert(n-1) in
+    (flip(bx) $ bx) & (rot3(bx) $ rot(sx)) when n > 0;
+
+define sierp(n) = cycle(nubs(n));
+
+define nubs(1) = nub 
+  | nubs(n+1) =
+      let a = nubs(n) in let x = links(n) in (a $ rot3(a)) & (rot(a) $ x);
+
+define links(1) = link
+  | links(n+1) =
+      let a = nubs(n) in let x = links(n) in (x $ rot3(a)) & (rot(a) $ x);
+
+
+{ Sheet 8 }
+
+define hilb(0) = [ahead(1)]
+  | hilb(n+1) =
+      let h = hilb1(n) in 
+      h ++ opposite(h) ++ reverse(opposite(h)) ++ reverse(h);
+            
+define hilb1(0) = [left(90)]
+  | hilb1(n+1) =
+      let h = hilb(n) in let k = hilb1(n) in
+      h ++ k ++ reverse(k) ++ reverse(opposite(k));
+
+define dragon(n) =
+      let d = dragon(n-1) in
+      d ++ [left(90)] ++ opposite(reverse(d)) when n > 0
+  | dragon(0) = [];
+
+
+{ Sheet 9 }
+
+define mikelet = _pixelfun(_resource("mikelet.jpg"));
+
+define noblue(rgb(r, g, b)) = rgb(r, g, 0);
+
+define mappixels(f, p) = function (x, y) f(p(x, y));
+
+define dist([x, y], [u, v]) =
+  let dx = x - u in let dy = y - v in
+  sqrt(dx*dx + dy*dy);
+
+define redglowlet(x, y) =
+  let r = 1 - dist([x, y], [72, 72])/72 in
+  rgb(r, 0, 0);
+
+define twinslet(x, y) =
+  let r = 1 - dist([x, y], [72, 72])/72 in
+  let g = 1 - dist([x, y], [108, 36])/36 in
+  rgb(r, g, 0);
+
+
+{ Making tiles }
+
+define tile1 = 
+  _tile(8, 12, 1, 1, [[1,0, 5,0, 5,4, 1,4, 1,0]],
+    [[red, 2,3, 6,3, 6,7, 2,7],
+      [green, 0,6, 4,6, 4,10, 0,10]]);
+
+
+{ Helper functions for saving pictures }
+
+define render = _primitive("render");
+define saveimg = _primitive("saveimg");
+_install("EPSWriter");
+define epswrite = _primitive("epswrite");
+
+define savepic(p, f, r, s, g) = saveimg(render(p, r, s, g), "png", f);
+
+define makepic_r(p, f, r) = 
+  savepic(p, f ^ ".png", r, 0.5, 0.95) >>
+  epswrite(p, f ^ ".eps", r, 0.5, 0.95);
+
+define makepic(p, f) = makepic_r(p, f, 144);
+
+define makeimg(p, f) = saveimg(p, "jpg", f ^ ".jpg");

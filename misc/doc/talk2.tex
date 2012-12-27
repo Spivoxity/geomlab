@@ -1,0 +1,264 @@
+\input slimac
+
+\newdimen\rmargin \rmargin=\fontquad
+\def\demo{\vskip\parskip\begingroup
+  \catcode`\$=12 \catcode`\&=12 \afterassignment\ddemo\count255=}
+\def\ddemo#1{\line{\setbox0=\hbox{\epsfbox{pics/talk2-\the\count255.eps}}%
+  \vbox to\ht0{\vss\hbox{\strut\vsf #1}\vss}\hfil\box0\hskip\rmargin}
+  \endgroup}
+
+\typeface{vsf}{lstr}
+
+\blankslide
+
+{\baselineskip=2\grid\twentysfb
+\incolour\headingcolour{Geomlab:\hfil\break
+\null\quad Exploring Computer Science}\par}
+\vfill
+{\twelvepoint\sf\noindent
+Mike Spivey\par
+\noindent
+\sfi Computer Science Tutor\hfil\break
+Oriel College, Oxford}
+
+%> define digits = explode("0123456789");
+
+%> define select(0, x:xs) = x
+%>   | select(n+1, x:xs) = select(n, xs);
+
+%> define digit(d) = select(d, digits);
+
+%> define num(0) = "0"
+%>   | num(n) = 
+%>       (let h(0) = "" | h(r) = h(r div 10) ^ digit(r mod 10) in h(n));
+
+%> define picture(n, p, r) = 
+%>   epswrite(p, "pics/talk2-" ^ num(n) ^ ".eps", r, 0.95);
+
+%> define pic(n, p) = picture(n, p, 36);
+%> define medpic(n, p) = picture(n, p, 72);
+%> define bigpic(n, p) = picture(n, p, 108);
+
+% Picture of specified height.
+%> define htpic(n, p) = picture(n, p, 72*sqrt(aspect(p)));
+
+\slide{What's programming like?}
+
+The old-fashioned view:
+
+\item A program is a list of commands.
+\item Computer memory is boxes that contain numbers.
+\item Algorithms are designed with flowcharts.
+\item It's all ones and zeros!
+
+\slide{What's it really like?}
+
+A modern view:
+
+\item A program is an artificial world.
+\item Objects behave according to precise rules.
+\item By combining simple behaviours, a complex whole emerges.
+\item We can use things without knowing how they are made.
+
+\slide{The algebra of pictures}
+
+\begingroup
+  \divide\hsize by2 \advance\hsize by-\fontquad
+  \valign{&\vss#\vss\cr
+    \demo1{man}&\demo3{man $ woman}\cr
+    \noalign{\qquad}
+    \demo2{woman}&\demo4{man & man}\cr}
+\endgroup
+
+%> pic(1, man);
+%> pic(2, woman);
+%> pic(3, man $ woman);
+%> pic(4, man & man);
+
+\slide{The algebra of pictures}
+
+\demo5{man $ (woman & tree)}
+\demo6{(man $ woman) & tree}
+
+%> pic(5, man $ (woman & tree));
+%> pic(6, (man $ woman) & tree);
+
+\slide{Defining functions}
+
+\nomargintrue
+\verbatim
+define f(x) = x $ (x & x)
+\endverb
+
+\demo7{f(man)}
+\demo8{f(woman)}
+\demo9{f(man $ tree)}
+
+%> define f(x) = x $ (x & x);
+%> pic(7, f(man));
+%> pic(8, f(woman));
+%> pic(9, f(man $ tree));
+
+\slide{Composing functions}
+
+\demo10{f(f(man))}
+\demo101{f(f(f(man)))}
+
+%> medpic(10, f(f(man)));
+%> medpic(101, let p = f(f(f(man))) in _blank(aspect(p)));
+
+\slide{Composing functions}
+
+\demo10{f(f(man))}
+\demo11{f(f(f(man)))}
+
+%> medpic(11, f(f(f(man))));
+
+\slide{Recurrence and recursion}
+
+\nomargintrue
+\verbatim
+define row(1, p) = p
+  | row(n, p) = p $ row(n-1, p) when n > 1
+\endverb
+
+%> define row(1, p) = p
+%>   | row(n, p) = p $ row(n-1, p) when n > 1;
+
+\demo12{row(4, man)}
+\demo13{row(6, man)}
+\demo14{row(10, man)}
+
+%> pic(12, row(4, man));
+%> pic(13, row(6, man));
+%> pic(14, row(10, man));
+
+
+\slide{Other recursive patterns}
+
+\nomargintrue
+\verbatim
+define spiral(1) = bend
+  | spiral(n) = 
+      arm(n) & (rot(arm(n-1)) 
+                  $ rot2(spiral(n-1))) when n > 1
+\endverb
+
+%> define spiral(1) = bend
+%>  | spiral(n) =
+%>      arm(n) & (rot(arm(n-1)) $ rot2(spiral(n-1))) when n > 1;
+
+\vfil
+\line{\hfill\epsfbox{pics/talk2-15.eps}\hfill}
+
+%> medpic(15, special2);
+
+\slide{The results}
+
+\demo16{spiral(10)}
+\demo17{zagzig(10)}
+
+%> medpic(16, spiral(10));
+%> medpic(17, zagzig(10));
+
+\slide{The big challenge}
+
+Suppose we have a tile that fits next to itself at half scale:
+
+\demo18{(T & blank) $ T}
+
+%> htpic(18, (T & blank) $ T);
+
+\slide{The big challenge}
+
+Suppose we have a tile that fits next to itself at half scale:
+
+\demo19{(T & blank) $ T}
+
+%> htpic(19, colour((T & blank) $ T));
+
+\slide{The big challenge}
+
+\dots and another copy fits here:
+
+\demo20{(T & rot(T)) $ T}
+
+%> htpic(20, colour((T & rot(T)) $ T));
+
+\slide{The big challenge}
+
+Then we can add another layer:
+
+\demo21{side(2) $ T}
+
+%> htpic(21, colour(side(2) $ T));
+
+\slide{The big challenge}
+
+\dots and arrange four copies around a central square:
+
+\rmargin=0pt
+\demo22{frame(blank, side(2), U)}
+
+%> bigpic(22, colour(frame(blank, side(2), U)));
+
+\slide{The big challenge}
+
+Finally, find something to fill in the corners:
+
+\demo23{frame(corner(2), side(2), U)}
+
+%> bigpic(23, colour(frame(corner(2), side(2), U)));
+
+(A picture that Escher drew, and another that he didn't.)
+
+\slide{Functional programming}
+
+\item No `programming' variables -- use mathematical variables instead.
+\item No loop commands -- use recursion instead
+
+Two benefits:
+
+\item Easier to make programs from independent pieces.
+\item Easier to reason about them mathematically.
+
+\slide{Abstract data types}
+
+A set of values with operations defined on them.
+
+\item The operations obey rules that can be specified algebraically.
+\item The computer representation of values is hidden.
+
+\slide{Abstract data types}
+
+Example: pictures with \verb/$/, \verb/&/, \verb/rot/.
+
+\item {\vsf rot($p$ \$ $q$) = rot($q$) \& rot($q$)}.
+\item {\vsf aspect(rot($p$)) = 1/aspect($p$)}.
+
+Pictures are represented using coordinates and transformation matrices
+in a way that is hidden.
+
+\slide{Enriching school mathematics}
+
+\item There's more to algebra than ``$x$ is the unknown''.
+\item There's more to recurrences than ``guess the next number in the
+series''.
+\item May we dream of a world where survival depends on mathematics?
+
+\slide{The GeomLab site}
+
+\verb@http://web.comlab.ox.ac.uk/geomlab@
+
+The software:
+\item runs from the web page.
+\item Java-based -- no installation required.
+
+Teaching materials:
+\item full set of worksheets for a 1--2 day activity.
+
+\bye
+
+
+
+ 

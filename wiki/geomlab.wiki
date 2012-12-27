@@ -1,0 +1,4 @@
+{{GeomBox}}
+<div style="color: red">Please note that these pages are only for testing.  To use GeomLab, please go to the official site at http://www.cs.ox.ac.uk/geomlab.</div>
+
+<includeonly>[[Category:GeomLab]]</includeonly><noinclude>{{Documentation}}</noinclude>

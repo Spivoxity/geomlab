@@ -1,0 +1,9 @@
+{{GeomLab}}
+These pages contain more detailed information about the GeomLab language and
+programming environment.
+*[[Hints and tips for GeomLab|Hints and tips]]
+*[[GeomLab commands|GeomLab commands]]
+*The [[The GeomLab language|GeomLab language]]
+*The [[The GeomLab library|GeomLab library]]
+*[[Error messages from GeomLab|Error messages]]
+*[[Making your own tiles]]

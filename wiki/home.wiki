@@ -1,0 +1,24 @@
+{{GeomLab}}
+This web site will introduce you to some of the most important
+ideas in computer programming in an interactive, visual way through a
+guided activity. The activity is about a language for describing
+pictures. You will use a programming environment that lets you type an
+expression in the language, and shows you the picture that it
+describes. At first, the pictures you will make will be simple
+combinations of stick figures: three men in a row, or one man
+supporting two smaller men. But gradually, the pictures will get more
+complicated, and soon we will be describing pictures like the one on
+the [[???|entry page]] of this web site. That
+picture looks frighteningly complicated, but like all the pictures we
+will describe, it consists of a few basic tiles combined according to
+some rules.{{#html:BigGreenArrow}}
+Click on the Big Green Arrow to launch the GeomLab
+programming environment. You may have to accept a security
+certificate to allow the program to run on your computer; and it may be
+that the Java installation on your computer will be
+automatically upgraded before the program starts.
+If GeomLab won't start, look on our 
+[[Java is not installed|help page]] for suggestions.
+
+Once GeomLab is running, look at the
+[[Getting started with GeomLab|instructions]] to get started.

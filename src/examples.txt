@@ -1,0 +1,146 @@
+define _init() =
+  let _examples = _primitive("examples") in
+  let examples(menu) =
+    let subst(s) = implode(map(function (c) if c = "/" then chr(10) else c,
+				  explode(s))) in
+    _examples(map(subst, menu)) in
+  examples(["man", "man $ woman", "man & man",
+    "man $ (woman & tree)", "(man $ woman) & tree",
+    "define f(p) = p $ (p & p);//f(man)",
+    "f(woman)", "f(man $ tree)", "f(f(man))", "f(f(f(man)))",
+    "define row(1, p) = p/  | row(n, p) = p $ row(n-1, p) when n > 1;//"
+      ^ "row(4, man)",
+    "define crowd(a, a, p) = row(a, p)/"
+      ^ "  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;//"
+      ^ "crowd(5, 10, man)",
+    "spiral(10)", "zagzig(10)", 
+    "colour((T & blank) $ T)", "colour((T & rot(T)) $ T",
+    "colour(side(2) $ T)", "colour(frame(blank, side(2), U))",
+    "colour(frame(corner(2), side(2), U))", "colour(invlimit(8))",
+    "hilbert(5)", "turtle(dragon(12))", "bush(system(4))",
+    "plot(600, -1, 0.285, 0.02, mfun)", "transpic"]);
+  
+define f(p) = p $ (p & p);
+
+define row(1, p) = p
+  | row(n, p) = p $ row(n-1, p) when n > 1;
+
+define crowd(a, a, p) = row(a, p)
+  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;
+  
+define arm(n) = arm(n-1) $ straight when n > 1
+    | arm(1) = bend;
+
+define zagzig(1) = rot(straight)
+  | zagzig(n+1) = bend $ rot2(arm(n)) & rot(arm(n)) $ rot(flip(zagzig(n)));
+
+define spiral(n) = arm(n) & (rot(arm(n-1)) $ rot2(spiral(n-1))) when n > 1
+  | spiral(1) = bend;
+  
+define side(n) = 
+      let s = side(n-1) in (s $ T) & (s $ rot(T)) when n > 1
+  | side(1) = T & rot(T);
+    
+define corner(n) =
+      let c = corner(n-1) in let s = side(n-1) in
+      (c $ rot3(s)) & (s $ U) when n > 1
+  | corner(1) = U;
+  
+define limit(n) = frame(corner(n), side(n), U);
+
+define V = (E $ F) & (rot2(F) $ rot2(E));
+
+define invcentre(n) = 
+    if n = 0 then blank else
+    (V $ rot2(T)) & (rot2(T) $ invcentre(n-1));
+    
+define invcorner(n) =
+    (rot2(T) $ rot(T)) & (rot3(T) $ invcentre(n));
+    
+define invlimit(n) =
+    cycle(invcorner(n));
+
+define hilbert(0) = straight 
+  | hilbert(n) =
+    let bx = hilbend(n-1) in 
+    (flip(bx) $ bx) & (rot3(bx) $ rot(flip(bx))) when n > 0;
+  
+define hilbend(0) = flip(bend)
+  | hilbend(n) =
+    let bx = hilbend(n-1) in let sx = hilbert(n-1) in
+    (flip(bx) $ bx) & (rot3(bx) $ rot(sx)) when n > 0;
+
+define dragon(n) =
+      let d = dragon(n-1) in
+      d ++ [left(90)] ++ opposite(reverse(d)) when n > 0
+  | dragon(0) = [];
+
+_bushparams(2, 20, 30, 100, 0.3, 0.5, 0.8);
+
+define rule("F") = "F[--F][++F]c<-F[-F][+F]" | rule(c) = c;
+
+define process(f, s) = implode(map(f, explode(s)));
+
+define system(0) = "F" | system(n+1) = process(rule, system(n));
+
+{ Mandelbrot set }
+
+define forever = 1000;
+
+define mandel(cx, cy) =
+  let loop(n, x, y) =
+    if n >= forever then -1
+    else if x*x + y*y > 4 then n
+    else loop(n+1, x*x - y*y + cx, 2*x*y + cy) in
+  loop(0, 0, 0);
+
+define mfun(x, y) =
+  let m = mandel(x, y) in
+  if m < 0 then black else hsv(m/forever, 0.7, 1);
+
+define plot(w, x0, y0, s, f) =
+  image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));
+
+{ Image transformations }
+
+_install("SlidePicture");
+define slide = _primitive("slide");
+
+define interp(t, x, y) = (1-t)*x + t * y;
+
+define intercolour(t, rgb(r1,g1,b1), rgb(r2,g2,b2))
+ = rgb(interp(t,r1,r2), interp(t,g1,g2), interp(t,b1,b2));
+
+{ interpic -- colour interpolation between two pictures }
+define interpic(t, f, g) = function (p) intercolour(t, f(p), g(p));
+
+{ weird -- swap blue / green }
+define weird(rgb(r,g,b)) = rgb(r,b,g);
+
+{ shear -- progressive shear transformation }
+define shear(t) = function ([x, y]) [x-t*y, y];
+
+{ pp -- quadratic transform that fixes the corners of a 300 x 400 image }
+define pp(t) = function ([x, y]) [x - t * y * (400-y), y - t * x * (300-x)];
+
+define nth(0, x:xs) = x
+  | nth(n+1, x:xs) = nth(n, xs);
+  
+{ triage -- compose a list of progressive transformations }
+define triage(fs) =
+  function (t)
+    { Avoid overflow at t = 1 }
+    let tt = 0.999 * length(fs) * t in
+    let k = int(tt) in
+    let f = nth(k, fs) in
+    f(tt - k);
+
+define slideimg(w, h, f) =
+  slide(function (t) image(w, h, f(t)));
+  
+{ example -- shear mike, recolour him, and then transform non-linearly }
+define transpic =
+  slideimg(500, 500, triage([
+    function (t) mike . shear(t/5),
+    function (t) interpic(t, mike . shear(1/5), weird . mike . shear(1/5)),
+    function (t) weird . mike . shear(1/5) . pp(t/250)]))

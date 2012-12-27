@@ -1,0 +1,36 @@
+define true = numeric(0);
+define false = numeric(true);
+
+define op not (p) = false when p = true
+  | op not (p) = true when p = false
+  | op not (_) = _error("not expects a boolean operand", "#not");
+
+define op @ ([], ys) = ys 
+  | op @ (x:xs, ys) = x:(xs @ ys)
+  | op @ (_, _) = _error("bad arguments to operator '@'", "#concat");
+
+define reverse(xs) =
+  let reva([], vs) = vs 
+    | reva(x:us, vs) = reva(us, x:vs) 
+    | reva(_, _) = _error("bad argument to function 'reverse'", "#reverse") in
+  reva(xs, []);
+
+define length([]) = 0 
+  | length(x:xs) = length(xs)+1
+  | length(_) = _error("bad argument to function 'length'", "#length");
+
+define assoc(x, []) = [] 
+  | assoc(x, [u,v]:zs) = 
+      if x = u then v else assoc(x, zs);
+      
+define map(f, []) = [] | map(f, x:xs) = f(x) : map(f, xs);
+
+define member(x, []) = false | member(x, y:ys) = x = y or member(x, ys);
+
+define index(x, xs) = 
+  let h(n, []) = -1 | h(n, y:ys) = if x = y then n else h(n+1, ys) in
+  h(0, xs);
+
+define foldr(f, a, []) = a | foldr(f, a, x:xs) = f(x, foldr(f, a, xs));
+
+define foldl(f, a, []) = a | foldl(f, a, x:xs) = foldl(f, f(a, x), xs);

@@ -1,0 +1,58 @@
+#!/usr/bin/tclsh
+
+proc test {name scripts exp result} {
+    puts -nonewline $name
+    set out \
+	[exec sh -c \
+	     "java -cp test:obj geomlab.RunScript $scripts -e '$exp' || true"]
+    if {[string equal $out $result]} {
+	puts " OK"
+    } else {
+	puts " ***FAILED***"
+	puts $out
+    }
+}
+
+
+
+test e1 {} {define head(x) = x+1} \
+    {Oops: can't replace built-in definition of 'head' (at '(' on line 1)}
+test e2 {} {let f() = f() in f()} \
+    {Aargh: sorry, that took too many steps}
+test e3 {} {let f() = f() in _limit(500, 0, 0) >> f()} \
+    {Aargh: sorry, that took too long}
+test e4 {} {let f(x) = f(0:(1:x)) in f([])} \
+    {Aargh: sorry, that took too much memory}
+test e5 {} {head(1, 2)} \
+    {Aargh: function head called with 2 arguments but needs 1}
+test e6 {} {frame()} \
+    {Aargh: function frame called with 0 arguments but needs 3}
+test e7 {} {x+1} \
+    {Aargh: x is not defined}
+test e8 {} {if 1 then 2 else 3} \
+    {Aargh: boolean expected in conditional expression}
+test e9 {} {let f(x)= x+1 when x in f(3)} \
+    {Aargh: boolean expected after 'when' in function f}
+test e10 {} {let hd(x:xs) = x in hd([])} \
+    {Aargh: no pattern matches argument ([]) in function hd}
+
+exec javac -cp obj test/E11.java
+test e11 {} {_install("E11") >> let bad = _primitive("bad") in bad()} \
+    {Aargh: primitive bad has no invoke method}
+
+test e12 {} {sin(false)} \
+    {Aargh: 'sin' expects a numeric argument}
+test e13 {} {not 3} \
+    {Aargh: not expects a boolean operand}
+test e14 {} {_primitive("foobaz")} \
+    {Aargh: Primitive foobaz is not defined}
+test e15 {} {_opdef("!", "%")} \
+    {Aargh: bad arguments to _opdef}
+test e16 {} {let f = 3 in f()} \
+    {Aargh: applying a non-function}
+test e17 {} {solid(false, false)} \
+    {Aargh: 'solid' expects a numeric argument}
+test e18 {} {define f(x, y) = 3 | f(x, y, z) = 4} \
+    {Oops: each equation should have the same number of arguments (at '=' on line 1)}
+test e19 {} {define f(x, y) = 3 | g(x, y) = 4} \
+    {Oops: the same function name should appear in each equation (at 'g' on line 1)}

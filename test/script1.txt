@@ -1,0 +1,38 @@
+define fac(0) = 1 | fac(n) = n * fac(n-1) when n > 0;
+
+{ Local synonyms for primitive constructors can be used for pattern matching }
+define oppx = 
+  let links = left in let f(links(x)) = right(x) in f;
+
+define fibcps(n, k) =
+  if n < 2 then k(n) else
+   fibcps(n-1, lambda(x) fibcps(n-2, lambda (y) k(x+y)));
+
+_install("Cell");
+define _opdef = _primitive("opdef");
+_opdef(#!, #not); _opdef(#:=, #<);
+define new = _primitive("new");
+define op ! = _primitive("!");
+define op := = _primitive(":=");
+
+{ Knuth's Man or Boy test }
+define mob(k) =
+  let a(k0, x1, x2, x3, x4, x5) =
+    if k0 <= 0 then
+      x4() + x5()
+    else (
+      let k = new(k0) in
+      let b() =
+        k := !k-1 >>
+        a(!k, b, x1, x2, x3, x4) in
+      b() ) in
+  a(k, lambda () 1, lambda () -1, lambda () -1, lambda () 1, lambda () 0);
+
+define trunk(x + 0.5) = x | trunk(x) = x;
+
+define two3(x, [_, x, _]) = true | two3(_, _) = false;
+
+define flic(n, x) =
+  let flac(x) = [x+1, x+2] when numeric(x)
+    | flac(x) = map(lambda (x) flac(x), x) in
+  if n = 0 then x else flic(n-1, flac(x)); 

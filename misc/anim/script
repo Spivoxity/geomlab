@@ -1,0 +1,14 @@
+#!/bin/bash
+
+N=20
+N1=`expr $N - 1`
+
+for i in `seq -w 0 $N1`; do 
+    echo "mkframe($i, $N, \"$i\");"
+done | java -cp obj geomlab.RunScript src/solns.txt frame.txt -
+
+for i in `seq -w 0 $N1`; do 
+    pngtopnm frame$i.png | ppmquant 256 | ppmtogif >frame$i.gif
+done
+
+gifsicle -d 20 frame*.gif >anim.gif

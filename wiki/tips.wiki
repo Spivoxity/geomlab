@@ -1,0 +1,13 @@
+{{GeomLab}}
+{{Markup|ol}}
+#To make it easier to match parentheses in complex expressions, turn on the option 'Options/Match brackets'. Typing a '@)@' or '@]@' will now momentarily underline the region up to the matching '@(@' or '@[@' in blue. If brackets do not match properly -- because '@(@' is closed by '@]@' or there are more '@)@'s than '@(@'s -- then the region is underlined in red.
+#To get back previous expressions so that you can edit them and submit them again, use the buttons marked '@&lt;@' and '@&gt;@', or type @Ctrl-P@ and @Ctrl-N@ -- for Previous and Next -- in the text entry box. These buttons and keystrokes move backwards and forwards in a list of previously-entered expressions.
+#The variable &quot;@it@&quot; always stands for the value of the last expression to be entered. You can type an expression such as &quot;@it + 9@&quot; to use this value in a further calculation.
+#To see a larger version of any picture, resize or maximize the Picture window (by dragging its corner or double-clicking on its title bar). The picture will be redrawn to occupy as much as possible of the space in the resized window.
+#If you want to change a function definition that you made earlier, there are several ways to retrieve the text so that you can edit it:
+#*Use the buttons marked '@&lt;@' and '@&gt;@' -- or any of the equivalent methods -- to find the definition in the history.
+#*Scroll through the upper pane of GeomLab's window using the scroll bar on the right, select the definition that you want and copy it to the clipboard with @Ctrl-C@, then paste it into the bottom pane by clicking with the mouse and typing @Ctrl-V@.
+#*Type the name of the function in the bottom pane and choose the command 'Tools/Find definition'. The text of the definition will replace the name in the bottom pane.
+#To find a list of all the names that are defined, choose the command 'Tools/List defined names'. A list of all the names you can use in expressions will be inserted into the output pane.
+#To get some idea of how much calculation is needed to evaluate your expressions, you can ask GeomLab to count the number of steps needed to reach an answer. Choose the command 'Options/Count reduction steps', and GeomLab will display the number of steps together with the answer. These step counts don't mean much by themselves, but you can look at how fast they grow as you apply functions to larger arguments.
+{{Markup|/ol}}

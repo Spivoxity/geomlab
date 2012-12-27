@@ -1,0 +1,34 @@
+{{GeomLab}}
+The GeomLab system consists of the programming environment, implemented as a Java Swing application (geomlab), an abstract machine for running programs in the GeomLab language that is
+implemented by an interpreter written in Java (funbase), a
+collection of plug-in features for the language (plugins), and a
+compiler from the GeomLab language to the abstract machine.  The
+scanner and parser for the language are implemented in Java as part
+of the funbase package, but the translation phase is implemented in
+the language itself, and the build process therefore requires a
+bootstrap copy of the object code for the compiler.
+
+The complete build process goes as follows:
+# Compile the Java source, using a command such as<br/>@javac funbase/*.java geomlab/*.java plugins/*.java@
+# Use the bootstrap code to compile the compiler:<br/>@java geomlab.RunScript -b boot.txt compiler.txt &gt;stage1.boot@
+# Use the compiler to compile itself:<br/>@java geomlab.RunScript -b stage1.boot compiler.txt &gt;stage2.boot@
+# Use the compiler to compile itself again:<br/>@java geomlab.RunScript -b stage2.boot compiler.txt &gt;stage3.boot@<br/>The files @stage2.boot@ and @stage3.boot@ should be identical.
+# Make a session image containing the compiler and the prelude:<br/>@java geomlab.RunScript -b stage2.boot prelude.txt -e '_dump("geomlab.gls")'@
+Now it should be possible to run the GeomLab application
+with @java geomlab.GeomLab@.  By default, this initially
+loads the session image @geomlab.gls@ prepared above.
+
+Strictly speaking, it is not necessary to go through stages (2),
+(3) and (4) of the build process shown here: the bootstrap
+file @boot.txt@ can be used directly in place
+of @stage2.boot@ in stage (5).  
+However, if there have been changes to the compiler, the whole
+process is necessary in order to get the system into a stable state.
+
+There are two object code formats used in the process above: the
+file @boot.txt@ is in a special, textual format that is
+capable of storing only a limited number of kinds of value, and the
+final image @geomlab.gls@ is in a binary format that uses
+Java serialization and can store all kinds of value.  The textual
+format is used to get round problems with serialization when the
+underlying Java classes are subject to change.

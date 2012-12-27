@@ -1,0 +1,16 @@
+echo Stage 1: use boot.txt to compile the compiler
+java -ea geomlab.RunScript -b boot.txt compiler.txt \
+	-e 'let dump = _primitive("dump") in dump("stage1.boot")'
+
+echo Stage 2: use the compiler to compile itself
+java -ea geomlab.RunScript -b stage1.boot compiler.txt \
+	-e 'let dump = _primitive("dump") in dump("stage2.boot")'
+
+echo Stage 3: use the compiler to compile itself again and check for fixpoint
+java -ea geomlab.RunScript -b stage2.boot compiler.txt \
+	-e 'let dump = _primitive("dump") in dump("stage3.boot")'
+cmp stage2.boot stage3.boot || exit 1
+
+echo Stage 4: build image containing prelude
+java -ea geomlab.RunScript -b stage2.boot compiler.txt prelude.txt \
+	-e '_save("geomlab.gls")'

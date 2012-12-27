@@ -1,0 +1,33 @@
+{{GeomLab}}
+If you came here by clicking on the Big Green Arrow,
+then your web browser does not seem to have support for running Java
+applications via Java Web Start, perhaps because it does not have a
+recent version of Java installed.
+
+Perhaps this is a false alarm, and Java Web Start is working in
+your browser, although we have not been able to detect it. As a first
+step, you should try to launch GeomLab directly by clicking on this link:
+:<big>[{{Resource}}/gl/geomlab.jnlp Launch GeomLab directly]</big>
+You will probably need to accept a security certificate before the
+program will start, and the Java installation on your computer may
+automatically upgrade itself first.
+
+If your browser doesn't seem to know what to do with the link, then
+that's probably because we were right, and Java is not installed. In
+that case, you can download the free Java plug-in from Sun
+Microsystems by [http://java.com/en/download/index.jsp clicking here]
+and following the instructions. When the Java plug-in is installed,
+[[GeomLab|return to the home page]] and try again.
+
+On some browsers, it is also necessary to create a manual association
+between Java Web Start scripts and the @javaws@ application. The mime
+type for this is @application/x-java-jnlp-file@ and the extension is
+@jnlp@.
+
+As an alternative to using Java Web Start, you can download the
+GeomLab application as a {{GeomResource|geomlab.jar|JAR file}} and run
+it, either by double-clicking on the file, or from the command line,
+using a command like
+ java -jar geomlab.jar
+If GeomLab still won't work, please [[contact us]], 
+and we'll do what we can to help.
