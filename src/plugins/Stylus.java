@@ -105,7 +105,7 @@ public abstract class Stylus {
 	/** Perform any compute-intensive preparation for painting.
 	 * 
 	 *  Once a Drawable has been prerendered (typically in a worker
-	 *  thread, it must be ready to be painted in a short time from
+	 *  thread), it must be ready to be painted in a short time from
 	 *  the GUI thread.  It may subsequently by prerendered again
 	 *  with a different slider value, but it must always remain
 	 *  ready for painting. */

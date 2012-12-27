@@ -446,7 +446,7 @@ public abstract class Value implements Serializable {
     public static class NilValue extends Value {
 	private static final long serialVersionUID = 1L;
 
-	private NilValue() { super(); }
+	protected NilValue() { super(); }
 	
 	@Override
 	public void printOn(PrintWriter out) {

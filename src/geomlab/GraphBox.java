@@ -88,8 +88,12 @@ public class GraphBox extends JPanel {
     };
     
     private JSlider slider = new JSlider();
+    
+    private Worker worker = new Worker();
 
     public GraphBox() {
+	worker.start();
+	
 	setLayout(new BorderLayout());
 	canvas.setBackground(Color.lightGray);
 	canvas.setPreferredSize(new Dimension(400, 400));
@@ -106,6 +110,7 @@ public class GraphBox extends JPanel {
     }
     
     public void setPicture(Stylus.Drawable pic) {
+	picture = null;
 	slider.setVisible(pic != null && pic.isInteractive());
 	slider.revalidate();
 	prerender(pic);
@@ -120,18 +125,54 @@ public class GraphBox extends JPanel {
     
     public float sliderValue() { return slider.getValue() / 100.0f; }
     
-    private void prerender(Stylus.Drawable pic) {
-	try {
-	    if (pic != null) pic.prerender(sliderValue());
-	}
-	catch (Evaluator.EvalException e) {
-	    GeomBase.theApp.evalError("Aargh: ", 
-		    e.toString(), e.getErrtag());
-	    pic = null;
+    protected void prerender(Stylus.Drawable pic) {
+	worker.prerender(pic, sliderValue());
+    }
+    
+    private class Worker extends Thread {
+	private Stylus.Drawable picture = null, newpic;
+	private float slider, newslider;
+	
+	public Worker() { }
+	
+	public synchronized void prerender(Stylus.Drawable p, float s) {
+	    newpic = p; newslider = s;
+	    notify();
 	}
 	
-	this.picture = pic;
-	repaint();
+	@Override
+	public void run() {
+	    for (;;) {
+		synchronized(this) {
+		    while (newpic == null 
+			    || (picture == newpic && slider == newslider)) {
+			// Up to date: wait to be woken
+			try {
+			    wait();
+			}	
+			catch (InterruptedException _) {
+			    return;
+			}
+		    }
+		    
+		    picture = newpic; slider = newslider;
+		}
+		
+		try {
+		    picture.prerender(slider);
+		}
+		catch (Evaluator.EvalException e) {
+		    GeomBase.theApp.evalError("Aargh: ", 
+			    e.toString(), e.getErrtag());
+		    newpic = null;
+		}
+		
+		if (picture == newpic) {
+		    GraphBox.this.picture = picture;
+		    repaint();
+		}
+	    }
+	}
     }
 
     /** Command -- print the current picture */

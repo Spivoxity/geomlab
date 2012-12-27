@@ -104,7 +104,7 @@ public class Session {
     private static void loadSession(String name, InputStream inraw)
 	    throws CommandException {
 	try {
-	    ObjectInputStream in = new DebugObjectInputStream(inraw);
+	    ObjectInputStream in = new ObjectInputStream(inraw);
 	    int sig = in.readInt();
 	    if (sig != SIG)
 		throw new CommandException("Sorry, file " + name 
@@ -149,6 +149,7 @@ public class Session {
 	}
     }
     
+    /*
     private static class DebugObjectInputStream extends ObjectInputStream {
 	public DebugObjectInputStream(InputStream in) throws IOException {
 	    super(in);
@@ -158,13 +159,12 @@ public class Session {
 	protected ObjectStreamClass readClassDescriptor() 
 		throws IOException, ClassNotFoundException {
 	    ObjectStreamClass descriptor = super.readClassDescriptor();
-	    /*
 	    System.out.printf("%-30s %d\n", descriptor.getName(),
 		    descriptor.getSerialVersionUID());
-	    */
 	    return descriptor;
 	}
     }
+    */
 
     /** Save the session state on a file */
     public static void saveSession(File file) throws CommandException {

@@ -220,9 +220,11 @@ public class CodeInput extends MyTextArea {
 	}
     }
     
-    private UndoManager undoManager = new UndoManager();
+    protected UndoManager undoManager = new UndoManager();
 
     private class UndoListener implements UndoableEditListener {
+	public UndoListener() { }
+	
 	@Override	
 	public void undoableEditHappened(UndoableEditEvent e) {
 	    undoManager.addEdit(e.getEdit());
@@ -246,6 +248,8 @@ public class CodeInput extends MyTextArea {
      *  a single undo event */
     private static class ClumpUndoDocument extends PlainDocument {
 	private CompoundEdit clump = null;
+	
+	public ClumpUndoDocument() { }
 	
 	private void startClumping() {
 	    clump = new CompoundEdit();
