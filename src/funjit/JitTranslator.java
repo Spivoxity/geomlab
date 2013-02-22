@@ -129,7 +129,6 @@ public class JitTranslator implements FunCode.Jit {
 	    //				int nargs, ErrContext cxt)
 	    code = cf.addMethod(ACC_PUBLIC, "apply", apply_t);
 	
-/*
 	// if (--Evaluator.quantum <= 0) Evaluator.checkpoint()
 	Label lab3 = new Label();
 	code.gen(GETSTATIC, evaluator_cl, "quantum", int_t);
@@ -140,7 +139,6 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(IFGT, lab3);
 	code.gen(INVOKESTATIC, evaluator_cl, "checkpoint", fun_t);
 	code.label(lab3);
-*/
 
 	if (arity > 3) {
 	    // if (nargs != <arity>) 
@@ -241,6 +239,20 @@ public class JitTranslator implements FunCode.Jit {
     protected void genGlobalPrep(int glob, int nargs) {
 	genGlobal(glob);
 	genPrep(nargs);
+    }
+
+    private void genFVarPrep(int n, int nargs) {
+	if (n == 0)
+	    genSelf();
+	else {
+	    genFVar(n);
+	    genPrep(nargs);
+	}
+    }
+
+    /** Hook for pushing self for recursive call */
+    protected void genSelf() {
+	code.gen(ALOAD, _this);
     }
 
     /** Translate a PUTARG instruction.
@@ -552,6 +564,16 @@ public class JitTranslator implements FunCode.Jit {
 		    }
 		    break;
 
+		case FVAR:
+		    if (labdict.get(ip+1) != null
+			|| funcode.instrs[ip+1] != FunCode.Opcode.PREP)
+			genFVar(rand);
+		    else {
+			genFVarPrep(rand, funcode.rands[ip+1]);
+			ip++;
+		    }
+		    break;
+
 		case CALL: {
 		    Kind k = genCall(rand);
 
@@ -587,7 +609,6 @@ public class JitTranslator implements FunCode.Jit {
 		    
 		case LOCAL:   genLocal(rand); break;
 		case ARG:     genArg(rand); break;
-		case FVAR:    genFVar(rand); break;
 		case BIND:    genBind(rand); break;
 		case POP:     genPop(); break;
 		case NIL:     genNil(); break;

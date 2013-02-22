@@ -141,6 +141,13 @@ public class InlineTranslator extends JitTranslator {
     	funstack.push(null);
     }
 
+    /** Hook into method for self call */
+    @Override
+	protected void genSelf() {
+	super.genSelf();
+	funstack.push(null);
+    }
+
     /** Hook into method to watch for GLOB / PREP pairs */
     @Override
     protected void genGlobalPrep(int glob, int nargs) {
