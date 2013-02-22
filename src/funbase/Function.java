@@ -36,8 +36,8 @@ import java.io.Serializable;
 
 /** A function on values.  This superclass represents a dummy function
     that cannot be called; subclasses represent primitives and functions
-    defined in the Fun languages. */
-public class Function implements Serializable {
+    defined in the Fun language. */
+public abstract class Function implements Serializable {
     private static final long serialVersionUID = 1L;
     
     public final int arity;
@@ -46,12 +46,9 @@ public class Function implements Serializable {
 	this.arity = arity;
     }
 
-    /** Apply the value to a list of arguments.  This default
-     *  implementation just prints an error message. */
-    public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	cxt.err_apply();
-	return null;
-    }
+    /** Apply the value to a list of arguments. */
+    public abstract Value apply(Value args[], int base, int nargs, 
+				ErrContext cxt);
     
     /* The default is for the apply<n> methods to delegate to the
        general apply method.  For JIT functions with a small number of
@@ -94,16 +91,6 @@ public class Function implements Serializable {
 	throw new EvalException("dumping a dummy function");
     }
 
-    /** Dummy function placed in the subr field of values that are
-     *  not in fact functions */
-    public static final Function no_func = new Function(-1);
-
-    /** Method used by serialization to replace a deserialized object
-     *  with a substitute. */
-    private Object readResolve() {
-	return no_func;
-    }
-
     /** Method called by FunValue.writeReplace to determine a proxy. */
     public Object serialProxy(Value.FunValue funval) {
 	return funval;
@@ -132,6 +119,12 @@ public class Function implements Serializable {
             this.code = code;
             this.fvars = fvars;
         }
+
+	@Override
+	public Value apply(Value args[], int base, int arity, ErrContext cxt) {
+	    cxt.error("Can't call an abstract closure");
+	    return null;
+	}
 
         @Override
         public void dump(PrintWriter out) {
@@ -178,6 +171,6 @@ public class Function implements Serializable {
     }
 
     public interface Factory {
-	public Function newClosure(Value func, Value fvars[]);
+	public Function newClosure(Value.FunValue func, Value fvars[]);
     }
 }

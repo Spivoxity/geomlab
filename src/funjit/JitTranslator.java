@@ -63,6 +63,7 @@ public class JitTranslator implements FunCode.Jit {
 	boolval_cl = "funbase/Value$BoolValue",
 	consval_cl = "funbase/Value$ConsValue",
 	nilval_cl = "funbase/Value$NilValue",
+	funval_cl = "funbase/Value$FunValue",
 	function_cl = "funbase/Function",
 	jitfun_cl = "funjit/JitFunction",
 	jitsmall_cl = "funjit/JitFunction$Func",
@@ -189,6 +190,7 @@ public class JitTranslator implements FunCode.Jit {
 	    //				int nargs, ErrContext cxt)
 	    code = cf.addMethod(ACC_PUBLIC, "apply", apply_t);
 	
+/*
 	// if (--Evaluator.quantum <= 0) Evaluator.checkpoint()
 	Label lab3 = new Label();
 	code.gen(GETSTATIC, evaluator_cl, "quantum", int_t);
@@ -199,6 +201,7 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(IFGT, lab3);
 	code.gen(INVOKESTATIC, evaluator_cl, "checkpoint", fun_t);
 	code.label(lab3);
+*/
 
 	if (arity > 3) {
 	    // if (nargs != <arity>) 
@@ -288,7 +291,8 @@ public class JitTranslator implements FunCode.Jit {
      *  A hook for inlining primitives.
      */
     protected void genPrep(int nargs) {
-    	code.gen(GETFIELD, value_cl, "subr", function_t);
+	cast_function();
+    	code.gen(GETFIELD, funval_cl, "subr", function_t);
     }
 
     /** Translate a GLOBAL / PREP sequence.
@@ -560,7 +564,8 @@ public class JitTranslator implements FunCode.Jit {
 
     private void genMPrim(int n) {
     	// Stack: obj, cons
-	code.gen(GETFIELD, value_cl, "subr", function_t);
+	cast_function();
+	code.gen(GETFIELD, funval_cl, "subr", function_t);
     	code.gen(SWAP);
 
     	// Stack: cons.subr, obj
@@ -738,6 +743,15 @@ public class JitTranslator implements FunCode.Jit {
 
     protected void castarg(String prim, String cl, String tyname) {
 	cast(cl, new Expect(prim, tyname));
+    }
+
+    protected void cast_function() {
+	cast(funval_cl, new Handler("*apply", "function") {
+		@Override
+		public void compile() {
+		    code.gen(INVOKESTATIC, evaluator_cl, "err_apply", fun_t);
+		}
+	    });
     }
 
     protected void cast(String cl, Handler handler) {

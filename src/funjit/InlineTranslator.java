@@ -33,6 +33,7 @@ package funjit;
 import funbase.Primitive;
 import funbase.Value;
 import funbase.Name;
+import funbase.Function;
 import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
 
@@ -144,13 +145,15 @@ public class InlineTranslator extends JitTranslator {
     protected void genGlobalPrep(int glob, int nargs) {
 	Name f = (Name) consts[glob];
 
-	if (f.isFrozen() && f.glodef != null
-	    && f.glodef.subr instanceof Primitive) {
-	    Primitive p = (Primitive) f.glodef.subr;
-	    Inline c = primdict.get(p.name);
-	    if (c != null) {
-		funstack.push(c);
-		return;
+	if (f.isFrozen() && f.glodef != null && f.glodef.isFunValue()) {
+	    Function fun = ((Value.FunValue) f.glodef).subr;
+	    if (fun instanceof Primitive) {
+		Primitive p = (Primitive) fun;
+		Inline c = primdict.get(p.name);
+		if (c != null) {
+		    funstack.push(c);
+		    return;
+		}
 	    }
 	}
 

@@ -39,7 +39,7 @@ public class Interp implements FunCode.Jit {
     public Function.Factory translate(final FunCode funcode) {
 	return new Function.Factory() {
 	    @Override
-	    public Function newClosure(Value func, Value fvars[]) {
+	    public Function newClosure(Value.FunValue func, Value fvars[]) {
 		return new InterpFunction(funcode.arity, funcode, fvars);
 	    }
 	};
@@ -117,9 +117,15 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case CALL:
-			sp -= rand;
-			frame[sp-1] = 
-			    frame[sp-1].subr.apply(frame, sp, rand, cxt);
+			try {
+			    sp -= rand;
+			    frame[sp-1] = 
+				((Value.FunValue) frame[sp-1]).subr.apply
+				    (frame, sp, rand, cxt);
+			}
+			catch (ClassCastException _) {
+			    cxt.err_apply();
+			}
 			break;
 
 		    case TCALL:

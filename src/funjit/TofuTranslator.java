@@ -59,7 +59,8 @@ public class TofuTranslator implements FunCode.Jit {
 	    protected final Function.Factory this_factory = this;
 
 	    @Override
-	    public Function newClosure(final Value func, Value fvars[]) {
+	    public Function newClosure(final Value.FunValue func, 
+				       Value fvars[]) {
 		return new Function.Closure(funcode.arity, funcode, fvars) {
 		    @Override
 		    public Value apply(Value args[], int base, 

@@ -48,23 +48,14 @@ public abstract class Value implements Serializable {
      * system, and hidden behind static factory methods in the Value
      * class. */
     
-    /** Code to activate when calling this value as a function */
-    public Function subr;
-
-    protected Value(Function subr) {
-	this.subr = subr;
-    }
-
-    public Value() {
-	this(Function.no_func);
-    }
-
     public Value apply(Value args[], ErrContext cxt) {
-	return subr.apply(args, 0, args.length, cxt);
+	cxt.err_apply();
+	return null;
     }
 
     public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-	return subr.pattMatch(obj, nargs, cxt);
+	cxt.error("matching must use a constructor", "#constr");
+	return null;
     }
 
     @Override
@@ -248,7 +239,7 @@ public abstract class Value implements Serializable {
 	/** The value */
 	public final double val;
 	
-	private NumValue(double val) {
+	public NumValue(double val) {
 	    this.val = val;
 	}
 	
@@ -346,8 +337,19 @@ public abstract class Value implements Serializable {
     public static class FunValue extends Value {
 	private static final long serialVersionUID = 1L;
 	
-	public FunValue(Function subr) {
-	    super(subr);
+	/** Code to activate when calling this value as a function */
+	public Function subr;
+
+	protected FunValue(Function subr) {
+	    this.subr = subr;
+	}
+
+	public Value apply(Value args[], ErrContext cxt) {
+	    return subr.apply(args, 0, args.length, cxt);
+	}
+
+	public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
+	    return subr.pattMatch(obj, nargs, cxt);
 	}
 
 	@Override
