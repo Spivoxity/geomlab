@@ -47,6 +47,50 @@ public class RunScript extends GeomBase {
 	eval_loop(reader, true);
     }
 
+    public void interact() {
+	final BufferedReader in = 
+	    new BufferedReader(new InputStreamReader(System.in));
+	
+	Reader promptReader = new Reader() {
+		String buf = null;
+		int pos;
+		
+		private void fill() throws IOException {
+		    System.out.print("> ");
+		    buf = in.readLine();
+		    pos = 0;
+		}
+
+		public int read(char cbuf[], int off, int len) 
+		    					throws IOException{
+		    if (buf == null) {
+			fill();
+			if (buf == null) return -1;
+		    }
+
+		    int nread = Math.min(buf.length() - pos, len);
+		    buf.getChars(pos, pos+nread, cbuf, off);
+		    pos += nread;
+		    if (nread < len && pos == buf.length()) {
+			cbuf[off+nread] = '\n';
+			nread++;
+			buf = null;
+		    }
+		    return nread;
+		}
+
+		public void close() { }
+	    };
+
+	System.out.print("Welcome to GeomLab\n\n");
+	while (true) {
+	    if (eval_loop(promptReader, false, true))
+		break;
+	}
+	System.out.print("\nSayonara!\n");
+	System.exit(0);
+    }
+
     public static void main(String args[]) {
 	System.setProperty("java.awt.headless", "true");
 	
@@ -99,6 +143,8 @@ public class RunScript extends GeomBase {
 	for (; i < args.length; i++) {
 	    if (args[i].equals("-e") && i+1 < args.length)
 		    app.evalString(args[++i]);
+	    else if (args[i].equals("-t"))
+		app.interact();
 	    else if (args[i].equals("-"))
 		app.loadFromStream(System.in);
 	    else

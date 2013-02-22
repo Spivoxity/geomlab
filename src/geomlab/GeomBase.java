@@ -52,6 +52,7 @@ public class GeomBase {
     protected String errtag = "";
     protected int status = 0;
     private File currentFile = null;
+    protected boolean echo;
     protected boolean display;
     protected PrintWriter log;
     protected Value last_val = null;
@@ -90,7 +91,7 @@ public class GeomBase {
  
     /** Called when a phrase has been parsed */
     protected void showPhrase() {
-	if (display) {
+	if (echo) {
 	    logWrite(scanner.getText());
 	}
     }
@@ -139,10 +140,19 @@ public class GeomBase {
     }
 
     protected boolean eval_loop(Reader reader, boolean display) {
-	return eval_loop(reader, display, new ErrReporter());
+	return eval_loop(reader, display, display);
+    }
+
+    protected boolean eval_loop(Reader reader, boolean echo, boolean display) {
+	return eval_loop(reader, echo, display, new ErrReporter());
     }
 
     protected boolean eval_loop(Reader reader, boolean display, 
+				ErrReporter err) {
+	return eval_loop(reader, display, display, err);
+    }
+
+    protected boolean eval_loop(Reader reader, boolean echo, boolean display, 
 				ErrReporter err) {
 	Name top = Name.find("_top");
 	Scanner scanner = new Scanner(reader);
@@ -153,6 +163,7 @@ public class GeomBase {
 	    try {
 		scanner.resetText();
 		this.scanner = scanner;
+		this.echo = echo;
 		this.display = display;
 		if (Evaluator.execute(top.glodef) != Value.makeBoolValue(true))
 		    return true;
