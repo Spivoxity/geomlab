@@ -47,18 +47,17 @@ public class Evaluator {
        4 -- see JVM code 
        5 -- save JVM code as class files */
 
-    public static int quantum = 100;
+    public static final int Q = 10000;
+    public static int quantum = Q;
 
     protected static int timeLimit = 30000;
     protected static int stepLimit = 1000000000;
     protected static int consLimit = 10000000;
 
-    private static ThreadLocal<Evaluator> threadState = 
-	new ThreadLocal<Evaluator>();
+    private static Evaluator ev;
 
     public static Value execute(Value fun, Value... args) {
-	final Evaluator ev = new Evaluator();
-	threadState.set(ev);
+	ev = new Evaluator();
 
 	Value result = null;
 	Thread timer = null;
@@ -92,13 +91,12 @@ public class Evaluator {
     }
 
     public static void checkpoint() {
-	Evaluator ev = threadState.get();
 	if (ev == null) return;
-	ev.steps += (100 - quantum);
+	ev.steps += (Q - quantum);
 	// if (! ev.runFlag) timeout("long");
 	if (stepLimit > 0 && ev.steps > stepLimit)
 	    timeout("many steps");
-	quantum = 100;
+	quantum = Q;
 	Thread.yield();
     }
     
@@ -107,7 +105,6 @@ public class Evaluator {
     }
     
     public static void countCons() { 
-	Evaluator ev = threadState.get();
 	if (ev == null) return;
 	ev.conses++; 
 	if (consLimit > 0 && ev.conses > consLimit) 
@@ -125,7 +122,6 @@ public class Evaluator {
     }
 
     public static void printStats(PrintWriter log) {
-	Evaluator ev = threadState.get();
         log.format("(%d %s, %d %s)\n", 
 		   ev.steps, (ev.steps == 1 ? "step" : "steps"), 
 		   ev.conses, (ev.conses == 1 ? "cons" : "conses"));
