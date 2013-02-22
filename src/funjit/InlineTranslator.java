@@ -36,6 +36,7 @@ import funbase.Name;
 import funbase.Function;
 import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
+import static funjit.Type.*;
 
 import java.util.*;
 

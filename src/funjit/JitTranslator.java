@@ -39,6 +39,7 @@ import funbase.Value;
 import funbase.Evaluator;
 import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
+import static funjit.Type.*;
 
 public class JitTranslator implements FunCode.Jit {
     private String className;
@@ -52,68 +53,6 @@ public class JitTranslator implements FunCode.Jit {
     protected Value consts[];
 
     private Label trap;
-
-    protected final static String
-	object_cl = "java/lang/Object",
-	string_cl = "java/lang/String",
-	classcast_cl = "java/lang/ClassCastException",
-	name_cl = "funbase/Name",
-	value_cl = "funbase/Value",
-	numval_cl = "funbase/Value$NumValue",
-	boolval_cl = "funbase/Value$BoolValue",
-	consval_cl = "funbase/Value$ConsValue",
-	nilval_cl = "funbase/Value$NilValue",
-	funval_cl = "funbase/Value$FunValue",
-	function_cl = "funbase/Function",
-	jitfun_cl = "funjit/JitFunction",
-	jitsmall_cl = "funjit/JitFunction$Func",
-	evaluator_cl = "funbase/Evaluator",
-	errcxt_cl = "funbase/ErrContext";
-
-    protected final static Type
-	void_t = Type.void_t,
-	int_t = Type.int_t,
-	bool_t = Type.bool_t,
-	double_t = Type.double_t,
-	object_t = Type.class_t(object_cl),
-	string_t = Type.class_t(string_cl),
-	name_t = Type.class_t(name_cl),
-	value_t = Type.class_t(value_cl),
-	valarray_t = Type.array_t(value_t),
-	function_t = Type.class_t(function_cl),
-	errcxt_t = Type.class_t(errcxt_cl);
-    
-    protected final static Type
-	fun_t = Type.func_t(void_t),
-	fun_A_V_t = Type.func_t(valarray_t, value_t),
-	fun_AII_t = Type.func_t(valarray_t, int_t, int_t, void_t),
-	fun_D_V_t = Type.func_t(double_t, value_t),
-	fun_B_V_t = Type.func_t(bool_t, value_t),
-	fun_DDD_V_t = Type.func_t(double_t, double_t, double_t, value_t),
-	fun_E_E_t = Type.func_t(errcxt_t, errcxt_t),
-	fun_N_t = Type.func_t(name_t, void_t),
-	fun_O_B_t = Type.func_t(object_t, bool_t),
-	fun_S_E_t = Type.func_t(string_t, errcxt_t),
-	fun_S_t = Type.func_t(string_t, void_t),
-	fun_SS_t = Type.func_t(string_t, string_t, void_t),
-	fun_SI_t = Type.func_t(string_t, int_t, void_t),
-	fun_SII_t = Type.func_t(string_t, int_t, int_t, void_t),
-	fun_V_V_t = Type.func_t(value_t, value_t),
-	fun_V_t = Type.func_t(value_t, void_t),
-	fun_VV_t = Type.func_t(value_t, value_t, void_t),
-	fun_VVV_t = Type.func_t(value_t, value_t, value_t, void_t),
-	fun_VIE_A_t = Type.func_t(value_t, int_t, errcxt_t, valarray_t),
-	fun_VS_t = Type.func_t(value_t, string_t, void_t);
-
-    private final static Type applyn_t[] = {
-	Type.func_t(errcxt_t, value_t),
-	Type.func_t(value_t, errcxt_t, value_t), 
-	Type.func_t(value_t, value_t, errcxt_t, value_t),
-	Type.func_t(value_t, value_t, value_t, errcxt_t, value_t)
-    };
-
-    private final static Type
-	apply_t = Type.func_t(valarray_t, int_t, int_t, errcxt_t, value_t);
 
     private Map<Integer, Label> labdict = new HashMap<Integer, Label>();
     
