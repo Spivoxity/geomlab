@@ -49,7 +49,7 @@ public class Function implements Serializable {
     /** Apply the value to a list of arguments.  This default
      *  implementation just prints an error message. */
     public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	cxt.error("applying a non-function", "#apply");
+	cxt.err_apply();
 	return null;
     }
     

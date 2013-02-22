@@ -131,6 +131,11 @@ public class ErrContext implements Serializable {
 	throw new EvalException(format(msg, func), help);
     }
 
+    /** Complain about calling a non-function */
+    public void err_apply() {
+	error("applying a non-function", "#apply");
+    }
+
     /** Complain when the wrong number of arguments are provided */
     public void err_nargs(String name, int nargs, int arity) {
 	error("function " + name + " called with " + nargs
