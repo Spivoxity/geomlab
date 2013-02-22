@@ -114,9 +114,9 @@ define filter(p, []) = []
 
 define foldr(f, a, []) = a | foldr(f, a, x:xs) = f(x, foldr(f, a, xs));
 
-{ Helper functions for list comprehensions }
-define _flatmapa(f, [], acc) = acc
-  | _flatmapa(f, x:xs, acc) = f(x, _flatmapa(f, xs, acc));
+{ Helper function for list comprehensions }
+define _mapa(f, [], acc) = acc
+  | _mapa(f, x:xs, acc) = f(x, _mapa(f, xs, acc));
 
 { Helper function for lists [a..b] }
 define _range(a, b) = if a > b then [] else a:_range(a+1, b);
@@ -157,8 +157,15 @@ define __top() =
   let snd([x, y]) = y in
 
 
-  { PARSER }
+  { PARSER -- a slightly hacked-up recursive descent parser.  The global
+    variable tok contains the next token, and each parser routine p_thing
+    recognises an instance of thing and returns the AST, expecting tok
+    to contain the first token of the thing on entry, and leaving it with
+    the first token after the thing.  The trickiness surrounds operator
+    sections like (2*x+), where we discover that it is a section only after 
+    parsing the 2*x. }
 
+  { describe -- string describing a token for error messages }
   let describe(#ident) = "an identifier"
     | describe(#number) = "a number"
     | describe(#atom) = "an atom"
@@ -189,51 +196,75 @@ define __top() =
     | describe(#_) = "'_'"
     | describe(#rbrace) = "'}'"
     | describe(#eol) = "end of line"
-    | describe(#eof) = "end of input" in
+    | describe(#eof) = "end of input" 
+    | describe(#<-) = "'<-'"
+    | describe(_) = "*unknown*" in
 
+  { tok -- latest lexer token }
   let tok = _new(0) in
+
+  { val -- value associated with latest token }
   let val = _new(0) in
+
+  { scan -- call the lexer and set tok and val }
   let scan() =
     let t = scanner() in
     _set(tok, fst(t)) >> _set(val, snd(t)) in
 
   let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
 
+  { see -- test for possible token }
   let see(t) = (_get(tok) = t) in
 
+  { eat -- match and consume token or report syntax error }
   let eat(t) =
     if see(t) then scan() else
       syntax_error("I expected " ^ describe(t) ^ " here", "#eat") in
 
+  { can_eat -- match and consume token or return false }
   let can_eat(t) =
     if see(t) then (scan() >> true) else false in
 
+  { A switch "case !tok of x -> ... | y -> ..." is rendered below as
+    "let case(x) = ... | case(y) = ... in whichever(case)".  }
+
+  { whichever -- case branch on next token }
   let whichever(case) = case(_get(tok)) in
 
+  { p_sym -- match and consume a token and return its value }
   let p_sym(t) =
     let v = _get(val) in eat(t) >> v in
 
+  { brack -- parse a phrase between brackets }
   let brack(open, p, close) =
     eat(open) >> let x = p() in eat(close) >> x in
 
+  { brack1 -- parse phrase between brackets, passing close as argument }
   let brack1(open, p, close) =
     eat(open) >> let x = p(close) in eat(close) >> x in
 
+  { p_tail -- parse tail of list with separator }
   let p_tail(p, sep) =
     if can_eat(sep) then (let e1 = p() in e1 : p_tail(p, sep)) else [] in
 
+  { p_list1 -- parse non-empty list separated by commas }
   let p_list1(p) =
     let e1 = p() in e1 : p_tail(p, #comma) in
 
+  { p_list -- parse optional list }
   let p_list(p, endtok) =
     if see(endtok) or see(#eof) then [] else p_list1(p) in
 
+  { We allow mutual recursion by tying the knot with reference cells.
+    Each cell made here has a function f that fetches the contents of
+    the cell and calls it.  Later, we'll see a function f_body and an
+    assignment _set(knot, f_body) that sets the cell. }
   let eknot = _new(0) in
-  let p_expr0(sec) = let p = _get(eknot) in p(sec) in
+  let p_expr0(secok) = let p = _get(eknot) in p(secok) in
   let p_expr() = p_expr0(false) in
 
   let tknot = _new(0) in
-  let p_term(min, sec) = let p = _get(tknot) in p(min, sec) in
+  let p_term(min, secok) = let p = _get(tknot) in p(min, secok) in
 
   let pknot = _new(0) in
   let p_pattern() = let p = _get(pknot) in p() in
@@ -266,36 +297,38 @@ define __top() =
     let p = p_patprim() in
     if can_eat(#:) then [#cons, p, p_patfactor()] else p in
 
-  let p_pattern1() =
+  let p_pattern_body() =
     let chain(p) =
       if can_eat(#+) then chain([#plus, p, p_sym(#number)]) else p in
     chain(p_patfactor()) in
 
+  { p_formals -- parse formal parameters }
   let p_formals() = brack1(#lpar, p_patterns, #rpar) in
 
+  { p_exprs -- parse optional list of expressions }
   let p_exprs(endtok) = p_list(p_expr, endtok) in
 
-  { expanda -- expand list comprehension into code with accumulator }
-  let expanda(e1, [], acc) = 
-        { Base case: [ e1 | ] ++ a = e1:a }
-        [#cons, e1, acc]
-    | expanda(e1, [#gen, [#var, x], e2]:gs, acc) =
-        let a = [#var, gensym()] in
-	[#apply, [#var, #_flatmapa],
-	  [#function, 2, [[[[#var, x], a], expanda(e1, gs, a)]]],
-	  e2, acc]
-    | expanda(e1, [#gen, patt, e2]:gs, acc) =
-        { _flatmapa((function (patt, a) -> 'expanda(e1, gs, a)'
-	  		| (_, a) -> a), e2, acc) }
-	let a = [#var, gensym()] in
-	[#apply, [#var, #_flatmapa],
-	  [#function, 2, 
-	    [[[patt, a], expanda(e1, gs, a)], 
-	    [[[#anon], a], a]]], 
-          e2, acc]
-    | expanda(e1, [#when, e2]:gs, acc) =
-        { if e2 then [e1 | gs] ++ acc else acc }
-	[#if, e2, expanda(e1, gs, acc), acc] in
+  { expand -- expand list comprehension into code with accumulator }
+  let expand(e1, [], a) = 
+        { Base case: "[ e1 | ] ++ a" = e1:a }
+        [#cons, e1, a]
+    | expand(e1, [#gen, [#var, x], e2]:gs, a) =
+        { Simple generator: "[ e1 | x <- e2, ... ] ++ a" = 
+	    _mapa(function (x, b) "[ e1 | ... ] ++ b", e2, a) }
+        let b = [#var, gensym()] in
+	[#apply, [#var, #_mapa], [#function, 2, 
+	    [[[[#var, x], b], expand(e1, gs, b)]]], e2, a]
+    | expand(e1, [#gen, patt, e2]:gs, a) =
+        { Generator : "[ e1 | patt <- e2, ... ] ++ a" =
+	    _mapa((function (patt, b) -> "[ e1 | gs ] ++ b" | (_, b) -> b),
+                      e2, a) }
+	let b = [#var, gensym()] in
+	[#apply, [#var, #_mapa], [#function, 2, 
+	    [[[patt, b], expand(e1, gs, b)], [[[#anon], b], b]]], e2, a]
+    | expand(e1, [#when, e2]:gs, a) =
+        { Test: "[ e1 | when e2, ...] ++ a" =
+	    if e2 then "[e1 | ...] ++ a" else a }
+	[#if, e2, expand(e1, gs, a), a] in
 
   let p_gen() = 
     let p = p_pattern() in eat(#<-) >> [#gen, p, p_expr()] in
@@ -303,8 +336,10 @@ define __top() =
   { p_gens -- parse generators for a list comprehension }
   let p_gens() =
     let p_tail() =    
-      let case(#when) = eat(#when) >> let e = p_expr() in [#when, e] : p_tail()
-        | case(#comma) = eat(#comma) >> let g = p_gen() in g : p_tail()
+      let case(#when) = 
+      	    eat(#when) >> let e = p_expr() in [#when, e] : p_tail()
+        | case(#comma) = 
+	    eat(#comma) >> let g = p_gen() in g : p_tail()
 	| case(_) = [] in
       whichever(case) in
     let g = p_gen() in g : p_tail() in
@@ -324,12 +359,13 @@ define __top() =
               eat(#..) >> [#apply, [#var, #_range], e1, p_expr()]
           | case(#vbar) =
 	      { A list comprehension }
-	      eat(#vbar) >> expanda(e1, p_gens(), [#nil])
+	      eat(#vbar) >> expand(e1, p_gens(), [#nil])
           | case(_) =
 	      { A singleton list }
  	      [#list, e1] in
         whichever(case)) in
 
+  { p_parenexp -- parse expression after left paren }
   let p_parenexp() =
     if not isbinop(_get(tok)) then
       p_expr0(true)
@@ -378,8 +414,8 @@ define __top() =
     else [#apply, [#var, w], e1, e2] in
 
   { p_term -- parse a term containing operators with priority >= min.
-      If sec is true, allow a left section (1+) }
-  let p_term1(min, sec) = 
+      If secok is true, allow a left section (1+) }
+  let p_term_body(min, secok) = 
     { p_termcont -- loop to parse a sequence of operators and operands }
     let p_termcont(e1, min) =
       let t = _get(tok) in
@@ -388,7 +424,7 @@ define __top() =
 	  let prio = priority(w) in
 	  if fst(prio) < min then e1 else
 	    (eat(t) >>
-	      if sec and see(#rpar) then
+	      if secok and see(#rpar) then
 	        { A left section }
 	        [#apply, [#var, #_lsect], [#var, w], e1]
               else
@@ -399,16 +435,16 @@ define __top() =
     p_termcont(p_factor(), min) in
 
   { p_cond -- parse a conditional, maybe also allowing a left section }
-  let p_cond(sec) =
+  let p_cond(secok) =
     if can_eat(#if) then
       (let e1 = p_cond(false) in 
         eat(#then) >> let e2 = p_cond(false) in
 	eat(#else) >> let e3 = p_cond(false) in [#if, e1, e2, e3])
     else
-      p_term(1, sec) in
+      p_term(1, secok) in
 
   { p_expr -- parse an expression or perhaps a left section }
-  let p_expr1(sec) =
+  let p_expr_body(secok) =
     let case(#let) =
 	  eat(#let) >> let d = p_defn() in
 	  eat(#in) >> [#let, d, p_expr()]
@@ -416,7 +452,7 @@ define __top() =
 	  eat(#function) >> let formals = p_formals() in
 	  [#function, length(formals), [[formals, p_expr()]]]
       | case(_) = 
-	  let e = p_cond(sec) in
+	  let e = p_cond(secok) in
 	  if can_eat(#>>) then [#seq, e, p_expr()] else e in
     whichever(case) in
 
@@ -427,10 +463,12 @@ define __top() =
     else
       p_sym(#ident) in
 
+  { p_rhs -- parse right hand side of equation } 
   let p_rhs(lhs) =
     eat(#=) >> let e = p_expr() in
     if can_eat(#when) then [lhs, p_expr(), e] else [lhs, e] in
 
+  { p_rule -- parse one clause of a function definition }
   let p_rule(x, arity) =
     let y = p_name() in
     if x = y then [] else
@@ -442,7 +480,8 @@ define __top() =
 		   "#arity") >>
     p_rhs(lhs) in
 
-  let p_defn1() =
+  { p_defn -- parse a definition }
+  let p_defn_body() =
     let x = p_name() in
     if not see(#lpar) then
       (eat(#=) >> [#val, x, p_expr()])
@@ -453,10 +492,10 @@ define __top() =
 	[#fun, x, arity, rule : 
 	  p_tail(function () p_rule(x, arity), #vbar)]) in
 
+  { p_para -- parse a top-level paragraph }
   let p_para() =
     if see(#eof) then #eof else
       (let p = if can_eat(#define) then p_defn() else p_expr() in
-
 	if see(#rpar) then
 	  syntax_error("Can't find matching '('", "#parenmatch")
 	else if see(#ket) then
@@ -469,15 +508,15 @@ define __top() =
 
 	p) in
 
-  _set(eknot, p_expr1) >>
-  _set(tknot, p_term1) >>
-  _set(pknot, p_pattern1) >>
-  _set(dknot, p_defn1) >>
+  _set(eknot, p_expr_body) >>
+  _set(tknot, p_term_body) >>
+  _set(pknot, p_pattern_body) >>
+  _set(dknot, p_defn_body) >>
 
   let parser() = scan() >> p_para() in
 
 
-  { CODE GENERATOR }
+  { CODE GENERATOR -- Translate AST into funcode }
 
   let labcount = _new(0) in
 
@@ -740,8 +779,7 @@ define __top() =
 
     | c_exp(#apply:[#var, f]:args, env, tl) =
         { Tail call to the same function }
-	[#seq, 
-	  #seq:[ c_exp(e, env, false) | e <- args ],
+	[#seq, #seq:[ c_exp(e, env, false) | e <- args ],
 	  [#TCALL, length(args)]]
       when tl and selfrec(f, env) and length(args) = e_arity(env)
 
@@ -788,18 +826,16 @@ define __top() =
 	[#seq, c1, [#BIND, a], c2]
 
     | c_exp([#function, n, rules], env, tl) =
-      	{ A lambda expression function (patt_1, ..., patt_n) e1 ... }
+      	{ A lambda expression  function (patt_1, ..., patt_n) e1 ... }
 	yield(c_closure("<function>", n, rules, env), tl)
 
     | c_exp([#cons, e1, e2], env, tl) =
         yield([#seq, c_exp(e1, env, false), 
 			c_exp(e2, env, false), [#CONS]], tl)
 
-    | c_exp([#nil], env, tl) =
-        yield([#NIL], tl)
+    | c_exp([#nil], env, tl) = yield([#NIL], tl)
 
-    | c_exp(#list:es, env, tl) =
-        c_exp(listify(es), env, tl)
+    | c_exp(#list:es, env, tl) = c_exp(listify(es), env, tl)
 
     | c_exp([#seq, e1, e2], env, tl) =
         { Sequential composition e1 >> e2 }
@@ -863,12 +899,14 @@ define __top() =
     | interp([#seq, e1, e2], env) =
 	interp(e1, env) >> interp(e2, env) in
 
+  { redefine -- check that it's permitted to redefine a name }
   let redefine(x) =
     if frozen(x) then
       error("can't replace built-in definition of '" 
             ^ spelling(x) ^ "'", "#redef")
     else [] in
 
+  { top_level -- execute a top-level phrase }
   let top_level([#val, x, e]) = 
         { A global value definition }
 	redefine(x) >>
@@ -883,6 +921,7 @@ define __top() =
         { A top-level expression }
 	topval(interp(exp, empty())) in
 
+  { The read-eval-print routine }
   function ()
     let p = parser() in
     if p = #eof then false else 
