@@ -56,10 +56,41 @@ public class Evaluator {
 
     private static Evaluator ev;
 
+    private static class ExecThread extends Thread {
+	public Value fun;
+	public Value args[];
+	public Value result;
+	public RuntimeException excep = null;
+
+	private static int thrcount = 0;
+
+	public ExecThread(Value fun, Value args[]) {
+	    super(null, null, "exec" + thrcount++, 16*1024*1024);
+	    this.fun = fun; this.args = args;
+	}
+
+	private void body() {
+	    try {
+		result = fun.apply(args);
+		checkpoint();
+	    }
+	    catch (StackOverflowError e) {
+		throw new EvalException("recursion went too deep", "#stack");
+	    }
+	}
+
+	public void run() {
+	    try {
+		body();
+	    }
+	    catch (RuntimeException e) {
+		excep = e;
+	    }
+	}
+    }
+
     public static Value execute(Value fun, Value... args) {
 	ev = new Evaluator();
-
-	Value result = null;
 	Thread timer = null;
 	
 	if (timeLimit > 0) {
@@ -76,18 +107,14 @@ public class Evaluator {
 	    timer.start();
 	}
 	
-	try {
-	    result = fun.apply(args);
-	    checkpoint();
+	ExecThread exec = new ExecThread(fun, args);
+	exec.start();
+	try { exec.join(); } catch (InterruptedException e) {
+	    throw new EvalException("Interrupted!");
 	}
-	catch (StackOverflowError e) {
-	    throw new EvalException("recursion went too deep", "#stack");
-	}
-	finally {
-	    if (timer != null) timer.interrupt();
-	}
-
-	return result;
+	if (timer != null) timer.interrupt();
+	if (exec.excep != null) throw exec.excep;
+	return exec.result;
     }
 
     public static void checkpoint() {
