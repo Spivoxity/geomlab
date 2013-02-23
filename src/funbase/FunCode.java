@@ -90,9 +90,6 @@ public class FunCode extends Value {
     /** Max size of evaluation stack */
     protected final int ssize;
 
-    /** Singleton value for error context */
-    protected final ErrContext errcxt;
-    
     /** Whether to freeze the error context on entry */
     public final boolean frozen = Name.freezer;
 
@@ -115,7 +112,6 @@ public class FunCode extends Value {
 	this.fsize = fsize; this.ssize = ssize;
 	this.instrs = instrs; this.rands = rands; 
 	this.consts = consts;
-	this.errcxt = new ErrContext(name);
     }
 
     /** Install a translator to call before building a closure */
@@ -123,6 +119,14 @@ public class FunCode extends Value {
 	FunCode.translator = translator;
     }
     
+    public static String[] getContext(String me) {
+	return translator.getContext(me);
+    }
+
+    public static void setRoot(Value root) {
+	translator.setRoot(root);
+    }
+
     @Override
     public void printOn(PrintWriter out) {
 	out.printf("<funcode>");
@@ -178,95 +182,107 @@ public class FunCode extends Value {
     }
     
     /** Assemble a list of instructions into a function body */
-    public static FunCode assemble(String name, int arity, Value code,
-	    ErrContext cxt) {
-	int size = 0;
+    public static final Primitive assemble = 
+	new Primitive.Prim3("assemble") {
+	    @Override
+	    public Value apply3(Value name0, Value arity0, Value code) {
+		String name = name0.toString(); // Could be name or string
+		int arity = (int) number(arity0);
+		int size = 0;
 
-	for (Value xs = code; !xs.isNilValue(); xs = cxt.tail(xs)) {
-	    Value inst = cxt.head(xs);
-	    if (inst.isConsValue()) size++;
-	}
-	
-	Opcode instrs[] = new Opcode[size];
-	int rands[] = new int[size];
-	int ip = 0, sp = 0, fsize = 0, ssize = 0;
-	List<Value> consts = new ArrayList<Value>();
-	
-	/** Mapping from integer labels to info about each label */
-	Map<Integer, Label> labels = new HashMap<Integer, Label>();
-	
-	for (Value xs = code; !xs.isNilValue(); xs = cxt.tail(xs)) {
-	    Value inst = cxt.head(xs);
-	    if (inst.isNumValue()) {
-		/* A label */
-		Label lab = labels.get((int) cxt.number(inst));
-		if (lab != null) {
-		    rands[lab.use] = ip;
-		    sp = lab.depth;
+		for (Value xs = code; !xs.isNilValue(); xs = tail(xs)) {
+		    Value inst = head(xs);
+		    if (inst.isConsValue()) size++;
 		}
-	    } else if (inst.isConsValue()) {
-		/* An instruction [#op, arg] with optional arg */
-		Name x = cxt.cast(Name.class, cxt.head(inst), "opcode");
-		Opcode op = getOpcode(x.tag);
-		Value args = cxt.tail(inst);
-		int rand;
-
-		if (! args.isConsValue())
-		    /* No argument */
-		    rand = 0;
-		else {
-		    Value v = cxt.head(args);
-		    if (op == Opcode.GLOBAL || op == Opcode.QUOTE) {
-			/* An argument that goes in the constant pool */
-			rand = consts.indexOf(v);
-			if (rand < 0) {
-			    rand = consts.size();
-			    consts.add(v);
+	
+		Opcode instrs[] = new Opcode[size];
+		int rands[] = new int[size];
+		int ip = 0, sp = 0, fsize = 0, ssize = 0;
+		List<Value> consts = new ArrayList<Value>();
+	
+		/** Mapping from integer labels to info about each label */
+		Map<Integer, Label> labels = new HashMap<Integer, Label>();
+	
+		for (Value xs = code; !xs.isNilValue(); xs = tail(xs)) {
+		    Value inst = head(xs);
+		    if (inst.isNumValue()) {
+			/* A label */
+			Label lab = labels.get((int) number(inst));
+			if (lab != null) {
+			    rands[lab.use] = ip;
+			    sp = lab.depth;
 			}
+		    } else if (inst.isConsValue()) {
+			/* An instruction [#op, arg] with optional arg */
+			Name x = cast(Name.class, head(inst), "opcode");
+			Opcode op = getOpcode(x.tag);
+			Value args = tail(inst);
+			int rand;
+
+			if (! args.isConsValue())
+			    /* No argument */
+			    rand = 0;
+			else {
+			    Value v = head(args);
+			    if (op == Opcode.GLOBAL || op == Opcode.QUOTE) {
+				/* An argument that goes in the constant pool */
+				rand = consts.indexOf(v);
+				if (rand < 0) {
+				    rand = consts.size();
+				    consts.add(v);
+				}
+			    } else {
+				/* An integer argument */
+				rand = (int) number(v);
+			    }
+			}
+
+			instrs[ip] = op; rands[ip] = rand;
+			sp += instrs[ip].delta(rand);
+			if (sp > ssize) ssize = sp;
+
+			switch (op) {
+			    case BIND:
+				/* Update the frame size */
+				if (rand >= fsize) fsize = rand+1;
+				break;
+
+			    case JUMP:
+			    case JFALSE:
+				/* Create a label */
+				labels.put(rand, new Label(ip, sp));
+				break;
+				
+			    case TRAP:
+				/* Create a label, noting one value will 
+				   be popped */
+				labels.put(rand, new Label(ip, sp-1));
+				break;
+
+			    default:
+				break;
+			}
+
+			ip++;
 		    } else {
-			/* An integer argument */
-			rand = (int) cxt.number(v);
+			Evaluator.error("Bad instruction " + inst);
 		    }
 		}
 
-		instrs[ip] = op; rands[ip] = rand;
-		sp += instrs[ip].delta(rand);
-		if (sp > ssize) ssize = sp;
-
-		switch (op) {
-		    case BIND:
-			/* Update the frame size */
-			if (rand >= fsize) fsize = rand+1;
-			break;
-
-		    case JUMP:
-		    case JFALSE:
-			/* Create a label */
-			labels.put(rand, new Label(ip, sp));
-			break;
-
-		    case TRAP:
-			/* Create a label, noting one value will be popped */
-			labels.put(rand, new Label(ip, sp-1));
-			break;
-
-		    default:
-			break;
-		}
-
-		ip++;
-	    } else {
-		cxt.error("Bad instruction in assembler: " + inst);
+		return new FunCode(name, arity, fsize, ssize, instrs, rands,
+				   consts.toArray(new Value[consts.size()]));
 	    }
-	}
-
-	return new FunCode(name, arity, fsize, ssize, instrs, rands,
-	    consts.toArray(new Value[consts.size()]));
-    }
+	};
 
     /** Interface for JIT translators */
     public interface Jit {
 	/** Translate funcode and create a factory for closures */
 	public Function.Factory translate(FunCode funcode);
+
+	/** Get execution context */
+	public String[] getContext(String me);
+
+	/** Set stack root */
+	public void setRoot(Value root);
     }
 }

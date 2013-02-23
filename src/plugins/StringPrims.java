@@ -38,17 +38,16 @@ public class StringPrims {
 	new Primitive.Prim2("^") {
 	    /** Concatenate two strings */
 	    @Override
-	    public Value invoke2(Value s1, Value s2) {
-		return Value.makeStringValue
-		    (cxt.string(s1) + cxt.string(s2));
+	    public Value apply2(Value s1, Value s2) {
+		return Value.makeStringValue(string(s1) + string(s2));
 	    }
 	},
 
 	new Primitive.Prim1("explode") {
 	    /** Split a string into a list of single-character strings */
 	    @Override
-	    public Value invoke1(Value x) {
-		String s = cxt.string(x);
+	    public Value apply1(Value x) {
+		String s = string(x);
 		Value result = Value.nil;
 		for (int i = s.length()-1; i >= 0; i--)
 		    result = 
@@ -60,10 +59,10 @@ public class StringPrims {
 	new Primitive.Prim1("implode") {
 	    /** Concatenate a list of strings into a single string */
 	    @Override
-	    public Value invoke1(Value ys) {
+	    public Value apply1(Value ys) {
 		StringBuffer result = new StringBuffer();
-		for (Value xs = ys; ! xs.isNilValue(); xs = cxt.tail(xs))
-		    result.append(cxt.string(cxt.head(xs)));
+		for (Value xs = ys; ! xs.isNilValue(); xs = tail(xs))
+		    result.append(string(head(xs)));
 		return Value.makeStringValue(result.toString());
 	    }
 	},
@@ -71,16 +70,16 @@ public class StringPrims {
 	new Primitive.Prim1("chr") {
 	    /** Make character with specified ASCII code */
 	    @Override
-	    public Value invoke1(Value x) {
-		return Value.makeStringValue((char) cxt.number(x));
+	    public Value apply1(Value x) {
+		return Value.makeStringValue((char) number(x));
 	    }
 	},
 
 	new Primitive.Prim1("ord") {
 	    /** Return ASCII code of first character */
 	    @Override
-	    public Value invoke1(Value x) {
-		String s = cxt.string(x);
+	    public Value apply1(Value x) {
+		String s = string(x);
 		return Value.makeNumValue(s.length() == 0 ? 0 : s.charAt(0));
 	    }
 	}

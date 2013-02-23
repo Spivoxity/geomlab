@@ -33,7 +33,6 @@ package plugins;
 import java.io.PrintWriter;
 
 import funbase.Evaluator;
-import funbase.ErrContext;
 import funbase.Primitive;
 import funbase.Value;
 
@@ -227,15 +226,15 @@ public class TurtlePicture extends Picture {
 	}
 	
 	@Override
-	public Value invoke1(Value arg) {
-	    return new Command(kind, (float) cxt.number(arg), name);
+	public Value apply1(Value arg) {
+	    return new Command(kind, (float) number(arg), name);
 	}
 	
 	private Value args[] = new Value[1];
 
 	@Override
-	public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-	    if (nargs != 1) cxt.err_patnargs(name);
+	public Value[] pattMatch(Value obj, int nargs) {
+	    if (nargs != 1) Evaluator.err_patnargs(name);
 	    try {
 		Command c = (Command) obj;
 		if (c.kind != kind) return null;
@@ -251,21 +250,9 @@ public class TurtlePicture extends Picture {
     public static final Primitive primitives[] = {
 	new Primitive.Prim1("turtle") {
 	    @Override
-	    public Value invoke1(Value ys) {
-		Value xs = ys;
-		Command commands[] = new Command[cxt.listLength(xs)];
-		
-		// Convert the commands to an array of Command objects
-		try {
-		    for (int i = 0; i < commands.length; i++) { 
-			commands[i] = (Command) cxt.head(xs);
-			xs = cxt.tail(xs);
-		    }
-		}
-		catch (ClassCastException e) {
-		    cxt.expect("command");
-		}
-		
+	    public Value apply1(Value xs) {
+		Command commands[] = 
+		    toArray(Command.class, xs, "command list");
 		return new TurtlePicture(commands);
 	    }	    
 	},

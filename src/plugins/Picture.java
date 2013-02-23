@@ -32,7 +32,6 @@ package plugins;
 
 import java.io.PrintWriter;
 
-import funbase.ErrContext;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Value;
@@ -186,44 +185,40 @@ public class Picture extends Value implements Stylus.Drawable {
 	}
     }
 
-    public static Picture picture(Value x, ErrContext cxt) {
-	return cxt.cast(Picture.class, x, "picture");
-    }
-
-    public static Tran2D transform(Value x, ErrContext cxt) {
-	return cxt.cast(Tran2D.class, x, "transform");
-    }
-
     public static final Primitive primitives[] = {
 	new Primitive.Prim0("null") {
 	    @Override
-	    public Value invoke0() {
+	    public Value apply0() {
 		return nullPicture;
 	    }
 	},
 	
 	new Primitive.PrimN("transpic", 4) {
 	    @Override
-	    public Value invoke(Value args[], int base) {
-		return new TransPicture((float) cxt.number(args[base+0]),
-					picture(args[base+1], cxt), 
-					transform(args[base+2], cxt),
-					(int) cxt.number(args[base+3]));
+	    public Value apply(Value args[], int base) {
+		return new TransPicture
+		    ((float) number(args[base+0]),
+		     cast(Picture.class, args[base+1], "picture"),
+		     cast(Tran2D.class, args[base+2], "transform"),
+		     (int) number(args[base+3]));
 	    }
 	},
 
 	new Primitive.Prim3("combine") {
 	    @Override
-	    public Value invoke3(Value x, Value y, Value z) {
-		return new BinaryPicture((float) cxt.number(x), 
-					 picture(y, cxt), picture(z, cxt));
+	    public Value apply3(Value x, Value y, Value z) {
+		return new BinaryPicture
+		    ((float) number(x), 
+		     cast(Picture.class, y, "picture"),
+		     cast(Picture.class, z, "picture"));
 	    }
 	},
 
 	new Primitive.Prim1("colour") {
 	    @Override
-	    public Value invoke1(Value x) {
-		final Picture pic = picture(x, cxt);
+	    public Value apply1(Value x) {
+		final Picture pic = 
+		    cast(Picture.class, x, "picture");
 
 		return new Picture(pic.aspect, true) {
 		    @Override
@@ -239,8 +234,9 @@ public class Picture extends Value implements Stylus.Drawable {
 	
 	new Primitive.Prim1("aspect") {
 	    @Override
-	    public Value invoke1(Value x) {
-		Picture pic = picture(x, cxt);
+	    public Value apply1(Value x) {
+		Picture pic = 
+		    cast(Picture.class, x, "picture");
 		return makeNumValue(pic.aspect);
 	    }
 	}

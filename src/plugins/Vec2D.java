@@ -34,7 +34,7 @@ import java.io.PrintWriter;
 
 import funbase.Value;
 import funbase.Primitive;
-import funbase.ErrContext;
+import funbase.Evaluator;
 
 /** Floating point vectors in 2D */
 public class Vec2D extends Value {
@@ -95,15 +95,15 @@ public class Vec2D extends Value {
     public static final Primitive primitives[] = {
 	new Primitive.Prim2("vector") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return new Vec2D((float) cxt.number(x), (float) cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return new Vec2D((float) number(x), (float) number(y));
 	    }
 
 	    private Value args[] = new Value[3];
 
 	    @Override
-	    public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-		if (nargs != 2) cxt.err_patnargs(name);
+	    public Value[] pattMatch(Value obj, int nargs) {
+		if (nargs != 2) Evaluator.err_patnargs(name);
 
 		if (! (obj instanceof Vec2D)) return null;
 

@@ -34,7 +34,7 @@ import java.io.PrintWriter;
 
 import funbase.Primitive;
 import funbase.Value;
-import funbase.ErrContext;
+import funbase.Evaluator;
 
 /** A colour wrapped as a value */
 public class ColorValue extends Picture {
@@ -148,16 +148,16 @@ public class ColorValue extends Picture {
 	new Primitive.Prim3("rgb") {
 	    /* Create a colour from RGB values in the range [0, 1] */
 	    @Override
-	    public Value invoke3(Value rpart, Value gpart, Value bpart) {
-		return new ColorValue(cxt.number(rpart), cxt.number(gpart), 
-				      cxt.number(bpart));
+	    public Value apply3(Value rpart, Value gpart, Value bpart) {
+		return new ColorValue(number(rpart), number(gpart), 
+				      number(bpart));
 	    }
 	    
 	    private Value args[] = new Value[3];
 
 	    @Override
-	    public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-		if (nargs != 3) cxt.err_patnargs(name);
+	    public Value[] pattMatch(Value obj, int nargs) {
+		if (nargs != 3) Evaluator.err_patnargs(name);
 
 		if (! (obj instanceof ColorValue)) return null;
 
@@ -171,24 +171,24 @@ public class ColorValue extends Picture {
 	
 	new Primitive.Prim1("rpart") {
 	    @Override
-	    public Value invoke1(Value obj) {
-		ColorValue v = cxt.cast(ColorValue.class, obj, "colour");
+	    public Value apply1(Value obj) {
+		ColorValue v = cast(ColorValue.class, obj, "colour");
 		return Value.makeNumValue(v.rpart);
 	    }
 	},
 	
 	new Primitive.Prim1("gpart") {
 	    @Override
-	    public Value invoke1(Value obj) {
-		ColorValue v = cxt.cast(ColorValue.class, obj, "colour");
+	    public Value apply1(Value obj) {
+		ColorValue v = cast(ColorValue.class, obj, "colour");
 		return Value.makeNumValue(v.gpart);
 	    }
 	},
 	
 	new Primitive.Prim1("bpart") {
 	    @Override
-	    public Value invoke1(Value obj) {
-		ColorValue v = cxt.cast(ColorValue.class, obj, "colour");
+	    public Value apply1(Value obj) {
+		ColorValue v = cast(ColorValue.class, obj, "colour");
 		return Value.makeNumValue(v.bpart);
 	    }
 	},
@@ -196,10 +196,10 @@ public class ColorValue extends Picture {
 	new Primitive.Prim3("hsv") {
 	    /* Create a colour from HSV values in the range [0, 1] */
 	    @Override
-	    public Value invoke3(Value h, Value s, Value v) {
-		return getHSB((float) cxt.number(h),
-			      (float) cutoff(cxt.number(s)),
-			      (float) cutoff(cxt.number(v)));
+	    public Value apply3(Value h, Value s, Value v) {
+		return getHSB((float) number(h),
+			      (float) cutoff(number(s)),
+			      (float) cutoff(number(v)));
 	    }
 	}
     };

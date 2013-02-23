@@ -32,8 +32,13 @@ package funbase;
 
 import funbase.Value.WrongKindException;
 
+import java.util.Stack;
+
 /** A trivial runtime translator that interprets the funcode */
 public class Interp implements FunCode.Jit {
+    private static Stack<FunCode> stack = new Stack<FunCode>();
+    private FunCode root = null;
+
     /** Create a function factory that builds interpreted closures */
     @Override
     public Function.Factory translate(final FunCode funcode) {
@@ -45,6 +50,35 @@ public class Interp implements FunCode.Jit {
 	};
     }  
 
+    @Override
+    public void setRoot(Value root) { 
+	stack.clear();
+	if (root instanceof Value.FunValue) {
+	    Function f = ((Value.FunValue) root).subr;
+	    if (f instanceof Function.Closure)
+		this.root = ((Function.Closure) f).getCode();
+	}
+    }
+
+    @Override
+    public String[] getContext(String me) {
+	String caller = null, callee = me;
+
+	for (int i = stack.size()-1; i >= 0; i--) {
+	    FunCode f = stack.get(i);
+	    if (f == root) break;
+
+	    if (f.frozen) 
+		callee = f.name;
+	    else {
+		caller = f.name;
+		break;
+	    }
+	}
+
+	return new String[] { caller, callee };
+    }
+
     /** A closure containing an interpreter for funcode */
     public static class InterpFunction extends Function.Closure {
 	public InterpFunction(int arity, FunCode code, Value fvars[]) {
@@ -52,15 +86,11 @@ public class Interp implements FunCode.Jit {
 	}
 
 	@Override
-	public Value apply(Value args[], int base, int nargs, 
-		ErrContext cxt) {
-	    if (nargs != arity) 
-		cxt.err_nargs(code.name, nargs, arity);
+	public Value apply(Value args[], int base, int nargs) {
+	    stack.push(code);
 
-	    if (code.frozen && !Name.freezer)
-		cxt = cxt.freezeEnter(code.name);
-	    else
-		cxt = cxt.enter(code.errcxt);
+	    if (nargs != arity) 
+		Evaluator.err_nargs(code.name, nargs, arity);
 
 	    if (--Evaluator.quantum <= 0) Evaluator.checkpoint();
 
@@ -78,7 +108,7 @@ public class Interp implements FunCode.Jit {
 		    case GLOBAL: {
 			Name x = (Name) code.consts[rand];
 			Value v = x.getGlodef();
-			if (v == null) cxt.err_notdef(x);
+			if (v == null) Evaluator.err_notdef(x);
 			frame[sp++] = v;
 			break;
 		    }
@@ -121,16 +151,16 @@ public class Interp implements FunCode.Jit {
 			    sp -= rand;
 			    frame[sp-1] = 
 				((Value.FunValue) frame[sp-1]).subr.apply
-				    (frame, sp, rand, cxt);
+				    (frame, sp, rand);
 			}
 			catch (ClassCastException _) {
-			    cxt.err_apply();
+			    Evaluator.err_apply();
 			}
 			break;
 
 		    case TCALL:
 			if (rand != nargs)
-			    cxt.err_nargs(code.name, rand, nargs);
+			    Evaluator.err_nargs(code.name, rand, nargs);
 			sp -= rand;
 			System.arraycopy(frame, sp, args, base, nargs);
 			pc = 0; trap = -1; sp = code.fsize;
@@ -151,7 +181,7 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case FAIL:
-			cxt.err_nomatch(args, base, code.arity);
+			Evaluator.err_nomatch(args, base, code.arity);
 			break;
 
 		    case JFALSE:
@@ -159,7 +189,7 @@ public class Interp implements FunCode.Jit {
 			    if (! frame[--sp].asBoolean()) 
 				pc = rand;
 			} catch (WrongKindException _) {
-			    cxt.err_boolcond();
+			    Evaluator.err_boolcond();
 			}
 			break;
 
@@ -168,6 +198,7 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case RETURN:
+			stack.pop();
 			return frame[--sp];
 
 		    case MPLUS: {
@@ -206,7 +237,7 @@ public class Interp implements FunCode.Jit {
 		    case MPRIM: {
 			Value cons = frame[--sp];
 			Value obj = frame[--sp];
-			Value vs[] = cons.pattMatch(obj, rand, cxt);
+			Value vs[] = cons.pattMatch(obj, rand);
 			if (vs == null)
 			    pc = trap;
 			else {

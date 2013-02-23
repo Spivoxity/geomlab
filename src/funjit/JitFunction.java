@@ -30,10 +30,10 @@
 
 package funjit;
 
-import funbase.ErrContext;
 import funbase.FunCode;
 import funbase.Function;
 import funbase.Value;
+import funbase.Evaluator;
 import funbase.Evaluator.EvalException;
 
 /** Superclass for all JIT-compiled functions */
@@ -42,16 +42,12 @@ public abstract class JitFunction extends Function.Closure
     /** Name of the function (used for error messages) */
     protected final String name;
 
-    /** Singleton value for error context */
-    protected final ErrContext errcxt;
-    
     /** Pool of constant values */
     protected Value consts[];
 
     public JitFunction(String name, int arity) {
 	super(arity);
 	this.name = name;
-	this.errcxt = new ErrContext(name);
     }
 
     public void init(FunCode source) {
@@ -82,13 +78,12 @@ public abstract class JitFunction extends Function.Closure
 	}
 
 	@Override
-	public abstract Value apply0(ErrContext cxt);
+	public abstract Value apply0();
 
 	@Override
-	public Value apply(Value args[], int base, int nargs, 
-		ErrContext cxt) {
-	    if (nargs != 0) cxt.err_nargs(name, nargs, 0);
-	    return apply0(cxt);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 0) Evaluator.err_nargs(name, nargs, 0);
+	    return apply0();
 	}
     }
 
@@ -98,12 +93,12 @@ public abstract class JitFunction extends Function.Closure
 	}
 
 	@Override
-	public abstract Value apply1(Value x, ErrContext cxt);
+	public abstract Value apply1(Value x);
 
 	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != 1) cxt.err_nargs(name, nargs, 1);
-	    return apply1(args[base+0], cxt);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 1) Evaluator.err_nargs(name, nargs, 1);
+	    return apply1(args[base+0]);
 	}
     }
 
@@ -113,12 +108,12 @@ public abstract class JitFunction extends Function.Closure
 	}
 
 	@Override
-        public abstract Value apply2(Value x, Value y, ErrContext cxt);
+        public abstract Value apply2(Value x, Value y);
 
 	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != 2) cxt.err_nargs(name, nargs, 2);
-	    return apply2(args[base+0], args[base+1], cxt);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 2) Evaluator.err_nargs(name, nargs, 2);
+	    return apply2(args[base+0], args[base+1]);
 	}
     }
 
@@ -128,13 +123,12 @@ public abstract class JitFunction extends Function.Closure
 	}
 
 	@Override
-	public abstract Value apply3(Value x, Value y, Value z, ErrContext cxt);
+	public abstract Value apply3(Value x, Value y, Value z);
 
 	@Override
-	public Value apply(Value args[], int base, int nargs, 
-		ErrContext cxt) {
-	    if (nargs != 3) cxt.err_nargs(name, nargs, 3);
-	    return apply3(args[base+0], args[base+1], args[base+2], cxt);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 3) Evaluator.err_nargs(name, nargs, 3);
+	    return apply3(args[base+0], args[base+1], args[base+2]);
 	}
     }
 }

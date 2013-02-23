@@ -89,8 +89,8 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     public static Primitive primitives[] = {
 	new Primitive.Prim1("slide") {
 	    @Override
-	    public Value invoke1(Value fun) {
-		if (! fun.isFunValue()) cxt.expect("function");
+	    public Value apply1(Value fun) {
+		if (! fun.isFunValue()) expect("function");
 		return new SlidePicture(fun);
 	    }
 	}

@@ -34,20 +34,112 @@ import java.util.*;
 import java.io.*;
 
 import funbase.Evaluator.*;
+import funbase.Value.WrongKindException;
 
-/** A value that represents a primitive function like 'sqrt' or '+'. 
- *  
- *  Direct concrete subclasses should implement the invoke method. */
+/** A value that represents a primitive function like 'sqrt' or '+'. */
 public abstract class Primitive extends Function {
     /** Name of the primitive */
     public final String name;
 
-    /** Context of current invocation */
-    public transient ErrContext cxt;
-    
     protected Primitive(String name, int arity) {
 	super(arity);
 	this.name = name;
+    }
+
+    /** Report error when argument is not what I expected */
+    public void expect(String expected) {
+	Evaluator.expect(name, expected);
+    }
+
+    /** Fetch value of a NumValue object, or throw EvalException */
+    public double number(Value a) {
+        try {
+            return a.asNumber();
+        }
+        catch (WrongKindException e) {
+            expect("numeric");
+            return 0.0;
+        }
+    }
+
+    /** Fetch value of a StringValue object, or throw EvalException */ 
+    public String string(Value a) {
+        try {
+            return a.asString();
+        }
+        catch (WrongKindException e) {
+            expect("string");
+            return null;
+        }
+    }
+    
+    public Name name(Value a) {
+	return cast(Name.class, a, "name");
+    }
+
+    /** Fetch head of a ConsValue object, or throw EvalException */ 
+    public Value head(Value xs) {
+        try {
+            return xs.getHead();
+        }
+        catch (WrongKindException e) {
+	    Evaluator.list_fail(xs, "head");
+            return null;
+        }
+    }
+
+    /** Fetch tail of a ConsValue object, or throw EvalException */ 
+    public Value tail(Value xs) {
+        try {
+            return xs.getTail();
+        }
+        catch (WrongKindException e) {
+	    Evaluator.list_fail(xs, "tail");
+            return null;
+        }
+    }
+
+    /** Compute length of a list argument */ 
+    public int listLength(Value xs) {
+	Value ys = xs;
+	int n = 0; 
+        while (ys.isConsValue()) {
+            ys = tail(ys); n++;
+        }
+        if (! ys.isNilValue()) expect("list");
+        return n;
+    }
+
+    /** Convert list argument to array */
+    public Value[] toArray(Value xs) {
+	try {
+	    return Value.makeArray(xs);
+	} catch (WrongKindException _) {
+	    expect("list");
+	    return null;
+	}
+    }
+
+    /** Cast an argument to some specified subclass */
+    public <T extends Value> T cast(Class<T> cl, Value v, String expected) {
+        try {
+            return cl.cast(v);
+        }
+        catch (ClassCastException _) {
+            expect(expected);
+            return null;
+        }
+    }
+
+    /** Convert list argument to array of specified class */
+    public <T extends Value> T[] toArray(Class<T> cl, Value xs, 
+					 String expected) {
+	try {
+	    return Value.makeArray(cl, xs);
+	} catch (WrongKindException _) {
+	    expect(expected);
+	    return null;
+	}
     }
 
     @Override
@@ -65,106 +157,61 @@ public abstract class Primitive extends Function {
 	return new Memento(this);
     }
     
-    /** A primitive with zero arguments.
-     * 
-     *  Concrete subclasses should implement invoke0. */
+    /** A primitive with zero arguments. */
     public static abstract class Prim0 extends Primitive {
 	public Prim0(String name) { super(name, 0); }
 
-	protected abstract Value invoke0();
-
 	@Override
-	public Value apply0(ErrContext cxt) {
-	    this.cxt = cxt.primEnter(name);
-	    return invoke0();
-	}
-
-	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != 0) cxt.err_nargs(name, nargs, 0);
-	    this.cxt = cxt.primEnter(name);
-	    return invoke0();
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 0) Evaluator.err_nargs(name, nargs, 0);
+	    return apply0();
 	}
     }
 
-    /** A primitive with one argument.
-     * 
-     *  Concrete subclasses should implement invoke1. */
+    /** A primitive with one argument. */
     public static abstract class Prim1 extends Primitive {
 	public Prim1(String name) { super(name, 1); }
 
-	protected abstract Value invoke1(Value x);
-
 	@Override
-	public Value apply1(Value x, ErrContext cxt) {
-	    this.cxt = cxt.primEnter(name);
-	    return invoke1(x);
-	}
-
-	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != 1) cxt.err_nargs(name, nargs, 1);
-	    this.cxt = cxt.primEnter(name);
-	    return invoke1(args[base+0]);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 1) Evaluator.err_nargs(name, nargs, 1);
+	    return apply1(args[base+0]);
 	}
     }
 
-    /** A primitive with two arguments.
-     * 
-     *  Concrete subclasses should implement invoke2. */
+    /** A primitive with two arguments. */
     public static abstract class Prim2 extends Primitive {
 	public Prim2(String name) { super(name, 2); }
 
-	protected abstract Value invoke2(Value x, Value y);
-
 	@Override
-	public Value apply2(Value x, Value y, ErrContext cxt) {
-	    this.cxt = cxt.primEnter(name);
-	    return invoke2(x, y);
-	}
-
-	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != 2) cxt.err_nargs(name, nargs, 2);
-	    this.cxt = cxt.primEnter(name);
-	    return invoke2(args[base+0], args[base+1]);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 2) Evaluator.err_nargs(name, nargs, 2);
+	    return apply2(args[base+0], args[base+1]);
 	}
     }
 
-    /** A primitive with three arguments.
-     * 
-     *  Concrete subclasses should implement invoke3.
-     */
+    /** A primitive with three arguments. */
     public static abstract class Prim3 extends Primitive {
 	public Prim3(String name) { super(name, 3); }
 
-	protected abstract Value invoke3(Value x, Value y, Value z);
-
 	@Override
-	public Value apply3(Value x, Value y, Value z, ErrContext cxt) {
-	    this.cxt = cxt.primEnter(name);
-	    return invoke3(x, y, z);
-	}
-
-	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != 3) cxt.err_nargs(name, nargs, 3);
-	    this.cxt = cxt.primEnter(name);
-	    return invoke3(args[base+0], args[base+1], args[base+2]);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 3) Evaluator.err_nargs(name, nargs, 3);
+	    return apply3(args[base+0], args[base+1], args[base+2]);
 	}
     }
 
+    /** A primitive with N arguments */
     public static abstract class PrimN extends Primitive {
 	public PrimN(String name, int arity) { super(name, arity); }
 
 	/** Invoke the primitive with arguments args[base..) */ 
-	protected abstract Value invoke(Value args[], int base);
+	protected abstract Value apply(Value args[], int base);
 
 	@Override
-	public Value apply(Value args[], int base, int nargs, ErrContext cxt) {
-	    if (nargs != arity) cxt.err_nargs(name, nargs, arity);
-	    this.cxt = cxt.primEnter(name);
-	    return invoke(args, base);
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != arity) Evaluator.err_nargs(name, nargs, arity);
+	    return apply(args, base);
 	}
     }
     

@@ -47,8 +47,7 @@ public abstract class Function implements Serializable {
     }
 
     /** Apply the value to a list of arguments. */
-    public abstract Value apply(Value args[], int base, int nargs, 
-				ErrContext cxt);
+    public abstract Value apply(Value args[], int base, int nargs);
     
     /* The default is for the apply<n> methods to delegate to the
        general apply method.  For JIT functions with a small number of
@@ -62,28 +61,28 @@ public abstract class Function implements Serializable {
        wrong. */
 
     /** Apply the function to 0 arguments */
-    public Value apply0(ErrContext cxt) {
-	return apply(null, 0, 0, cxt);
+    public Value apply0() {
+	return apply(null, 0, 0);
     }
 
     /** Apply the function to 1 argument */
-    public Value apply1(Value x, ErrContext cxt) {
-	return apply(new Value[] { x }, 0, 1, cxt);
+    public Value apply1(Value x) {
+	return apply(new Value[] { x }, 0, 1);
     }
 
     /** Apply the function to 2 arguments */
-    public Value apply2(Value x, Value y, ErrContext cxt) {
-	return apply(new Value[] { x, y }, 0, 2, cxt);
+    public Value apply2(Value x, Value y) {
+	return apply(new Value[] { x, y }, 0, 2);
     }
 
     /** Apply the function to 3 arguments */
-    public Value apply3(Value x, Value y, Value z, ErrContext cxt) {
-	return apply(new Value[] { x, y, z }, 0, 3, cxt);
+    public Value apply3(Value x, Value y, Value z) {
+	return apply(new Value[] { x, y, z }, 0, 3);
     }
 
     /** Match the value as a constructor */
-    public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-	cxt.error("matching must use a constructor", "#constr");
+    public Value[] pattMatch(Value obj, int nargs) {
+	Evaluator.err_match();
 	return null;
     }
 
@@ -120,9 +119,11 @@ public abstract class Function implements Serializable {
             this.fvars = fvars;
         }
 
+	public FunCode getCode() { return code; }
+
 	@Override
-	public Value apply(Value args[], int base, int arity, ErrContext cxt) {
-	    cxt.error("Can't call an abstract closure");
+	public Value apply(Value args[], int base, int arity) {
+	    Evaluator.error("Can't call an abstract closure");
 	    return null;
 	}
 

@@ -40,6 +40,7 @@ import java.util.Set;
 
 import funbase.Primitive;
 import funbase.Value;
+import funbase.Evaluator;
 
 /** Picture context that outputs Encapsulated PostScript */
 public class EPSWriter extends Stylus {
@@ -341,12 +342,12 @@ public class EPSWriter extends Stylus {
 	/** Save a picture as Encapsulated PostScript */
 	new Primitive.PrimN("epswrite", 5) {
 	    @Override
-	    public Value invoke(Value args[], int base) {
-		Picture pic = Picture.picture(args[base+0], cxt);
-		String fname = cxt.string(args[base+1]);
-		float meanSize = (float) cxt.number(args[base+2]);
-		float slider = (float) cxt.number(args[base+3]);
-		float grey = (float) cxt.number(args[base+4]);
+	    public Value apply(Value args[], int base) {
+		Picture pic = cast(Picture.class, args[base+0], "picture");
+		String fname = string(args[base+1]);
+		float meanSize = (float) number(args[base+2]);
+		float slider = (float) number(args[base+3]);
+		float grey = (float) number(args[base+4]);
 		ColorValue background = ColorValue.getGrey(grey);
 
 		/* The dimensions of the image are chosen to give
@@ -370,7 +371,7 @@ public class EPSWriter extends Stylus {
 		    g.close();
 		}
 		catch (IOException e) {
-		    cxt.primFail("I/O failed: " + e.getMessage());
+		    Evaluator.error("I/O failed: " + e.getMessage());
 		}
 		
 		return Value.nil;		

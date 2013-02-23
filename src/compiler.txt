@@ -852,6 +852,9 @@ define __top() =
   { toptext -- show top level phrase }
   let toptext = _primitive("toptext") in
 
+  { setroot -- note root function for error reporting }
+  let setroot = _primitive("setroot") in
+
   { closure -- form closure from funcode }
   let closure = _primitive("closure") in
 
@@ -923,6 +926,7 @@ define __top() =
 
   { The read-eval-print routine }
   function ()
+    setroot(interp) >>
     let p = parser() in
     if p = #eof then false else 
       (toptext() >> debug(0, p) >> 

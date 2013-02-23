@@ -89,10 +89,10 @@ public class TilePicture extends Picture {
     public static final Primitive primitives[] = {
 	new Primitive.Prim3("tile") {
 	    @Override
-	    public Value invoke3(Value a, Value ss, Value fs) {
-		float aspect = (float) cxt.number(a);
-		int nStrokes = cxt.listLength(ss);
-		int nOutlines = cxt.listLength(fs);
+	    public Value apply3(Value a, Value ss, Value fs) {
+		float aspect = (float) number(a);
+		int nStrokes = listLength(ss);
+		int nOutlines = listLength(fs);
 		Vec2D strokes[][] = new Vec2D[nStrokes][], 
 		outlines[][] = new Vec2D[nOutlines][];
 		Object colours[] = new Object[nOutlines];
@@ -100,25 +100,26 @@ public class TilePicture extends Picture {
 
 		xss = ss;
 		for (int i = 0; i < nStrokes; i++) {
-		    strokes[i] = cxt.toArray(Vec2D.class, cxt.head(xss),
-					     "vector list");
-		    xss = cxt.tail(xss);
+		    strokes[i] = 
+			toArray(Vec2D.class, head(xss), "vector list");
+		    xss = tail(xss);
 		}
 
 		xss = fs;
 		for (int i = 0; i < nOutlines; i++) {
-		    Value xs = cxt.head(xss);
-		    Value spec = cxt.head(xs);
+		    Value xs = head(xss);
+		    Value spec = head(xs);
+
 		    if (spec.isNumValue())
-			colours[i] = (int) cxt.number(spec);
+			colours[i] = (int) number(spec);
 		    else if (spec instanceof ColorValue)
 			colours[i] = spec;
-		    else {
-			cxt.expect("colour or integer");
-		    }
+		    else
+			expect("colour or integer");
+
 		    outlines[i] = 
-			cxt.toArray(Vec2D.class, cxt.tail(xs), "vector list");
-		    xss = cxt.tail(xss);
+			toArray(Vec2D.class, tail(xs), "vector list");
+		    xss = tail(xss);
 		}
 
 		return new TilePicture(aspect, strokes, outlines, colours);
@@ -128,11 +129,11 @@ public class TilePicture extends Picture {
 	/** Set the palette of colours used for rendering Escher picture. */
 	new Primitive.PrimN("palette", 4) {
 	    @Override
-	    public Value invoke(Value args[], int base) {
-		hbase = (float) cxt.number(args[base+0]);
-		hstep = (float) cxt.number(args[base+1]);
-		svalue = (float) cxt.number(args[base+2]);
-		bvalue = (float) cxt.number(args[base+3]);
+	    public Value apply(Value args[], int base) {
+		hbase = (float) number(args[base+0]);
+		hstep = (float) number(args[base+1]);
+		svalue = (float) number(args[base+2]);
+		bvalue = (float) number(args[base+3]);
 		return Value.nil;
 	    }
 	}

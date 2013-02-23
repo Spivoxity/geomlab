@@ -45,6 +45,7 @@ import funbase.Name;
 import funbase.Primitive;
 import funbase.Scanner;
 import funbase.Value;
+import funbase.FunCode;
 
 /** Common superclass for classes that provide a read-eval-print loop */
 public class GeomBase {
@@ -246,22 +247,30 @@ public class GeomBase {
     public static final Primitive primitives[] = {
 	new Primitive.Prim0("scan") {
 	    @Override
-	    public Value invoke0() {
+	    public Value apply0() {
 		return theApp.scan();
 	    }
 	},
 
 	new Primitive.Prim2("synerror") {
 	    @Override
-	    public Value invoke2(Value msg, Value help) {
-		theApp.syntax_error(cxt.string(msg), cxt.string(help));
+	    public Value apply2(Value msg, Value help) {
+		theApp.syntax_error(string(msg), string(help));
+		return Value.nil;
+	    }
+	},
+
+	new Primitive.Prim1("setroot") {
+	    @Override
+	    public Value apply1(Value v) {
+		FunCode.setRoot(v);
 		return Value.nil;
 	    }
 	},
 
 	new Primitive.Prim1("topval") {
 	    @Override
-	    public Value invoke1(Value v) {
+	    public Value apply1(Value v) {
 		theApp.exprValue(v);
 		return Value.nil;
 	    }
@@ -269,8 +278,8 @@ public class GeomBase {
 
 	new Primitive.Prim2("topdef") {
 	    @Override
-	    public Value invoke2(Value x, Value v) {
-		Name n = cxt.cast(Name.class, x, "name");
+	    public Value apply2(Value x, Value v) {
+		Name n = cast(Name.class, x, "name");
 		theApp.defnValue(n, v);
 		return Value.nil;
 	    }
@@ -278,7 +287,7 @@ public class GeomBase {
 	
 	new Primitive.Prim0("toptext") {
 	    @Override
-	    public Value invoke0() {
+	    public Value apply0() {
 		theApp.showPhrase();
 		return Value.nil;
 	    }
@@ -286,8 +295,8 @@ public class GeomBase {
 
         new Primitive.Prim1("load") {
             @Override
-            public Value invoke1(Value fname0) {
-        	String fname = cxt.string(fname0);
+            public Value apply1(Value fname0) {
+        	String fname = string(fname0);
         	File current = theApp.getCurrentFile();
         	File file = (current == null ? new File(fname)
 			     : new File(current.getParentFile(), fname));
@@ -298,7 +307,7 @@ public class GeomBase {
 
 	new Primitive.Prim1("print") {
 	    @Override
-	    public Value invoke1(Value v) {
+	    public Value apply1(Value v) {
 		theApp.logWrite(v);
 		Thread.yield();
 		return v;
@@ -307,7 +316,7 @@ public class GeomBase {
 
 	new Primitive.Prim0("debug") {
 	    @Override
-	    public Value invoke0() {
+	    public Value apply0() {
 		return Value.makeNumValue(funbase.Evaluator.debug);
 	    }
 	},
@@ -315,14 +324,14 @@ public class GeomBase {
         new Primitive.Prim1("install") {
             /* Install a plug-in class with primitives. */
             @Override
-	    public Value invoke1(Value name) {
-        	String clname = cxt.string(name);
+	    public Value apply1(Value name) {
+        	String clname = string(name);
         	try {
         	    Session.installPlugin(Class.forName("plugins." + clname));
         	}
         	catch (Exception e) {
-        	    cxt.primFail("install failure for " + clname
-        		    + " - " + e.getMessage(), "#install");
+        	    Evaluator.error("install failure for " + clname
+				     + " - " + e.getMessage(), "#install");
         	}
         	return Value.nil;
             }
@@ -330,12 +339,12 @@ public class GeomBase {
 
         new Primitive.Prim1("save") {
             @Override
-            public Value invoke1(Value fname) {
+            public Value apply1(Value fname) {
         	try {
-        	    Session.saveSession(new File(cxt.string(fname)));
+        	    Session.saveSession(new File(string(fname)));
         	    return Value.nil;
         	} catch (Command.CommandException e) {
-        	    cxt.primFail(e.toString());
+        	    Evaluator.error(e.toString());
 		    return null;
         	}
             }
@@ -343,12 +352,12 @@ public class GeomBase {
         
 	new Primitive.Prim1("restore") {
 	    @Override
-	    public Value invoke1(Value fname) {
+	    public Value apply1(Value fname) {
 		try {
-		    Session.loadSession(new File(cxt.string(fname)));
+		    Session.loadSession(new File(string(fname)));
 		    return Value.nil;
 		} catch (Command.CommandException e) {
-		    cxt.primFail(e.toString());
+		    Evaluator.error(e.toString());
 		    return null;
 		}
 	    }
@@ -356,7 +365,7 @@ public class GeomBase {
 
         new Primitive.Prim0("quit") {
             @Override
-            public Value invoke0() {
+            public Value apply0() {
         	theApp.exit();
         	return Value.nil;
             }

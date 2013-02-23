@@ -336,11 +336,11 @@ public abstract class Command extends AbstractAction {
     public static final Primitive primitives[] = {
 	new Primitive.Prim1("examples") {
 	    @Override
-	    public Value invoke1(Value xs) {
-		Value args[] = cxt.toArray(xs);
+	    public Value apply1(Value xs) {
+		Value args[] = toArray(xs);
 		String examples[] = new String[args.length];
 		for (int i = 0; i < args.length; i++)
-		    examples[i] = cxt.string(args[i]);
+		    examples[i] = string(args[i]);
 		GeomLab app = (GeomLab) GeomBase.theApp;
 		fillExamplesMenu(examples, app);
 		return Value.nil;

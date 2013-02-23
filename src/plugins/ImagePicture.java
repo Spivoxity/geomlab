@@ -40,6 +40,7 @@ import java.net.URL;
 
 import funbase.Primitive;
 import funbase.Value;
+import funbase.Evaluator;
 
 /** A picture defined by a bitmap. */
 public class ImagePicture extends Picture {
@@ -141,16 +142,16 @@ public class ImagePicture extends Picture {
     public static final Primitive primitives[] = {
 	new Primitive.Prim1("photo") {
 	    @Override
-	    public Value invoke1(Value name) {
+	    public Value apply1(Value name) {
 		try {
-		    URL url = new URL(cxt.string(name));
+		    URL url = new URL(string(name));
 		    InputStream in = url.openStream();
 		    Native.Image image = Native.factory.readImage(in);
 		    in.close();
 		    return new ImagePicture(image);
 		}
 		catch (IOException e) {
-		    cxt.primFail("Image I/O error - " + e);
+		    Evaluator.error("Image I/O error - " + e);
 		    return null;
 		}
 	    }
@@ -158,13 +159,13 @@ public class ImagePicture extends Picture {
 	
 	new Primitive.Prim1("resource") {
 	    @Override
-	    public Value invoke1(Value v) {
+	    public Value apply1(Value v) {
 		try {
-		    String name = cxt.string(v);
+		    String name = string(v);
 		    return new ImagePicture(loadResource(name), name);
 		}
 		catch (IOException e) {
-		    cxt.primFail("Image I/O error - " + e);
+		    Evaluator.error("Image I/O error - " + e);
 		    return null;
 		}
 	    }
@@ -172,9 +173,9 @@ public class ImagePicture extends Picture {
 	
 	new Primitive.Prim3("image") {
 	    @Override
-	    public Value invoke3(Value width0, Value height0, Value fun) {
-		int width = (int) cxt.number(width0);
-		int height = (int) cxt.number(height0);
+	    public Value apply3(Value width0, Value height0, Value fun) {
+		int width = (int) number(width0);
+		int height = (int) number(height0);
 		Native.Image image = Native.factory.image(width, height);
 		Value args[] = new Value[2];
 		
@@ -182,9 +183,9 @@ public class ImagePicture extends Picture {
 		    args[0] = Value.makeNumValue(x);
 		    for (int y = 0; y < height; y++) {
 			args[1] = Value.makeNumValue(y);
-			Value v = fun.apply(args, cxt);
+			Value v = fun.apply(args);
 			ColorValue col = 
-			    cxt.cast(ColorValue.class, v, "colour");
+			    cast(ColorValue.class, v, "colour");
 			image.setRGB(x, height-y-1, col.rgb);
 		    }
 		}
@@ -195,11 +196,11 @@ public class ImagePicture extends Picture {
 	
 	new Primitive.PrimN("render", 4) {
 	    @Override 
-	    public Value invoke(Value args[], int base) {
-		Picture pic = picture(args[base+0], cxt);
-		int size = (int) Math.round(cxt.number(args[base+1]));
-		float slider = (float) cxt.number(args[base+2]);
-		float grey = (float) cxt.number(args[base+3]);
+	    public Value apply(Value args[], int base) {
+		Picture pic = cast(Picture.class, args[base+0], "picture");
+		int size = (int) Math.round(number(args[base+1]));
+		float slider = (float) number(args[base+2]);
+		float grey = (float) number(args[base+3]);
 		ColorValue bg = ColorValue.getGrey(grey);
 		pic.prerender(slider);
 		Native.Image image = 
@@ -210,11 +211,11 @@ public class ImagePicture extends Picture {
 
 	new Primitive.Prim3("pixel") {
 	    @Override
-	    public Value invoke3(Value p0, Value x0, Value y0) {
-		ImagePicture p = cxt.cast(ImagePicture.class, p0, "image");
+	    public Value apply3(Value p0, Value x0, Value y0) {
+		ImagePicture p = cast(ImagePicture.class, p0, "image");
 		int w = p.image.getWidth(), h = p.image.getHeight();
-		int x = (int) Math.round(cxt.number(x0));
-		int y = (int) Math.round(cxt.number(y0));
+		int x = (int) Math.round(number(x0));
+		int y = (int) Math.round(number(y0));
 		if (0 <= x && x < w && 0 <= y && y < h) {
 		    int rgb = p.image.getRGB(x, h-y-1);
 		    return new ColorValue(rgb);
@@ -226,16 +227,16 @@ public class ImagePicture extends Picture {
 	
 	new Primitive.Prim1("width") {
 	    @Override
-	    public Value invoke1(Value v) {
-		ImagePicture p = cxt.cast(ImagePicture.class, v, "image");
+	    public Value apply1(Value v) {
+		ImagePicture p = cast(ImagePicture.class, v, "image");
 		return Value.makeNumValue(p.image.getWidth());
 	    }
 	},
 	
 	new Primitive.Prim1("height") {
 	    @Override
-	    public Value invoke1(Value v) {
-		ImagePicture p = cxt.cast(ImagePicture.class, v, "image");
+	    public Value apply1(Value v) {
+		ImagePicture p = cast(ImagePicture.class, v, "image");
 		return Value.makeNumValue(p.image.getHeight());
 	    }
 	},
@@ -243,16 +244,16 @@ public class ImagePicture extends Picture {
 	/** Save image as a file */
 	new Primitive.Prim3("saveimg") {
 	    @Override
-	    public Value invoke3(Value v, Value fmt, Value fn) {
-		ImagePicture p = cxt.cast(ImagePicture.class, v, "image");
-		String format = cxt.string(fmt);
-		String fname = cxt.string(fn);
+	    public Value apply3(Value v, Value fmt, Value fn) {
+		ImagePicture p = cast(ImagePicture.class, v, "image");
+		String format = string(fmt);
+		String fname = string(fn);
 
 		try {
 		    Native.factory.writeImage(p.image, format, new File(fname));
 		}
 		catch (IOException e) {
-		    cxt.primFail("I/O failed: " + e.getMessage());
+		    Evaluator.error("I/O failed: " + e.getMessage());
 		}
 
 		return Value.nil;

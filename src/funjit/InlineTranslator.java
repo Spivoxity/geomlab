@@ -304,11 +304,10 @@ public class InlineTranslator extends JitTranslator {
 	    cast(consval_cl, new Handler(name, "list") {
 		    @Override
 		    public void compile() {
-			// cxt.list_fail(<msg>);
-			code.gen(ALOAD, _cxt);
+			// Evaluator.list_fail(<msg>);
 			code.gen(ALOAD, _temp);
 			code.gen(CONST, prim);
-			code.gen(INVOKEVIRTUAL, errcxt_cl, "list_fail", 
+			code.gen(INVOKESTATIC, evaluator_cl, "list_fail", 
 				 fun_VS_t);
 		    }
 		});

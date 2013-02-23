@@ -62,7 +62,7 @@ public class Cell extends Value {
 	new Primitive.Prim1("new") {
 	    /** Allocate and initialize a new cell */
 	    @Override
-	    public Value invoke1(Value x) { 
+	    public Value apply1(Value x) { 
 		return new Cell(x); 
 	    }
 	},
@@ -70,8 +70,8 @@ public class Cell extends Value {
 	new Primitive.Prim1("!") {
 	    /** Fetch the contents of a cell */
 	    @Override
-	    public Value invoke1(Value v) {
-		Cell x = cxt.cast(Cell.class, v, "cell");
+	    public Value apply1(Value v) {
+		Cell x = cast(Cell.class, v, "cell");
 		return x.contents;
 	    }
 	},
@@ -79,8 +79,8 @@ public class Cell extends Value {
 	new Primitive.Prim2(":=") {
 	    /** Change the contents of a cell */
 	    @Override
-	    public Value invoke2(Value v, Value y) {
-		Cell x = cxt.cast(Cell.class, v, "cell");
+	    public Value apply2(Value v, Value y) {
+		Cell x = cast(Cell.class, v, "cell");
 		return (x.contents = y);
 	    }
 	}

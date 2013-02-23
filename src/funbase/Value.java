@@ -48,13 +48,13 @@ public abstract class Value implements Serializable {
      * system, and hidden behind static factory methods in the Value
      * class. */
     
-    public Value apply(Value args[], ErrContext cxt) {
-	cxt.err_apply();
+    public Value apply(Value args[]) {
+	Evaluator.err_apply();
 	return null;
     }
 
-    public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-	cxt.error("matching must use a constructor", "#constr");
+    public Value[] pattMatch(Value obj, int nargs) {
+	Evaluator.err_match();
 	return null;
     }
 
@@ -344,12 +344,12 @@ public abstract class Value implements Serializable {
 	    this.subr = subr;
 	}
 
-	public Value apply(Value args[], ErrContext cxt) {
-	    return subr.apply(args, 0, args.length, cxt);
+	public Value apply(Value args[]) {
+	    return subr.apply(args, 0, args.length);
 	}
 
-	public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-	    return subr.pattMatch(obj, nargs, cxt);
+	public Value[] pattMatch(Value obj, int nargs) {
+	    return subr.pattMatch(obj, nargs);
 	}
 
 	@Override

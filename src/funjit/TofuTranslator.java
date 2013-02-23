@@ -63,8 +63,7 @@ public class TofuTranslator implements FunCode.Jit {
 				       Value fvars[]) {
 		return new Function.Closure(funcode.arity, funcode, fvars) {
 		    @Override
-		    public Value apply(Value args[], int base, 
-				       int nargs, ErrContext cxt) {
+		    public Value apply(Value args[], int base, int nargs) {
 			// Translate the code
 			if (code.jitcode == this_factory)
 			    code.jitcode = translator.translate(code);
@@ -74,10 +73,19 @@ public class TofuTranslator implements FunCode.Jit {
 			    func.subr = code.jitcode.newClosure(func, fvars);
 
 			// Call the new closure
-			return func.subr.apply(args, base, nargs, cxt);
+			return func.subr.apply(args, base, nargs);
 		    }
 		};
 	    }
 	};
+    }
+
+    @Override
+    public String[] getContext(String me) {
+	return translator.getContext(me);
+    }
+
+    public void setRoot(Value root) {
+	translator.setRoot(root);
     }
 }

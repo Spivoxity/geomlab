@@ -184,22 +184,22 @@ public class BushPicture extends Picture {
 	new Primitive.Prim1("bush") {
 	    /* Create a fractal picture from a string of commands */
 	    @Override
-	    public Value invoke1(Value x) {
-		return new BushPicture(cxt.string(x));
+	    public Value apply1(Value x) {
+		return new BushPicture(string(x));
 	    }	    
 	},
 	
 	new Primitive.PrimN("bushparams", 7) {
 	    /* Set parameters used to interpret commands */
 	    @Override
-	    public Value invoke(Value args[], int base) {
-		linewidth = (float) cxt.number(args[base+0]);
-		alpha = (float) cxt.number(args[base+1]);
-		theta = (float) cxt.number(args[base+2]);
-		setColours((int) cxt.number(args[base+3]),
-			(float) cxt.number(args[base+4]), 
-			(float) cxt.number(args[base+5]), 
-			(float) cxt.number(args[base+6]));
+	    public Value apply(Value args[], int base) {
+		linewidth = (float) number(args[base+0]);
+		alpha = (float) number(args[base+1]);
+		theta = (float) number(args[base+2]);
+		setColours((int) number(args[base+3]),
+			(float) number(args[base+4]), 
+			(float) number(args[base+5]), 
+			(float) number(args[base+6]));
 		return Value.nil;
 	    }
 	}

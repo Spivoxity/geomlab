@@ -38,7 +38,6 @@ import java.io.IOException;
 import funbase.Primitive;
 import funbase.Value;
 import funbase.Name;
-import funbase.ErrContext;
 import funbase.FunCode;
 import funbase.Evaluator;
 import funbase.Scanner;
@@ -48,187 +47,183 @@ public class BasicPrims {
     public static final Primitive primitives[] = {
 	new Primitive.Prim2("=") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
+	    public Value apply2(Value x, Value y) {
 		return Value.makeBoolValue(x.equals(y));
 	    }
 	},
 	
 	new Primitive.Prim2("<>") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
+	    public Value apply2(Value x, Value y) {
 		return Value.makeBoolValue(! x.equals(y));
 	    }
 	},
 	
 	new Primitive.Prim2("+") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeNumValue(cxt.number(x) + cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeNumValue(number(x) + number(y));
 	    }
 	},
 
 	new Primitive.Prim2("-") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeNumValue(cxt.number(x) - cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeNumValue(number(x) - number(y));
 	    }
 	},
 	
 	new Primitive.Prim2("*") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeNumValue(cxt.number(x) * cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeNumValue(number(x) * number(y));
 	    }
 	},
 	
 	new Primitive.Prim2("/") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		if (cxt.number(y) == 0.0) 
-		    cxt.primFail("division by zero", "#divzero");
-		return Value.makeNumValue(cxt.number(x) / cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		if (number(y) == 0.0) 
+		    Evaluator.error("division by zero", "#divzero");
+		return Value.makeNumValue(number(x) / number(y));
 	    }
 	},
 	
 	new Primitive.Prim1("uminus") {
 	    @Override
-	    public Value invoke1(Value x) {
-		return Value.makeNumValue(- cxt.number(x));
+	    public Value apply1(Value x) {
+		return Value.makeNumValue(- number(x));
 	    }
 	},
 	
 	new Primitive.Prim2("<") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeBoolValue(cxt.number(x) < cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeBoolValue(number(x) < number(y));
 	    }
 	},
 	
 	new Primitive.Prim2("<=") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeBoolValue(cxt.number(x) <= cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeBoolValue(number(x) <= number(y));
 	    }
 	},
 	
 	new Primitive.Prim2(">") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeBoolValue(cxt.number(x) > cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeBoolValue(number(x) > number(y));
 	    }
 	},
 	
 	new Primitive.Prim2(">=") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return Value.makeBoolValue(cxt.number(x) >= cxt.number(y));
+	    public Value apply2(Value x, Value y) {
+		return Value.makeBoolValue(number(x) >= number(y));
 	    }
 	},
 	
 	new Primitive.Prim1("numeric") {
 	    @Override
-	    public Value invoke1(Value x) {
+	    public Value apply1(Value x) {
 		return Value.makeBoolValue(x.isNumValue());
 	    }
 	},
 	
 	new Primitive.Prim1("int") {
 	    @Override
-	    public Value invoke1(Value x) {
-		return Value.makeNumValue(Math.floor(cxt.number(x)));
+	    public Value apply1(Value x) {
+		return Value.makeNumValue(Math.floor(number(x)));
 	    }
 	},
 	
 	new Primitive.Prim1("sqrt") {
 	    @Override
-	    public Value invoke1(Value x) {
-		if (cxt.number(x) < 0.0) 
-		    cxt.primFail("taking square root of a negative number", 
-				 "#sqrt");
-		return Value.makeNumValue(Math.sqrt(cxt.number(x)));
+	    public Value apply1(Value x) {
+		if (number(x) < 0.0) 
+		    Evaluator.error("taking square root of a negative number", 
+				     "#sqrt");
+		return Value.makeNumValue(Math.sqrt(number(x)));
 	    }
 	},
 	
 	new Primitive.Prim1("exp") {
 	    @Override
-	    public Value invoke1(Value x) {
-		return Value.makeNumValue(Math.exp(cxt.number(x)));
+	    public Value apply1(Value x) {
+		return Value.makeNumValue(Math.exp(number(x)));
 	    }
 	},
 
 	new Primitive.Prim1("sin") {
 	    @Override
-	    public Value invoke1(Value x) {
+	    public Value apply1(Value x) {
 		return Value.makeNumValue
-		    (Math.sin(cxt.number(x) * Math.PI / 180));
+		    (Math.sin(number(x) * Math.PI / 180));
 	    }
 	},
 	
 	new Primitive.Prim1("cos") {
 	    @Override
-	    public Value invoke1(Value x) {
+	    public Value apply1(Value x) {
 		return Value.makeNumValue
-		    (Math.cos(cxt.number(x) * Math.PI / 180));
+		    (Math.cos(number(x) * Math.PI / 180));
 	    }
 	},
 	
 	new Primitive.Prim1("tan") {
 	    @Override
-	    public Value invoke1(Value x) {
+	    public Value apply1(Value x) {
 		return Value.makeNumValue
-		    (Math.tan(cxt.number(x) * Math.PI / 180));
+		    (Math.tan(number(x) * Math.PI / 180));
 	    }
 	},
 	
 	new Primitive.Prim2("atan2") {
 	    @Override
-	    public Value invoke2(Value y, Value x) {
+	    public Value apply2(Value y, Value x) {
 		return Value.makeNumValue
-		    (Math.atan2(cxt.number(y), cxt.number(x)) * 180 / Math.PI);
+		    (Math.atan2(number(y), number(x)) * 180 / Math.PI);
 	    }
 	},
 
 	new Primitive.Prim0("random") {
 	    @Override
-	    public Value invoke0() {
+	    public Value apply0() {
 		return Value.makeNumValue(Math.random());
 	    }
 	},
 	
 	new Primitive.Prim1("name") {
 	    @Override
-	    public Value invoke1(Value x) {
-		return Name.find(cxt.string(x));
+	    public Value apply1(Value x) {
+		return Name.find(string(x));
 	    }
 	},
 
 	new Primitive.Prim1("head") {
 	    @Override
-	    public Value invoke1(Value x) {
-		return cxt.head(x);
-	    }
+	    public Value apply1(Value x) { return head(x); }
 	},
 	
 	new Primitive.Prim1("tail") {
 	    @Override
-	    public Value invoke1(Value x) {
-		return cxt.tail(x);
-	    }
+	    public Value apply1(Value x) { return tail(x); }
 	},
 	
 	new Primitive.Prim2(":") {
 	    @Override
-	    public Value invoke2(Value hd, Value tl) {
+	    public Value apply2(Value hd, Value tl) {
 		if (! tl.isConsValue() && ! tl.isNilValue()) 
-		    cxt.expect("list");
+		    expect("list");
 		return Value.cons(hd, tl);
 	    }
 	    
 	    private Value args[] = new Value[2];
 
 	    @Override
-	    public Value[] pattMatch(Value obj, int nargs, ErrContext cxt) {
-		if (nargs != 2) cxt.err_patnargs(name);
+	    public Value[] pattMatch(Value obj, int nargs) {
+		if (nargs != 2) Evaluator.err_patnargs(name);
 		try {
 		    args[0] = obj.getTail();
 		    args[1] = obj.getHead();
@@ -245,47 +240,40 @@ public class BasicPrims {
         new Primitive.Prim1("primitive") {
             /* Look up a primitive */
             @Override
-	    public Value invoke1(Value name) {
-        	return Value.makeFunValue(Primitive.find(cxt.string(name)));
+	    public Value apply1(Value name) {
+        	return Value.makeFunValue(Primitive.find(string(name)));
             }
         },
 
-	new Primitive.Prim3("assemble") {
-	    @Override
-	    public Value invoke3(Value f0, Value arity0, Value code) {
-		String f = f0.toString(); // Could be Name or String
-		int arity = (int) cxt.number(arity0);
-		return FunCode.assemble(f, arity, code, cxt);
-	    }
-	},
+	FunCode.assemble,
 
 	new Primitive.Prim1("glodef") {
 	    @Override
-	    public Value invoke1(Value x) {
-		Name n = cxt.name(x);
+	    public Value apply1(Value x) {
+		Name n = name(x);
 		Value v = n.getGlodef();
-		if (v == null) cxt.err_notdef(n);
+		if (v == null) Evaluator.err_notdef(n);
 		return v;
 	    }
 	},
 
 	new Primitive.Prim2("apply") {
 	    @Override
-	    public Value invoke2(Value x, Value y) {
-		return x.apply(cxt.toArray(y), ErrContext.initContext);
+	    public Value apply2(Value x, Value y) {
+		return x.apply(toArray(y));
 	    }
 	},
 
 	new Primitive.Prim1("closure") {
 	    @Override
-	    public Value invoke1(Value code) {
+	    public Value apply1(Value code) {
 		return code.makeClosure(new Value[1]);
 	    }
 	},
 
         new Primitive.Prim0("freeze") {
             @Override
-            public Value invoke0() {
+            public Value apply0() {
         	Name.freezeGlobals();
         	return Value.nil;
             }
@@ -293,16 +281,16 @@ public class BasicPrims {
 
 	new Primitive.Prim1("frozen") {
 	    @Override
-	    public Value invoke1(Value x) {
-		Name n = cxt.name(x);
+	    public Value apply1(Value x) {
+		Name n = name(x);
 		return Value.makeBoolValue(n.isFrozen());
 	    }
 	},
 
 	new Primitive.Prim1("spelling") {
 	    @Override
-	    public Value invoke1(Value x) {
-		Name n = cxt.name(x);
+	    public Value apply1(Value x) {
+		Name n = name(x);
 		return Value.makeStringValue(n.toString());
 	    }
 	},
@@ -311,26 +299,26 @@ public class BasicPrims {
 	    private int g = 0;
 
 	    @Override
-	    public Value invoke0() {
+	    public Value apply0() {
 		return Name.find(String.format("$g%d", ++g));
 	    }
 	},
 
         new Primitive.Prim2("error") {
             @Override
-	    public Value invoke2(Value msg, Value help) {
-        	cxt.primFail(cxt.string(msg), cxt.string(help));
+	    public Value apply2(Value msg, Value help) {
+        	Evaluator.error(string(msg), string(help));
         	return null;
             }
         },
         
 	new Primitive.PrimN("token", 4) {
 	    @Override
-	    public Value invoke(Value args[], int base) {
-		Name tag = cxt.name(args[base+0]);
-		Name tok = cxt.name(args[base+1]);
-		int p = (int) cxt.number(args[base+2]);
-		int rp = (int) cxt.number(args[base+3]);
+	    public Value apply(Value args[], int base) {
+		Name tag = name(args[base+0]);
+		Name tok = name(args[base+1]);
+		int p = (int) number(args[base+2]);
+		int rp = (int) number(args[base+3]);
 		Scanner.makeToken(tag, tok, p, rp);
 		return Value.nil;
 	    }
@@ -338,8 +326,8 @@ public class BasicPrims {
 
 	new Primitive.Prim1("priority") {
 	    @Override
-	    public Value invoke1(Value x) {
-		Name n = cxt.name(x);
+	    public Value apply1(Value x) {
+		Name n = name(x);
 		return Value.makeList(Value.makeNumValue(n.prio),
 				      Value.makeNumValue(n.rprio));
 	    }
@@ -347,19 +335,19 @@ public class BasicPrims {
 
         new Primitive.Prim3("limit") {
             @Override
-	    public Value invoke3(Value time, Value steps, Value conses) {
-               Evaluator.setLimits((int) cxt.number(time),
-				   (int) cxt.number(steps), 
-				   (int) cxt.number(conses));
+	    public Value apply3(Value time, Value steps, Value conses) {
+               Evaluator.setLimits((int) number(time),
+				   (int) number(steps), 
+				   (int) number(conses));
                return Value.nil;
            }
         },
 
         new Primitive.Prim1("dump") {
             @Override
-            public Value invoke1(Value x) {
+            public Value apply1(Value x) {
 		try {
-		    String fname = cxt.string(x);
+		    String fname = string(x);
 		    PrintWriter out = 
 			new PrintWriter(new BufferedWriter
 					(new FileWriter(fname)));

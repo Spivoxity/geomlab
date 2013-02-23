@@ -77,7 +77,7 @@ public class Evaluator {
 	}
 	
 	try {
-	    result = fun.apply(args, ErrContext.nullContext);
+	    result = fun.apply(args);
 	    checkpoint();
 	}
 	catch (StackOverflowError e) {
@@ -118,7 +118,7 @@ public class Evaluator {
     }
     
     public static Value apply(Value fun, Value args[]) {
-	return fun.apply(args, ErrContext.initContext);
+	return fun.apply(args);
     }
 
     public static void printStats(PrintWriter log) {
@@ -142,4 +142,99 @@ public class Evaluator {
 	
 	public String getErrtag() { return errtag; }
     }
+
+    private static String format(String msg, String name) {
+	if (name != null)
+	    return msg + " in function '" + name + "'";
+	else
+	    return msg;
+    }
+
+    private static String message(String msg) {
+	String context[] = FunCode.getContext(null);
+	return format(msg, context[0]);
+    }
+
+    public static void error(String msg) {
+	throw new EvalException(message(msg));
+    }
+
+    public static void error(String msg, String help) {
+	throw new EvalException(message(msg), help);
+    }
+
+    public static void expect(String name, String expected) {
+	String context[] = FunCode.getContext(name);
+	String vowels = "aeiou";
+	String a = (vowels.indexOf(expected.charAt(0)) >= 0 ? "an" : "a");
+	throw new EvalException
+	    (format("'" + context[1] + "' expects " + a + " "
+		    + expected + " argument", context[0]), "#type");
+    }
+
+    /** Complain about calling a non-function */
+    public static void err_apply() {
+	error("applying a non-function", "#apply");
+    }
+
+    /** Complain about pattern-matching with a non-constructor */
+    public static void err_match() {
+	error("matching must use a constructor", "#constr");
+    }
+
+    /** Complain when the wrong number of arguments are provided */
+    public static void err_nargs(String name, int nargs, int arity) {
+	error("function " + name + " called with " + nargs
+	      + (nargs == 1 ? " argument" : " arguments")
+	      + " but needs " + arity, "#numargs");
+    }
+
+    /** Complain when no pattern matches in a function definition */
+    public static void err_nomatch(Value args[], int base, int arity) {
+	StringBuilder buf = new StringBuilder();
+	if (arity > 0) {
+	    buf.append(args[base+0]);
+	    for (int i = 1; i < arity; i++)
+		buf.append(", " + args[base+i]);
+	}
+
+	error("no pattern matches "
+	      + (arity == 1 ? "argument" : "arguments")
+	      + " (" + buf + ")", "#match");
+    }
+
+    public static void err_nomatch1(Value arg1) {
+	err_nomatch(new Value[] { arg1 }, 0, 1);
+    }
+
+    public static void err_nomatch2(Value arg1, Value arg2) {
+	err_nomatch(new Value[] { arg1, arg2 }, 0, 2);
+    }
+
+    public static void err_nomatch3(Value arg1, Value arg2, Value arg3) {
+	err_nomatch(new Value[] { arg1, arg2, arg3 }, 0, 3);
+    }
+
+    /** Complain about an undefined name */
+    public static void err_notdef(Name x) {
+	error("'" + x + "' is not defined", "#undef");
+    }
+
+    /** Complain about a non-boolean guard or 'if' condition */
+    public static void err_boolcond() {
+	error("boolean expected as condition", "#condbool");
+    }
+
+    /** Complain about matching against a constructor with the
+     *  wrong number of argument patterns */
+    public static void err_patnargs(String name) {
+	error("matching constructor '" + name 
+	      + "' with wrong number of arguments", "#patnargs");
+    }
+
+    public static void list_fail(Value xs, String msg) {
+	error("taking " + msg + " of " 
+	      + (xs.isNilValue() ? "the empty list" : "a non-list"),
+	      "#" + msg);
+    }    
 }
