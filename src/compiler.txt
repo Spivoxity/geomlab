@@ -32,6 +32,8 @@
   BasicPrims, Cell, StringPrims. Just enough scanner syntax is in place
   to read the next few definitions. }
 
+{ LEXICAL TOKENS }
+
 define __token = _primitive("token");
 define _token(tag) = __token(tag, tag, 0, 0);
 
@@ -43,6 +45,7 @@ __token(#=, #=, 3, 4);
 __token(#+, #+, 5, 6);
 __token(#-, #-, 5, 6);
 __token(#:, #:, 7, 7);
+
 define = = _primitive("=");
 define + = _primitive("+");
 define - = _primitive("-");
@@ -172,33 +175,20 @@ define __top() =
     | describe(#lpar) = "'('"
     | describe(#rpar) = "')'"
     | describe(#comma) = "','"
-    | describe(#=) = "'='"
     | describe(#semi) = "';'"
     | describe(#bra) = "'['"
     | describe(#ket) = "']'"
-    | describe(#-) = "'-'"
-    | describe(#+) = "'+'"
     | describe(#vbar) = "'|'"
     | describe(#>>) = "'>>'"
     | describe(#..) = "'..'"
     | describe(#string) = "a string constant"
     | describe(#binop) = "a binary operator"
     | describe(#monop) = "a unary operator"
-    | describe(#if) = "'if'"
-    | describe(#then) = "'then'"
-    | describe(#else) = "'else'"
-    | describe(#let) = "'let'"
-    | describe(#define) = "'define'"
-    | describe(#in) = "'in'"
-    | describe(#function) = "'function'"
-    | describe(#when) = "'when'"
-    | describe(#:) = "':'"
-    | describe(#_) = "'_'"
+    | describe(#lbrace) = "'{'"
     | describe(#rbrace) = "'}'"
     | describe(#eol) = "end of line"
     | describe(#eof) = "end of input" 
-    | describe(#<-) = "'<-'"
-    | describe(_) = "*unknown*" in
+    | describe(x) = "'" ^ spelling(x) ^ "'" in
 
   { tok -- latest lexer token }
   let tok = _new(0) in
@@ -516,16 +506,10 @@ define __top() =
   let parser() = scan() >> p_para() in
 
 
-  { CODE GENERATOR -- Translate AST into funcode }
-
-  let labcount = _new(0) in
-
-  let label() = _set(labcount, _get(labcount)+1) in
-
-  { The compiler puts together the object code as a tree, with instructions
-    as the leaves, and internal nodes marked with #seq that signify
-    concatenation of their children.  The function flatten makes the tree
-    into a list in linear time. }
+  { CODE LISTS -- The compiler puts together the object code as a tree, 
+    with instructions as the leaves, and internal nodes (marked with #seq)
+    that signify concatenation of their children.  The function flatten 
+    makes the tree into a list in linear time. }
  
   { flatten -- arrange instruction tree into a list }
   let flatten(c) =
@@ -534,10 +518,9 @@ define __top() =
       | flat(c, a) = c:a in
     flat(c, []) in
 
-  { integer -- test if value is an integer }
-  let integer(v) = numeric(v) and v = int(v) in
 
-  { An environment is a 5-list [lev, arity, dict, fvs, size], where
+  { ENVIRONMENTS -- An environment is a 5-list [lev, arity, dict, fvs, size], 
+    where
 
       lev is the integer level.
       arity is the number of arguments of the current function.
@@ -620,6 +603,12 @@ define __top() =
       | h(_) = true in
     _set(dict, filter(h, _get(dict))) >> _set(size, 0) in
 
+  { CODE GENERATOR -- Translate AST into funcode }
+
+  let labcount = _new(0) in
+
+  let label() = _set(labcount, _get(labcount)+1) in
+
   { c_ref -- compile a variable reference }
   let c_ref(x, env) = 
     let case([n, i, a]) = 
@@ -670,9 +659,9 @@ define __top() =
         { A constructor pattern h(args) }
         let f = label() in
 	let n = length(args) in
+	let c(p1, d1) = c_patt(p1, d1, env) in
 	pgen([#seq, [#TRAP, f], c_ref(cn, env), [#MPRIM, n]],
-	     reverse(zipwith(function (p1, d1) c_patt(p1, d1, env),
-	                     args, [d..d+n-1])),
+	     reverse(zipwith(c, args, [d..d+n-1])),
              [[f, d]])
 
     | c_patt([#cons, h, t], d, env) =
