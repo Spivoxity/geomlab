@@ -35,9 +35,9 @@ import java.io.PrintWriter;
 /** This class provides the context for evaluating paragraphs: it imposes
  *  resource limits, and deals with errors that occur during evaluation. */
 public class Evaluator {
-    protected boolean runFlag = true;
-    private int steps = 0;
-    private int conses = 0;
+    protected static boolean runFlag;
+    private static int steps;
+    private static int conses;
 
     public static int debug = 0;
     /* Debug levels:
@@ -53,8 +53,6 @@ public class Evaluator {
     protected static int timeLimit = 30000;
     protected static int stepLimit = 1000000000;
     protected static int consLimit = 10000000;
-
-    private static Evaluator ev;
 
     private static class ExecThread extends Thread {
 	public Value fun;
@@ -90,39 +88,44 @@ public class Evaluator {
     }
 
     public static Value execute(Value fun, Value... args) {
-	ev = new Evaluator();
+	runFlag = true; steps = conses = 0; 
+
 	Thread timer = null;
-	
 	if (timeLimit > 0) {
 	    timer = new Thread() {
 		@Override
 		public synchronized void run() {
 		    try {
 			wait(timeLimit);
-			ev.runFlag = false;
+			runFlag = false;
 		    }
-		    catch (InterruptedException e) { /* finish */ }
+		    catch (InterruptedException e) { }
 		}
 	    };
 	    timer.start();
 	}
 	
 	ExecThread exec = new ExecThread(fun, args);
-	exec.start();
-	try { exec.join(); } catch (InterruptedException e) {
+
+	try { 
+	    exec.start();
+	    exec.join(); 
+	} 
+	catch (InterruptedException e) {
 	    throw new EvalException("Interrupted!");
 	}
-	if (timer != null) timer.interrupt();
+	finally {
+	    if (timer != null) timer.interrupt();
+	}
+
 	if (exec.excep != null) throw exec.excep;
 	return exec.result;
     }
 
     public static void checkpoint() {
-	if (ev == null) return;
-	ev.steps += (Q - quantum);
-	// if (! ev.runFlag) timeout("long");
-	if (stepLimit > 0 && ev.steps > stepLimit)
-	    timeout("many steps");
+	steps += (Q - quantum);
+	if (stepLimit > 0 && steps > stepLimit) timeout("many steps");
+	if (! runFlag) timeout("long");
 	quantum = Q;
 	Thread.yield();
     }
@@ -132,10 +135,8 @@ public class Evaluator {
     }
     
     public static void countCons() { 
-	if (ev == null) return;
-	ev.conses++; 
-	if (consLimit > 0 && ev.conses > consLimit) 
-	    timeout("much memory");
+	conses++; 
+	if (consLimit > 0 && conses > consLimit) timeout("much memory");
     }
     
     public static void setLimits(int timeLimit, int stepLimit, int consLimit) {
@@ -144,14 +145,10 @@ public class Evaluator {
 	Evaluator.consLimit = consLimit;
     }
     
-    public static Value apply(Value fun, Value args[]) {
-	return fun.apply(args);
-    }
-
     public static void printStats(PrintWriter log) {
         log.format("(%d %s, %d %s)\n", 
-		   ev.steps, (ev.steps == 1 ? "step" : "steps"), 
-		   ev.conses, (ev.conses == 1 ? "cons" : "conses"));
+		   steps, (steps == 1 ? "step" : "steps"), 
+		   conses, (conses == 1 ? "cons" : "conses"));
     }
 
     /** An exception raised because of a run-time error */

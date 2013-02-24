@@ -14,7 +14,7 @@ define _init() =
       ^ "  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;//"
       ^ "crowd(5, 10, man)",
     "spiral(10)", "zagzig(10)", 
-    "colour((T & blank) $ T)", "colour((T & rot(T)) $ T",
+    "colour((T & blank) $ T)", "colour((T & rot(T)) $ T)",
     "colour(side(2) $ T)", "colour(frame(blank, side(2), U))",
     "colour(frame(corner(2), side(2), U))", "colour(invlimit(8))",
     "hilbert(5)", "turtle(dragon(12))", "bush(system(4))",
@@ -143,4 +143,18 @@ define transpic =
   slideimg(500, 500, triage([
     function (t) mike . shear(t/5),
     function (t) interpic(t, mike . shear(1/5), weird . mike . shear(1/5)),
-    function (t) weird . mike . shear(1/5) . pp(t/250)]))
+    function (t) weird . mike . shear(1/5) . pp(t/250)]));
+
+
+{ Digits puzzle }
+
+define delete(d, f) =
+  function (x) (x <> d) and f(x);
+
+define search(k, n, avail) =
+  if k = 9 then [n] else
+    [ s | d <- [1..9] when avail(d),
+          n1 <- [10*n+d] when n1 mod (k+1) = 0,
+	  s <- search(k+1, n1, delete(d, avail)) ];
+
+define digits() = search(0, 0, function (x) true);

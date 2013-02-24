@@ -268,8 +268,8 @@ class ConstPool {
     /** Compute a hash code from three strings */
     protected static int hash3(String str1, String str2, String str3) {
 	int hash = str1.hashCode();
-	if (str2 != null) hash *= str2.hashCode();
-	if (str3 != null) hash *= str3.hashCode();
+	if (str2 != null) hash *= str2.hashCode()+1;
+	if (str3 != null) hash *= str3.hashCode()+2;
 	return hash;
     }
 }

@@ -234,6 +234,13 @@ public class GeomLab extends GeomBase {
     }
 
     public static void main(String args[]) {
+	int j = 0;
+	File sessfile = null;
+	if (j+1 < args.length && args[j].equals("-b")) {
+	    sessfile = new File(args[j+1]);
+	    j += 2;
+	}
+
 	// Under Java Web Start, the default security manager doesn't allow
 	// creation of new class loaders.
 	System.setSecurityManager(null);
@@ -269,26 +276,30 @@ public class GeomLab extends GeomBase {
 	app.frame.input.requestFocusInWindow();
 	app.logWrite("Welcome to GeomLab");
 	
-	funbase.FunCode.install(
-	  // new funbase.Interp()
-	  new funjit.TofuTranslator(new funjit.InlineTranslator())
-	);
+	funbase.FunCode.install
+	    (new funjit.TofuTranslator(new funjit.InlineTranslator()));
 
-	String image = System.getProperty("jnlp.session", "geomlab.gls");
 	try {
-	    Session.loadResource(image);
+	    if (sessfile != null)
+		Session.loadSession(sessfile);
+	    else {
+		String image = 
+		    System.getProperty("jnlp.session", "geomlab.gls");
+		Session.loadResource(image);
+	    }
+
 	    Session.installPlugin(Command.class);
 	}
 	catch (CommandException e) {
 	    app.errorMessage(e.getMessage(), e.getErrtag());
 	}
 	
-	for (String f : args)
-	    app.loadFromFile(new File(f), false);
+	for (; j < args.length; j++)
+	    app.loadFromFile(new File(args[j++]), false);
 
 	Name init = Name.find("_init");
 	if (init.glodef != null) {
-	    Evaluator.apply(init.glodef, new Value[0]);
+	    Evaluator.execute(init.glodef, new Value[0]);
 	}
 
 	app.log.flush();

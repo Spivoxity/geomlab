@@ -33,7 +33,6 @@ package funbase;
 import java.io.*;
 import java.text.*;
 import java.util.*;
-import java.lang.reflect.Array;
 
 import funbase.Evaluator.*;
 
@@ -110,10 +109,6 @@ public abstract class Value implements Serializable {
 	throw new WrongKindException();
     }
     
-    public void setTail(Value tail) throws WrongKindException {
-	throw new WrongKindException();
-    }
-
     public Value matchPlus(Value inc) {
 	return null;
     }
@@ -148,52 +143,13 @@ public abstract class Value implements Serializable {
     
     /** Make a list from a sequence of values */
     public static Value makeList(Value... elems) {
-	return makeList(elems, 0, elems.length);
-    }
-    
-    /** Convert elems[base..base+count) to a list value */
-    public static Value makeList(Value elems[], int base, int count) {
         Value val = nil;
-        for (int i = count-1; i >= 0; i--)
-            val = cons(elems[base+i], val);
+        for (int i = elems.length-1; i >= 0; i--)
+            val = cons(elems[i], val);
         return val;
     }
     
-    /** Convert a list value to an array of values. */
-    public static Value[] makeArray(Value xs) throws WrongKindException {
-	List<Value> elems = new ArrayList<Value>();
-
-	while (xs.isConsValue()) {
-	    elems.add(xs.getHead());
-	    xs = xs.getTail();
-	}
-
-	if (! xs.isNilValue()) throw new WrongKindException();
-
-	return elems.toArray(new Value[elems.size()]);
-    }
-
     /** Convert a list value to an array, casting each element to class cl. */
-    public static <T> T[] makeArray(Class<T> cl, Value xs) 
-					throws WrongKindException {
-	List<T> elems = new ArrayList<T>();
-
-	while (xs.isConsValue()) {
-	    try {
-		elems.add(cl.cast(xs.getHead()));
-	    } catch (ClassCastException _) {
-		throw new WrongKindException();
-	    }
-	    xs = xs.getTail();
-	}
-
-	if (! xs.isNilValue()) throw new WrongKindException();
-
-	@SuppressWarnings("unchecked")
-	T[] result = (T[]) Array.newInstance(cl, elems.size());
-	return elems.toArray(result);
-    }
-
     public static void printNumber(PrintWriter out, double x) {
 	if (x == (int) x)
 	    out.print((int) x);
@@ -229,7 +185,7 @@ public abstract class Value implements Serializable {
     }
 
     /** Exception that is thrown when accessors are applied to the
-     *  wrong kind of Value */
+        wrong kind of Value */
     public static class WrongKindException extends Exception { /* Empty */ }
     
     /** A numeric value represented as a double-precision float */
@@ -503,8 +459,6 @@ public abstract class Value implements Serializable {
 	public Value getHead() { return head; }
 	@Override
 	public Value getTail() { return tail; }
-	@Override
-	public void setTail(Value tail) { this.tail = tail; }
 
 	@Override
 	public boolean equals(Object a) {

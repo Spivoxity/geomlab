@@ -32,6 +32,7 @@ package funbase;
 
 import java.util.*;
 import java.io.*;
+import java.lang.reflect.Array;
 
 import funbase.Evaluator.*;
 import funbase.Value.WrongKindException;
@@ -46,7 +47,11 @@ public abstract class Primitive extends Function {
 	this.name = name;
     }
 
-    /** Report error when argument is not what I expected */
+    // Putting these casting methods here makes them available for use
+    // in any primitive.  Errors are reported with a message that names
+    // the primitive concerned.
+
+    /** Report error when argument is not what we expected */
     public void expect(String expected) {
 	Evaluator.expect(name, expected);
     }
@@ -73,6 +78,7 @@ public abstract class Primitive extends Function {
         }
     }
     
+    /** Cast an argument to type Name */
     public Name name(Value a) {
 	return cast(Name.class, a, "name");
     }
@@ -110,17 +116,7 @@ public abstract class Primitive extends Function {
         return n;
     }
 
-    /** Convert list argument to array */
-    public Value[] toArray(Value xs) {
-	try {
-	    return Value.makeArray(xs);
-	} catch (WrongKindException _) {
-	    expect("list");
-	    return null;
-	}
-    }
-
-    /** Cast an argument to some specified subclass */
+    /** Cast an argument to some specified Value subclass */
     public <T extends Value> T cast(Class<T> cl, Value v, String expected) {
         try {
             return cl.cast(v);
@@ -131,15 +127,34 @@ public abstract class Primitive extends Function {
         }
     }
 
+    /** Convert list argument to array */
+    public Value[] toArray(Value xs) {
+	return toArray(Value.class, xs, "list");
+    }
+
     /** Convert list argument to array of specified class */
     public <T extends Value> T[] toArray(Class<T> cl, Value xs, 
-					 String expected) {
+							 String expected) {
+	List<T> elems = new ArrayList<T>();
+
 	try {
-	    return Value.makeArray(cl, xs);
-	} catch (WrongKindException _) {
+	    while (xs.isConsValue()) {
+		elems.add(cl.cast(xs.getHead()));
+		xs = xs.getTail();
+	    }
+	} 
+	catch (ClassCastException _) {
 	    expect(expected);
-	    return null;
 	}
+	catch (WrongKindException _) {
+	    expect(expected);
+	}
+
+	if (! xs.isNilValue()) expect(expected);
+
+	@SuppressWarnings("unchecked")
+	T[] result = (T[]) Array.newInstance(cl, elems.size());
+	return elems.toArray(result);
     }
 
     @Override

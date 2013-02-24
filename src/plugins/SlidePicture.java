@@ -82,7 +82,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     }
 
     private Value callRender(float slider) {
-	return Evaluator.apply(render, 
+	return Evaluator.execute(render, 
 		new Value[] { Value.makeNumValue(slider) });
     }
 
