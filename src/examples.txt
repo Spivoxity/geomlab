@@ -17,7 +17,7 @@ define _init() =
     "colour((T & blank) $ T)", "colour((T & rot(T)) $ T)",
     "colour(side(2) $ T)", "colour(frame(blank, side(2), U))",
     "colour(frame(corner(2), side(2), U))", "colour(invlimit(8))",
-    "hilbert(5)", "turtle(dragon(12))", "bush(system(4))",
+    "hilbert(5)", "hilbslide", "turtle(dragon(12))", "bush(system(4))",
     "plot(600, -1, 0.285, 0.02, mfun)", "transpic"]);
   
 define f(p) = p $ (p & p);
@@ -144,6 +144,20 @@ define transpic =
     function (t) mike . shear(t/5),
     function (t) interpic(t, mike . shear(1/5), weird . mike . shear(1/5)),
     function (t) weird . mike . shear(1/5) . pp(t/250)]));
+
+define _render = _primitive("render");
+define render(p, w, h, g) = _pixelfun(_render(p, w, h, g));
+
+define intermin(t, f, g) = function (p) minterp(t, f(p), g(p));
+define minterp(t, c1, c2) = mincol(intercolour(t, c1, white), intercolour(t, white, c2));
+define mincol(rgb(r1, g1, b1), rgb(r2, g2, b2)) = rgb(min(r1, r2), min(g1, g2), min(b1, b2));
+define min(x, y) = if x <= y then x else y;
+
+{ hilbslide -- transition between two hilbert curves }
+define hilbslide =
+  let p1 = render(hilbert(3), 400, 400, 1) in
+  let p2 = render(hilbert(4), 400, 400, 1) in
+  slide(function (t) image(400, 400, intermin(t, p1, p2)));
 
 
 { Digits puzzle }
