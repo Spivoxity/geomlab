@@ -67,15 +67,15 @@ public class InlineTranslator extends JitTranslator {
 	register(new InlineOp("-", DSUB));
 	register(new InlineOp("*", DMUL));
 	register(new InlineOp("uminus", DNEG));
-	register(new InlineComp("<", DCMPG, IFLT));
-	register(new InlineComp("<=", DCMPG, IFLE));
-	register(new InlineComp(">", DCMPL, IFGT));
-	register(new InlineComp(">=", DCMPG, IFGE));
+	register(new InlineComp("<", DCMPG, IFGE));
+	register(new InlineComp("<=", DCMPG, IFGT));
+	register(new InlineComp(">", DCMPL, IFLE));
+	register(new InlineComp(">=", DCMPG, IFLT));
 	register(new InlineListSel("head"));
 	register(new InlineListSel("tail"));
 	register(new InlineSelect("rpart", colorval_cl, "colour", Kind.NUMBER));
 	register(new InlineSelect("gpart", colorval_cl, "colour", Kind.NUMBER));
-	register(new InlineSelect("gpart", colorval_cl, "colour", Kind.NUMBER));
+	register(new InlineSelect("bpart", colorval_cl, "colour", Kind.NUMBER));
 
 	register(new SimpleInline("rgb", Kind.NUMBER) {
 		@Override
@@ -143,7 +143,7 @@ public class InlineTranslator extends JitTranslator {
 
     /** Hook into method for self call */
     @Override
-	protected void genSelf() {
+    protected void genSelf() {
 	super.genSelf();
 	funstack.push(null);
     }
@@ -194,6 +194,20 @@ public class InlineTranslator extends JitTranslator {
 	return super.genCall(nargs);
     }
 
+    /** Hook into method for CALL / JFALSE combo */
+    @Override
+    protected void genJCall(int nargs, int addr) {
+	Inline gen = funstack.peek();
+
+	if (gen != null) {
+	    funstack.pop();
+	    gen.jcall(addr);
+	    return;
+	}
+
+	genJFalse(addr, super.genCall(nargs));
+    }
+
     /** Prepare for new function */
     @Override
     protected void init() {
@@ -214,6 +228,12 @@ public class InlineTranslator extends JitTranslator {
 
 	/** Compile code for a call */
 	public abstract Kind call();
+
+	/** Compiler code for a call followed by JFALSE */
+	public void jcall(int addr) {
+	    call();
+	    code.gen(IFEQ, makeLabel(addr));
+	}
     }
 
     /** An inline code generator with all args of the same kind */
@@ -270,7 +290,8 @@ public class InlineTranslator extends JitTranslator {
 
     /** Inliner for numeric comparisons */
     public class InlineComp extends SimpleInline {
-	private Op op1, op2;
+	private Op op1;		// Double comparison op DCMPL or DCMPG
+	private Op op2;		// Conditional branch if condition false
 
 	public InlineComp(String name, Op op1, Op op2) {
 	    super(name, Kind.NUMBER);
@@ -282,12 +303,18 @@ public class InlineTranslator extends JitTranslator {
 	    Label lab = new Label(), lab2 = new Label();    
 	    code.gen(op1);
 	    code.gen(op2, lab);
-	    code.gen(CONST, 0);
+	    code.gen(CONST, 1);
 	    code.gen(GOTO, lab2);
 	    code.label(lab);
-	    code.gen(CONST, 1);
+	    code.gen(CONST, 0);
 	    code.label(lab2);
 	    return Kind.BOOL;
+	}
+
+	@Override
+	public void jcall(int addr) {
+	    code.gen(op1);
+	    code.gen(op2, makeLabel(addr));
 	}
     }
 

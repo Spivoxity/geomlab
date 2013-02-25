@@ -39,6 +39,7 @@ import funbase.Value;
 import funbase.Evaluator;
 import funbase.Value.FunValue;
 import funbase.Function.Closure;
+import funbase.FunCode.Opcode;
 
 import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
@@ -59,7 +60,7 @@ public class JitTranslator implements FunCode.Jit {
 
     private Map<Integer, Label> labdict = new HashMap<Integer, Label>();
     
-    private Label makeLabel(int addr) {
+    protected Label makeLabel(int addr) {
 	Label lab = labdict.get(addr);
 
 	if (lab == null) {
@@ -200,9 +201,17 @@ public class JitTranslator implements FunCode.Jit {
 
     private void genCons() {
 	// stack[sp] = Value.cons(stack[sp], stack[sp+1]);
+	// t, h
 	code.gen(NEW, consval_cl);
-	code.gen(DUP_X2); code.gen(DUP_X2); genPop();
+	// Cell, t, h
+	code.gen(DUP_X2); 
+	// Cell, t, h, Cell
+	code.gen(DUP_X2); 
+	// Cell, t, h, Cell, Cell
+	genPop();
+	// t, h, Cell, Cell
 	code.gen(INVOKESPECIAL, consval_cl, "<init>", fun_VV_t);
+	// Cell
     }
 
     /** Translate a PREP instruction.
@@ -260,8 +269,7 @@ public class JitTranslator implements FunCode.Jit {
 
     /** Translate a CALL instruction.
      * 
-     *  A hook for inlining.
-     */
+     *  A hook for inlining. */
     protected Kind genCall(int nargs) {
 	if (nargs <= 3) {
 	    code.gen(INVOKEVIRTUAL, function_cl, 
@@ -273,6 +281,19 @@ public class JitTranslator implements FunCode.Jit {
     	}
 
 	return Kind.VALUE;
+    }
+
+    /** Translate a RETURN instruction */
+    private void genReturn() {
+	// return stack[--sp];
+	code.gen(ARETURN);
+    }
+
+    /** Translate a CALL instruction followed by JFALSE 
+     *
+     *  Another hook for inlining. */
+    protected void genJCall(int nargs, int addr) {
+	genJFalse(addr, genCall(nargs));
     }
 
     /** Convert a value on the stack from kind k to kind VALUE. */
@@ -360,7 +381,7 @@ public class JitTranslator implements FunCode.Jit {
     	}
     }
 
-    private void genJFalse(int addr, Kind k) {
+    protected void genJFalse(int addr, Kind k) {
 	if (k != Kind.BOOL) {
 	    convValue(k);
 	    cast(boolval_cl,
@@ -531,58 +552,54 @@ public class JitTranslator implements FunCode.Jit {
 	    if (lab != null) code.label(lab);
 
 	    switch (op) {
-		case GLOBAL:  
-		    if (labdict.get(ip+1) != null
-			|| funcode.instrs[ip+1] != FunCode.Opcode.PREP)
-			genGlobal(rand);
-		    else {
+		case GLOBAL: {
+		    if (labdict.get(ip+1) == null
+			&& funcode.instrs[ip+1] == FunCode.Opcode.PREP) {
 			genGlobalPrep(rand, funcode.rands[ip+1]);
-			ip++;
-		    }
-		    break;
-
-		case FVAR:
-		    if (labdict.get(ip+1) != null
-			|| funcode.instrs[ip+1] != FunCode.Opcode.PREP)
-			genFVar(rand);
-		    else {
-			genFVarPrep(rand, funcode.rands[ip+1]);
-			ip++;
-		    }
-		    break;
-
-		case CALL: {
-		    Kind k = genCall(rand);
-
-		    if (labdict.get(ip+1) != null) {
-			convValue(k); break;
+			ip++; break;
 		    }
 
-		    switch (funcode.instrs[ip+1]) {
-			case PUTARG:
-			    genPutarg(funcode.rands[ip+1], k);
-			    ip++;
-			    break;
-			case JFALSE:
-			    genJFalse(funcode.rands[ip+1], k);
-			    ip++;
-			    break;
-			default:
-			    convValue(k);
-			    break;
-		    }
+		    genGlobal(rand);
 		    break;
 		}
 
-		case QUOTE:
-		    if (labdict.get(ip+1) != null
-			|| funcode.instrs[ip+1] != FunCode.Opcode.PUTARG)
-			genQuote(rand); 
-		    else {
-			genQuotePutarg(rand, funcode.rands[ip+1]);
-			ip++;
+		case FVAR: {
+		    if (labdict.get(ip+1) == null
+			&& funcode.instrs[ip+1] == Opcode.PREP) {
+			genFVarPrep(rand, funcode.rands[ip+1]);
+			ip++; break;
 		    }
+
+		    genFVar(rand);
 		    break;
+		}
+
+		case CALL: {
+		    if (labdict.get(ip+1) == null) {
+			if (funcode.instrs[ip+1] == Opcode.PUTARG) {
+			    genPutarg(funcode.rands[ip+1], genCall(rand));
+			    ip++; break;
+			}
+			else if (funcode.instrs[ip+1] == Opcode.JFALSE) {
+			    genJCall(rand, funcode.rands[ip+1]);
+			    ip++; break;
+			}
+		    }
+
+
+		    convValue(genCall(rand)); break;
+		}
+
+		case QUOTE: {
+		    if (labdict.get(ip+1) == null
+			&& funcode.instrs[ip+1] == Opcode.PUTARG) {
+			genQuotePutarg(rand, funcode.rands[ip+1]);
+			ip++; break;
+		    }
+
+		    genQuote(rand); 
+		    break;
+		}
 		    
 		case LOCAL:   genLocal(rand); break;
 		case ARG:     genArg(rand); break;
@@ -598,8 +615,7 @@ public class JitTranslator implements FunCode.Jit {
 		case PREP:    genPrep(rand); break;
 		case PUTARG:  genPutarg(rand, Kind.VALUE); break;
 		case TCALL:   genTCall(rand); break;
-		case RETURN:  // return stack[--sp];
-		    code.gen(ARETURN); break;
+		case RETURN:  genReturn(); break;
 		case MEQ:     genMEq(); break;
 		case MPRIM:   genMPrim(rand); break;
 		case MCONS:   genMCons(); break;
@@ -611,7 +627,6 @@ public class JitTranslator implements FunCode.Jit {
 	}
 
 	compileHandlers();
-
 	return cf.toByteArray();
     }
 
