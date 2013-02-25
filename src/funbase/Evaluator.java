@@ -38,6 +38,7 @@ public class Evaluator {
     protected static boolean runFlag;
     private static int steps;
     private static int conses;
+    private static Thread timer;
 
     public static int debug = 0;
     /* Debug levels:
@@ -88,22 +89,7 @@ public class Evaluator {
     }
 
     public static Value execute(Value fun, Value... args) {
-	runFlag = true; steps = conses = 0; 
-
-	Thread timer = null;
-	if (timeLimit > 0) {
-	    timer = new Thread() {
-		@Override
-		public synchronized void run() {
-		    try {
-			wait(timeLimit);
-			runFlag = false;
-		    }
-		    catch (InterruptedException e) { }
-		}
-	    };
-	    timer.start();
-	}
+	runFlag = true; steps = conses = 0; timer = null;
 	
 	ExecThread exec = new ExecThread(fun, args);
 
@@ -120,6 +106,22 @@ public class Evaluator {
 
 	if (exec.excep != null) throw exec.excep;
 	return exec.result;
+    }
+
+    public static void startTimer() {
+	if (timeLimit > 0) {
+	    timer = new Thread() {
+		@Override
+		public synchronized void run() {
+		    try {
+			wait(timeLimit);
+			runFlag = false;
+		    }
+		    catch (InterruptedException e) { }
+		}
+	    };
+	    timer.start();
+	}
     }
 
     public static void checkpoint() {

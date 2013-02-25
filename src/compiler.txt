@@ -915,11 +915,11 @@ define __top() =
 
   { The read-eval-print routine }
   function ()
-    setroot(interp) >>
     let p = parser() in
     if p = #eof then false else 
       (toptext() >> debug(0, p) >> 
-        _set(labcount, 0) >> top_level(p) >> true);
+        _set(labcount, 0) >> setroot(interp) >>
+	top_level(p) >> true);
 
 define _top() = let t = __top() in t();
   

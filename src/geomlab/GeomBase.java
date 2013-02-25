@@ -264,6 +264,7 @@ public class GeomBase {
 	    @Override
 	    public Value apply1(Value v) {
 		FunCode.setRoot(v);
+		Evaluator.startTimer();
 		return Value.nil;
 	    }
 	},
