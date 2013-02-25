@@ -148,9 +148,15 @@ define transpic =
 define _render = _primitive("render");
 define render(p, w, h, g) = _pixelfun(_render(p, w, h, g));
 
-define intermin(t, f, g) = function (p) minterp(t, f(p), g(p));
-define minterp(t, c1, c2) = mincol(intercolour(t, c1, white), intercolour(t, white, c2));
-define mincol(rgb(r1, g1, b1), rgb(r2, g2, b2)) = rgb(min(r1, r2), min(g1, g2), min(b1, b2));
+define intermin(t, f, g) = 
+  function (p) minterp(t, f(p), g(p));
+
+define minterp(t, c1, c2) = 
+  mincol(intercolour(t, c1, white), intercolour(t, white, c2));
+
+define mincol(rgb(r1, g1, b1), rgb(r2, g2, b2)) = 
+  rgb(min(r1, r2), min(g1, g2), min(b1, b2));
+
 define min(x, y) = if x <= y then x else y;
 
 { hilbslide -- transition between two hilbert curves }
