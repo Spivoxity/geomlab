@@ -30,8 +30,6 @@
 
 package funbase;
 
-import funbase.Value.WrongKindException;
-
 import java.util.Stack;
 
 /** A trivial runtime translator that interprets the funcode */
@@ -51,13 +49,16 @@ public class Interp implements FunCode.Jit {
     }  
 
     @Override
-    public void setRoot(Value root) { 
+    public void initStack() {
 	stack.clear();
-	if (root instanceof Value.FunValue) {
-	    Function f = ((Value.FunValue) root).subr;
-	    if (f instanceof Function.Closure)
-		this.root = ((Function.Closure) f).getCode();
-	}
+	this.root = null;
+    }
+
+    @Override
+    public void setRoot(Value root) { 
+	Value.FunValue f = (Value.FunValue) root;
+	Function.Closure cl = (Function.Closure) f.subr;
+	this.root = cl.getCode();
     }
 
     @Override
@@ -149,9 +150,8 @@ public class Interp implements FunCode.Jit {
 		    case CALL:
 			try {
 			    sp -= rand;
-			    frame[sp-1] = 
-				((Value.FunValue) frame[sp-1]).subr.apply
-				    (frame, sp, rand);
+			    Value.FunValue fun = (Value.FunValue) frame[sp-1];
+			    frame[sp-1] = fun.subr.apply(frame, sp, rand);
 			}
 			catch (ClassCastException _) {
 			    Evaluator.err_apply();
@@ -168,11 +168,11 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case CLOSURE: {
-			Value fvars[] = new Value[rand+1];
 			sp -= rand;
+			FunCode body = (FunCode) frame[sp-1];
+			Value fvars[] = new Value[rand+1];
 			System.arraycopy(frame, sp, fvars, 1, rand);
-			frame[sp-1] =
-			    frame[sp-1].makeClosure(fvars);
+			frame[sp-1] = body.makeClosure(fvars);
 			break;
 		    }
 
@@ -186,9 +186,9 @@ public class Interp implements FunCode.Jit {
 
 		    case JFALSE:
 			try {
-			    if (! frame[--sp].asBoolean()) 
-				pc = rand;
-			} catch (WrongKindException _) {
+			    Value.BoolValue b = (Value.BoolValue) frame[--sp];
+			    if (! b.val) pc = rand;
+			} catch (ClassCastException _) {
 			    Evaluator.err_boolcond();
 			}
 			break;
@@ -201,15 +201,20 @@ public class Interp implements FunCode.Jit {
 			stack.pop();
 			return frame[--sp];
 
-		    case MPLUS: {
-			sp -= 2;
-			Value v = frame[sp].matchPlus(frame[sp+1]);
-			if (v == null)
+		    case MPLUS:
+			try {
+			    sp -= 1;
+			    Value.NumValue x = (Value.NumValue) frame[sp];
+			    Value v = x.matchPlus(code.consts[rand]);
+			    if (v != null)
+				frame[sp++] = v;
+			    else
+				pc = trap;
+			}
+			catch (ClassCastException _) {
 			    pc = trap;
-			else
-			    frame[sp++] = v;
+			}
 			break;
-		    }
 
 		    case MEQ:
 			sp -= 2;
@@ -218,17 +223,18 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case MNIL:
-			if (! frame[--sp].isNilValue())
+			if (! (frame[--sp] instanceof Value.NilValue))
 			    pc = trap;
 			break;
 
 		    case MCONS: {
-			Value v = frame[--sp];
 			try {
-			    frame[sp] = v.getTail();
-			    frame[sp+1] = v.getHead();
+			    Value.ConsValue cell = 
+				(Value.ConsValue) frame[--sp];
+			    frame[sp] = cell.tail;
+			    frame[sp+1] = cell.head;
 			    sp += 2;
-			} catch (WrongKindException _) {
+			} catch (ClassCastException _) {
 			    pc = trap;
 			}
 			break;

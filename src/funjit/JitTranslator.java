@@ -443,7 +443,10 @@ public class JitTranslator implements FunCode.Jit {
 
     private void genClosure(int rand) {
 	makeArray(1, rand+1);
-	code.gen(INVOKEVIRTUAL, value_cl, "makeClosure", fun_A_V_t);
+	code.gen(SWAP);
+	code.gen(CHECKCAST, funcode_cl);
+	code.gen(SWAP);
+	code.gen(INVOKEVIRTUAL, funcode_cl, "makeClosure", fun_A_V_t);
     }
 
     private void genNil() {
@@ -492,9 +495,24 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(GETFIELD, consval_cl, "head", value_t);
     }
 
-    private void genMPlus() {
-    	// sp -= 2; temp = stack[sp].matchPlus(stack[sp+1]);
-    	code.gen(INVOKEVIRTUAL, value_cl, "matchPlus", fun_V_V_t);
+    private void genMPlus(int n) {
+	code.gen(DUP);
+	code.gen(ASTORE, _temp);
+
+	code.gen(INSTANCEOF, numval_cl);
+	code.gen(IFEQ, trap);
+
+	code.gen(ALOAD, _temp);
+	code.gen(CHECKCAST, numval_cl);
+	
+	// Value k = consts[n]
+	code.gen(ALOAD, _this);
+	code.gen(GETFIELD, jitfun_cl, "consts", valarray_t);
+	code.gen(CONST, n);
+	code.gen(AALOAD);
+
+    	// temp = v.matchPlus(k);
+    	code.gen(INVOKEVIRTUAL, numval_cl, "matchPlus", fun_V_V_t);
     	code.gen(DUP);
     	code.gen(ASTORE, _temp);
 
@@ -620,7 +638,7 @@ public class JitTranslator implements FunCode.Jit {
 		case MPRIM:   genMPrim(rand); break;
 		case MCONS:   genMCons(); break;
 		case MNIL:    genMNil(); break;
-		case MPLUS:   genMPlus(); break;
+		case MPLUS:   genMPlus(rand); break;
 		default:
 		    throw new Error("Bad opcode " + op);
 	    }
@@ -786,7 +804,8 @@ public class JitTranslator implements FunCode.Jit {
 
     @Override
     public String[] getContext(String me) {
-	StackTraceElement stack[] = Thread.currentThread().getStackTrace();
+	Thread thread = Thread.currentThread();
+	StackTraceElement stack[] = thread.getStackTrace();
 	String caller = null, callee = me;
 
 	for (int i = 0; i < stack.length; i++) {
@@ -805,6 +824,8 @@ public class JitTranslator implements FunCode.Jit {
 
 	return new String[] { caller, callee };
     }
+
+    public void initStack() { }
 
     public void setRoot(Value root) {
 	if (root instanceof FunValue) {

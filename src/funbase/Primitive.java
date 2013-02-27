@@ -35,7 +35,6 @@ import java.io.*;
 import java.lang.reflect.Array;
 
 import funbase.Evaluator.*;
-import funbase.Value.WrongKindException;
 
 /** A value that represents a primitive function like 'sqrt' or '+'. */
 public abstract class Primitive extends Function {
@@ -58,24 +57,16 @@ public abstract class Primitive extends Function {
 
     /** Fetch value of a NumValue object, or throw EvalException */
     public double number(Value a) {
-        try {
-            return a.asNumber();
-        }
-        catch (WrongKindException e) {
-            expect("numeric");
-            return 0.0;
-        }
+	Value.NumValue x =
+	    cast(Value.NumValue.class, a, "numeric");
+	return x.val;
     }
 
     /** Fetch value of a StringValue object, or throw EvalException */ 
     public String string(Value a) {
-        try {
-            return a.asString();
-        }
-        catch (WrongKindException e) {
-            expect("string");
-            return null;
-        }
+	Value.StringValue s = 
+	    cast(Value.StringValue.class, a, "string");
+	return s.text;
     }
     
     /** Cast an argument to type Name */
@@ -85,34 +76,31 @@ public abstract class Primitive extends Function {
 
     /** Fetch head of a ConsValue object, or throw EvalException */ 
     public Value head(Value xs) {
-        try {
-            return xs.getHead();
-        }
-        catch (WrongKindException e) {
-	    Evaluator.list_fail(xs, "head");
-            return null;
-        }
+	Value.ConsValue cell = 
+	    cast(Value.ConsValue.class, xs, "list");
+	return cell.head;
     }
 
     /** Fetch tail of a ConsValue object, or throw EvalException */ 
     public Value tail(Value xs) {
-        try {
-            return xs.getTail();
-        }
-        catch (WrongKindException e) {
-	    Evaluator.list_fail(xs, "tail");
-            return null;
-        }
+	Value.ConsValue cell = 
+	    cast(Value.ConsValue.class, xs, "list");
+	return cell.tail;
+    }
+
+    /** Test if a value is a cons */
+    public boolean isCons(Value xs) {
+	return xs instanceof Value.ConsValue;
     }
 
     /** Compute length of a list argument */ 
     public int listLength(Value xs) {
 	Value ys = xs;
 	int n = 0; 
-        while (ys.isConsValue()) {
+        while (isCons(ys)) {
             ys = tail(ys); n++;
         }
-        if (! ys.isNilValue()) expect("list");
+        if (! ys.equals(Value.nil)) expect("list");
         return n;
     }
 
@@ -137,20 +125,12 @@ public abstract class Primitive extends Function {
 							 String expected) {
 	List<T> elems = new ArrayList<T>();
 
-	try {
-	    while (xs.isConsValue()) {
-		elems.add(cl.cast(xs.getHead()));
-		xs = xs.getTail();
-	    }
-	} 
-	catch (ClassCastException _) {
-	    expect(expected);
-	}
-	catch (WrongKindException _) {
-	    expect(expected);
+	while (isCons(xs)) {
+	    elems.add(cast(cl, head(xs), expected));
+	    xs = tail(xs);
 	}
 
-	if (! xs.isNilValue()) expect(expected);
+	if (! xs.equals(Value.nil)) expect(expected);
 
 	@SuppressWarnings("unchecked")
 	T[] result = (T[]) Array.newInstance(cl, elems.size());

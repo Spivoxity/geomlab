@@ -682,7 +682,7 @@ define __top() =
     | c_patt([#plus, p1, n], d, env) =
         { A plus pattern p + n }
         let f = label() in
-	pgen([#seq, [#TRAP, f], [#QUOTE, n], [#MPLUS]], 
+	pgen([#seq, [#TRAP, f], [#MPLUS, n]], 
 	        [c_patt(p1, d, env)], [[f, d]]) in
 
   { c_arg -- compile code to match an argument }
@@ -898,28 +898,30 @@ define __top() =
             ^ spelling(x) ^ "'", "#redef")
     else [] in
 
-  { top_level -- execute a top-level phrase }
-  let top_level([#val, x, e]) = 
+  { exec -- execute a top-level phrase }
+  let exec([#val, x, e]) = 
         { A global value definition }
 	redefine(x) >>
 	topdef(x, interp(e, empty()))
 
-    | top_level([#fun, f, n, rules]) = 
+    | exec([#fun, f, n, rules]) = 
         { A global function definition }
 	redefine(f) >>
 	topdef(f, i_func(f, n, rules, empty()))
 
-    | top_level(exp) = 
+    | exec(exp) = 
         { A top-level expression }
 	topval(interp(exp, empty())) in
 
   { The read-eval-print routine }
-  function ()
+  let read_eval_print() =
     let p = parser() in
     if p = #eof then false else 
       (toptext() >> debug(0, p) >> 
         _set(labcount, 0) >> setroot(interp) >>
-	top_level(p) >> true);
+	exec(p) >> true) in
+
+  read_eval_print;
 
 define _top() = let t = __top() in t();
   

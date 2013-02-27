@@ -113,7 +113,7 @@ public class BootLoader {
 	} else if (t.equals("closure")) {
 	    /* A closure.  We don't deal with closures that have free
 	       variables, but the compiler avoids these. */
-	    Value body = value();
+	    FunCode body = (FunCode) value();
 	    return body.makeClosure(new Value[1]);
 	} else {
 	    throw new Error("BootLoader.value " + t);
@@ -130,11 +130,11 @@ public class BootLoader {
     
     /** Return the next token as a string */
     private String getString() {
-	Value s = get("string");
 	try {
-	    return s.asString();
+	    Value.StringValue s = (Value.StringValue) get("string");
+	    return s.text;
 	}
-	catch (Value.WrongKindException _) {
+	catch (ClassCastException _) {
 	    throw new Error("missing string");
 	}
     }
@@ -146,12 +146,12 @@ public class BootLoader {
 	    scanner.scan();
 	    neg = true;
 	}
-	Value v = get("number");
 	try {
-	    int n = (int) v.asNumber();
+	    Value.NumValue x = (Value.NumValue) get("number");
+	    int n = (int) x.val;
 	    return (neg ? -n : n);
 	}
-	catch (Value.WrongKindException _) {
+	catch (ClassCastException _) {
 	    throw new Error("missing integer");
 	}
     }

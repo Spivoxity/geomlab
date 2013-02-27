@@ -47,11 +47,6 @@ public abstract class Value implements Serializable {
      * system, and hidden behind static factory methods in the Value
      * class. */
     
-    public Value apply(Value args[]) {
-	Evaluator.err_apply();
-	return null;
-    }
-
     public Value[] pattMatch(Value obj, int nargs) {
 	Evaluator.err_match();
 	return null;
@@ -73,45 +68,6 @@ public abstract class Value implements Serializable {
 	    (String.format("can't dump %s", this.getClass()));
     }
     
-    /** Create a closure with this object as body */
-    public Value makeClosure(Value fvars[]) {
-	throw new EvalException("bad body for closure");
-    }
-
-    // Type tests
-    
-    public boolean isNumValue() { return (this instanceof NumValue); }
-    public boolean isBoolValue() { return (this instanceof BoolValue); }
-    public boolean isFunValue() { return (this instanceof FunValue); }
-    public boolean isConsValue() { return (this instanceof ConsValue); }
-    public boolean isNilValue() { return (this instanceof NilValue); }
-    
-    // Accessors: the default implementations raise WrongKindException.
-    // (see also Primitive.head etc.)
-    
-    public boolean asBoolean() throws WrongKindException {
-	throw new WrongKindException();
-    }
-    
-    public double asNumber() throws WrongKindException {
-	throw new WrongKindException();
-    }
-    
-    public String asString() throws WrongKindException {
-	throw new WrongKindException();
-    }
-    
-    public Value getHead() throws WrongKindException {
-	throw new WrongKindException();
-    }
-    
-    public Value getTail() throws WrongKindException {
-	throw new WrongKindException();
-    }
-    
-    public Value matchPlus(Value inc) {
-	return null;
-    }
 
     // Factory methods
     
@@ -136,6 +92,9 @@ public abstract class Value implements Serializable {
     }
     
     public static final Value nil = new NilValue();
+    public static final BoolValue 
+	truth = new BoolValue(true), 
+	falsity = new BoolValue(false);
     
     public static Value cons(Value hd, Value tl) {
 	return new ConsValue(hd, tl);
@@ -149,7 +108,7 @@ public abstract class Value implements Serializable {
         return val;
     }
     
-    /** Convert a list value to an array, casting each element to class cl. */
+    /** Print a number nicely. */
     public static void printNumber(PrintWriter out, double x) {
 	if (x == (int) x)
 	    out.print((int) x);
@@ -184,10 +143,6 @@ public abstract class Value implements Serializable {
 	}
     }
 
-    /** Exception that is thrown when accessors are applied to the
-        wrong kind of Value */
-    public static class WrongKindException extends Exception { /* Empty */ }
-    
     /** A numeric value represented as a double-precision float */
     public static class NumValue extends Value {
 	private static final long serialVersionUID = 1L;
@@ -204,11 +159,6 @@ public abstract class Value implements Serializable {
 	    Value.printNumber(out, val);
 	}
 
-	@Override
-	public double asNumber() {
-	    return val;
-	}
-	
 	private static final int MIN = -1, MAX = 2000;
 	private static Value smallints[] = new Value[MAX-MIN+1];
 
@@ -228,7 +178,6 @@ public abstract class Value implements Serializable {
 	    return (a instanceof NumValue && val == ((NumValue) a).val);
 	}
 	
-	@Override
 	public Value matchPlus(Value iv) {
 	    double inc = ((NumValue) iv).val;
 	    double x = val - inc;
@@ -263,17 +212,9 @@ public abstract class Value implements Serializable {
 	}
 	
 	@Override
-	public boolean asBoolean() { return val; }
-	
-	@Override
 	public boolean equals(Object a) {
 	    return (a instanceof BoolValue && val == ((BoolValue) a).val);
 	}
-	
-	/** Singletons */
-	public static final BoolValue 
-	    truth = new BoolValue(true), 
-	    falsity = new BoolValue(false);
 	
 	public static Value getInstance(boolean val) {
 	    return (val ? truth : falsity);
@@ -330,10 +271,10 @@ public abstract class Value implements Serializable {
     }
 
     /** A string value */
-    private static class StringValue extends Value {
+    protected static class StringValue extends Value {
 	private static final long serialVersionUID = 1L;
 
-	private String text;
+	public final String text;
 	
 	private StringValue(String text) {
 	    Evaluator.countCons();
@@ -345,8 +286,6 @@ public abstract class Value implements Serializable {
 	    out.format("\"%s\"", text);
 	}
 	
-	@Override
-	public String asString() { return text; }
 	@Override
 	public String toString() { return text; }
 	
@@ -428,7 +367,7 @@ public abstract class Value implements Serializable {
     public static class ConsValue extends Value {
 	private static final long serialVersionUID = 1L;
 
-	public Value head, tail;
+	public final Value head, tail;
 	
 	public ConsValue(Value head, Value tail) {
 	    Evaluator.countCons();
@@ -448,18 +387,14 @@ public abstract class Value implements Serializable {
 		cons.head.printOn(out);
 		xs = cons.tail;
 	    }
-	    if (! (xs instanceof NilValue)) {
+	    if (! xs.equals(nil)) {
+		// Can't happen, but let's keep it for robustness.
 		out.print(" . ");
 		xs.printOn(out);
 	    }
 	    out.print("]");
 	}
 	
-	@Override
-	public Value getHead() { return head; }
-	@Override
-	public Value getTail() { return tail; }
-
 	@Override
 	public boolean equals(Object a) {
 	    if (! (a instanceof ConsValue)) return false;

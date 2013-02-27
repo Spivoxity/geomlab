@@ -41,7 +41,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     private static final long serialVersionUID = 1L;
 
     /** Function value that is invoked to compute the image */
-    private final Value render;
+    private final Value.FunValue render;
     
     /** Slider value from last update */
     private float slider;
@@ -49,7 +49,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     /** Cached picture from last update */
     private Picture cache;
 
-    public SlidePicture(Value render) { this.render = render; }
+    public SlidePicture(Value.FunValue render) { this.render = render; }
 	
     @Override
     public float getAspect() {
@@ -82,15 +82,16 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     }
 
     private Value callRender(float slider) {
-	return Evaluator.execute(render, 
+	return Evaluator.execute(render.subr, 
 		new Value[] { Value.makeNumValue(slider) });
     }
 
     public static Primitive primitives[] = {
 	new Primitive.Prim1("slide") {
 	    @Override
-	    public Value apply1(Value fun) {
-		if (! fun.isFunValue()) expect("function");
+	    public Value apply1(Value fun0) {
+		Value.FunValue fun = 
+		    cast(Value.FunValue.class, fun0, "function");
 		return new SlidePicture(fun);
 	    }
 	}

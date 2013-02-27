@@ -153,7 +153,8 @@ public class InlineTranslator extends JitTranslator {
     protected void genGlobalPrep(int glob, int nargs) {
 	Name f = (Name) consts[glob];
 
-	if (f.isFrozen() && f.glodef != null && f.glodef.isFunValue()) {
+	if (f.isFrozen() && f.glodef != null 
+	    && f.glodef instanceof Value.FunValue) {
 	    Function fun = ((Value.FunValue) f.glodef).subr;
 	    if (fun instanceof Primitive) {
 		Primitive p = (Primitive) fun;

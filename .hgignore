@@ -10,3 +10,4 @@ misc/bmark/hmark.hi
 misc/bmark/hmark.o
 misc/bmark/omark
 misc/bmark/pmark
+stage?.boot

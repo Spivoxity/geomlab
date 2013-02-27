@@ -52,25 +52,25 @@ public class Evaluator {
     public static int quantum = Q;
 
     protected static int timeLimit = 30000;
-    protected static int stepLimit = 1000000000;
+    protected static int stepLimit = 0; // 2000000000;
     protected static int consLimit = 10000000;
 
     private static class ExecThread extends Thread {
-	public Value fun;
+	public Function fun;
 	public Value args[];
 	public Value result;
 	public RuntimeException excep = null;
 
 	private static int thrcount = 0;
 
-	public ExecThread(Value fun, Value args[]) {
+	public ExecThread(Function fun, Value args[]) {
 	    super(null, null, "exec" + thrcount++, 16*1024*1024);
 	    this.fun = fun; this.args = args;
 	}
 
 	private void body() {
 	    try {
-		result = fun.apply(args);
+		result = fun.apply(args, 0, args.length);
 		checkpoint();
 	    }
 	    catch (StackOverflowError e) {
@@ -88,8 +88,9 @@ public class Evaluator {
 	}
     }
 
-    public static Value execute(Value fun, Value... args) {
+    public static Value execute(Function fun, Value... args) {
 	runFlag = true; steps = conses = 0; timer = null;
+	FunCode.initStack();
 	
 	ExecThread exec = new ExecThread(fun, args);
 
@@ -260,7 +261,8 @@ public class Evaluator {
 
     public static void list_fail(Value xs, String msg) {
 	error("taking " + msg + " of " 
-	      + (xs.isNilValue() ? "the empty list" : "a non-list"),
+	      + (xs instanceof Value.NilValue ? "the empty list" 
+		 : "a non-list"),
 	      "#" + msg);
     }    
 }

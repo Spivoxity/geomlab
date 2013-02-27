@@ -173,9 +173,10 @@ public class ImagePicture extends Picture {
 	
 	new Primitive.Prim3("image") {
 	    @Override
-	    public Value apply3(Value width0, Value height0, Value fun) {
+	    public Value apply3(Value width0, Value height0, Value fun0) {
 		int width = (int) number(width0);
 		int height = (int) number(height0);
+		FunValue fun = cast(FunValue.class, fun0, "function");
 		Native.Image image = Native.factory.image(width, height);
 		Value args[] = new Value[2];
 		

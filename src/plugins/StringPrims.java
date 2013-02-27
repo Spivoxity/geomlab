@@ -61,7 +61,8 @@ public class StringPrims {
 	    @Override
 	    public Value apply1(Value ys) {
 		StringBuffer result = new StringBuffer();
-		for (Value xs = ys; ! xs.isNilValue(); xs = tail(xs))
+		for (Value xs = ys; ! (xs instanceof Value.NilValue); 
+		     xs = tail(xs))
 		    result.append(string(head(xs)));
 		return Value.makeStringValue(result.toString());
 	    }

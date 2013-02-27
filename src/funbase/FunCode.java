@@ -58,8 +58,8 @@ public class FunCode extends Value {
 		     	jump to instruction at offset n */
 	PREP(0),     /* [#prep, n]: prepare for a call with n arguments */
 	RETURN(-1),  /* [#return]: return from function */
-	MPLUS(-1),   /* [#mplus]: match an n+k pattern by popping integers
-		     	n and k with n >= k and pushing n-k; otherwise trap */
+	MPLUS(0),    /* [#mplus, k]: match an n+k pattern by popping integer
+		     	x with x >= k and pushing x-k; otherwise trap */
 	MEQ(-2),     /* [#meq]: pop two values and trap if not equal */
 	MNIL(-1),    /* [#mnil]: pop the empty list; otherwise trap */
 	MCONS(1),    /* [#mcons]: pop a cons cell and push its tail and head */
@@ -123,6 +123,10 @@ public class FunCode extends Value {
 	return translator.getContext(me);
     }
 
+    public static void initStack() {
+	translator.initStack();
+    }
+
     public static void setRoot(Value root) {
 	translator.setRoot(root);
     }
@@ -144,7 +148,6 @@ public class FunCode extends Value {
     }
 
     /** Construct a wrapped closure and tie the knot for local recursion */
-    @Override
     public Value makeClosure(Value fvars[]) {
 	Value.FunValue result = makeFunValue(null);
 	result.subr = buildClosure(result, fvars);
@@ -190,10 +193,8 @@ public class FunCode extends Value {
 		int arity = (int) number(arity0);
 		int size = 0;
 
-		for (Value xs = code; !xs.isNilValue(); xs = tail(xs)) {
-		    Value inst = head(xs);
-		    if (inst.isConsValue()) size++;
-		}
+		for (Value xs = code; isCons(xs); xs = tail(xs))
+		    if (isCons(head(xs))) size++;
 	
 		Opcode instrs[] = new Opcode[size];
 		int rands[] = new int[size];
@@ -203,28 +204,29 @@ public class FunCode extends Value {
 		/** Mapping from integer labels to info about each label */
 		Map<Integer, Label> labels = new HashMap<Integer, Label>();
 	
-		for (Value xs = code; !xs.isNilValue(); xs = tail(xs)) {
+		for (Value xs = code; isCons(xs); xs = tail(xs)) {
 		    Value inst = head(xs);
-		    if (inst.isNumValue()) {
+		    if (inst instanceof Value.NumValue) {
 			/* A label */
 			Label lab = labels.get((int) number(inst));
 			if (lab != null) {
 			    rands[lab.use] = ip;
 			    sp = lab.depth;
 			}
-		    } else if (inst.isConsValue()) {
+		    } else if (isCons(inst)) {
 			/* An instruction [#op, arg] with optional arg */
 			Name x = cast(Name.class, head(inst), "opcode");
 			Opcode op = getOpcode(x.tag);
 			Value args = tail(inst);
 			int rand;
 
-			if (! args.isConsValue())
+			if (! isCons(args))
 			    /* No argument */
 			    rand = 0;
 			else {
 			    Value v = head(args);
-			    if (op == Opcode.GLOBAL || op == Opcode.QUOTE) {
+			    if (op == Opcode.GLOBAL || op == Opcode.QUOTE
+				|| op == Opcode.MPLUS) {
 				/* An argument that goes in the constant pool */
 				rand = consts.indexOf(v);
 				if (rand < 0) {
@@ -281,6 +283,9 @@ public class FunCode extends Value {
 
 	/** Get execution context */
 	public String[] getContext(String me);
+
+	/** Initialise stack */
+	public void initStack();
 
 	/** Set stack root */
 	public void setRoot(Value root);

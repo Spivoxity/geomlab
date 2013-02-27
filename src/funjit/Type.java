@@ -105,6 +105,7 @@ class Type {
 	nilval_cl = "funbase/Value$NilValue",
 	funval_cl = "funbase/Value$FunValue",
 	function_cl = "funbase/Function",
+	funcode_cl = "funbase/FunCode",
 	jitfun_cl = "funjit/JitFunction",
 	jitsmall_cl = "funjit/JitFunction$Func",
 	evaluator_cl = "funbase/Evaluator";

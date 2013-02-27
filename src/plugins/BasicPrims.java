@@ -127,7 +127,7 @@ public class BasicPrims {
 	new Primitive.Prim1("numeric") {
 	    @Override
 	    public Value apply1(Value x) {
-		return Value.makeBoolValue(x.isNumValue());
+		return Value.makeBoolValue(x instanceof Value.NumValue);
 	    }
 	},
 	
@@ -214,8 +214,7 @@ public class BasicPrims {
 	new Primitive.Prim2(":") {
 	    @Override
 	    public Value apply2(Value hd, Value tl) {
-		if (! tl.isConsValue() && ! tl.isNilValue()) 
-		    expect("list");
+		if (! isCons(tl) && ! tl.equals(Value.nil)) expect("list");
 		return Value.cons(hd, tl);
 	    }
 	    
@@ -225,11 +224,12 @@ public class BasicPrims {
 	    public Value[] pattMatch(Value obj, int nargs) {
 		if (nargs != 2) Evaluator.err_patnargs(name);
 		try {
-		    args[0] = obj.getTail();
-		    args[1] = obj.getHead();
+		    Value.ConsValue cell = (Value.ConsValue) obj;
+		    args[0] = cell.tail;
+		    args[1] = cell.head;
 		    return args;
 		}
-		catch (Value.WrongKindException _) {
+		catch (ClassCastException _) {
 		    return null;
 		}
 	    }
@@ -260,14 +260,23 @@ public class BasicPrims {
 	new Primitive.Prim2("apply") {
 	    @Override
 	    public Value apply2(Value x, Value y) {
-		return x.apply(toArray(y));
+		try {
+		    Value.FunValue fun = (Value.FunValue) x;
+		    Value args[] = toArray(y);
+		    return fun.apply(args);
+		}
+		catch (ClassCastException _) {
+		    Evaluator.err_apply();
+		    return null;
+		}
 	    }
 	},
 
 	new Primitive.Prim1("closure") {
 	    @Override
-	    public Value apply1(Value code) {
-		return code.makeClosure(new Value[1]);
+	    public Value apply1(Value x) {
+		FunCode body = cast(FunCode.class, x, "funcode");
+		return body.makeClosure(new Value[1]);
 	    }
 	},
 

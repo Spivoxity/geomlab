@@ -110,7 +110,7 @@ public class TilePicture extends Picture {
 		    Value xs = head(xss);
 		    Value spec = head(xs);
 
-		    if (spec.isNumValue())
+		    if (spec instanceof Value.NumValue)
 			colours[i] = (int) number(spec);
 		    else if (spec instanceof ColorValue)
 			colours[i] = spec;

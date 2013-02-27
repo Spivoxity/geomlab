@@ -6,14 +6,13 @@ define oppx =
 
 define fibcps(n, k) =
   if n < 2 then k(n) else
-   fibcps(n-1, lambda(x) fibcps(n-2, lambda (y) k(x+y)));
+   fibcps(n-1, function (x) fibcps(n-2, function (y) k(x+y)));
 
 _install("Cell");
-define _opdef = _primitive("opdef");
-_opdef(#!, #not); _opdef(#:=, #<);
-define new = _primitive("new");
-define op ! = _primitive("!");
-define op := = _primitive(":=");
+__token(#!, #monop, 0, 0); 
+__token(#:=, #binop, 1, 1);
+define ! = _primitive("!");
+define := = _primitive(":=");
 
 { Knuth's Man or Boy test }
 define mob(k) =
@@ -26,7 +25,8 @@ define mob(k) =
         k := !k-1 >>
         a(!k, b, x1, x2, x3, x4) in
       b() ) in
-  a(k, lambda () 1, lambda () -1, lambda () -1, lambda () 1, lambda () 0);
+  a(k, function () 1, function () -1, function () -1, 
+       		      	       	    	function () 1, function () 0);
 
 define trunk(x + 0.5) = x | trunk(x) = x;
 
@@ -34,5 +34,5 @@ define two3(x, [_, x, _]) = true | two3(_, _) = false;
 
 define flic(n, x) =
   let flac(x) = [x+1, x+2] when numeric(x)
-    | flac(x) = map(lambda (x) flac(x), x) in
+    | flac(x) = map(function (x) flac(x), x) in
   if n = 0 then x else flic(n-1, flac(x)); 

@@ -299,7 +299,8 @@ public class GeomLab extends GeomBase {
 
 	Name init = Name.find("_init");
 	if (init.glodef != null) {
-	    Evaluator.execute(init.glodef, new Value[0]);
+	    Value.FunValue fun = (Value.FunValue) init.glodef;
+	    Evaluator.execute(fun.subr, new Value[0]);
 	}
 
 	app.log.flush();

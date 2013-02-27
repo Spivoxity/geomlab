@@ -425,7 +425,7 @@ class Method {
             code.put(out);
             out.putShort(handlers.size());
             for (Handler h : handlers) h.put(out);
-            out.putShort(0); // Attribute count
+            out.putShort(0); // Attribute count for the code
         }
     }
 

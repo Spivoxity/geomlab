@@ -85,6 +85,10 @@ public class TofuTranslator implements FunCode.Jit {
 	return translator.getContext(me);
     }
 
+    public void initStack() {
+	translator.initStack();
+    }
+
     public void setRoot(Value root) {
 	translator.setRoot(root);
     }

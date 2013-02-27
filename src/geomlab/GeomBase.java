@@ -156,6 +156,7 @@ public class GeomBase {
     protected boolean eval_loop(Reader reader, boolean echo, boolean display, 
 				ErrReporter err) {
 	Name top = Name.find("_top");
+	Value.FunValue topdef = (Value.FunValue) top.glodef;
 	Scanner scanner = new Scanner(reader);
 	errtag = "";
 	last_val = null;
@@ -166,7 +167,7 @@ public class GeomBase {
 		this.scanner = scanner;
 		this.echo = echo;
 		this.display = display;
-		if (Evaluator.execute(top.glodef) != Value.makeBoolValue(true))
+		if (Evaluator.execute(topdef.subr) != Value.truth)
 		    return true;
 
 		if (display) {
