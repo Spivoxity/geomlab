@@ -5,7 +5,7 @@ JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
 SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
 RESOURCES = DejaVuSansMono.ttf mike.jpg mikelet.jpg contents.html style.css \
-	$(HELP:%=%.html)
+	splat.png $(HELP:%=%.html)
 IMAGES = geomlab.gls examples.gls
 
 all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES:%=obj/%)

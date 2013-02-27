@@ -4,7 +4,8 @@ define _init() =
     let subst(s) = implode(map(function (c) if c = "/" then chr(10) else c,
 				  explode(s))) in
     _examples(map(subst, menu)) in
-  examples(["man", "man $ woman", "man & man",
+  examples(["splat", "splat $ splat", "splat $ splat & splat",
+    "man", "man $ woman", "man & man",
     "man $ (woman & tree)", "(man $ woman) & tree",
     "define f(p) = p $ (p & p);//f(man)",
     "f(woman)", "f(man $ tree)", "f(f(man))", "f(f(f(man)))",
@@ -20,6 +21,8 @@ define _init() =
     "hilbert(5)", "hilbslide", "turtle(dragon(12))", "bush(system(4))",
     "plot(600, -1, 0.285, 0.02, mfun)", "transpic"]);
   
+define splat = _resource("splat.png");
+
 define f(p) = p $ (p & p);
 
 define row(1, p) = p
