@@ -47,6 +47,9 @@ class ClassFile {
     /** The superclass name */
     private ConstPool.Item superName;
 
+    /** List of field declarations */
+    private List<Field> fields = new LinkedList<Field>();
+
     /** List of method declarations */
     private List<Method> methods = new LinkedList<Method>();
     
@@ -61,6 +64,12 @@ class ClassFile {
         this.superName = superName == null ? null : pool.classItem(superName);
     }
 
+    public Field addField(int access, String name, Type ty) {
+	Field f = new Field(pool, access, name, ty);
+	fields.add(f);
+	return f;
+    }
+
     public Method addMethod(int access, String name, Type ty) {
         Method m = new Method(pool, access, name, ty);
         methods.add(m);
@@ -71,6 +80,7 @@ class ClassFile {
     public byte[] toByteArray() {
 	// Compute the real size of the bytecode
         int size = 24;
+	for (Field f : fields) size += f.getSize();
         for (Method m : methods) size += m.getSize();
         size += pool.size();
 
@@ -85,7 +95,8 @@ class ClassFile {
         out.putShort(name.index);
         out.putShort(superName.index);
         out.putShort(0); // No interfaces
-        out.putShort(0); // No field decls
+        out.putShort(fields.size());
+	for (Field f: fields) f.put(out);
         out.putShort(methods.size());
         for (Method m : methods) m.put(out);
         out.putShort(0); // No attributes
