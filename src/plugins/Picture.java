@@ -195,7 +195,7 @@ public class Picture extends Value implements Stylus.Drawable {
 	
 	new Primitive.PrimN("transpic", 4) {
 	    @Override
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		return new TransPicture
 		    ((float) number(args[base+0]),
 		     cast(Picture.class, args[base+1], "picture"),

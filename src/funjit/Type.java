@@ -107,6 +107,7 @@ class Type {
 	function_cl = "funbase/Function",
 	funcode_cl = "funbase/FunCode",
 	jitfun_cl = "funjit/JitFunction",
+	jitlarge_cl = "funjit/JitFunction$FuncN",
 	jitsmall_cl = "funjit/JitFunction$Func",
 	evaluator_cl = "funbase/Evaluator";
 
@@ -146,5 +147,6 @@ class Type {
     };
 
     public final static Type
-	apply_t = func_t(valarray_t, int_t, int_t, value_t);
+	apply_t = func_t(valarray_t, int_t, int_t, value_t),
+	new_apply_t = func_t(valarray_t, int_t, value_t);
 }

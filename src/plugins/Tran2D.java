@@ -159,7 +159,7 @@ public class Tran2D extends Value {
     public static final Primitive primitives[] = {
 	new Primitive.PrimN("transform", 6) {
 	    @Override
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		float m_xx = (float) number(args[base+0]);
 		float m_yx = (float) number(args[base+1]);
 		float m_xy = (float) number(args[base+2]);

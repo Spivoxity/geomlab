@@ -46,7 +46,12 @@ public abstract class Function implements Serializable {
 	this.arity = arity;
     }
 
-    /** Apply the value to a list of arguments. */
+    /** Apply the function to a list of arguments. */
+    public Value apply(Value args[], int nargs) {
+	return apply(args, 0, nargs);
+    }
+
+    /** Apply the function to a list of arguments with base. */
     public abstract Value apply(Value args[], int base, int nargs);
     
     /* The default is for the apply<n> methods to delegate to the
@@ -95,6 +100,7 @@ public abstract class Function implements Serializable {
 	return funval;
     }
     
+    /** Method called by FunValue.readResolve to build a closure */
     public Function resolveProxy(Value.FunValue funval) {
 	return this;
     }

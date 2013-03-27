@@ -47,11 +47,6 @@ public abstract class Value implements Serializable {
      * system, and hidden behind static factory methods in the Value
      * class. */
     
-    public Value[] pattMatch(Value obj, int nargs) {
-	Evaluator.err_match();
-	return null;
-    }
-
     @Override
     public String toString() {
 	StringWriter buf = new StringWriter();
@@ -242,11 +237,7 @@ public abstract class Value implements Serializable {
 	}
 
 	public Value apply(Value args[]) {
-	    return subr.apply(args, 0, args.length);
-	}
-
-	public Value[] pattMatch(Value obj, int nargs) {
-	    return subr.pattMatch(obj, nargs);
+	    return subr.apply(args, args.length);
 	}
 
 	@Override

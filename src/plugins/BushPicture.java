@@ -192,7 +192,7 @@ public class BushPicture extends Picture {
 	new Primitive.PrimN("bushparams", 7) {
 	    /* Set parameters used to interpret commands */
 	    @Override
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		linewidth = (float) number(args[base+0]);
 		alpha = (float) number(args[base+1]);
 		theta = (float) number(args[base+2]);

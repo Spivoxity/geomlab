@@ -197,7 +197,7 @@ public class ImagePicture extends Picture {
 	
 	new Primitive.PrimN("render", 4) {
 	    @Override 
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		Picture pic = cast(Picture.class, args[base+0], "picture");
 		int size = (int) Math.round(number(args[base+1]));
 		float slider = (float) number(args[base+2]);

@@ -323,7 +323,7 @@ public class BasicPrims {
         
 	new Primitive.PrimN("token", 4) {
 	    @Override
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		Name tag = name(args[base+0]);
 		Name tok = name(args[base+1]);
 		int p = (int) number(args[base+2]);

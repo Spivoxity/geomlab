@@ -201,12 +201,12 @@ public abstract class Primitive extends Function {
 	public PrimN(String name, int arity) { super(name, arity); }
 
 	/** Invoke the primitive with arguments args[base..) */ 
-	protected abstract Value apply(Value args[], int base);
+	protected abstract Value applyN(Value args[], int base);
 
 	@Override
 	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != arity) Evaluator.err_nargs(name, nargs, arity);
-	    return apply(args, base);
+	    return applyN(args, base);
 	}
     }
     

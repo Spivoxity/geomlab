@@ -342,7 +342,7 @@ public class EPSWriter extends Stylus {
 	/** Save a picture as Encapsulated PostScript */
 	new Primitive.PrimN("epswrite", 5) {
 	    @Override
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		Picture pic = cast(Picture.class, args[base+0], "picture");
 		String fname = string(args[base+1]);
 		float meanSize = (float) number(args[base+2]);

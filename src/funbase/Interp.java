@@ -241,14 +241,19 @@ public class Interp implements FunCode.Jit {
 		    }
 
 		    case MPRIM: {
-			Value cons = frame[--sp];
-			Value obj = frame[--sp];
-			Value vs[] = cons.pattMatch(obj, rand);
-			if (vs == null)
-			    pc = trap;
-			else {
-			    System.arraycopy(vs, 0, frame, sp, rand);
-			    sp += rand;
+			try {
+			    Value.FunValue cons = (Value.FunValue) frame[--sp];
+			    Value obj = frame[--sp];
+			    Value vs[] = cons.subr.pattMatch(obj, rand);
+			    if (vs == null)
+				pc = trap;
+			    else {
+				System.arraycopy(vs, 0, frame, sp, rand);
+				sp += rand;
+			    }
+			}
+			catch (ClassCastException _) {
+			    Evaluator.err_match();
 			}
 			break;
 		    }

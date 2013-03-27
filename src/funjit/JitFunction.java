@@ -131,4 +131,21 @@ public abstract class JitFunction extends Function.Closure
 	    return apply3(args[base+0], args[base+1], args[base+2]);
 	}
     }
+
+    public static abstract class FuncN extends JitFunction {
+	public FuncN(String name, int arity) {
+	    super(name, arity);
+	}
+
+	@Override
+	public abstract Value apply(Value args[], int nargs);
+
+	@Override
+	public Value apply(Value args[], int base, int nargs) {
+	    // Allow JIT functions to be called from the interpreter
+	    Value args1[] = new Value[nargs];
+	    System.arraycopy(args, base, args1, 0, nargs);
+	    return apply(args1, nargs);
+	}
+    }
 }
