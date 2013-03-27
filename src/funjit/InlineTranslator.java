@@ -34,6 +34,7 @@ import funbase.Primitive;
 import funbase.Value;
 import funbase.Name;
 import funbase.Function;
+import funbase.FunCode.Opcode;
 import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
 import static funjit.Type.*;
@@ -45,22 +46,94 @@ public class InlineTranslator extends JitTranslator {
     /** Extra class names */
     private static final String
 	cell_cl = "plugins/Cell",
-	colorval_cl = "plugins/ColorValue";
+	color_cl = "plugins/ColorValue";
 
     /** Stack to track inlinable primitives in a nest of calls */
-    private Stack<Inline> funstack = new Stack<Inline>();
+    private Stack<Inliner> funstack = new Stack<Inliner>();
     
     /** Dictionary mapping primitive names to their inline
      *  code generators */
-    private Map<String, Inline> primdict = 
-	new HashMap<String, Inline>();
+    private Map<String, Inliner> primdict = 
+	new HashMap<String, Inliner>();
 
     /** Register an inline code generator */
-    private void register(Inline c) {
+    private void register(Inliner c) {
 	primdict.put(c.name, c);
     }
 
     public InlineTranslator() {
+	// Add hooks to the parent to spot specific code sequences,
+	// general ones before specific ones
+
+	/* Hook to watch for other PUTARG instructions */
+	addHook(new CodeHook1(Opcode.PUTARG) {
+	    public boolean compile1(int i) {
+		convertArg(i, Kind.VALUE);
+		return true;
+	    }
+	});
+
+	/* Hook for other CALL instructions */
+	addHook(new CodeHook1(Opcode.CALL) {
+	    public boolean compile1(int nargs) {
+		Inliner gen = funstack.pop(); // Pop anyway
+		if (gen == null) return false;
+		convValue(gen.call());
+		return true;
+	    }
+	});
+
+	addHook(new CodeHook2(Opcode.GLOBAL, Opcode.PREP) {
+	    public boolean compile2(int n, int nargs) {
+		return doGlobalPrep(n, nargs);
+	    }
+	});
+
+	addHook(new CodeHook2(Opcode.QUOTE, Opcode.PUTARG) {
+	    public boolean compile2(int n, int i) {
+		return doQuotePutarg(n, i);
+	    }
+	});
+
+	/* Hook to watch for CALL / PUTARG */
+	addHook(new CodeHook2(Opcode.CALL, Opcode.PUTARG) {
+	    public boolean compile2(int nargs, int i) {
+		Inliner gen = funstack.peek();
+		if (gen == null) return false;
+		funstack.pop();
+		Kind k = gen.call();
+		convertArg(i, k);
+		return true;
+	    }
+	});
+
+	addHook(new CodeHook2(Opcode.CALL, Opcode.JFALSE) {
+	    public boolean compile2(int nargs, int addr) {
+		Inliner gen = funstack.peek();
+		if (gen == null) return false;
+		funstack.pop();
+		gen.jcall(addr);
+		return true;
+	    }
+	});
+	
+	/* Notice FVAR 0 / PREP, but leave it to the existing rule to
+	   translate it */
+	addHook(new CodeHook2(Opcode.FVAR, Opcode.PREP) {
+	    public boolean compile2(int n, int nargs) {
+		if (n == 0) funstack.push(null);
+		return false;
+	    }
+	});
+
+	/* Also notice other PREP instructions */
+	addHook(new CodeHook1(Opcode.PREP) {
+	    public boolean compile1(int nargs) {
+		funstack.push(null);
+		return false;
+	    }
+	});
+
 	register(new InlineEquals("=", true));
 	register(new InlineEquals("<>", false));
 	register(new InlineOp("+", DADD));
@@ -73,154 +146,140 @@ public class InlineTranslator extends JitTranslator {
 	register(new InlineComp(">=", DCMPG, IFLT));
 	register(new InlineListSel("head"));
 	register(new InlineListSel("tail"));
-	register(new InlineSelect("rpart", colorval_cl, "colour", Kind.NUMBER));
-	register(new InlineSelect("gpart", colorval_cl, "colour", Kind.NUMBER));
-	register(new InlineSelect("bpart", colorval_cl, "colour", Kind.NUMBER));
+	register(new InlineSelect("rpart", color_cl, "colour", Kind.NUMBER));
+	register(new InlineSelect("gpart", color_cl, "colour", Kind.NUMBER));
+	register(new InlineSelect("bpart", color_cl, "colour", Kind.NUMBER));
 
-	register(new SimpleInline("rgb", Kind.NUMBER) {
-		@Override
-		public Kind call() {
-		    code.gen(INVOKESTATIC, colorval_cl, "getInstance", 
-			     fun_DDD_V_t);
-		    return Kind.VALUE;
-		}
-	    });
+	register(new SimpleInliner("rgb", Kind.NUMBER) {
+	    @Override public Kind call() {
+		code.gen(INVOKESTATIC, color_cl, "getInstance",  fun_DDD_V_t);
+		return Kind.VALUE;
+	    }
+	});
 
-	register(new SimpleInline("new") {
-		@Override
-		public Kind call() {
-		    code.gen(NEW, cell_cl);
-		    code.gen(DUP_X1);
-		    code.gen(SWAP);
-		    code.gen(INVOKESPECIAL, cell_cl, "<init>", fun_V_t);
-		    return Kind.VALUE;
-		}
-	    });
+	register(new SimpleInliner("new") {
+	    @Override public Kind call() {
+		code.gen(NEW, cell_cl);
+		code.gen(DUP_X1);
+		code.gen(SWAP);
+		code.gen(INVOKESPECIAL, cell_cl, "<init>", fun_V_t);
+		return Kind.VALUE;
+	    }
+	});
 
 	register(new InlineSelect("!", cell_cl, "cell", "contents", 
 				  Kind.VALUE));
 
-	register(new SimpleInline(":=") {
-		@Override
-		public Kind call() {
-		    // cell, val
-		    code.gen(SWAP);
-		    castarg(":=", cell_cl, "cell");
-		    code.gen(SWAP);
-		    code.gen(DUP_X1);
-		    // val, cell, val
-		    code.gen(PUTFIELD, cell_cl, "contents", value_t);
-		    return Kind.VALUE;
-		}
-	    });
-    }
-
-    /** Hook into method that watches for QUOTE / PUTARG sequences */
-    @Override
-    protected void genQuotePutarg(int n, int i) {    
-	Inline gen  = funstack.peek();
-
-	if (gen != null) {
-	    Kind k = gen.argkind(i);
-	    Value v = consts[n];
-
-	    if (k == Kind.NUMBER && (v instanceof Value.NumValue)) {
-		Value.NumValue x = (Value.NumValue) v;
-		code.gen(CONST, x.val);
-		return;
+	register(new SimpleInliner(":=") {
+	    @Override public Kind call() {
+		// cell, val
+		code.gen(SWAP);
+		castarg(":=", cell_cl, "cell");
+		code.gen(SWAP);
+		code.gen(DUP_X1);
+		// val, cell, val
+		code.gen(PUTFIELD, cell_cl, "contents", value_t);
+		return Kind.VALUE;
 	    }
+	});
+    }
+
+    private enum Kind { VALUE, NUMBER, BOOL }
+
+    /** Convert a value on the stack from kind k to kind VALUE. */
+    private void convValue(Kind k) {
+	switch (k) {
+	    case VALUE:
+		break;
+	    case NUMBER:
+		code.gen(INVOKESTATIC, numval_cl, "getInstance", fun_D_V_t);
+		break;
+	    case BOOL:
+		code.gen(INVOKESTATIC, boolval_cl, "getInstance", fun_B_V_t);
+		break;
 	}
-
-        super.genQuotePutarg(n, i);
     }
 
-    /** Hook into method for PREP instruction */
-    @Override
-    protected void genPrep(int nargs) {
-	super.genPrep(nargs);
-    	funstack.push(null);
+    /** Convert a value on the stack from kind k1 to kind k2 */
+    private void convert(String name, Kind k1, Kind k2) {
+	if (k1 == k2) return;
+	
+	// All useful conversions can go via Value
+	convValue(k1); 	
+	
+	switch (k2) {
+	    case VALUE: 
+		break;
+	    case NUMBER: 
+		castarg(name, numval_cl, "numeric");
+		code.gen(GETFIELD, numval_cl, "val", double_t); 	
+		break;
+	    case BOOL: 	
+		castarg(name, boolval_cl, "boolean");
+		code.gen(GETFIELD, boolval_cl, "val", bool_t); 
+		break;
+	}
     }
 
-    /** Hook into method for self call */
-    @Override
-    protected void genSelf() {
-	super.genSelf();
-	funstack.push(null);
-    }
-
-    /** Hook into method to watch for GLOB / PREP pairs */
-    @Override
-    protected void genGlobalPrep(int glob, int nargs) {
-	Name f = (Name) consts[glob];
+    /** Hook to watch for GLOB / PREP pairs */
+    private boolean doGlobalPrep(int glob, int nargs) {
+	Name f = (Name) funcode.consts[glob];
 
 	if (f.isFrozen() && f.glodef != null 
 	    && f.glodef instanceof Value.FunValue) {
 	    Function fun = ((Value.FunValue) f.glodef).subr;
-	    if (fun instanceof Primitive) {
+	    if ((fun instanceof Primitive) && fun.arity == nargs) {
 		Primitive p = (Primitive) fun;
-		Inline c = primdict.get(p.name);
+		Inliner c = primdict.get(p.name);
 		if (c != null) {
 		    funstack.push(c);
-		    return;
+		    return true;
 		}
 	    }
 	}
 
-	// An ordinary function: compile an out-of-line call
-	super.genGlobalPrep(glob, nargs);
+	return false;
     }
 
-    /** Hook into method for PUTARG instructions */
-    @Override
-    protected void genPutarg(int i, Kind k) {
-	Inline gen = funstack.peek();
+    /** Hook to watch for QUOTE / PUTARG sequences */
+    private boolean doQuotePutarg(int n, int i) {    
+	Inliner gen  = funstack.peek();
+	if (gen == null) return false;
 
-	if (gen != null) {
+	Kind k = gen.argkind(i);
+	Value v = funcode.consts[n];
+
+	// Put numeric constants in the JVM constant pool
+	if (k == Kind.NUMBER && (v instanceof Value.NumValue)) {
+	    Value.NumValue x = (Value.NumValue) v;
+	    code.gen(CONST, x.val);
+	    return true;
+	}
+
+	return false;
+    }
+
+    /** Convert i'th argument to suit function being called */
+    private void convertArg(int i, Kind k) {
+	Inliner gen = funstack.peek();
+
+	if (gen != null)
 	    convert(gen.name, k, gen.argkind(i));
-	    return;
-	}
-
-	super.genPutarg(i, k);
-    }
-
-    /** Hook into method for CALL instruction */
-    @Override
-    protected Kind genCall(int nargs) {
-    	Inline gen = funstack.pop();
-
-    	if (gen != null)
-	    // Compile the function inline
-    	    return gen.call();
-
-	return super.genCall(nargs);
-    }
-
-    /** Hook into method for CALL / JFALSE combo */
-    @Override
-    protected void genJCall(int nargs, int addr) {
-	Inline gen = funstack.peek();
-
-	if (gen != null) {
-	    funstack.pop();
-	    gen.jcall(addr);
-	    return;
-	}
-
-	genJFalse(addr, super.genCall(nargs));
+	else
+	    convValue(k);
     }
 
     /** Prepare for new function */
-    @Override
-    protected void init() {
+    @Override protected void init() {
 	super.init();
 	funstack.clear();
     }
 
     /** A code generator for a specific primitive */
-    private abstract class Inline {
+    private abstract class Inliner {
 	public final String name;
 
-	public Inline(String name) {
+	public Inliner(String name) {
 	    this.name = name;
 	}
 
@@ -230,32 +289,36 @@ public class InlineTranslator extends JitTranslator {
 	/** Compile code for a call */
 	public abstract Kind call();
 
-	/** Compiler code for a call followed by JFALSE */
+	/** Compile code for a call followed by JFALSE */
 	public void jcall(int addr) {
-	    call();
-	    code.gen(IFEQ, makeLabel(addr));
+	    Kind k = call();
+	    if (k == Kind.BOOL)
+		code.gen(IFEQ, makeLabel(addr));
+	    else {
+		convValue(k);
+		genJFalse(addr);
+	    }
 	}
     }
 
     /** An inline code generator with all args of the same kind */
-    private abstract class SimpleInline extends Inline {
+    private abstract class SimpleInliner extends Inliner {
 	private Kind argkind;
 
-	public SimpleInline(String name) {
+	public SimpleInliner(String name) {
 	    this(name, Kind.VALUE);
 	}
 
-	public SimpleInline(String name, Kind argkind) {
+	public SimpleInliner(String name, Kind argkind) {
 	    super(name);
 	    this.argkind = argkind;
 	}
 
-	@Override
-	public Kind argkind(int i) { return argkind; }
+	@Override public Kind argkind(int i) { return argkind; }
     }
 
     /** Inliner for = and <> */
-    public class InlineEquals extends SimpleInline {
+    public class InlineEquals extends SimpleInliner {
 	private boolean sense;
 
 	public InlineEquals(String name, boolean sense) {
@@ -263,8 +326,7 @@ public class InlineTranslator extends JitTranslator {
 	    this.sense = sense;
 	}
 
-	@Override
-	public Kind call() {
+	@Override public Kind call() {
 	    code.gen(INVOKEVIRTUAL, object_cl, "equals", fun_O_B_t);
 	    if (! sense) {
 		code.gen(CONST, 1); code.gen(IXOR);
@@ -274,7 +336,7 @@ public class InlineTranslator extends JitTranslator {
     }
 
     /** Inliner for numeric operations */
-    public class InlineOp extends SimpleInline {
+    public class InlineOp extends SimpleInliner {
 	private Op op;
 
 	public InlineOp(String name, Op op) {
@@ -282,15 +344,14 @@ public class InlineTranslator extends JitTranslator {
 	    this.op = op;
 	}
 
-	@Override
-	public Kind call() {
+	@Override public Kind call() {
 	    code.gen(op);
 	    return Kind.NUMBER;
 	}
     }
 
     /** Inliner for numeric comparisons */
-    public class InlineComp extends SimpleInline {
+    public class InlineComp extends SimpleInliner {
 	private Op op1;		// Double comparison op DCMPL or DCMPG
 	private Op op2;		// Conditional branch if condition false
 
@@ -299,8 +360,7 @@ public class InlineTranslator extends JitTranslator {
 	    this.op1 = op1; this.op2 = op2;
 	}
 
-	@Override
-	public Kind call() {
+	@Override public Kind call() {
 	    Label lab = new Label(), lab2 = new Label();    
 	    code.gen(op1);
 	    code.gen(op2, lab);
@@ -312,26 +372,23 @@ public class InlineTranslator extends JitTranslator {
 	    return Kind.BOOL;
 	}
 
-	@Override
-	public void jcall(int addr) {
+	@Override public void jcall(int addr) {
 	    code.gen(op1);
 	    code.gen(op2, makeLabel(addr));
 	}
     }
 
     /** Inliner for head and tail */
-    public class InlineListSel extends SimpleInline {
+    public class InlineListSel extends SimpleInliner {
 	public InlineListSel(String name) {
 	    super(name);
 	}
 
-	@Override
-	public Kind call() {
+	@Override public Kind call() {
 	    code.gen(DUP);
 	    code.gen(ASTORE, _temp);
 	    cast(consval_cl, new Handler(name, "list") {
-		    @Override
-		    public void compile() {
+		    @Override public void compile() {
 			// Evaluator.list_fail(<msg>);
 			code.gen(ALOAD, _temp);
 			code.gen(CONST, prim);
@@ -345,7 +402,7 @@ public class InlineTranslator extends JitTranslator {
     }	
 
     /** Inliner for generic field selection function */
-    public class InlineSelect extends SimpleInline {
+    public class InlineSelect extends SimpleInliner {
 	private final String cl, cl_name, field;
 	private final Kind kind;
 
@@ -361,8 +418,7 @@ public class InlineTranslator extends JitTranslator {
 	    this.field = field; this.kind = kind;
 	}
 
-	@Override
-	public Kind call() {
+	@Override public Kind call() {
 	    Type ty;
 
 	    switch (kind) {
