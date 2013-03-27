@@ -67,22 +67,40 @@ public abstract class Function implements Serializable {
 
     /** Apply the function to 0 arguments */
     public Value apply0() {
-	return apply(null, 0, 0);
+	return apply(null, 0);
     }
 
     /** Apply the function to 1 argument */
     public Value apply1(Value x) {
-	return apply(new Value[] { x }, 0, 1);
+	return apply(new Value[] { x }, 1);
     }
 
     /** Apply the function to 2 arguments */
     public Value apply2(Value x, Value y) {
-	return apply(new Value[] { x, y }, 0, 2);
+	return apply(new Value[] { x, y }, 2);
     }
 
     /** Apply the function to 3 arguments */
     public Value apply3(Value x, Value y, Value z) {
-	return apply(new Value[] { x, y, z }, 0, 3);
+	return apply(new Value[] { x, y, z }, 3);
+    }
+
+    /** Apply the function to 4 arguments */
+    public Value apply4(Value x, Value y, Value z,
+			Value u) {
+	return apply(new Value[] { x, y, z, u }, 4);
+    }
+
+    /** Apply the function to 5 arguments */
+    public Value apply5(Value x, Value y, Value z,
+			Value u, Value v) {
+	return apply(new Value[] { x, y, z, u, v }, 5);
+    }
+
+    /** Apply the function to 6 arguments */
+    public Value apply6(Value x, Value y, Value z,
+			Value u, Value v, Value w) {
+	return apply(new Value[] { x, y, z, u, v, w }, 6);
     }
 
     /** Match the value as a constructor */

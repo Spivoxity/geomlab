@@ -230,18 +230,6 @@ public class Evaluator {
 	      + " (" + buf + ")", "#match");
     }
 
-    public static void err_nomatch1(Value arg1) {
-	err_nomatch(new Value[] { arg1 }, 0, 1);
-    }
-
-    public static void err_nomatch2(Value arg1, Value arg2) {
-	err_nomatch(new Value[] { arg1, arg2 }, 0, 2);
-    }
-
-    public static void err_nomatch3(Value arg1, Value arg2, Value arg3) {
-	err_nomatch(new Value[] { arg1, arg2, arg3 }, 0, 3);
-    }
-
     /** Complain about an undefined name */
     public static void err_notdef(Name x) {
 	error("'" + x + "' is not defined", "#undef");

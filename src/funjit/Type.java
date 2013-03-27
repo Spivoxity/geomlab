@@ -143,10 +143,12 @@ class Type {
 	func_t(value_t),
 	func_t(value_t, value_t), 
 	func_t(value_t, value_t, value_t),
-	func_t(value_t, value_t, value_t, value_t)
+	func_t(value_t, value_t, value_t, value_t),
+	func_t(value_t, value_t, value_t, value_t, value_t),
+	func_t(value_t, value_t, value_t, value_t, value_t, value_t),
+	func_t(value_t, value_t, value_t, value_t, value_t, value_t, value_t)
     };
 
     public final static Type
-	apply_t = func_t(valarray_t, int_t, int_t, value_t),
-	new_apply_t = func_t(valarray_t, int_t, value_t);
+	apply_t = func_t(valarray_t, int_t, value_t);
 }

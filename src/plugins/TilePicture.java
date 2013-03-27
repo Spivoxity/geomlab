@@ -127,13 +127,14 @@ public class TilePicture extends Picture {
 	},
 
 	/** Set the palette of colours used for rendering Escher picture. */
-	new Primitive.PrimN("palette", 4) {
+	new Primitive.Prim4("palette") {
 	    @Override
-	    public Value applyN(Value args[], int base) {
-		hbase = (float) number(args[base+0]);
-		hstep = (float) number(args[base+1]);
-		svalue = (float) number(args[base+2]);
-		bvalue = (float) number(args[base+3]);
+	    public Value apply4(Value base, Value step, Value sval, 
+				Value bval) {
+		hbase = (float) number(base);
+		hstep = (float) number(step);
+		svalue = (float) number(sval);
+		bvalue = (float) number(bval);
 		return Value.nil;
 	    }
 	}

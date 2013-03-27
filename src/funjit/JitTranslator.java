@@ -64,6 +64,8 @@ public class JitTranslator implements FunCode.Jit {
        n+3: local 1         
          ...                              */
 
+    private final static int MANY = 6;
+
     private final static int 
 	_this = 0, _args = 1, _nargs = 2;
 
@@ -92,7 +94,7 @@ public class JitTranslator implements FunCode.Jit {
 	
 	int arity = funcode.arity;
 
-	if (arity <= 3) {
+	if (arity <= MANY) {
 	    _temp = arity+1; 
 	    _frame = arity+2;
 	} else {
@@ -102,7 +104,7 @@ public class JitTranslator implements FunCode.Jit {
 
 	ClassFile.debug = 0;	// Don't trace boilerplate code
 
-	if (arity <= 3) {
+	if (arity <= MANY) {
 	    // class Gnnnn extends JitFunction<n> {
 	    cf = new ClassFile(ACC_PUBLIC+ACC_SUPER, className, 
 			       jitsmall_cl+arity);
@@ -130,7 +132,7 @@ public class JitTranslator implements FunCode.Jit {
 	    code.gen(RETURN);
 
 	    // public Value apply(Value args[], int nargs)
-	    code = cf.addMethod(ACC_PUBLIC, "apply", new_apply_t);
+	    code = cf.addMethod(ACC_PUBLIC, "apply", apply_t);
 	    checkpoint();
 
 	    // if (nargs != arity) 
@@ -155,27 +157,30 @@ public class JitTranslator implements FunCode.Jit {
 
     private void checkpoint() {
 	// if (--Evaluator.quantum <= 0) Evaluator.checkpoint()
-	Label lab3 = new Label();
+	Label lab = new Label();
 	code.gen(GETSTATIC, evaluator_cl, "quantum", int_t);
 	code.gen(CONST, 1);
 	code.gen(ISUB);
 	code.gen(DUP);
 	code.gen(PUTSTATIC, evaluator_cl, "quantum", int_t);
-	code.gen(IFGT, lab3);
+	code.gen(IFGT, lab);
 	code.gen(INVOKESTATIC, evaluator_cl, "checkpoint", fun_t);
-	code.label(lab3);
+	code.label(lab);
     }
 
     private void genArg(int n) {
 	// stack[sp++] = args[n]
-	if (funcode.arity <= 3)
+	if (funcode.arity <= MANY)
 	    code.gen(ALOAD, _args+n);
-	else {
-	    code.gen(ALOAD, _args);
-	    code.gen(CONST, n);
-	    code.gen(AALOAD);
-	}
-    }	
+	else 
+	    genSub(_args, n);
+    }
+
+    private void genSub(int array, int index) {
+	code.gen(ALOAD, array);
+	code.gen(CONST, index);
+	code.gen(AALOAD);
+    }
 
     private void genField(String name, int index) {
 	code.gen(ALOAD, _this);
@@ -201,46 +206,49 @@ public class JitTranslator implements FunCode.Jit {
 
     /** Make a Value array a[size] and fill in a[base..size) from the stack */
     private void makeArray(int base, int size) {
-	// abuf = new Value[size];
+	tempArray(size);
+	fillArray(_temp, base, size);
+	code.gen(ALOAD, _temp);
+    }
+
+    private void tempArray(int size) {
+	// temp = new Value[size];
 	code.gen(CONST, size); 
 	code.gen(ANEWARRAY, value_cl);
+	code.gen(ASTORE, _temp);
+    }
+
+    private void fillArray(int a, int base, int size) {
 	for (int i = size-1; i >= base; i--) {
-	    // abuf[i] = stack[--sp];
-	    code.gen(DUP_X1); 		// array, v_i, array, v_i+1, ...
-	    code.gen(SWAP); 		// val, array, array, v_i+1, ...
-	    code.gen(CONST, i);		// i, val, array, array, v_i+1, ...
-	    code.gen(SWAP); 		// val, i, array, array, v_i+1, ...
-	    code.gen(AASTORE);		// array, v_i+1, ...
+	    // a[i] = stack[--sp];
+	    code.gen(ALOAD, a);		// array, v_i, v_i+1, ...
+	    code.gen(SWAP); 		// v_i, array, v_i+1, ...
+	    code.gen(CONST, i);		// i, v_i, array, v_i+1, ...
+	    code.gen(SWAP); 		// v_i, i, array, v_i+1, ...
+	    code.gen(AASTORE);		// v_i+1, ...
 	}
     }
 
     /** Translate a CALL instruction. */
-    protected final void genCall(int nargs) {
-	if (nargs <= 3)
-	    code.gen(INVOKEVIRTUAL, function_cl, "apply"+nargs, 
-		     applyn_t[nargs]);
+    protected final void genCall(int n) {
+	if (n <= MANY)
+	    code.gen(INVOKEVIRTUAL, function_cl, "apply"+n, applyn_t[n]);
 	else {
-	    makeArray(0, nargs);
-	    code.gen(CONST, nargs);
-	    code.gen(INVOKEVIRTUAL, function_cl, "apply", new_apply_t);
+	    makeArray(0, n);
+	    code.gen(CONST, n);
+	    code.gen(INVOKEVIRTUAL, function_cl, "apply", apply_t);
     	}
     }
 
     /** Translate a TCALL instruction into a jump */
-    private void genTCall(int nargs) {
-	assert(nargs == funcode.arity);
+    private void genTCall(int n) {
+	assert(n == funcode.arity);
 
-	if (nargs <= 3) {
-	    for (int n = nargs-1; n >= 0; n--)
-		code.gen(ASTORE, _args+n);
+	if (n <= MANY) {
+	    for (int i = n-1; i >= 0; i--)
+		code.gen(ASTORE, _args+i);
 	} else {
-	    for (int n = nargs-1; n >= 0; n--) {
-		code.gen(ALOAD, _args);		// _args, v_n, v_n-1, ...
-		code.gen(SWAP);			// v_n, _args, v_n-1, ...
-		code.gen(CONST, n);		// n, v_n, _args, v_n-1, ...
-		code.gen(SWAP);			// v_n, n, _args, v_n-1, ...
-		code.gen(AASTORE);		// v_n-1, ...
-	    }
+	    fillArray(_args, 0, n);
 	}
 
 	code.gen(GOTO, loop);
@@ -282,34 +290,22 @@ public class JitTranslator implements FunCode.Jit {
 
     private void genFail() {
     	// ErrContext.err_nomatch(args, 0, arity);
-	switch (funcode.arity) {
-	    case 0:
-		code.gen(ACONST_NULL);
-		code.gen(CONST, 0);
-		code.gen(CONST, 0);
-		code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch", fun_AII_t);
-		break;
-	    case 1:
-		code.gen(ALOAD, _args+0);
-		code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch1", fun_V_t);
-		break;
-	    case 2:
-		code.gen(ALOAD, _args+0);
-		code.gen(ALOAD, _args+1);
-		code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch2", fun_VV_t);
-		break;
-	    case 3:
-		code.gen(ALOAD, _args+0);
-		code.gen(ALOAD, _args+1);
-		code.gen(ALOAD, _args+2);
-		code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch3", fun_VVV_t);
-		break;
-	    default:
-		code.gen(ALOAD, _args);
-		code.gen(CONST, 0);
-		code.gen(CONST, funcode.arity);
-		code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch", fun_AII_t);
+	if (funcode.arity <= MANY) {
+	    /* new Value[arity] { arg1, arg2, ..., argN } */
+	    tempArray(funcode.arity);
+	    for (int i = 0; i < funcode.arity; i++) {
+		code.gen(ALOAD, _temp);		// array
+		code.gen(CONST, i);		// i, array
+		code.gen(ALOAD, _args+i);	// arg_i, i, array
+		code.gen(AASTORE);
+	    }
+	    code.gen(ALOAD, _temp);
+	} else {
+	    code.gen(ALOAD, _args);
 	}
+	code.gen(CONST, 0);
+	code.gen(CONST, funcode.arity);
+	code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch", fun_AII_t);
 
     	// return null;
     	code.gen(ACONST_NULL);
@@ -380,12 +376,8 @@ public class JitTranslator implements FunCode.Jit {
     	// if (temp == null) goto trap
     	code.gen(IFNULL, trap);
     	
-    	for (int i = 0; i < n; i++) {
-	    // push temp[i]
-    	    code.gen(ALOAD, _temp); 
-    	    code.gen(CONST, i); 
-    	    code.gen(AALOAD);
-    	}
+    	for (int i = 0; i < n; i++)
+	    genSub(_temp, i);
     }
 
     /** Default translation of each opcode, if not overridden by rules */

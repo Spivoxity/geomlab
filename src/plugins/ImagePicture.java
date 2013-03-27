@@ -195,13 +195,13 @@ public class ImagePicture extends Picture {
 	    }
 	},
 	
-	new Primitive.PrimN("render", 4) {
+	new Primitive.Prim4("render") {
 	    @Override 
-	    public Value applyN(Value args[], int base) {
-		Picture pic = cast(Picture.class, args[base+0], "picture");
-		int size = (int) Math.round(number(args[base+1]));
-		float slider = (float) number(args[base+2]);
-		float grey = (float) number(args[base+3]);
+	    public Value apply4(Value a0, Value a1, Value a2, Value a3) {
+		Picture pic = cast(Picture.class, a0, "picture");
+		int size = (int) Math.round(number(a1));
+		float slider = (float) number(a2);
+		float grey = (float) number(a3);
 		ColorValue bg = ColorValue.getGrey(grey);
 		pic.prerender(slider);
 		Native.Image image = 

@@ -340,14 +340,15 @@ public class EPSWriter extends Stylus {
     
     public static final Primitive primitives[] =  {
 	/** Save a picture as Encapsulated PostScript */
-	new Primitive.PrimN("epswrite", 5) {
+	new Primitive.Prim5("epswrite") {
 	    @Override
-	    public Value applyN(Value args[], int base) {
-		Picture pic = cast(Picture.class, args[base+0], "picture");
-		String fname = string(args[base+1]);
-		float meanSize = (float) number(args[base+2]);
-		float slider = (float) number(args[base+3]);
-		float grey = (float) number(args[base+4]);
+	    public Value apply5(Value a0, Value a1, Value a2, 
+				Value a3, Value a4) {
+		Picture pic = cast(Picture.class, a0, "picture");
+		String fname = string(a1);
+		float meanSize = (float) number(a2);
+		float slider = (float) number(a3);
+		float grey = (float) number(a4);
 		ColorValue background = ColorValue.getGrey(grey);
 
 		/* The dimensions of the image are chosen to give
