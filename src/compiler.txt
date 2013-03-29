@@ -153,8 +153,8 @@ define __top() =
 
   let member(x, []) = false | member(x, y:ys) = (x = y) or member(x, ys) in
 
-  let zipwith(f, [], []) = [] 
-    | zipwith(f, x:xs, y:ys) = f(x, y) : zipwith(f, xs, ys) in
+  let number(_, []) = []
+    | number(n, x:xs) = [n, x] : number(n+1, xs) in
 
   let fst([x, y]) = x in
   let snd([x, y]) = y in
@@ -659,9 +659,8 @@ define __top() =
         { A constructor pattern h(args) }
         let f = label() in
 	let n = length(args) in
-	let c(p1, d1) = c_patt(p1, d1, env) in
 	pgen([#seq, [#TRAP, f], c_ref(cn, env), [#MPRIM, n]],
-	     reverse(zipwith(c, args, [d..d+n-1])),
+	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ]),
              [[f, d]])
 
     | c_patt([#cons, h, t], d, env) =
@@ -697,8 +696,7 @@ define __top() =
 
   { c_match -- compile code to match a list of arguments }
   let c_match(ps, env) =
-    let code = 
-      zipwith(function (p, i) c_arg(p, i, env), ps, [0..length(ps)-1]) in
+    let code = [ c_arg(p, i, env) | [i, p] <- number(0, ps) ] in
     [#seq:map(fst, code), concat(map(snd, code))] in
 
   { The functions c_rule and c_body are mutually recursive with c_exp.
@@ -754,8 +752,9 @@ define __top() =
     let fvs = e_fvars(env1) in
     let nfvs = length(fvs) in
     debug(1, code) >>
-    [#seq, [#QUOTE, assemble(f, n, code)],
-      #seq:[ c_ref(x, env) | x <- fvs ], [#CLOSURE, nfvs]] in
+    [#seq, [#QUOTE, assemble(f, n, code)], [#CLOPREP, nfvs],
+      #seq:[ [#seq, c_ref(x, env), [#PUTFVAR, i]] | [i, x] <- number(1, fvs) ],
+      [#CLOSURE, nfvs]] in
 
   { yield -- append RETURN instuction if needed }
   let yield(code, tl) =
@@ -778,9 +777,8 @@ define __top() =
         let nargs = length(args) in
       	yield([#seq, c_exp(f, env, false), 
 	  [#seq, [#PREP, nargs],
-  	    #seq:zipwith(function (e, i) 
-	  		   [#seq, c_exp(e, env, false), [#PUTARG, i]],
-			 args, [0..nargs-1]),
+  	    #seq:[ [#seq, c_exp(e, env, false), [#PUTARG, i]]
+	    	     | [i, e] <- number(0, args) ],
 	    [#CALL, nargs]]], tl)
 
     | c_exp([#if, e1, e2, e3], env, tl) =

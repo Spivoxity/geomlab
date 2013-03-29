@@ -50,9 +50,13 @@ public abstract class Primitive extends Function {
     // in any primitive.  Errors are reported with a message that names
     // the primitive concerned.
 
+    public String getPName() {
+	return name;
+    }
+
     /** Report error when argument is not what we expected */
     public void expect(String expected) {
-	Evaluator.expect(name, expected);
+	Evaluator.expect(getPName(), expected);
     }
 
     /** Fetch value of a NumValue object, or throw EvalException */

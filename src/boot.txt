@@ -69,7 +69,7 @@ global #> primitive ">"
 global #>= primitive ">="
 global #^ primitive "^"
 global #__token primitive "token"
-global #__top closure funcode "__top" 0 661 103 107 13
+global #__top closure funcode "__top" 0 968 103 107 13
   GLOBAL 0
   PREP 1
   QUOTE 1
@@ -131,24 +131,33 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 9
   QUOTE 11
+  CLOPREP 2
   LOCAL 9
+  PUTFVAR 1
   LOCAL 8
+  PUTFVAR 2
   CLOSURE 2
   BIND 10
   QUOTE 12
+  CLOPREP 0
   CLOSURE 0
   BIND 11
   QUOTE 13
+  CLOPREP 0
   CLOSURE 0
   BIND 12
   QUOTE 14
+  CLOPREP 0
   CLOSURE 0
   BIND 13
   QUOTE 15
+  CLOPREP 0
   CLOSURE 0
   BIND 14
   QUOTE 16
+  CLOPREP 1
   LOCAL 6
+  PUTFVAR 1
   CLOSURE 1
   BIND 15
   GLOBAL 17
@@ -164,61 +173,95 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 17
   QUOTE 19
+  CLOPREP 5
   LOCAL 0
-  LOCAL 16
+  PUTFVAR 1
   LOCAL 13
-  LOCAL 17
+  PUTFVAR 2
+  LOCAL 16
+  PUTFVAR 3
   LOCAL 14
+  PUTFVAR 4
+  LOCAL 17
+  PUTFVAR 5
   CLOSURE 5
   BIND 18
   QUOTE 20
+  CLOPREP 1
   LOCAL 11
+  PUTFVAR 1
   CLOSURE 1
   BIND 19
   QUOTE 21
+  CLOPREP 1
   LOCAL 16
+  PUTFVAR 1
   CLOSURE 1
   BIND 20
   QUOTE 22
+  CLOPREP 4
   LOCAL 20
+  PUTFVAR 1
   LOCAL 18
+  PUTFVAR 2
   LOCAL 1
+  PUTFVAR 3
   LOCAL 15
+  PUTFVAR 4
   CLOSURE 4
   BIND 21
   QUOTE 23
+  CLOPREP 2
   LOCAL 20
+  PUTFVAR 1
   LOCAL 18
+  PUTFVAR 2
   CLOSURE 2
   BIND 22
   QUOTE 24
+  CLOPREP 1
   LOCAL 16
+  PUTFVAR 1
   CLOSURE 1
   BIND 23
   QUOTE 25
+  CLOPREP 2
   LOCAL 17
+  PUTFVAR 1
   LOCAL 21
+  PUTFVAR 2
   CLOSURE 2
   BIND 24
   QUOTE 26
+  CLOPREP 1
   LOCAL 21
+  PUTFVAR 1
   CLOSURE 1
   BIND 25
   QUOTE 27
+  CLOPREP 1
   LOCAL 21
+  PUTFVAR 1
   CLOSURE 1
   BIND 26
   QUOTE 28
+  CLOPREP 1
   LOCAL 22
+  PUTFVAR 1
   CLOSURE 1
   BIND 27
   QUOTE 29
+  CLOPREP 1
   LOCAL 27
+  PUTFVAR 1
   CLOSURE 1
   BIND 28
   QUOTE 30
+  CLOPREP 2
   LOCAL 20
+  PUTFVAR 1
   LOCAL 28
+  PUTFVAR 2
   CLOSURE 2
   BIND 29
   GLOBAL 17
@@ -228,11 +271,15 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 30
   QUOTE 31
+  CLOPREP 1
   LOCAL 30
+  PUTFVAR 1
   CLOSURE 1
   BIND 31
   QUOTE 32
+  CLOPREP 1
   LOCAL 31
+  PUTFVAR 1
   CLOSURE 1
   BIND 32
   GLOBAL 17
@@ -242,7 +289,9 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 33
   QUOTE 33
+  CLOPREP 1
   LOCAL 33
+  PUTFVAR 1
   CLOSURE 1
   BIND 34
   GLOBAL 17
@@ -252,7 +301,9 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 35
   QUOTE 34
+  CLOPREP 1
   LOCAL 35
+  PUTFVAR 1
   CLOSURE 1
   BIND 36
   GLOBAL 17
@@ -262,178 +313,305 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 37
   QUOTE 35
+  CLOPREP 1
   LOCAL 37
+  PUTFVAR 1
   CLOSURE 1
   BIND 38
   QUOTE 36
+  CLOPREP 0
   CLOSURE 0
   BIND 39
   QUOTE 37
+  CLOPREP 2
   LOCAL 29
+  PUTFVAR 1
   LOCAL 36
+  PUTFVAR 2
   CLOSURE 2
   BIND 40
   QUOTE 38
+  CLOPREP 9
   LOCAL 1
+  PUTFVAR 1
   LOCAL 36
+  PUTFVAR 2
   LOCAL 25
+  PUTFVAR 3
   LOCAL 21
+  PUTFVAR 4
   LOCAL 40
+  PUTFVAR 5
   LOCAL 26
+  PUTFVAR 6
   LOCAL 20
+  PUTFVAR 7
   LOCAL 24
+  PUTFVAR 8
   LOCAL 23
+  PUTFVAR 9
   CLOSURE 9
   BIND 41
   QUOTE 39
+  CLOPREP 2
   LOCAL 41
+  PUTFVAR 1
   LOCAL 22
+  PUTFVAR 2
   CLOSURE 2
   BIND 42
   QUOTE 40
+  CLOPREP 3
   LOCAL 24
+  PUTFVAR 1
   LOCAL 22
+  PUTFVAR 2
   LOCAL 42
+  PUTFVAR 3
   CLOSURE 3
   BIND 43
   QUOTE 41
+  CLOPREP 2
   LOCAL 26
+  PUTFVAR 1
   LOCAL 40
+  PUTFVAR 2
   CLOSURE 2
   BIND 44
   QUOTE 42
+  CLOPREP 2
   LOCAL 29
+  PUTFVAR 1
   LOCAL 32
+  PUTFVAR 2
   CLOSURE 2
   BIND 45
   QUOTE 43
+  CLOPREP 1
   LOCAL 7
+  PUTFVAR 1
   CLOSURE 1
   BIND 46
   QUOTE 44
+  CLOPREP 3
   LOCAL 36
+  PUTFVAR 1
   LOCAL 21
+  PUTFVAR 2
   LOCAL 32
+  PUTFVAR 3
   CLOSURE 3
   BIND 47
   QUOTE 45
+  CLOPREP 4
   LOCAL 23
+  PUTFVAR 1
   LOCAL 21
+  PUTFVAR 2
   LOCAL 32
+  PUTFVAR 3
   LOCAL 47
+  PUTFVAR 4
   CLOSURE 4
   BIND 48
   QUOTE 46
+  CLOPREP 7
   LOCAL 20
+  PUTFVAR 1
   LOCAL 32
+  PUTFVAR 2
   LOCAL 48
+  PUTFVAR 3
   LOCAL 46
+  PUTFVAR 4
   LOCAL 21
+  PUTFVAR 5
   LOCAL 27
+  PUTFVAR 6
   LOCAL 23
+  PUTFVAR 7
   CLOSURE 7
   BIND 49
   QUOTE 47
+  CLOPREP 8
   LOCAL 19
+  PUTFVAR 1
   LOCAL 16
+  PUTFVAR 2
   LOCAL 31
+  PUTFVAR 3
   LOCAL 24
+  PUTFVAR 4
   LOCAL 2
+  PUTFVAR 5
   LOCAL 20
+  PUTFVAR 6
   LOCAL 34
+  PUTFVAR 7
   LOCAL 14
+  PUTFVAR 8
   CLOSURE 8
   BIND 50
   QUOTE 48
+  CLOPREP 9
   LOCAL 1
+  PUTFVAR 1
   LOCAL 49
+  PUTFVAR 2
   LOCAL 50
+  PUTFVAR 3
   LOCAL 25
+  PUTFVAR 4
   LOCAL 45
+  PUTFVAR 5
   LOCAL 26
+  PUTFVAR 6
   LOCAL 20
+  PUTFVAR 7
   LOCAL 24
+  PUTFVAR 8
   LOCAL 23
+  PUTFVAR 9
   CLOSURE 9
   BIND 51
   QUOTE 49
+  CLOPREP 5
   LOCAL 51
+  PUTFVAR 1
   LOCAL 20
+  PUTFVAR 2
   LOCAL 21
+  PUTFVAR 3
   LOCAL 24
+  PUTFVAR 4
   LOCAL 23
+  PUTFVAR 5
   CLOSURE 5
   BIND 52
   QUOTE 50
+  CLOPREP 0
   CLOSURE 0
   BIND 53
   QUOTE 51
+  CLOPREP 11
   LOCAL 53
+  PUTFVAR 1
   LOCAL 14
+  PUTFVAR 2
   LOCAL 34
+  PUTFVAR 3
   LOCAL 20
+  PUTFVAR 4
   LOCAL 21
+  PUTFVAR 5
   LOCAL 13
+  PUTFVAR 6
   LOCAL 2
+  PUTFVAR 7
   LOCAL 17
+  PUTFVAR 8
   LOCAL 19
+  PUTFVAR 9
   LOCAL 16
+  PUTFVAR 10
   LOCAL 52
+  PUTFVAR 11
   CLOSURE 11
   BIND 54
   QUOTE 52
+  CLOPREP 3
   LOCAL 22
+  PUTFVAR 1
   LOCAL 21
+  PUTFVAR 2
   LOCAL 34
+  PUTFVAR 3
   CLOSURE 3
   BIND 55
   QUOTE 53
+  CLOPREP 7
   LOCAL 22
+  PUTFVAR 1
   LOCAL 55
+  PUTFVAR 2
   LOCAL 44
+  PUTFVAR 3
   LOCAL 32
+  PUTFVAR 4
   LOCAL 38
+  PUTFVAR 5
   LOCAL 21
+  PUTFVAR 6
   LOCAL 23
+  PUTFVAR 7
   CLOSURE 7
   BIND 56
   QUOTE 54
+  CLOPREP 4
   LOCAL 19
+  PUTFVAR 1
   LOCAL 16
+  PUTFVAR 2
   LOCAL 20
+  PUTFVAR 3
   LOCAL 24
+  PUTFVAR 4
   CLOSURE 4
   BIND 57
   QUOTE 55
+  CLOPREP 3
   LOCAL 21
+  PUTFVAR 1
   LOCAL 32
+  PUTFVAR 2
   LOCAL 22
+  PUTFVAR 3
   CLOSURE 3
   BIND 58
   QUOTE 56
+  CLOPREP 4
   LOCAL 57
+  PUTFVAR 1
   LOCAL 1
+  PUTFVAR 2
   LOCAL 44
+  PUTFVAR 3
   LOCAL 58
+  PUTFVAR 4
   CLOSURE 4
   BIND 59
   QUOTE 57
+  CLOPREP 8
   LOCAL 57
+  PUTFVAR 1
   LOCAL 20
+  PUTFVAR 2
   LOCAL 21
+  PUTFVAR 3
   LOCAL 32
+  PUTFVAR 4
   LOCAL 44
+  PUTFVAR 5
   LOCAL 58
+  PUTFVAR 6
   LOCAL 27
+  PUTFVAR 7
   LOCAL 59
+  PUTFVAR 8
   CLOSURE 8
   BIND 60
   QUOTE 58
+  CLOPREP 5
   LOCAL 20
+  PUTFVAR 1
   LOCAL 22
+  PUTFVAR 2
   LOCAL 38
+  PUTFVAR 3
   LOCAL 32
+  PUTFVAR 4
   LOCAL 1
+  PUTFVAR 5
   CLOSURE 5
   BIND 61
   GLOBAL 59
@@ -469,68 +647,97 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 2
   POP 0
   QUOTE 60
+  CLOPREP 2
   LOCAL 18
+  PUTFVAR 1
   LOCAL 61
+  PUTFVAR 2
   CLOSURE 2
   BIND 62
   QUOTE 61
+  CLOPREP 0
   CLOSURE 0
   BIND 63
   QUOTE 62
+  CLOPREP 0
   CLOSURE 0
   BIND 64
   QUOTE 63
+  CLOPREP 0
   CLOSURE 0
   BIND 65
   QUOTE 64
+  CLOPREP 0
   CLOSURE 0
   BIND 66
   QUOTE 65
+  CLOPREP 0
   CLOSURE 0
   BIND 67
   QUOTE 66
+  CLOPREP 0
   CLOSURE 0
   BIND 68
   QUOTE 67
+  CLOPREP 0
   CLOSURE 0
   BIND 69
   QUOTE 68
+  CLOPREP 0
   CLOSURE 0
   BIND 70
   QUOTE 69
+  CLOPREP 0
   CLOSURE 0
   BIND 71
   QUOTE 70
+  CLOPREP 0
   CLOSURE 0
   BIND 72
   QUOTE 71
+  CLOPREP 0
   CLOSURE 0
   BIND 73
   QUOTE 72
+  CLOPREP 3
   LOCAL 70
+  PUTFVAR 1
   LOCAL 72
+  PUTFVAR 2
   LOCAL 71
+  PUTFVAR 3
   CLOSURE 3
   BIND 74
   QUOTE 73
+  CLOPREP 2
   LOCAL 73
+  PUTFVAR 1
   LOCAL 71
+  PUTFVAR 2
   CLOSURE 2
   BIND 75
   QUOTE 74
+  CLOPREP 0
   CLOSURE 0
   BIND 76
   QUOTE 75
+  CLOPREP 2
   LOCAL 67
+  PUTFVAR 1
   LOCAL 64
+  PUTFVAR 2
   CLOSURE 2
   BIND 77
   QUOTE 76
-  LOCAL 64
+  CLOPREP 2
   LOCAL 67
+  PUTFVAR 1
+  LOCAL 64
+  PUTFVAR 2
   CLOSURE 2
   BIND 78
   QUOTE 77
+  CLOPREP 0
   CLOSURE 0
   BIND 79
   GLOBAL 17
@@ -540,46 +747,75 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 80
   QUOTE 78
+  CLOPREP 1
   LOCAL 80
+  PUTFVAR 1
   CLOSURE 1
   BIND 81
   QUOTE 79
+  CLOPREP 4
   LOCAL 72
+  PUTFVAR 1
   LOCAL 76
+  PUTFVAR 2
   LOCAL 67
+  PUTFVAR 3
   LOCAL 64
+  PUTFVAR 4
   CLOSURE 4
   BIND 82
   QUOTE 80
+  CLOPREP 0
   CLOSURE 0
   BIND 83
   QUOTE 81
+  CLOPREP 2
   LOCAL 13
+  PUTFVAR 1
   LOCAL 14
+  PUTFVAR 2
   CLOSURE 2
   BIND 84
   QUOTE 82
+  CLOPREP 7
   LOCAL 81
+  PUTFVAR 1
   LOCAL 84
+  PUTFVAR 2
   LOCAL 77
+  PUTFVAR 3
   LOCAL 82
+  PUTFVAR 4
   LOCAL 74
+  PUTFVAR 5
   LOCAL 12
+  PUTFVAR 6
   LOCAL 39
+  PUTFVAR 7
   CLOSURE 7
   BIND 85
   QUOTE 83
+  CLOPREP 4
   LOCAL 77
+  PUTFVAR 1
   LOCAL 72
+  PUTFVAR 2
   LOCAL 84
+  PUTFVAR 3
   LOCAL 85
+  PUTFVAR 4
   CLOSURE 4
   BIND 86
   QUOTE 84
+  CLOPREP 4
   LOCAL 12
+  PUTFVAR 1
   LOCAL 86
+  PUTFVAR 2
   LOCAL 13
+  PUTFVAR 3
   LOCAL 14
+  PUTFVAR 4
   CLOSURE 4
   BIND 87
   GLOBAL 17
@@ -589,51 +825,89 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 88
   QUOTE 85
+  CLOPREP 6
   LOCAL 88
+  PUTFVAR 1
   LOCAL 87
+  PUTFVAR 2
   LOCAL 79
+  PUTFVAR 3
   LOCAL 13
+  PUTFVAR 4
   LOCAL 14
+  PUTFVAR 5
   LOCAL 81
+  PUTFVAR 6
   CLOSURE 6
   BIND 89
   QUOTE 86
+  CLOPREP 0
   CLOSURE 0
   BIND 90
   QUOTE 87
+  CLOPREP 5
   LOCAL 89
-  LOCAL 13
+  PUTFVAR 1
   LOCAL 14
+  PUTFVAR 2
+  LOCAL 13
+  PUTFVAR 3
   LOCAL 83
+  PUTFVAR 4
   LOCAL 90
+  PUTFVAR 5
   CLOSURE 5
   BIND 91
   QUOTE 88
+  CLOPREP 8
   LOCAL 66
+  PUTFVAR 1
   LOCAL 63
+  PUTFVAR 2
   LOCAL 91
+  PUTFVAR 3
   LOCAL 69
+  PUTFVAR 4
   LOCAL 10
+  PUTFVAR 5
   LOCAL 3
+  PUTFVAR 6
+  LOCAL 12
+  PUTFVAR 7
   LOCAL 82
-  CLOSURE 7
+  PUTFVAR 8
+  CLOSURE 8
   BIND 92
   QUOTE 89
+  CLOPREP 0
   CLOSURE 0
   BIND 93
   QUOTE 90
+  CLOPREP 12
   LOCAL 93
+  PUTFVAR 1
   LOCAL 82
+  PUTFVAR 2
   LOCAL 78
+  PUTFVAR 3
   LOCAL 68
+  PUTFVAR 4
   LOCAL 12
+  PUTFVAR 5
   LOCAL 81
+  PUTFVAR 6
   LOCAL 72
+  PUTFVAR 7
   LOCAL 73
+  PUTFVAR 8
   LOCAL 74
+  PUTFVAR 9
   LOCAL 75
+  PUTFVAR 10
   LOCAL 92
+  PUTFVAR 11
   LOCAL 39
+  PUTFVAR 12
   CLOSURE 12
   BIND 94
   GLOBAL 59
@@ -687,46 +961,79 @@ global #__top closure funcode "__top" 0 661 103 107 13
   CALL 1
   BIND 101
   QUOTE 98
+  CLOPREP 6
   LOCAL 63
+  PUTFVAR 1
   LOCAL 91
+  PUTFVAR 2
   LOCAL 66
+  PUTFVAR 3
   LOCAL 10
+  PUTFVAR 4
   LOCAL 99
+  PUTFVAR 5
   LOCAL 3
+  PUTFVAR 6
   CLOSURE 6
   BIND 102
   QUOTE 99
+  CLOPREP 6
   LOCAL 100
+  PUTFVAR 1
   LOCAL 64
+  PUTFVAR 2
   LOCAL 101
+  PUTFVAR 3
   LOCAL 72
+  PUTFVAR 4
   LOCAL 73
+  PUTFVAR 5
   LOCAL 102
+  PUTFVAR 6
   CLOSURE 6
   BIND 103
   QUOTE 100
+  CLOPREP 3
   LOCAL 4
+  PUTFVAR 1
   LOCAL 5
+  PUTFVAR 2
   LOCAL 6
+  PUTFVAR 3
   CLOSURE 3
   BIND 104
   QUOTE 101
+  CLOPREP 6
   LOCAL 104
+  PUTFVAR 1
   LOCAL 96
+  PUTFVAR 2
   LOCAL 103
+  PUTFVAR 3
   LOCAL 65
+  PUTFVAR 4
   LOCAL 102
+  PUTFVAR 5
   LOCAL 95
+  PUTFVAR 6
   CLOSURE 6
   BIND 105
   QUOTE 102
+  CLOPREP 7
   LOCAL 62
+  PUTFVAR 1
   LOCAL 97
+  PUTFVAR 2
   LOCAL 10
+  PUTFVAR 3
   LOCAL 80
+  PUTFVAR 4
   LOCAL 98
+  PUTFVAR 5
   LOCAL 103
+  PUTFVAR 6
   LOCAL 105
+  PUTFVAR 7
   CLOSURE 7
   BIND 106
   LOCAL 106
@@ -792,50 +1099,46 @@ name #false
 name #=
 boolean 1
 { end of member }
-funcode "zipwith" 3 41 1 4 6
+funcode "number" 2 35 3 2 6
   ARG 1
-  TRAP 8
-  MNIL 0
-  ARG 2
-  TRAP 8
+  TRAP 5
   MNIL 0
   NIL 0
   RETURN 0
   ARG 1
-  TRAP 40
+  TRAP 34
   MCONS 0
   BIND 0
   BIND 1
-  ARG 2
-  TRAP 40
-  MCONS 0
-  BIND 2
-  BIND 3
   GLOBAL 0
   PREP 2
   ARG 0
-  PREP 2
   LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
   PUTARG 0
-  LOCAL 2
+  FVAR 0
+  PREP 2
+  GLOBAL 1
+  PREP 2
+  ARG 0
+  PUTARG 0
+  QUOTE 2
   PUTARG 1
   CALL 2
   PUTARG 0
-  FVAR 0
-  PREP 3
-  ARG 0
-  PUTARG 0
   LOCAL 1
   PUTARG 1
-  LOCAL 3
-  PUTARG 2
-  CALL 3
+  CALL 2
   PUTARG 1
   CALL 2
   RETURN 0
   FAIL 0
 name #:
-{ end of zipwith }
+name #+
+integer 1
+{ end of number }
 funcode "fst" 1 12 0 2 2
   ARG 0
   TRAP 11
@@ -1047,9 +1350,9 @@ funcode "scan" 0 28 1 1 4
   BIND 0
   GLOBAL 0
   PREP 2
-  FVAR 2
-  PUTARG 0
   FVAR 3
+  PUTARG 0
+  FVAR 2
   PREP 1
   LOCAL 0
   PUTARG 0
@@ -1059,9 +1362,9 @@ funcode "scan" 0 28 1 1 4
   POP 0
   GLOBAL 0
   PREP 2
-  FVAR 4
-  PUTARG 0
   FVAR 5
+  PUTARG 0
+  FVAR 4
   PREP 1
   LOCAL 0
   PUTARG 0
@@ -1386,10 +1689,11 @@ funcode "p_defn" 0 10 1 1 2
   RETURN 0
 name #_get
 { end of p_defn }
-funcode "listify" 1 13 3 0 4
+funcode "listify" 1 14 3 0 4
   GLOBAL 0
   PREP 3
   QUOTE 1
+  CLOPREP 0
   CLOSURE 0
   PUTARG 0
   QUOTE 2
@@ -1424,16 +1728,25 @@ funcode "p_patterns" 1 8 0 0 3
   CALL 2
   RETURN 0
 { end of p_patterns }
-funcode "p_patprim" 0 17 1 1 9
+funcode "p_patprim" 0 26 1 1 9
   QUOTE 0
+  CLOPREP 8
   FVAR 8
+  PUTFVAR 1
   FVAR 7
+  PUTFVAR 2
   FVAR 6
+  PUTFVAR 3
   FVAR 5
+  PUTFVAR 4
   FVAR 4
+  PUTFVAR 5
   FVAR 3
+  PUTFVAR 6
   FVAR 2
+  PUTFVAR 7
   FVAR 1
+  PUTFVAR 8
   CLOSURE 8
   BIND 0
   FVAR 9
@@ -1661,10 +1974,13 @@ funcode "p_patfactor" 0 22 2 1 4
 name #:
 name #cons
 { end of p_patfactor }
-funcode "p_pattern_body" 0 13 1 1 3
+funcode "p_pattern_body" 0 16 1 1 3
   QUOTE 0
+  CLOPREP 2
   FVAR 2
+  PUTFVAR 1
   FVAR 1
+  PUTFVAR 2
   CLOSURE 2
   BIND 0
   LOCAL 0
@@ -1967,12 +2283,17 @@ funcode "p_gen" 0 20 2 1 4
 name #<-
 name #gen
 { end of p_gen }
-funcode "p_gens" 0 21 2 2 5
+funcode "p_gens" 0 26 2 2 5
   QUOTE 0
+  CLOPREP 4
   FVAR 4
+  PUTFVAR 1
   FVAR 3
+  PUTFVAR 2
   FVAR 2
+  PUTFVAR 3
   FVAR 1
+  PUTFVAR 4
   CLOSURE 4
   BIND 0
   FVAR 4
@@ -1989,12 +2310,17 @@ funcode "p_gens" 0 21 2 2 5
   PUTARG 1
   CALL 2
   RETURN 0
-funcode "p_tail" 0 13 1 1 5
+funcode "p_tail" 0 18 1 1 5
   QUOTE 0
+  CLOPREP 4
   FVAR 3
+  PUTFVAR 1
   FVAR 2
+  PUTFVAR 2
   FVAR 0
+  PUTFVAR 3
   FVAR 1
+  PUTFVAR 4
   CLOSURE 4
   BIND 0
   FVAR 4
@@ -2065,7 +2391,7 @@ name #comma
 { end of p_tail }
 name #:
 { end of p_gens }
-funcode "p_listexp" 0 29 3 2 7
+funcode "p_listexp" 0 36 3 2 7
   FVAR 1
   PREP 1
   QUOTE 0
@@ -2081,12 +2407,19 @@ funcode "p_listexp" 0 29 3 2 7
   CALL 0
   BIND 0
   QUOTE 2
-  LOCAL 0
+  CLOPREP 6
   FVAR 6
+  PUTFVAR 1
   FVAR 2
+  PUTFVAR 2
+  LOCAL 0
+  PUTFVAR 3
   FVAR 5
+  PUTFVAR 4
   FVAR 4
+  PUTFVAR 5
   FVAR 3
+  PUTFVAR 6
   CLOSURE 6
   BIND 1
   FVAR 7
@@ -2108,11 +2441,11 @@ funcode "case" 1 80 9 0 7
   PUTARG 0
   GLOBAL 1
   PREP 2
-  FVAR 1
-  PUTARG 0
-  FVAR 2
-  PREP 2
   FVAR 3
+  PUTARG 0
+  FVAR 1
+  PREP 2
+  FVAR 2
   PUTARG 0
   QUOTE 0
   PUTARG 1
@@ -2138,8 +2471,8 @@ funcode "case" 1 80 9 0 7
   NIL 0
   CONS 0
   CONS 0
-  FVAR 1
   FVAR 3
+  FVAR 2
   PREP 0
   CALL 0
   NIL 0
@@ -2160,7 +2493,7 @@ funcode "case" 1 80 9 0 7
   POP 0
   FVAR 5
   PREP 3
-  FVAR 1
+  FVAR 3
   PUTARG 0
   FVAR 6
   PREP 0
@@ -2173,7 +2506,7 @@ funcode "case" 1 80 9 0 7
   CALL 3
   RETURN 0
   QUOTE 2
-  FVAR 1
+  FVAR 3
   NIL 0
   CONS 0
   CONS 0
@@ -2275,16 +2608,25 @@ name #apply
 name #_rsect
 name #false
 { end of p_parenexp }
-funcode "p_primary" 0 17 1 1 9
+funcode "p_primary" 0 26 1 1 9
   QUOTE 0
+  CLOPREP 8
   FVAR 8
+  PUTFVAR 1
   FVAR 7
+  PUTFVAR 2
   FVAR 6
+  PUTFVAR 3
   FVAR 5
+  PUTFVAR 4
   FVAR 4
+  PUTFVAR 5
   FVAR 3
+  PUTFVAR 6
   FVAR 2
+  PUTFVAR 7
   FVAR 1
+  PUTFVAR 8
   CLOSURE 8
   BIND 0
   FVAR 9
@@ -2456,13 +2798,19 @@ string "I don't recognise this expression"
 string "#badexp"
 { end of case }
 { end of p_primary }
-funcode "p_factor" 0 14 1 1 6
+funcode "p_factor" 0 20 1 1 6
   QUOTE 0
+  CLOPREP 5
   FVAR 4
+  PUTFVAR 1
   FVAR 0
+  PUTFVAR 2
   FVAR 3
+  PUTFVAR 3
   FVAR 2
+  PUTFVAR 4
   FVAR 1
+  PUTFVAR 5
   CLOSURE 5
   BIND 0
   FVAR 5
@@ -2622,19 +2970,31 @@ name #true
 name #apply
 name #var
 { end of makebin }
-funcode "p_term_body" 2 24 1 1 12
+funcode "p_term_body" 2 36 1 1 12
   QUOTE 0
+  CLOPREP 11
   FVAR 10
+  PUTFVAR 1
   FVAR 9
+  PUTFVAR 2
   FVAR 8
+  PUTFVAR 3
   FVAR 7
+  PUTFVAR 4
   FVAR 6
+  PUTFVAR 5
   FVAR 5
+  PUTFVAR 6
   ARG 1
+  PUTFVAR 7
   FVAR 4
+  PUTFVAR 8
   FVAR 3
+  PUTFVAR 9
   FVAR 2
+  PUTFVAR 10
   FVAR 1
+  PUTFVAR 11
   CLOSURE 11
   BIND 0
   LOCAL 0
@@ -2821,15 +3181,23 @@ name #then
 name #else
 integer 1
 { end of p_cond }
-funcode "p_expr_body" 1 16 1 1 8
+funcode "p_expr_body" 1 24 1 1 8
   QUOTE 0
+  CLOPREP 7
   FVAR 6
+  PUTFVAR 1
   FVAR 5
+  PUTFVAR 2
   FVAR 4
+  PUTFVAR 3
   FVAR 3
+  PUTFVAR 4
   FVAR 2
+  PUTFVAR 5
   ARG 0
+  PUTFVAR 6
   FVAR 1
+  PUTFVAR 7
   CLOSURE 7
   BIND 0
   FVAR 7
@@ -3073,7 +3441,7 @@ name #length
 string "each clause should have the same number of arguments"
 string "#arity"
 { end of p_rule }
-funcode "p_defn_body" 0 72 9 4 10
+funcode "p_defn_body" 0 76 9 4 10
   FVAR 1
   PREP 0
   CALL 0
@@ -3130,9 +3498,13 @@ funcode "p_defn_body" 0 72 9 4 10
   FVAR 7
   PREP 2
   QUOTE 7
+  CLOPREP 3
   FVAR 8
-  LOCAL 0
+  PUTFVAR 1
   LOCAL 2
+  PUTFVAR 2
+  LOCAL 0
+  PUTFVAR 3
   CLOSURE 3
   PUTARG 0
   QUOTE 8
@@ -3156,9 +3528,9 @@ name #:
 funcode "<function>" 0 8 0 0 3
   FVAR 1
   PREP 2
-  FVAR 2
-  PUTARG 0
   FVAR 3
+  PUTARG 0
+  FVAR 2
   PUTARG 1
   CALL 2
   RETURN 0
@@ -3275,8 +3647,9 @@ funcode "parser" 0 8 0 0 1
   CALL 0
   RETURN 0
 { end of parser }
-funcode "flatten" 1 11 1 1 3
+funcode "flatten" 1 12 1 1 3
   QUOTE 0
+  CLOPREP 0
   CLOSURE 0
   BIND 0
   LOCAL 0
@@ -3683,27 +4056,29 @@ name #_set
 name #:
 name #_get
 { end of bind }
-funcode "unbind" 2 39 3 2 5
+funcode "unbind" 2 41 3 2 5
   ARG 1
-  TRAP 38
+  TRAP 40
   MCONS 0
   POP 0
-  TRAP 38
+  TRAP 40
   MCONS 0
   POP 0
-  TRAP 38
+  TRAP 40
   MCONS 0
   BIND 0
-  TRAP 38
+  TRAP 40
   MCONS 0
   POP 0
-  TRAP 38
+  TRAP 40
   MCONS 0
   POP 0
-  TRAP 38
+  TRAP 40
   MNIL 0
   QUOTE 0
+  CLOPREP 1
   ARG 0
+  PUTFVAR 1
   CLOSURE 1
   BIND 1
   GLOBAL 1
@@ -3892,10 +4267,13 @@ integer 1
 name #_set
 name #++
 { end of alloc_fv }
-funcode "islocal" 2 17 1 1 4
+funcode "islocal" 2 20 1 1 4
   QUOTE 0
+  CLOPREP 2
   FVAR 1
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   BIND 0
   LOCAL 0
@@ -3965,7 +4343,7 @@ name #false
 funcode "selfrec" 2 24 3 0 6
   GLOBAL 0
   PREP 2
-  FVAR 1
+  FVAR 2
   PREP 2
   ARG 0
   PUTARG 0
@@ -3973,7 +4351,7 @@ funcode "selfrec" 2 24 3 0 6
   PUTARG 1
   CALL 2
   PUTARG 0
-  FVAR 2
+  FVAR 1
   PREP 1
   ARG 1
   PUTARG 0
@@ -3991,27 +4369,29 @@ name #=
 name #FVAR
 integer 0
 { end of selfrec }
-funcode "reset" 1 49 5 4 6
+funcode "reset" 1 51 5 4 6
   ARG 0
-  TRAP 48
+  TRAP 50
   MCONS 0
   BIND 0
-  TRAP 48
+  TRAP 50
   MCONS 0
   POP 0
-  TRAP 48
+  TRAP 50
   MCONS 0
   BIND 1
-  TRAP 48
+  TRAP 50
   MCONS 0
   POP 0
-  TRAP 48
+  TRAP 50
   MCONS 0
   BIND 2
-  TRAP 48
+  TRAP 50
   MNIL 0
   QUOTE 0
+  CLOPREP 1
   LOCAL 0
+  PUTFVAR 1
   CLOSURE 1
   BIND 3
   GLOBAL 1
@@ -4126,13 +4506,19 @@ name #+
 name #_get
 integer 1
 { end of label }
-funcode "c_ref" 2 20 1 1 6
+funcode "c_ref" 2 26 1 1 6
   QUOTE 0
+  CLOPREP 5
   FVAR 3
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   FVAR 2
+  PUTFVAR 3
   ARG 0
+  PUTFVAR 4
   FVAR 1
+  PUTFVAR 5
   CLOSURE 5
   BIND 0
   LOCAL 0
@@ -4243,8 +4629,9 @@ name #FVAR
 name #GLOBAL
 { end of case }
 { end of c_ref }
-funcode "trapsort" 1 13 2 1 4
+funcode "trapsort" 1 14 2 1 4
   QUOTE 0
+  CLOPREP 0
   CLOSURE 0
   BIND 0
   GLOBAL 1
@@ -4281,10 +4668,10 @@ funcode "insert" 2 95 2 5 6
   ARG 0
   TRAP 94
   MCONS 0
-  BIND 0
+  BIND 3
   TRAP 94
   MCONS 0
-  BIND 1
+  BIND 4
   TRAP 94
   MNIL 0
   ARG 1
@@ -4292,21 +4679,29 @@ funcode "insert" 2 95 2 5 6
   MCONS 0
   TRAP 93
   MCONS 0
-  BIND 2
+  BIND 0
   TRAP 93
   MCONS 0
-  BIND 3
+  BIND 1
   TRAP 93
   MNIL 0
-  BIND 4
+  BIND 2
   GLOBAL 0
   PREP 2
-  LOCAL 1
+  LOCAL 4
   PUTARG 0
-  LOCAL 3
+  LOCAL 1
   PUTARG 1
   CALL 2
   JFALSE 71
+  GLOBAL 1
+  PREP 2
+  LOCAL 3
+  LOCAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
   GLOBAL 1
   PREP 2
   LOCAL 0
@@ -4315,15 +4710,7 @@ funcode "insert" 2 95 2 5 6
   CONS 0
   CONS 0
   PUTARG 0
-  GLOBAL 1
-  PREP 2
   LOCAL 2
-  LOCAL 3
-  NIL 0
-  CONS 0
-  CONS 0
-  PUTARG 0
-  LOCAL 4
   PUTARG 1
   CALL 2
   PUTARG 1
@@ -4331,21 +4718,21 @@ funcode "insert" 2 95 2 5 6
   RETURN 0
   GLOBAL 1
   PREP 2
-  LOCAL 2
-  LOCAL 3
-  NIL 0
-  CONS 0
-  CONS 0
-  PUTARG 0
-  FVAR 0
-  PREP 2
   LOCAL 0
   LOCAL 1
   NIL 0
   CONS 0
   CONS 0
   PUTARG 0
+  FVAR 0
+  PREP 2
+  LOCAL 3
   LOCAL 4
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  LOCAL 2
   PUTARG 1
   CALL 2
   PUTARG 1
@@ -4405,7 +4792,7 @@ name #map
 name #++
 name #concat
 { end of pgen }
-funcode "c_patt" 3 439 25 5 12
+funcode "c_patt" 3 428 24 4 8
   ARG 0
   TRAP 50
   MCONS 0
@@ -4562,12 +4949,12 @@ funcode "c_patt" 3 439 25 5 12
   RETURN 0
   POP 0
   ARG 0
-  TRAP 249
+  TRAP 238
   MCONS 0
-  TRAP 248
+  TRAP 237
   QUOTE 9
   MEQ 0
-  TRAP 249
+  TRAP 238
   MCONS 0
   BIND 0
   BIND 1
@@ -4581,11 +4968,6 @@ funcode "c_patt" 3 439 25 5 12
   PUTARG 0
   CALL 1
   BIND 3
-  QUOTE 11
-  FVAR 0
-  ARG 2
-  CLOSURE 2
-  BIND 4
   FVAR 2
   PREP 3
   QUOTE 1
@@ -4601,7 +4983,7 @@ funcode "c_patt" 3 439 25 5 12
   ARG 2
   PUTARG 1
   CALL 2
-  QUOTE 12
+  QUOTE 11
   LOCAL 3
   NIL 0
   CONS 0
@@ -4612,33 +4994,27 @@ funcode "c_patt" 3 439 25 5 12
   CONS 0
   CONS 0
   PUTARG 0
-  GLOBAL 13
+  GLOBAL 12
   PREP 1
-  FVAR 6
+  GLOBAL 13
   PREP 3
-  LOCAL 4
+  QUOTE 14
+  CLOPREP 2
+  FVAR 0
+  PUTFVAR 1
+  ARG 2
+  PUTFVAR 2
+  CLOSURE 2
+  PUTARG 0
+  FVAR 6
+  PREP 2
+  ARG 1
   PUTARG 0
   LOCAL 1
   PUTARG 1
-  GLOBAL 14
-  PREP 2
-  ARG 1
-  PUTARG 0
-  GLOBAL 15
-  PREP 2
-  GLOBAL 16
-  PREP 2
-  ARG 1
-  PUTARG 0
-  LOCAL 3
-  PUTARG 1
-  CALL 2
-  PUTARG 0
-  QUOTE 17
-  PUTARG 1
   CALL 2
   PUTARG 1
-  CALL 2
+  NIL 0
   PUTARG 2
   CALL 3
   PUTARG 0
@@ -4656,18 +5032,18 @@ funcode "c_patt" 3 439 25 5 12
   RETURN 0
   POP 0
   ARG 0
-  TRAP 322
+  TRAP 311
   MCONS 0
-  TRAP 321
-  QUOTE 18
+  TRAP 310
+  QUOTE 15
   MEQ 0
-  TRAP 322
+  TRAP 311
   MCONS 0
   BIND 0
-  TRAP 322
+  TRAP 311
   MCONS 0
   BIND 1
-  TRAP 322
+  TRAP 311
   MNIL 0
   FVAR 1
   PREP 0
@@ -4681,7 +5057,7 @@ funcode "c_patt" 3 439 25 5 12
   NIL 0
   CONS 0
   CONS 0
-  QUOTE 19
+  QUOTE 16
   NIL 0
   CONS 0
   NIL 0
@@ -4693,11 +5069,11 @@ funcode "c_patt" 3 439 25 5 12
   PREP 3
   LOCAL 0
   PUTARG 0
-  GLOBAL 16
+  GLOBAL 17
   PREP 2
   ARG 1
   PUTARG 0
-  QUOTE 17
+  QUOTE 18
   PUTARG 1
   CALL 2
   PUTARG 1
@@ -4729,12 +5105,12 @@ funcode "c_patt" 3 439 25 5 12
   RETURN 0
   POP 0
   ARG 0
-  TRAP 363
+  TRAP 352
   MCONS 0
-  TRAP 362
-  QUOTE 20
+  TRAP 351
+  QUOTE 19
   MEQ 0
-  TRAP 363
+  TRAP 352
   MNIL 0
   FVAR 1
   PREP 0
@@ -4748,7 +5124,7 @@ funcode "c_patt" 3 439 25 5 12
   NIL 0
   CONS 0
   CONS 0
-  QUOTE 21
+  QUOTE 20
   NIL 0
   CONS 0
   NIL 0
@@ -4770,10 +5146,10 @@ funcode "c_patt" 3 439 25 5 12
   RETURN 0
   POP 0
   ARG 0
-  TRAP 379
+  TRAP 368
   MCONS 0
-  TRAP 378
-  QUOTE 22
+  TRAP 367
+  QUOTE 21
   MEQ 0
   BIND 0
   FVAR 7
@@ -4786,18 +5162,18 @@ funcode "c_patt" 3 439 25 5 12
   TCALL 3
   POP 0
   ARG 0
-  TRAP 438
+  TRAP 427
   MCONS 0
-  TRAP 437
-  QUOTE 23
+  TRAP 426
+  QUOTE 22
   MEQ 0
-  TRAP 438
+  TRAP 427
   MCONS 0
   BIND 0
-  TRAP 438
+  TRAP 427
   MCONS 0
   BIND 1
-  TRAP 438
+  TRAP 427
   MNIL 0
   FVAR 1
   PREP 0
@@ -4811,7 +5187,7 @@ funcode "c_patt" 3 439 25 5 12
   NIL 0
   CONS 0
   CONS 0
-  QUOTE 24
+  QUOTE 23
   LOCAL 1
   NIL 0
   CONS 0
@@ -4856,26 +5232,38 @@ name #anon
 name #POP
 name #prim
 name #length
-funcode "c" 2 10 0 0 4
+name #MPRIM
+name #reverse
+name #_mapa
+funcode "<function>" 2 23 0 2 4
+  ARG 0
+  TRAP 21
+  MCONS 0
+  BIND 0
+  TRAP 21
+  MCONS 0
+  BIND 1
+  TRAP 21
+  MNIL 0
   FVAR 1
   PREP 3
-  ARG 0
+  LOCAL 1
   PUTARG 0
-  ARG 1
+  LOCAL 0
   PUTARG 1
   FVAR 2
   PUTARG 2
   CALL 3
+  ARG 1
+  CONS 0
   RETURN 0
-{ end of c }
-name #MPRIM
-name #reverse
-name #_range
-name #-
-name #+
-integer 1
+  ARG 1
+  RETURN 0
+{ end of <function> }
 name #cons
 name #MCONS
+name #+
+integer 1
 name #nil
 name #MNIL
 name #list
@@ -4983,41 +5371,34 @@ name #anon
 name #seq
 integer 0
 { end of c_arg }
-funcode "c_match" 2 57 10 1 8
-  FVAR 1
+funcode "c_match" 2 50 7 1 5
+  GLOBAL 0
   PREP 3
-  QUOTE 0
+  QUOTE 1
+  CLOPREP 2
   FVAR 2
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   PUTARG 0
-  ARG 0
-  PUTARG 1
-  GLOBAL 1
+  FVAR 1
   PREP 2
   QUOTE 2
   PUTARG 0
-  GLOBAL 3
-  PREP 2
-  GLOBAL 4
-  PREP 1
   ARG 0
-  PUTARG 0
-  CALL 1
-  PUTARG 0
-  QUOTE 5
   PUTARG 1
   CALL 2
   PUTARG 1
-  CALL 2
+  NIL 0
   PUTARG 2
   CALL 3
   BIND 0
-  GLOBAL 6
+  GLOBAL 3
   PREP 2
-  QUOTE 7
+  QUOTE 4
   PUTARG 0
-  GLOBAL 8
+  GLOBAL 5
   PREP 2
   FVAR 3
   PUTARG 0
@@ -5026,9 +5407,9 @@ funcode "c_match" 2 57 10 1 8
   CALL 2
   PUTARG 1
   CALL 2
-  GLOBAL 9
+  GLOBAL 6
   PREP 1
-  GLOBAL 8
+  GLOBAL 5
   PREP 2
   FVAR 4
   PUTARG 0
@@ -5041,23 +5422,33 @@ funcode "c_match" 2 57 10 1 8
   CONS 0
   CONS 0
   RETURN 0
-funcode "<function>" 2 10 0 0 4
+name #_mapa
+funcode "<function>" 2 23 0 2 4
+  ARG 0
+  TRAP 21
+  MCONS 0
+  BIND 0
+  TRAP 21
+  MCONS 0
+  BIND 1
+  TRAP 21
+  MNIL 0
   FVAR 1
   PREP 3
-  ARG 0
+  LOCAL 1
   PUTARG 0
-  ARG 1
+  LOCAL 0
   PUTARG 1
   FVAR 2
   PUTARG 2
   CALL 3
+  ARG 1
+  CONS 0
+  RETURN 0
+  ARG 1
   RETURN 0
 { end of <function> }
-name #_range
 integer 0
-name #-
-name #length
-integer 1
 name #:
 name #seq
 name #map
@@ -5226,8 +5617,9 @@ name #JFALSE
 name #:
 integer 0
 { end of c_rule }
-funcode "c_traps" 1 19 4 1 6
+funcode "c_traps" 1 20 4 1 6
   QUOTE 0
+  CLOPREP 0
   CLOSURE 0
   BIND 0
   GLOBAL 1
@@ -5345,9 +5737,9 @@ funcode "c_body" 2 81 4 5 7
   BIND 2
   GLOBAL 1
   PREP 2
-  FVAR 2
-  PUTARG 0
   FVAR 3
+  PUTARG 0
+  FVAR 2
   PREP 1
   LOCAL 2
   PUTARG 0
@@ -5357,7 +5749,7 @@ funcode "c_body" 2 81 4 5 7
   BIND 3
   FVAR 4
   PREP 1
-  FVAR 3
+  FVAR 2
   PREP 1
   LOCAL 2
   PUTARG 0
@@ -5366,7 +5758,7 @@ funcode "c_body" 2 81 4 5 7
   CALL 1
   BIND 4
   QUOTE 2
-  FVAR 2
+  FVAR 3
   PREP 1
   LOCAL 2
   PUTARG 0
@@ -5409,7 +5801,7 @@ name #map
 name #seq
 name #=
 { end of c_body }
-funcode "c_closure" 4 85 8 4 8
+funcode "c_closure" 4 100 9 4 10
   FVAR 1
   PREP 3
   ARG 0
@@ -5466,25 +5858,39 @@ funcode "c_closure" 4 85 8 4 8
   NIL 0
   CONS 0
   CONS 0
-  GLOBAL 4
+  QUOTE 4
+  LOCAL 3
+  NIL 0
+  CONS 0
+  CONS 0
+  GLOBAL 5
   PREP 2
   QUOTE 2
   PUTARG 0
-  GLOBAL 5
+  GLOBAL 6
   PREP 3
-  QUOTE 6
-  FVAR 7
+  QUOTE 7
+  CLOPREP 2
+  FVAR 8
+  PUTFVAR 1
   ARG 3
+  PUTFVAR 2
   CLOSURE 2
   PUTARG 0
+  FVAR 7
+  PREP 2
+  QUOTE 1
+  PUTARG 0
   LOCAL 2
+  PUTARG 1
+  CALL 2
   PUTARG 1
   NIL 0
   PUTARG 2
   CALL 3
   PUTARG 1
   CALL 2
-  QUOTE 7
+  QUOTE 8
   LOCAL 3
   NIL 0
   CONS 0
@@ -5494,24 +5900,49 @@ funcode "c_closure" 4 85 8 4 8
   CONS 0
   CONS 0
   CONS 0
+  CONS 0
   RETURN 0
 name #length
 integer 1
 name #seq
 name #QUOTE
+name #CLOPREP
 name #:
 name #_mapa
-funcode "<function>" 2 10 0 0 3
+funcode "<function>" 2 31 2 2 5
+  ARG 0
+  TRAP 29
+  MCONS 0
+  BIND 0
+  TRAP 29
+  MCONS 0
+  BIND 1
+  TRAP 29
+  MNIL 0
+  QUOTE 0
   FVAR 1
   PREP 2
-  ARG 0
+  LOCAL 1
   PUTARG 0
   FVAR 2
   PUTARG 1
   CALL 2
+  QUOTE 1
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
   ARG 1
   CONS 0
   RETURN 0
+  ARG 1
+  RETURN 0
+name #seq
+name #PUTFVAR
 { end of <function> }
 name #CLOSURE
 { end of c_closure }
@@ -5533,7 +5964,7 @@ funcode "yield" 2 14 2 0 4
 name #seq
 name #RETURN
 { end of yield }
-funcode "c_exp" 3 730 36 7 15
+funcode "c_exp" 3 730 33 7 12
   ARG 0
   TRAP 24
   MCONS 0
@@ -5585,22 +6016,22 @@ funcode "c_exp" 3 730 36 7 15
   RETURN 0
   POP 0
   ARG 0
-  TRAP 134
+  TRAP 137
   MCONS 0
-  TRAP 133
+  TRAP 136
   QUOTE 3
   MEQ 0
-  TRAP 134
+  TRAP 137
   MCONS 0
-  TRAP 133
+  TRAP 136
   MCONS 0
-  TRAP 132
+  TRAP 135
   QUOTE 2
   MEQ 0
-  TRAP 133
+  TRAP 136
   MCONS 0
   BIND 0
-  TRAP 133
+  TRAP 136
   MNIL 0
   BIND 1
   ARG 2
@@ -5632,7 +6063,7 @@ funcode "c_exp" 3 730 36 7 15
   CALL 2
   JUMP 98
   QUOTE 4
-  JFALSE 134
+  JFALSE 137
   QUOTE 7
   GLOBAL 8
   PREP 2
@@ -5641,8 +6072,11 @@ funcode "c_exp" 3 730 36 7 15
   GLOBAL 9
   PREP 3
   QUOTE 10
+  CLOPREP 2
   FVAR 0
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   PUTARG 0
   LOCAL 1
@@ -5706,33 +6140,30 @@ funcode "c_exp" 3 730 36 7 15
   PREP 2
   QUOTE 7
   PUTARG 0
-  FVAR 5
+  GLOBAL 9
   PREP 3
   QUOTE 14
+  CLOPREP 2
   FVAR 0
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
+  PUTARG 0
+  FVAR 5
+  PREP 2
+  QUOTE 15
   PUTARG 0
   LOCAL 1
   PUTARG 1
-  GLOBAL 15
-  PREP 2
-  QUOTE 16
-  PUTARG 0
-  GLOBAL 17
-  PREP 2
-  LOCAL 2
-  PUTARG 0
-  QUOTE 18
-  PUTARG 1
   CALL 2
   PUTARG 1
-  CALL 2
+  NIL 0
   PUTARG 2
   CALL 3
   PUTARG 1
   CALL 2
-  QUOTE 19
+  QUOTE 16
   LOCAL 2
   NIL 0
   CONS 0
@@ -5756,7 +6187,7 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 338
   MCONS 0
   TRAP 337
-  QUOTE 20
+  QUOTE 17
   MEQ 0
   TRAP 338
   MCONS 0
@@ -5789,7 +6220,7 @@ funcode "c_exp" 3 730 36 7 15
   GLOBAL 12
   PUTARG 2
   CALL 3
-  QUOTE 21
+  QUOTE 18
   LOCAL 3
   NIL 0
   CONS 0
@@ -5800,7 +6231,7 @@ funcode "c_exp" 3 730 36 7 15
   PUTARG 0
   ARG 1
   PUTARG 1
-  GLOBAL 22
+  GLOBAL 19
   PUTARG 2
   CALL 3
   LOCAL 3
@@ -5810,7 +6241,7 @@ funcode "c_exp" 3 730 36 7 15
   PUTARG 0
   ARG 1
   PUTARG 1
-  GLOBAL 22
+  GLOBAL 19
   PUTARG 2
   CALL 3
   NIL 0
@@ -5831,7 +6262,7 @@ funcode "c_exp" 3 730 36 7 15
   GLOBAL 12
   PUTARG 2
   CALL 3
-  QUOTE 21
+  QUOTE 18
   LOCAL 3
   NIL 0
   CONS 0
@@ -5845,7 +6276,7 @@ funcode "c_exp" 3 730 36 7 15
   GLOBAL 12
   PUTARG 2
   CALL 3
-  QUOTE 23
+  QUOTE 20
   LOCAL 4
   NIL 0
   CONS 0
@@ -5876,14 +6307,14 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 408
   MCONS 0
   TRAP 407
-  QUOTE 24
+  QUOTE 21
   MEQ 0
   TRAP 408
   MCONS 0
   TRAP 407
   MCONS 0
   TRAP 406
-  QUOTE 25
+  QUOTE 22
   MEQ 0
   TRAP 407
   MCONS 0
@@ -5946,14 +6377,14 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 486
   MCONS 0
   TRAP 485
-  QUOTE 24
+  QUOTE 21
   MEQ 0
   TRAP 486
   MCONS 0
   TRAP 485
   MCONS 0
   TRAP 484
-  QUOTE 25
+  QUOTE 22
   MEQ 0
   TRAP 485
   MCONS 0
@@ -6006,7 +6437,7 @@ funcode "c_exp" 3 730 36 7 15
   POP 0
   QUOTE 7
   LOCAL 3
-  QUOTE 26
+  QUOTE 23
   LOCAL 4
   NIL 0
   CONS 0
@@ -6024,14 +6455,14 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 569
   MCONS 0
   TRAP 568
-  QUOTE 24
+  QUOTE 21
   MEQ 0
   TRAP 569
   MCONS 0
   TRAP 568
   MCONS 0
   TRAP 567
-  QUOTE 27
+  QUOTE 24
   MEQ 0
   TRAP 568
   MCONS 0
@@ -6089,7 +6520,7 @@ funcode "c_exp" 3 730 36 7 15
   POP 0
   QUOTE 7
   LOCAL 4
-  QUOTE 26
+  QUOTE 23
   LOCAL 5
   NIL 0
   CONS 0
@@ -6107,7 +6538,7 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 602
   MCONS 0
   TRAP 601
-  QUOTE 28
+  QUOTE 25
   MEQ 0
   TRAP 602
   MCONS 0
@@ -6121,7 +6552,7 @@ funcode "c_exp" 3 730 36 7 15
   PREP 2
   FVAR 11
   PREP 4
-  QUOTE 29
+  QUOTE 26
   PUTARG 0
   LOCAL 0
   PUTARG 1
@@ -6140,7 +6571,7 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 651
   MCONS 0
   TRAP 650
-  QUOTE 30
+  QUOTE 27
   MEQ 0
   TRAP 651
   MCONS 0
@@ -6171,7 +6602,7 @@ funcode "c_exp" 3 730 36 7 15
   GLOBAL 12
   PUTARG 2
   CALL 3
-  QUOTE 31
+  QUOTE 28
   NIL 0
   CONS 0
   NIL 0
@@ -6189,13 +6620,13 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 670
   MCONS 0
   TRAP 669
-  QUOTE 32
+  QUOTE 29
   MEQ 0
   TRAP 670
   MNIL 0
   FVAR 1
   PREP 2
-  QUOTE 33
+  QUOTE 30
   NIL 0
   CONS 0
   PUTARG 0
@@ -6208,7 +6639,7 @@ funcode "c_exp" 3 730 36 7 15
   TRAP 686
   MCONS 0
   TRAP 685
-  QUOTE 34
+  QUOTE 31
   MEQ 0
   BIND 0
   FVAR 12
@@ -6244,7 +6675,7 @@ funcode "c_exp" 3 730 36 7 15
   GLOBAL 12
   PUTARG 2
   CALL 3
-  QUOTE 35
+  QUOTE 32
   NIL 0
   CONS 0
   FVAR 0
@@ -6292,11 +6723,20 @@ name #false
 name #TCALL
 name #false
 name #PREP
-funcode "<function>" 2 20 3 0 5
+funcode "<function>" 2 33 3 2 5
+  ARG 0
+  TRAP 31
+  MCONS 0
+  BIND 0
+  TRAP 31
+  MCONS 0
+  BIND 1
+  TRAP 31
+  MNIL 0
   QUOTE 0
   FVAR 1
   PREP 3
-  ARG 0
+  LOCAL 1
   PUTARG 0
   FVAR 2
   PUTARG 1
@@ -6304,23 +6744,24 @@ funcode "<function>" 2 20 3 0 5
   PUTARG 2
   CALL 3
   QUOTE 2
+  LOCAL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
   ARG 1
-  NIL 0
   CONS 0
-  CONS 0
-  NIL 0
-  CONS 0
-  CONS 0
-  CONS 0
+  RETURN 0
+  ARG 1
   RETURN 0
 name #seq
 name #false
 name #PUTARG
 { end of <function> }
-name #_range
 integer 0
-name #-
-integer 1
 name #CALL
 name #if
 name #JFALSE
@@ -6391,7 +6832,7 @@ funcode "i_func" 4 42 1 1 7
   RETURN 0
 integer 1
 { end of i_func }
-funcode "interp" 2 367 19 5 8
+funcode "interp" 2 376 19 5 8
   ARG 0
   TRAP 14
   MCONS 0
@@ -6407,19 +6848,22 @@ funcode "interp" 2 367 19 5 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 43
+  TRAP 46
   MCONS 0
-  TRAP 42
+  TRAP 45
   QUOTE 1
   MEQ 0
-  TRAP 43
+  TRAP 46
   MCONS 0
   BIND 0
-  TRAP 43
+  TRAP 46
   MNIL 0
   QUOTE 2
+  CLOPREP 2
   FVAR 1
+  PUTFVAR 1
   LOCAL 0
+  PUTFVAR 2
   CLOSURE 2
   BIND 1
   LOCAL 1
@@ -6436,12 +6880,12 @@ funcode "interp" 2 367 19 5 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 79
+  TRAP 85
   MCONS 0
-  TRAP 78
+  TRAP 84
   QUOTE 3
   MEQ 0
-  TRAP 79
+  TRAP 85
   MCONS 0
   BIND 0
   BIND 1
@@ -6458,8 +6902,11 @@ funcode "interp" 2 367 19 5 8
   GLOBAL 4
   PREP 3
   QUOTE 5
+  CLOPREP 2
   FVAR 0
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   PUTARG 0
   LOCAL 1
@@ -6472,21 +6919,21 @@ funcode "interp" 2 367 19 5 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 111
+  TRAP 117
   MCONS 0
-  TRAP 110
+  TRAP 116
   QUOTE 6
   MEQ 0
-  TRAP 111
+  TRAP 117
   MCONS 0
   BIND 0
-  TRAP 111
+  TRAP 117
   MCONS 0
   BIND 1
-  TRAP 111
+  TRAP 117
   MCONS 0
   BIND 2
-  TRAP 111
+  TRAP 117
   MNIL 0
   FVAR 0
   PREP 2
@@ -6495,7 +6942,7 @@ funcode "interp" 2 367 19 5 8
   ARG 1
   PUTARG 1
   CALL 2
-  JFALSE 107
+  JFALSE 113
   LOCAL 1
   ARG 1
   TCALL 2
@@ -6504,30 +6951,30 @@ funcode "interp" 2 367 19 5 8
   TCALL 2
   POP 0
   ARG 0
-  TRAP 175
+  TRAP 181
   MCONS 0
-  TRAP 174
+  TRAP 180
   QUOTE 7
   MEQ 0
-  TRAP 175
+  TRAP 181
   MCONS 0
-  TRAP 174
+  TRAP 180
   MCONS 0
-  TRAP 173
+  TRAP 179
   QUOTE 8
   MEQ 0
-  TRAP 174
+  TRAP 180
   MCONS 0
   BIND 0
-  TRAP 174
+  TRAP 180
   MCONS 0
   BIND 1
-  TRAP 174
+  TRAP 180
   MNIL 0
-  TRAP 175
+  TRAP 181
   MCONS 0
   BIND 2
-  TRAP 175
+  TRAP 181
   MNIL 0
   FVAR 4
   PREP 4
@@ -6568,33 +7015,33 @@ funcode "interp" 2 367 19 5 8
   POP 0
   POP 0
   ARG 0
-  TRAP 246
+  TRAP 252
   MCONS 0
-  TRAP 245
+  TRAP 251
   QUOTE 7
   MEQ 0
-  TRAP 246
+  TRAP 252
   MCONS 0
-  TRAP 245
+  TRAP 251
   MCONS 0
-  TRAP 244
+  TRAP 250
   QUOTE 10
   MEQ 0
-  TRAP 245
+  TRAP 251
   MCONS 0
   BIND 0
-  TRAP 245
+  TRAP 251
   MCONS 0
   BIND 1
-  TRAP 245
+  TRAP 251
   MCONS 0
   BIND 2
-  TRAP 245
+  TRAP 251
   MNIL 0
-  TRAP 246
+  TRAP 252
   MCONS 0
   BIND 3
-  TRAP 246
+  TRAP 252
   MNIL 0
   FVAR 4
   PREP 4
@@ -6639,18 +7086,18 @@ funcode "interp" 2 367 19 5 8
   POP 0
   POP 0
   ARG 0
-  TRAP 273
+  TRAP 279
   MCONS 0
-  TRAP 272
+  TRAP 278
   QUOTE 11
   MEQ 0
-  TRAP 273
+  TRAP 279
   MCONS 0
   BIND 0
-  TRAP 273
+  TRAP 279
   MCONS 0
   BIND 1
-  TRAP 273
+  TRAP 279
   MNIL 0
   FVAR 6
   PREP 4
@@ -6666,18 +7113,18 @@ funcode "interp" 2 367 19 5 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 308
+  TRAP 314
   MCONS 0
-  TRAP 307
+  TRAP 313
   QUOTE 13
   MEQ 0
-  TRAP 308
+  TRAP 314
   MCONS 0
   BIND 0
-  TRAP 308
+  TRAP 314
   MCONS 0
   BIND 1
-  TRAP 308
+  TRAP 314
   MNIL 0
   GLOBAL 14
   PREP 2
@@ -6701,28 +7148,31 @@ funcode "interp" 2 367 19 5 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 319
+  TRAP 325
   MCONS 0
-  TRAP 318
+  TRAP 324
   QUOTE 15
   MEQ 0
-  TRAP 319
+  TRAP 325
   MNIL 0
   NIL 0
   RETURN 0
   POP 0
   ARG 0
-  TRAP 340
+  TRAP 349
   MCONS 0
-  TRAP 339
+  TRAP 348
   QUOTE 16
   MEQ 0
   BIND 0
   GLOBAL 4
   PREP 3
   QUOTE 17
+  CLOPREP 2
   FVAR 0
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   PUTARG 0
   LOCAL 0
@@ -6733,18 +7183,18 @@ funcode "interp" 2 367 19 5 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 366
+  TRAP 375
   MCONS 0
-  TRAP 365
+  TRAP 374
   QUOTE 18
   MEQ 0
-  TRAP 366
+  TRAP 375
   MCONS 0
   BIND 0
-  TRAP 366
+  TRAP 375
   MCONS 0
   BIND 1
-  TRAP 366
+  TRAP 375
   MNIL 0
   FVAR 0
   PREP 2
@@ -7094,10 +7544,13 @@ global #_infixr closure funcode "_infixr" 2 12 2 0 5
 name #__token
 name #binop
 { end of _infixr }
-global #_lsect closure funcode "_lsect" 2 5 1 0 3
+global #_lsect closure funcode "_lsect" 2 8 1 0 3
   QUOTE 0
+  CLOPREP 2
   ARG 0
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   RETURN 0
 funcode "<function>" 1 8 0 0 3
@@ -7178,10 +7631,13 @@ name #:
 name #+
 integer 1
 { end of _range }
-global #_rsect closure funcode "_rsect" 2 5 1 0 3
+global #_rsect closure funcode "_rsect" 2 8 1 0 3
   QUOTE 0
+  CLOPREP 2
   ARG 0
+  PUTFVAR 1
   ARG 1
+  PUTFVAR 2
   CLOSURE 2
   RETURN 0
 funcode "<function>" 1 8 0 0 3
@@ -7458,8 +7914,9 @@ name #false
 name #true
 { end of not }
 global #numeric primitive "numeric"
-global #reverse closure funcode "reverse" 1 11 1 1 3
+global #reverse closure funcode "reverse" 1 12 1 1 3
   QUOTE 0
+  CLOPREP 0
   CLOSURE 0
   BIND 0
   LOCAL 0

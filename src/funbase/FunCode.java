@@ -57,6 +57,7 @@ public class FunCode extends Value {
 	JUMP(0),     /* [#jump, lab] becomes JUMP n:
 		     	jump to instruction at offset n */
 	PREP(0),     /* [#prep, n]: prepare for a call with n arguments */
+	CLOPREP(0),  /* [#cloprep, n]: prepare a closure with n fvars */
 	RETURN(-1),  /* [#return]: return from function */
 	MPLUS(0),    /* [#mplus, k]: match an n+k pattern by popping integer
 		     	x with x >= k and pushing x-k; otherwise trap */
@@ -65,6 +66,7 @@ public class FunCode extends Value {
 	MCONS(1),    /* [#mcons]: pop a cons cell and push its tail and head */
 	TCALL(0),    /* [#tcall, n]: tail recursive call */
 	PUTARG(0),   /* [#putarg, i]: mark i'th argument of a call */
+	PUTFVAR(0),  /* [#putfvar, i]: mark i'th free var of a closure */
 	CALL { @Override public int delta(int arg) { return -arg; } }, 
 	             /* [#call, n]: call a function with n arguments */
 	CLOSURE { @Override public int delta(int arg) { return -arg; } }, 

@@ -90,9 +90,12 @@ public class BasicPrims {
 	},
 	
 	new Primitive.Prim1("uminus") {
-	    @Override
-	    public Value apply1(Value x) {
+	    @Override public Value apply1(Value x) {
 		return Value.makeNumValue(- number(x));
+	    }
+
+	    @Override public String getPName() {
+		return "unary -";
 	    }
 	},
 	
