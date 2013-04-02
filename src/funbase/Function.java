@@ -198,4 +198,15 @@ public abstract class Function implements Serializable {
     public interface Factory {
 	public Function newClosure(Value.FunValue func, Value fvars[]);
     }
+
+    public static final Function nullFunction = new Function(-1) {
+	public Value apply(Value args[], int base, int nargs) {
+	    Evaluator.err_apply();
+	    return null;
+	}
+
+	public Object readResolve() {
+	    return nullFunction;
+	}
+    };
 }

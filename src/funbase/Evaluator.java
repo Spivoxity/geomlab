@@ -78,6 +78,7 @@ public class Evaluator {
 	    }
 	}
 
+	@Override 
 	public void run() {
 	    try {
 		body();
@@ -112,7 +113,7 @@ public class Evaluator {
     public static void startTimer() {
 	if (timeLimit > 0) {
 	    timer = new Thread() {
-		@Override
+		@Override 
 		public synchronized void run() {
 		    try {
 			wait(timeLimit);
@@ -226,8 +227,38 @@ public class Evaluator {
 	}
 
 	error("no pattern matches "
-	      + (arity == 1 ? "argument" : "arguments")
-	      + " (" + buf + ")", "#match");
+	      + (arity == 1 ? "argument " : "arguments ") + buf, "#match");
+    }
+
+    public static void err_nomatch0() {
+	err_nomatch(null, 0, 0);
+    }
+
+    public static void err_nomatch1(Value x) {
+	err_nomatch(new Value[] { x }, 0, 1);
+    }
+
+    public static void err_nomatch2(Value x, Value y) {
+	err_nomatch(new Value[] { x, y }, 0, 2);
+    }
+
+    public static void err_nomatch3(Value x, Value y, Value z) {
+	err_nomatch(new Value[] { x, y, z }, 0, 3);
+    }
+
+    public static void err_nomatch4(Value x, Value y, Value z,
+				    Value u) {
+	err_nomatch(new Value[] { x, y, z, u }, 0, 4);
+    }
+
+    public static void err_nomatch5(Value x, Value y, Value z,
+				    Value u, Value v) {
+	err_nomatch(new Value[] { x, y, z, u, v }, 0, 5);
+    }
+
+    public static void err_nomatch6(Value x, Value y, Value z,
+				    Value u, Value v, Value w) {
+	err_nomatch(new Value[] { x, y, z, u, v, w }, 0, 6);
     }
 
     /** Complain about an undefined name */

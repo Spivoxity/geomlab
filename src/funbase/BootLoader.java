@@ -30,6 +30,8 @@
 
 package funbase;
 
+import funbase.Value.WrongKindException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -147,11 +149,11 @@ public class BootLoader {
 	    neg = true;
 	}
 	try {
-	    Value.NumValue x = (Value.NumValue) get("number");
-	    int n = (int) x.val;
+	    Value x = get("number");
+	    int n = (int) x.asNumber();
 	    return (neg ? -n : n);
 	}
-	catch (ClassCastException _) {
+	catch (WrongKindException _) {
 	    throw new Error("missing integer");
 	}
     }

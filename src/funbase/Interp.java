@@ -32,9 +32,11 @@ package funbase;
 
 import java.util.Stack;
 
+import funbase.Value.WrongKindException;
+
 /** A trivial runtime translator that interprets the funcode */
 public class Interp implements FunCode.Jit {
-    private static Stack<FunCode> stack = new Stack<FunCode>();
+    private static Stack<FunCode> stack = new Stack<>();
     private FunCode root = null;
 
     /** Create a function factory that builds interpreted closures */
@@ -142,20 +144,18 @@ public class Interp implements FunCode.Jit {
 			frame[sp++] = Value.nil;
 			break;
 
+		    case PRECONS:
+			break;
+
 		    case CONS:
 			sp--;
 			frame[sp-1] = Value.cons(frame[sp-1], frame[sp]);
 			break;
 
 		    case CALL:
-			try {
-			    sp -= rand;
-			    Value.FunValue fun = (Value.FunValue) frame[sp-1];
-			    frame[sp-1] = fun.subr.apply(frame, sp, rand);
-			}
-			catch (ClassCastException _) {
-			    Evaluator.err_apply();
-			}
+			sp -= rand;
+			Value fun = frame[sp-1];
+			frame[sp-1] = fun.subr.apply(frame, sp, rand);
 			break;
 
 		    case TCALL:
@@ -186,9 +186,9 @@ public class Interp implements FunCode.Jit {
 
 		    case JFALSE:
 			try {
-			    Value.BoolValue b = (Value.BoolValue) frame[--sp];
-			    if (! b.val) pc = rand;
-			} catch (ClassCastException _) {
+			    Value b = frame[--sp];
+			    if (! b.asBoolean()) pc = rand;
+			} catch (WrongKindException _) {
 			    Evaluator.err_boolcond();
 			}
 			break;
@@ -230,32 +230,28 @@ public class Interp implements FunCode.Jit {
 		    case MCONS: {
 			try {
 			    Value.ConsValue cell = 
-				(Value.ConsValue) frame[--sp];
-			    frame[sp] = cell.tail;
-			    frame[sp+1] = cell.head;
-			    sp += 2;
+				(Value.ConsValue) frame[sp];
+			    frame[++sp] = cell.head;
 			} catch (ClassCastException _) {
 			    pc = trap;
 			}
 			break;
 		    }
 
-		    case MPRIM: {
-			try {
-			    Value.FunValue cons = (Value.FunValue) frame[--sp];
-			    Value obj = frame[--sp];
-			    Value vs[] = cons.subr.pattMatch(obj, rand);
-			    if (vs == null)
-				pc = trap;
-			    else {
-				System.arraycopy(vs, 0, frame, sp, rand);
-				sp += rand;
-			    }
-			}
-			catch (ClassCastException _) {
-			    Evaluator.err_match();
-			}
+		    case GETTAIL:
+			frame[sp] = ((Value.ConsValue) frame[sp]).tail;
 			break;
+
+		    case MPRIM: {
+			Value cons = frame[--sp];
+			Value obj = frame[--sp];
+			Value vs[] = cons.subr.pattMatch(obj, rand);
+			if (vs == null)
+			    pc = trap;
+			else {
+			    System.arraycopy(vs, 0, frame, sp, rand);
+			    sp += rand;
+			}
 		    }
 
 		    case PREP:

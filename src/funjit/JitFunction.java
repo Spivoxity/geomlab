@@ -75,9 +75,11 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func0 extends JitFunction {
 	public Func0(String name) { super(name, 0); }
 
-	@Override public abstract Value apply0();
+	@Override 
+	public abstract Value apply0();
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 0) Evaluator.err_nargs(name, nargs, 0);
 	    return apply0();
 	}
@@ -86,9 +88,11 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func1 extends JitFunction {
 	public Func1(String name) { super(name, 1); }
 
-	@Override public abstract Value apply1(Value x);
+	@Override 
+	public abstract Value apply1(Value x);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 1) Evaluator.err_nargs(name, nargs, 1);
 	    return apply1(args[base+0]);
 	}
@@ -97,9 +101,11 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func2 extends JitFunction {
 	public Func2(String name) { super(name, 2); }
 
-	@Override public abstract Value apply2(Value x, Value y);
+	@Override 
+	public abstract Value apply2(Value x, Value y);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 2) Evaluator.err_nargs(name, nargs, 2);
 	    return apply2(args[base+0], args[base+1]);
 	}
@@ -108,9 +114,11 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func3 extends JitFunction {
 	public Func3(String name) { super(name, 3); }
 
-	@Override public abstract Value apply3(Value x, Value y, Value z);
+	@Override 
+	public abstract Value apply3(Value x, Value y, Value z);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 3) Evaluator.err_nargs(name, nargs, 3);
 	    return apply3(args[base+0], args[base+1], args[base+2]);
 	}
@@ -119,10 +127,12 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func4 extends JitFunction {
 	public Func4(String name) { super(name, 4); }
 
-	@Override public abstract Value apply4(Value x, Value y, Value z,
-					       Value u);
+	@Override 
+	public abstract Value apply4(Value x, Value y, Value z,
+				     Value u);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 4) Evaluator.err_nargs(name, nargs, 4);
 	    return apply4(args[base+0], args[base+1], args[base+2],
 			  args[base+3]);
@@ -132,10 +142,12 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func5 extends JitFunction {
 	public Func5(String name) { super(name, 5); }
 
-	@Override public abstract Value apply5(Value x, Value y, Value z,
-					       Value u, Value v);
+	@Override 
+	public abstract Value apply5(Value x, Value y, Value z,
+				     Value u, Value v);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 5) Evaluator.err_nargs(name, nargs, 5);
 	    return apply5(args[base+0], args[base+1], args[base+2],
 			  args[base+3], args[base+4]);
@@ -145,10 +157,12 @@ public abstract class JitFunction extends Function.Closure
     public static abstract class Func6 extends JitFunction {
 	public Func6(String name) { super(name, 6); }
 
-	@Override public abstract Value apply6(Value x, Value y, Value z,
-					       Value u, Value v, Value w);
+	@Override 
+	public abstract Value apply6(Value x, Value y, Value z,
+				     Value u, Value v, Value w);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 6) Evaluator.err_nargs(name, nargs, 6);
 	    return apply6(args[base+0], args[base+1], args[base+2],
 			  args[base+3], args[base+4], args[base+5]);
@@ -160,9 +174,11 @@ public abstract class JitFunction extends Function.Closure
 	    super(name, arity);
 	}
 
-	@Override public abstract Value apply(Value args[], int nargs);
+	@Override 
+	public abstract Value apply(Value args[], int nargs);
 
-	@Override public Value apply(Value args[], int base, int nargs) {
+	@Override 
+	public Value apply(Value args[], int base, int nargs) {
 	    // Allow JIT functions to be called from the interpreter
 	    Value args1[] = new Value[nargs];
 	    System.arraycopy(args, base, args1, 0, nargs);

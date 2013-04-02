@@ -49,6 +49,7 @@ public class FunCode extends Value {
 	QUOTE(1),    /* [#quote, x] becomes QUOTE i where consts[i] = x:
 		        push the constant x */
 	NIL(1),	     /* [#nil]: push the empty list */
+	PRECONS(0),  /* [#precons]: prepare for CONS */
 	CONS(-1),    /* [#cons]: pop a tail then a head, push a cons */
 	TRAP(0),     /* [#trap, lab] becomes TRAP i: set trap register */
 	FAIL(0),     /* [#fail]: die with "no clause matched" */
@@ -64,6 +65,7 @@ public class FunCode extends Value {
 	MEQ(-2),     /* [#meq]: pop two values and trap if not equal */
 	MNIL(-1),    /* [#mnil]: pop the empty list; otherwise trap */
 	MCONS(1),    /* [#mcons]: pop a cons cell and push its tail and head */
+	GETTAIL(0),  /* [#gettail]: fetch tail following MCONS */
 	TCALL(0),    /* [#tcall, n]: tail recursive call */
 	PUTARG(0),   /* [#putarg, i]: mark i'th argument of a call */
 	PUTFVAR(0),  /* [#putfvar, i]: mark i'th free var of a closure */
@@ -201,10 +203,10 @@ public class FunCode extends Value {
 		Opcode instrs[] = new Opcode[size];
 		int rands[] = new int[size];
 		int ip = 0, sp = 0, fsize = 0, ssize = 0;
-		List<Value> consts = new ArrayList<Value>();
+		List<Value> consts = new ArrayList<>();
 	
 		/** Mapping from integer labels to info about each label */
-		Map<Integer, Label> labels = new HashMap<Integer, Label>();
+		Map<Integer, Label> labels = new HashMap<>();
 	
 		for (Value xs = code; isCons(xs); xs = tail(xs)) {
 		    Value inst = head(xs);

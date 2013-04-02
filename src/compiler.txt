@@ -667,7 +667,7 @@ define __top() =
         { A cons pattern h : t }
         let f = label() in
 	pgen([#seq, [#TRAP, f], [#MCONS]], 
-             [c_patt(h, d+1, env), c_patt(t, d, env)], 
+             [c_patt(h, d+1, env), [[#GETTAIL], []], c_patt(t, d, env)], 
 	     [[f, d]])
 
     | c_patt([#nil], d, env) = 
@@ -685,18 +685,22 @@ define __top() =
 	        [c_patt(p1, d, env)], [[f, d]]) in
 
   { c_arg -- compile code to match an argument }
-  let c_arg([#var, x], i, env) =
+  let c_arg(i, [#var, x], env) =
         { variable matches whole argument }
         bind(x, #ARG, i, env) >> pgen([], [], []) when not islocal(x, env)
-    | c_arg([#anon], i, env) = 
+    | c_arg(i, [#anon], env) = 
         { anon matches whole argument }
 	pgen([], [], [])
-    | c_arg(p, i, env) =
+    | c_arg(i, p, env) =
         pgen([#seq, [#ARG, i]], [c_patt(p, 0, env)], []) in
 
   { c_match -- compile code to match a list of arguments }
   let c_match(ps, env) =
-    let code = [ c_arg(p, i, env) | [i, p] <- number(0, ps) ] in
+    { Carefully evaluate from left to right }
+    let compile(_, []) = []
+      | compile(i, p:patts) =
+          let x = c_arg(i, p, env) in x : compile(i+1, patts) in
+    let code = compile(0, ps) in
     [#seq:map(fst, code), concat(map(snd, code))] in
 
   { The functions c_rule and c_body are mutually recursive with c_exp.
@@ -817,7 +821,7 @@ define __top() =
 	yield(c_closure("<function>", n, rules, env), tl)
 
     | c_exp([#cons, e1, e2], env, tl) =
-        yield([#seq, c_exp(e1, env, false), 
+        yield([#seq, [#PRECONS], c_exp(e1, env, false), 
 			c_exp(e2, env, false), [#CONS]], tl)
 
     | c_exp([#nil], env, tl) = yield([#NIL], tl)

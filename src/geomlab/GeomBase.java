@@ -167,7 +167,7 @@ public class GeomBase {
 		this.scanner = scanner;
 		this.echo = echo;
 		this.display = display;
-		if (Evaluator.execute(topdef.subr) != Value.truth)
+		if (Evaluator.execute(topdef.subr) != Value.BoolValue.truth)
 		    return true;
 
 		if (display) {

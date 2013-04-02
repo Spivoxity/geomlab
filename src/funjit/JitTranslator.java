@@ -71,13 +71,15 @@ public class JitTranslator implements FunCode.Jit {
 
     protected int _temp, _frame;
     
+    private int cache, nextcache;
+
     /** Stack of function arities to help with assembling arguments */
     private Stack<Integer> nstack = new Stack<>();
 
     private Label loop;
     private Label trap;
 
-    private Map<Integer, Label> labdict = new HashMap<Integer, Label>();
+    private Map<Integer, Label> labdict = new HashMap<>();
     
     protected final Label makeLabel(int addr) {
 	Label lab = labdict.get(addr);
@@ -91,7 +93,6 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     private void start(FunCode funcode) {
-	String parent;
 	this.funcode = funcode;
 	className = gensym(funcode.name);
 	
@@ -171,10 +172,15 @@ public class JitTranslator implements FunCode.Jit {
 	code.label(lab);
     }
 
+    private void pushLocal(int n) {
+	code.gen(ALOAD, n);
+	nextcache = n;
+    }
+
     private void genArg(int n) {
 	// stack[sp++] = args[n]
 	if (funcode.arity < MANY)
-	    code.gen(ALOAD, _args+n);
+	    pushLocal(_args+n);
 	else {
 	    code.gen(ALOAD, _args);
 	    code.gen(CONST, n);
@@ -189,19 +195,18 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(AALOAD);
     }
 
+    private void genPrecons() {
+	code.gen(NEW, consval_cl);
+	code.gen(DUP);
+    }
+
     private void genCons() {
-	// stack[sp] = Value.cons(stack[sp], stack[sp+1]);
-	code.gen(NEW, consval_cl); 	// Cell, t, h
-	code.gen(DUP_X2);		// Cell, t, h, Cell
-	code.gen(DUP_X2);		// Cell, t, h, Cell, Cell
-	code.gen(POP);			// t, h, Cell, Cell
-	code.gen(INVOKESPECIAL, consval_cl, "<init>", fun_VV_t); // Cell
+	code.gen(INVOKESPECIAL, consval_cl, "<init>", fun_VV_t);
     }
 
     /** Translate a PREP instruction. */
     private void genPrep(int n) {
-	cast(funval_cl, new Crash("apply"));
-    	code.gen(GETFIELD, funval_cl, "subr", function_t);
+    	code.gen(GETFIELD, value_cl, "subr", function_t);
 	prepArgs(n);
     }
 
@@ -288,29 +293,25 @@ public class JitTranslator implements FunCode.Jit {
 
     /** Translate a JFALSE instruction */
     protected final void genJFalse(int addr) {
-	cast(boolval_cl, new Crash("boolcond"));
-	code.gen(GETFIELD, boolval_cl, "val", bool_t);
-    	code.gen(IFEQ, makeLabel(addr));
+	access("asBoolean", fun__B_t, new Crash("boolcond"));
+	code.gen(IFEQ, makeLabel(addr));
     }	
 
     private void genFail() {
+	int n = funcode.arity;
+
     	// ErrContext.err_nomatch(args, 0, arity);
-	if (funcode.arity < MANY) {
-	    /* new Value[arity] { arg1, arg2, ..., argN } */
-	    code.gen(CONST, funcode.arity); 
-	    code.gen(ANEWARRAY, value_cl);
-	    for (int i = 0; i < funcode.arity; i++) {
-		code.gen(DUP);			// array, array
-		code.gen(CONST, i);		// i, array, array
-		code.gen(ALOAD, _args+i);	// arg_i, i, array, array
-		code.gen(AASTORE);		// array
-	    }
-	} else {
-	    code.gen(ALOAD, _args);
+	if (n < MANY) {
+	    for (int i = 0; i < n; i++)
+		code.gen(ALOAD, _args+i);
+	    code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch"+n, failn_t[n]);
 	}
-	code.gen(CONST, 0);
-	code.gen(CONST, funcode.arity);
-	code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch", fun_AII_t);
+	else {
+	    code.gen(ALOAD, _args);
+	    code.gen(CONST, 0);
+	    code.gen(CONST, n);
+	    code.gen(INVOKESTATIC, evaluator_cl, "err_nomatch", fun_AII_t);
+	}
 
     	// return null;
     	code.gen(ACONST_NULL);
@@ -350,22 +351,27 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(IFEQ, trap);
     }
 
-    /** Cast value on stack and goto trap on failure */
-    private void trapCast(String ty) {
-	code.gen(DUP);
-	code.gen(ASTORE, _temp);
+    /** Cast value on stack and goto trap on failure: uses top cache */
+    protected final void trapCast(String ty) {
+	if (cache < 0) {
+	    code.gen(DUP);
+	    code.gen(ASTORE, _temp);
+	    cache = _temp;
+	}
 	code.gen(INSTANCEOF, ty);
 	code.gen(IFEQ, trap);
-	code.gen(ALOAD, _temp);
+	code.gen(ALOAD, cache);
 	code.gen(CHECKCAST, ty);
     }
 
     private void genMCons() {
 	trapCast(consval_cl);
     	code.gen(DUP); 
-    	code.gen(GETFIELD, consval_cl, "tail", value_t);
-    	code.gen(SWAP);
     	code.gen(GETFIELD, consval_cl, "head", value_t);
+    }
+
+    private void genGettail() {
+    	code.gen(GETFIELD, consval_cl, "tail", value_t);
     }
 
     private void genMPlus(int n) {
@@ -375,7 +381,7 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(DUP);
     	code.gen(ASTORE, _temp);
     	code.gen(IFNULL, trap);
-    	code.gen(ALOAD, _temp);
+    	pushLocal(_temp);
     }
 
     private void genMEq() {
@@ -410,7 +416,7 @@ public class JitTranslator implements FunCode.Jit {
     private void translate(Opcode op, int rand) {
 	switch (op) {
 	    case GLOBAL:  genGlobal(rand); break;
-	    case LOCAL:   code.gen(ALOAD, _frame+rand); break;
+	    case LOCAL:   pushLocal(_frame+rand); break;
 	    case BIND:    code.gen(ASTORE, _frame+rand); break;
 	    case QUOTE:   genField("consts", rand); break;
 	    case FVAR:    genField("fvars", rand); break;
@@ -418,9 +424,10 @@ public class JitTranslator implements FunCode.Jit {
 	    case POP:     code.gen(POP); break;
 	    case RETURN:  code.gen(ARETURN); break;
 	    case NIL:     code.gen(GETSTATIC, value_cl, "nil", value_t); break;
+	    case PRECONS: genPrecons(); break;
 	    case CONS:    genCons(); break;
 	    case CLOSURE: genClosure(rand); break;
-	    case TRAP:    trap = makeLabel(rand); break;
+	    case TRAP:    nextcache = cache; trap = makeLabel(rand); break;
 	    case FAIL:    genFail(); break;
 	    case JFALSE:  genJFalse(rand); break;
 	    case JUMP:    code.gen(GOTO, makeLabel(rand)); break;
@@ -433,6 +440,7 @@ public class JitTranslator implements FunCode.Jit {
 	    case MEQ:     genMEq(); break;
 	    case MPRIM:   genMPrim(rand); break;
 	    case MCONS:   genMCons(); break;
+	    case GETTAIL: genGettail(); break;
 	    case MNIL:    genMNil(); break;
 	    case MPLUS:   genMPlus(rand); break;
 	    default:
@@ -442,7 +450,7 @@ public class JitTranslator implements FunCode.Jit {
 
     protected void init() {
 	labdict.clear(); handlers.clear(); nstack.clear();
-	trap = null;
+	trap = null; cache = -1;
     }	
 
     // The normal code generation process can be overridden by a
@@ -459,7 +467,7 @@ public class JitTranslator implements FunCode.Jit {
 	/** The opcode sequence that the rule matches */
 	private final Opcode pattern[];
 
-	public CodeHook(Opcode pattern[]) { this.pattern = pattern; }
+	public CodeHook(Opcode... pattern) { this.pattern = pattern; }
 
 	/** Compile code for the sequence and return how many
 	    opcodes were handled, or return zero. */
@@ -486,7 +494,8 @@ public class JitTranslator implements FunCode.Jit {
 
 	public abstract int compile1(int rand);
 
-	@Override public int compile(int ip) { 
+	@Override 
+	public int compile(int ip) { 
 	    return compile1(funcode.rands[ip]); 
 	}
     }
@@ -499,7 +508,8 @@ public class JitTranslator implements FunCode.Jit {
 
 	public abstract int compile2(int rand1, int rand2);
 
-	@Override public int compile(int ip) { 
+	@Override 
+	public int compile(int ip) { 
 	    return compile2(funcode.rands[ip], funcode.rands[ip+1]); 
 	}
     }
@@ -520,10 +530,31 @@ public class JitTranslator implements FunCode.Jit {
     public JitTranslator() {
 	/* Treat FVAR 0 / PREP nargs specially */
 	addHook(new CodeHook2(Opcode.FVAR, Opcode.PREP) {
+	    @Override
 	    public int compile2(int n, int nargs) {
 		if (n != 0) return 0;
 		code.gen(ALOAD, _this);
 		prepArgs(nargs);
+		return 2;
+	    }
+	});
+
+	// Minor optimisation of pattern matching code
+
+	/* MCONS that throws away the head */
+	addHook(new CodeHook(Opcode.MCONS, Opcode.POP) {
+	    @Override
+	    public int compile(int ip) {
+		trapCast(consval_cl);
+		return 2;
+	    }
+	});
+
+	/* GETTAIL that throws away the tail */
+	addHook(new CodeHook(Opcode.GETTAIL, Opcode.POP) {
+	    @Override
+	    public int compile(int ip) {
+		code.gen(POP);
 		return 2;
 	    }
 	});
@@ -538,7 +569,12 @@ public class JitTranslator implements FunCode.Jit {
     	    int rand = funcode.rands[ip];
     	    
 	    Label lab = labdict.get(ip);
-	    if (lab != null) code.label(lab);
+	    if (lab != null) {
+		code.label(lab);
+		cache = -1;
+	    }
+
+	    nextcache = -1;
 
 	    int done = 0;
 
@@ -557,6 +593,8 @@ public class JitTranslator implements FunCode.Jit {
 		translate(op, rand);
 		ip++;
 	    }
+
+	    cache = nextcache;
 	}
 
 	compileHandlers();
@@ -575,19 +613,21 @@ public class JitTranslator implements FunCode.Jit {
 
 	public abstract void compile();
 
-	@Override public boolean equals(Object other) {
+	@Override 
+	public boolean equals(Object other) {
 	    Handler that = (Handler) other;
 	    return (this.getClass() == that.getClass()
 		    && this.prim.equals(that.prim) 
 		    && this.failure.equals(that.failure));
 	}
 
-	@Override public int hashCode() {
+	@Override 
+	public int hashCode() {
 	    return 5 * prim.hashCode() + failure.hashCode();
 	}
     }
 	
-    private Map<Handler, Handler> handlers = new HashMap<Handler, Handler>();
+    private Map<Handler, Handler> handlers = new HashMap<>();
 
     private Label makeHandler(Handler handler) {
 	Handler handler1 = handlers.get(handler);
@@ -612,7 +652,8 @@ public class JitTranslator implements FunCode.Jit {
 	    super("*crash", method);
 	}
 
-	@Override public void compile() {
+	@Override 
+	public void compile() {
 	    code.gen(INVOKESTATIC, evaluator_cl, "err_"+failure, fun_t);
 	}
     }
@@ -622,6 +663,14 @@ public class JitTranslator implements FunCode.Jit {
 	code.tryCatchBlock(start, end, makeHandler(handler), classcast_cl);
 	code.label(start);
 	code.gen(CHECKCAST, cl);
+	code.label(end);
+    }
+
+    protected final void access(String method, Type type, Handler handler) {
+	Label start = new Label(), end = new Label();
+	code.tryCatchBlock(start, end, makeHandler(handler), wrongkind_cl);
+	code.label(start);
+	code.gen(INVOKEVIRTUAL, value_cl, method, type);
 	code.label(end);
     }
 
@@ -645,19 +694,20 @@ public class JitTranslator implements FunCode.Jit {
 	    return defineClass(name, b, 0, b.length);
 	}
 
-	@Override public void finalize() {
+	@Override 
+	public void finalize() {
 	    if (Evaluator.debug > 2)
 		System.out.printf("Discarding class %s\n", name);
 	}
     }
 
-    private Map<String, FunCode> class_table =
-	new WeakHashMap<String, FunCode>();
+    private Map<String, FunCode> class_table = new WeakHashMap<>();
 
     private FunCode root = null;
 
     /** Translate a function body into JVM code */
-    @Override public Function.Factory translate(FunCode funcode) {
+    @Override 
+    public Function.Factory translate(FunCode funcode) {
 	if (Evaluator.debug > 2) {
 	    System.out.printf("JIT: %s ", funcode.name);
 	    System.out.flush();
@@ -692,7 +742,8 @@ public class JitTranslator implements FunCode.Jit {
 	}
     }
 
-    @Override public String[] getContext(String me) {
+    @Override 
+    public String[] getContext(String me) {
 	Thread thread = Thread.currentThread();
 	StackTraceElement stack[] = thread.getStackTrace();
 	String caller = null, callee = me;
@@ -714,8 +765,10 @@ public class JitTranslator implements FunCode.Jit {
 	return new String[] { caller, callee };
     }
 
+    @Override
     public void initStack() { }
 
+    @Override
     public void setRoot(Value root) {
 	if (root instanceof FunValue) {
 	    Function f = ((FunValue) root).subr;

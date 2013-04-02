@@ -35,6 +35,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 
 import funbase.Evaluator.*;
+import funbase.Value.WrongKindException;
 
 /** A value that represents a primitive function like 'sqrt' or '+'. */
 public abstract class Primitive extends Function {
@@ -61,9 +62,13 @@ public abstract class Primitive extends Function {
 
     /** Fetch value of a NumValue object, or throw EvalException */
     public double number(Value a) {
-	Value.NumValue x =
-	    cast(Value.NumValue.class, a, "numeric");
-	return x.val;
+	try {
+	    return a.asNumber();
+	}
+	catch (WrongKindException _) {
+	    expect("numeric");
+	    return 0.0;
+	}
     }
 
     /** Fetch value of a StringValue object, or throw EvalException */ 
@@ -127,7 +132,7 @@ public abstract class Primitive extends Function {
     /** Convert list argument to array of specified class */
     public <T extends Value> T[] toArray(Class<T> cl, Value xs, 
 							 String expected) {
-	List<T> elems = new ArrayList<T>();
+	List<T> elems = new ArrayList<>();
 
 	while (isCons(xs)) {
 	    elems.add(cast(cl, head(xs), expected));
@@ -275,8 +280,7 @@ public abstract class Primitive extends Function {
     }
     
     /** Table of all primitives */
-    protected static Map<String, Primitive> primitives = 
-	new HashMap<String, Primitive>(100);
+    protected static Map<String, Primitive> primitives = new HashMap<>(100);
     
     /** Register a new primitive */
     public static void register(Primitive p) {
