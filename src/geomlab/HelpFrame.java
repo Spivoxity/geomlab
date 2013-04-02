@@ -95,7 +95,7 @@ public class HelpFrame extends JFrame {
     private static ClassLoader loader = HelpFrame.class.getClassLoader();
     
     /** History of pages visited */
-    private Stack<URL> history = new Stack<URL>();
+    private Stack<URL> history = new Stack<>();
     
     /** Index in the history */
     private int index = -1;

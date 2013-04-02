@@ -55,7 +55,7 @@ public class Session {
     private static final int VERSION = 10000; 
     
     /** Table of loaded plugins */
-    private static Set<String> plugins = new LinkedHashSet<String>(10);
+    private static Set<String> plugins = new LinkedHashSet<>(10);
     
     /** Install a class containing primitives */
     public static void installPlugin(Class<?> plugin) throws CommandException {

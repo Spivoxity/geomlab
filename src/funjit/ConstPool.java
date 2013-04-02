@@ -50,7 +50,7 @@ class ConstPool {
     protected final ByteVector buf = new ByteVector();
 
     /** Uniqueness table */
-    private Map<Item, Item> hashtable = new HashMap<Item, Item>();
+    private Map<Item, Item> hashtable = new HashMap<>();
     
     /** Generate a constant pool item for a standard value.
      * 

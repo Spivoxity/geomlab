@@ -48,10 +48,10 @@ class ClassFile {
     private ConstPool.Item superName;
 
     /** List of field declarations */
-    private List<Field> fields = new LinkedList<Field>();
+    private List<Field> fields = new LinkedList<>();
 
     /** List of method declarations */
-    private List<Method> methods = new LinkedList<Method>();
+    private List<Method> methods = new LinkedList<>();
     
     /** The constant pool */
     private ConstPool pool = new ConstPool();

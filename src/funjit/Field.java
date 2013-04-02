@@ -30,9 +30,6 @@
 
 package funjit;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /** A field in a class that is being assembled. */
 class Field {
     /** Access flags of this field. */

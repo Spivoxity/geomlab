@@ -61,6 +61,7 @@ public class RunScript extends GeomBase {
 		    pos = 0;
 		}
 
+		@Override
 		public int read(char cbuf[], int off, int len) 
 		    					throws IOException{
 		    if (buf == null) {
@@ -79,6 +80,7 @@ public class RunScript extends GeomBase {
 		    return nread;
 		}
 
+		@Override
 		public void close() { }
 	    };
 
