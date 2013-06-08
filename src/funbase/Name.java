@@ -117,8 +117,7 @@ public final class Name extends Value implements Comparable<Name> {
     }
 
     /** A global mapping of strings to Name objects */
-    private static Map<String, Name> nameTable = 
-	new HashMap<String, Name>(200);
+    private static Map<String, Name> nameTable = new HashMap<>(200);
     
     public static Name IDENT = new Name("ident");
 
@@ -192,7 +191,7 @@ public final class Name extends Value implements Comparable<Name> {
     
     /** Get alphabetical list of globally defined names */
     public static List<String> getGlobalNames() {
-        ArrayList<String> names = new ArrayList<String>(100);
+        ArrayList<String> names = new ArrayList<>(100);
         for (Name x : nameTable.values()) {
             String xx = x.tag;
             if (x.getGlodef() != null && ! xx.startsWith("_"))
@@ -205,7 +204,7 @@ public final class Name extends Value implements Comparable<Name> {
     /** Save globally defined names in bootstrap format */
     public static void dumpNames(PrintWriter out) {
 	    // Sort the entries to help us reach a fixpoint
-	    ArrayList<String> names = new ArrayList<String>(nameTable.size());
+	    ArrayList<String> names = new ArrayList<>(nameTable.size());
 	    names.addAll(nameTable.keySet());
 	    Collections.sort(names);
 	    for (String k : names) {

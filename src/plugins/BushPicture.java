@@ -111,8 +111,9 @@ public class BushPicture extends Picture {
     private static void interp(String commands, View view) {
 	Vec2D pos = new Vec2D(0.0f, 0.0f), dir = new Vec2D(0.0f, 1.0f);
 	int col = 0;
-	Stack<Vec2D> pstack = new Stack<Vec2D>(), dstack = new Stack<Vec2D>();
-	Stack<Integer> hstack = new Stack<Integer>();
+	Stack<Vec2D> pstack = new Stack<>();
+	Stack<Vec2D> dstack = new Stack<>();
+	Stack<Integer> hstack = new Stack<>();
 	
 	view.move(pos, col, false);
 	
@@ -192,7 +193,7 @@ public class BushPicture extends Picture {
 	new Primitive.PrimN("bushparams", 7) {
 	    /* Set parameters used to interpret commands */
 	    @Override
-	    public Value apply(Value args[], int base) {
+	    public Value applyN(Value args[], int base) {
 		linewidth = (float) number(args[base+0]);
 		alpha = (float) number(args[base+1]);
 		theta = (float) number(args[base+2]);

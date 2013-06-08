@@ -104,9 +104,11 @@ class Type {
 	consval_cl = "funbase/Value$ConsValue",
 	nilval_cl = "funbase/Value$NilValue",
 	funval_cl = "funbase/Value$FunValue",
+	wrongkind_cl = "funbase/Value$WrongKindException",
 	function_cl = "funbase/Function",
 	funcode_cl = "funbase/FunCode",
 	jitfun_cl = "funjit/JitFunction",
+	jitlarge_cl = "funjit/JitFunction$FuncN",
 	jitsmall_cl = "funjit/JitFunction$Func",
 	evaluator_cl = "funbase/Evaluator";
 
@@ -120,6 +122,8 @@ class Type {
     
     public final static Type
 	fun_t = func_t(void_t),
+	fun__B_t = func_t(bool_t),
+	fun__D_t = func_t(double_t),
 	fun_A_V_t = func_t(valarray_t, value_t),
 	fun_AII_t = func_t(valarray_t, int_t, int_t, void_t),
 	fun_D_V_t = func_t(double_t, value_t),
@@ -142,9 +146,22 @@ class Type {
 	func_t(value_t),
 	func_t(value_t, value_t), 
 	func_t(value_t, value_t, value_t),
-	func_t(value_t, value_t, value_t, value_t)
+	func_t(value_t, value_t, value_t, value_t),
+	func_t(value_t, value_t, value_t, value_t, value_t),
+	func_t(value_t, value_t, value_t, value_t, value_t, value_t),
+	func_t(value_t, value_t, value_t, value_t, value_t, value_t, value_t)
+    };
+
+    public final static Type failn_t[] = {
+	func_t(void_t),
+	func_t(value_t, void_t),
+	func_t(value_t, value_t, void_t),
+	func_t(value_t, value_t, value_t, void_t),
+	func_t(value_t, value_t, value_t, value_t, void_t),
+	func_t(value_t, value_t, value_t, value_t, value_t, void_t),
+	func_t(value_t, value_t, value_t, value_t, value_t, value_t, void_t)
     };
 
     public final static Type
-	apply_t = func_t(valarray_t, int_t, int_t, value_t);
+	apply_t = func_t(valarray_t, int_t, value_t);
 }

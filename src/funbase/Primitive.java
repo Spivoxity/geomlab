@@ -35,6 +35,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 
 import funbase.Evaluator.*;
+import funbase.Value.WrongKindException;
 
 /** A value that represents a primitive function like 'sqrt' or '+'. */
 public abstract class Primitive extends Function {
@@ -50,16 +51,24 @@ public abstract class Primitive extends Function {
     // in any primitive.  Errors are reported with a message that names
     // the primitive concerned.
 
+    public String getPName() {
+	return name;
+    }
+
     /** Report error when argument is not what we expected */
     public void expect(String expected) {
-	Evaluator.expect(name, expected);
+	Evaluator.expect(getPName(), expected);
     }
 
     /** Fetch value of a NumValue object, or throw EvalException */
     public double number(Value a) {
-	Value.NumValue x =
-	    cast(Value.NumValue.class, a, "numeric");
-	return x.val;
+	try {
+	    return a.asNumber();
+	}
+	catch (WrongKindException _) {
+	    expect("numeric");
+	    return 0.0;
+	}
     }
 
     /** Fetch value of a StringValue object, or throw EvalException */ 
@@ -123,7 +132,7 @@ public abstract class Primitive extends Function {
     /** Convert list argument to array of specified class */
     public <T extends Value> T[] toArray(Class<T> cl, Value xs, 
 							 String expected) {
-	List<T> elems = new ArrayList<T>();
+	List<T> elems = new ArrayList<>();
 
 	while (isCons(xs)) {
 	    elems.add(cast(cl, head(xs), expected));
@@ -157,6 +166,9 @@ public abstract class Primitive extends Function {
 	public Prim0(String name) { super(name, 0); }
 
 	@Override
+	public abstract Value apply0();
+
+	@Override
 	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 0) Evaluator.err_nargs(name, nargs, 0);
 	    return apply0();
@@ -166,6 +178,9 @@ public abstract class Primitive extends Function {
     /** A primitive with one argument. */
     public static abstract class Prim1 extends Primitive {
 	public Prim1(String name) { super(name, 1); }
+
+	@Override
+	public abstract Value apply1(Value x);
 
 	@Override
 	public Value apply(Value args[], int base, int nargs) {
@@ -179,6 +194,9 @@ public abstract class Primitive extends Function {
 	public Prim2(String name) { super(name, 2); }
 
 	@Override
+	public abstract Value apply2(Value x, Value y);
+
+	@Override
 	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 2) Evaluator.err_nargs(name, nargs, 2);
 	    return apply2(args[base+0], args[base+1]);
@@ -190,9 +208,60 @@ public abstract class Primitive extends Function {
 	public Prim3(String name) { super(name, 3); }
 
 	@Override
+	public abstract Value apply3(Value x, Value y, Value z);
+
+	@Override
 	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != 3) Evaluator.err_nargs(name, nargs, 3);
 	    return apply3(args[base+0], args[base+1], args[base+2]);
+	}
+    }
+
+    /** A primitive with four arguments. */
+    public static abstract class Prim4 extends Primitive {
+	public Prim4(String name) { super(name, 4); }
+
+	@Override
+	public abstract Value apply4(Value x, Value y, Value z,
+				     Value u);
+
+	@Override
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 4) Evaluator.err_nargs(name, nargs, 4);
+	    return apply4(args[base+0], args[base+1], args[base+2],
+			  args[base+3]);
+	}
+    }
+
+    /** A primitive with five arguments. */
+    public static abstract class Prim5 extends Primitive {
+	public Prim5(String name) { super(name, 5); }
+
+	@Override
+	public abstract Value apply5(Value x, Value y, Value z,
+				     Value u, Value v);
+
+	@Override
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 5) Evaluator.err_nargs(name, nargs, 5);
+	    return apply5(args[base+0], args[base+1], args[base+2],
+			  args[base+3], args[base+4]);
+	}
+    }
+
+    /** A primitive with six arguments. */
+    public static abstract class Prim6 extends Primitive {
+	public Prim6(String name) { super(name, 6); }
+
+	@Override
+	public abstract Value apply6(Value x, Value y, Value z,
+				     Value u, Value v, Value w);
+
+	@Override
+	public Value apply(Value args[], int base, int nargs) {
+	    if (nargs != 6) Evaluator.err_nargs(name, nargs, 3);
+	    return apply6(args[base+0], args[base+1], args[base+2],
+			  args[base+3], args[base+4], args[base+5]);
 	}
     }
 
@@ -201,18 +270,17 @@ public abstract class Primitive extends Function {
 	public PrimN(String name, int arity) { super(name, arity); }
 
 	/** Invoke the primitive with arguments args[base..) */ 
-	protected abstract Value apply(Value args[], int base);
+	protected abstract Value applyN(Value args[], int base);
 
 	@Override
 	public Value apply(Value args[], int base, int nargs) {
 	    if (nargs != arity) Evaluator.err_nargs(name, nargs, arity);
-	    return apply(args, base);
+	    return applyN(args, base);
 	}
     }
     
     /** Table of all primitives */
-    protected static Map<String, Primitive> primitives = 
-	new HashMap<String, Primitive>(100);
+    protected static Map<String, Primitive> primitives = new HashMap<>(100);
     
     /** Register a new primitive */
     public static void register(Primitive p) {

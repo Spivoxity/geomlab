@@ -90,9 +90,14 @@ public class BasicPrims {
 	},
 	
 	new Primitive.Prim1("uminus") {
-	    @Override
+	    @Override 
 	    public Value apply1(Value x) {
 		return Value.makeNumValue(- number(x));
+	    }
+
+	    @Override 
+	    public String getPName() {
+		return "unary -";
 	    }
 	},
 	
@@ -321,14 +326,11 @@ public class BasicPrims {
             }
         },
         
-	new Primitive.PrimN("token", 4) {
+	new Primitive.Prim4("token") {
 	    @Override
-	    public Value apply(Value args[], int base) {
-		Name tag = name(args[base+0]);
-		Name tok = name(args[base+1]);
-		int p = (int) number(args[base+2]);
-		int rp = (int) number(args[base+3]);
-		Scanner.makeToken(tag, tok, p, rp);
+	    public Value apply4(Value tag, Value tok, Value p, Value rp) {
+		Scanner.makeToken(name(tag), name(tok), (int) number(p), 
+				  (int) number(rp));
 		return Value.nil;
 	    }
 	},

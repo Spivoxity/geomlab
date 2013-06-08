@@ -153,8 +153,8 @@ define __top() =
 
   let member(x, []) = false | member(x, y:ys) = (x = y) or member(x, ys) in
 
-  let zipwith(f, [], []) = [] 
-    | zipwith(f, x:xs, y:ys) = f(x, y) : zipwith(f, xs, ys) in
+  let number(_, []) = []
+    | number(n, x:xs) = [n, x] : number(n+1, xs) in
 
   let fst([x, y]) = x in
   let snd([x, y]) = y in
@@ -659,16 +659,15 @@ define __top() =
         { A constructor pattern h(args) }
         let f = label() in
 	let n = length(args) in
-	let c(p1, d1) = c_patt(p1, d1, env) in
 	pgen([#seq, [#TRAP, f], c_ref(cn, env), [#MPRIM, n]],
-	     reverse(zipwith(c, args, [d..d+n-1])),
+	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ]),
              [[f, d]])
 
     | c_patt([#cons, h, t], d, env) =
         { A cons pattern h : t }
         let f = label() in
 	pgen([#seq, [#TRAP, f], [#MCONS]], 
-             [c_patt(h, d+1, env), c_patt(t, d, env)], 
+             [c_patt(h, d+1, env), [[#GETTAIL], []], c_patt(t, d, env)], 
 	     [[f, d]])
 
     | c_patt([#nil], d, env) = 
@@ -686,19 +685,22 @@ define __top() =
 	        [c_patt(p1, d, env)], [[f, d]]) in
 
   { c_arg -- compile code to match an argument }
-  let c_arg([#var, x], i, env) =
+  let c_arg(i, [#var, x], env) =
         { variable matches whole argument }
         bind(x, #ARG, i, env) >> pgen([], [], []) when not islocal(x, env)
-    | c_arg([#anon], i, env) = 
+    | c_arg(i, [#anon], env) = 
         { anon matches whole argument }
 	pgen([], [], [])
-    | c_arg(p, i, env) =
+    | c_arg(i, p, env) =
         pgen([#seq, [#ARG, i]], [c_patt(p, 0, env)], []) in
 
   { c_match -- compile code to match a list of arguments }
   let c_match(ps, env) =
-    let code = 
-      zipwith(function (p, i) c_arg(p, i, env), ps, [0..length(ps)-1]) in
+    { Carefully evaluate from left to right }
+    let compile(_, []) = []
+      | compile(i, p:patts) =
+          let x = c_arg(i, p, env) in x : compile(i+1, patts) in
+    let code = compile(0, ps) in
     [#seq:map(fst, code), concat(map(snd, code))] in
 
   { The functions c_rule and c_body are mutually recursive with c_exp.
@@ -754,8 +756,9 @@ define __top() =
     let fvs = e_fvars(env1) in
     let nfvs = length(fvs) in
     debug(1, code) >>
-    [#seq, [#QUOTE, assemble(f, n, code)],
-      #seq:[ c_ref(x, env) | x <- fvs ], [#CLOSURE, nfvs]] in
+    [#seq, [#QUOTE, assemble(f, n, code)], [#CLOPREP, nfvs],
+      #seq:[ [#seq, c_ref(x, env), [#PUTFVAR, i]] | [i, x] <- number(1, fvs) ],
+      [#CLOSURE, nfvs]] in
 
   { yield -- append RETURN instuction if needed }
   let yield(code, tl) =
@@ -778,9 +781,8 @@ define __top() =
         let nargs = length(args) in
       	yield([#seq, c_exp(f, env, false), 
 	  [#seq, [#PREP, nargs],
-  	    #seq:zipwith(function (e, i) 
-	  		   [#seq, c_exp(e, env, false), [#PUTARG, i]],
-			 args, [0..nargs-1]),
+  	    #seq:[ [#seq, c_exp(e, env, false), [#PUTARG, i]]
+	    	     | [i, e] <- number(0, args) ],
 	    [#CALL, nargs]]], tl)
 
     | c_exp([#if, e1, e2, e3], env, tl) =
@@ -819,7 +821,7 @@ define __top() =
 	yield(c_closure("<function>", n, rules, env), tl)
 
     | c_exp([#cons, e1, e2], env, tl) =
-        yield([#seq, c_exp(e1, env, false), 
+        yield([#seq, [#PRECONS], c_exp(e1, env, false), 
 			c_exp(e2, env, false), [#CONS]], tl)
 
     | c_exp([#nil], env, tl) = yield([#NIL], tl)

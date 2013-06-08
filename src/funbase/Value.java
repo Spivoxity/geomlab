@@ -32,7 +32,6 @@ package funbase;
 
 import java.io.*;
 import java.text.*;
-import java.util.*;
 
 import funbase.Evaluator.*;
 
@@ -40,16 +39,19 @@ import funbase.Evaluator.*;
 public abstract class Value implements Serializable {
     private static final long serialVersionUID = 1L;
 	
-    /* The actual classes used to represent values are those contained
-     * in this file, together with the classes Closure and Primitive -- plus
-     * others that are installed dynamically, like ColorValue and Picture.
-     * These classes are partially decoupled from the rest of the
-     * system, and hidden behind static factory methods in the Value
-     * class. */
-    
-    public Value[] pattMatch(Value obj, int nargs) {
-	Evaluator.err_match();
-	return null;
+    /** Code to activate when calling this value as a function */
+    public Function subr;
+
+    public Value() {
+	this.subr = Function.nullFunction;
+    }
+
+    public Value(Function subr) {
+	this.subr = subr;
+    }
+
+    public Value apply(Value args[]) {
+	return subr.apply(args, args.length);
     }
 
     @Override
@@ -92,10 +94,7 @@ public abstract class Value implements Serializable {
     }
     
     public static final Value nil = new NilValue();
-    public static final BoolValue 
-	truth = new BoolValue(true), 
-	falsity = new BoolValue(false);
-    
+
     public static Value cons(Value hd, Value tl) {
 	return new ConsValue(hd, tl);
     }
@@ -108,6 +107,16 @@ public abstract class Value implements Serializable {
         return val;
     }
     
+    public static class WrongKindException extends Exception { }
+
+    public boolean asBoolean() throws WrongKindException {
+	throw new WrongKindException();
+    }
+
+    public double asNumber() throws WrongKindException {
+	throw new WrongKindException();
+    }
+
     /** Print a number nicely. */
     public static void printNumber(PrintWriter out, double x) {
 	if (x == (int) x)
@@ -148,12 +157,17 @@ public abstract class Value implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The value */
-	public final double val;
+	private final double val;
 	
 	public NumValue(double val) {
 	    this.val = val;
 	}
 	
+	@Override
+	public double asNumber() {
+	    return val;
+	}
+
 	@Override
 	public void printOn(PrintWriter out) {
 	    Value.printNumber(out, val);
@@ -200,12 +214,17 @@ public abstract class Value implements Serializable {
     public static class BoolValue extends Value {
 	private static final long serialVersionUID = 1L;
 
-	public final boolean val;
+	private final boolean val;
 	
 	private BoolValue(boolean val) {
 	    this.val = val;
 	}
 	
+	@Override
+	public boolean asBoolean() {
+	    return val;
+	}
+
 	@Override
 	public void printOn(PrintWriter out) {
 	    out.print((val ? "true" : "false"));
@@ -216,17 +235,21 @@ public abstract class Value implements Serializable {
 	    return (a instanceof BoolValue && val == ((BoolValue) a).val);
 	}
 	
-	public static Value getInstance(boolean val) {
-	    return (val ? truth : falsity);
-	}
-	
 	/* After input from a serialized stream, readResolve lets us replace
 	 * the constructed instance with one of the standard instances. */
-	public Object readResolve() { return getInstance(val); }
+	public Object readResolve() { return makeBoolValue(val); }
 	
 	@Override
 	public void dump(PrintWriter out) {
 	    out.printf("boolean %d\n", (val ? 1 : 0));
+	}
+
+	public static final BoolValue 
+	    truth = new BoolValue(true), 
+	    falsity = new BoolValue(false);
+    
+	public static Value getInstance(boolean val) {
+	    return (val ? truth : falsity);
 	}
     }
     
@@ -234,24 +257,13 @@ public abstract class Value implements Serializable {
     public static class FunValue extends Value {
 	private static final long serialVersionUID = 1L;
 	
-	/** Code to activate when calling this value as a function */
-	public Function subr;
-
-	protected FunValue(Function subr) {
-	    this.subr = subr;
-	}
-
-	public Value apply(Value args[]) {
-	    return subr.apply(args, 0, args.length);
-	}
-
-	public Value[] pattMatch(Value obj, int nargs) {
-	    return subr.pattMatch(obj, nargs);
-	}
-
 	@Override
 	public void dump(PrintWriter out) {
 	    subr.dump(out);
+	}
+
+	public FunValue(Function subr) {
+	    super(subr);
 	}
 
 	@Override

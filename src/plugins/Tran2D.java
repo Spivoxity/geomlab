@@ -157,16 +157,13 @@ public class Tran2D extends Value {
     }
 
     public static final Primitive primitives[] = {
-	new Primitive.PrimN("transform", 6) {
+	new Primitive.Prim6("transform") {
 	    @Override
-	    public Value apply(Value args[], int base) {
-		float m_xx = (float) number(args[base+0]);
-		float m_yx = (float) number(args[base+1]);
-		float m_xy = (float) number(args[base+2]);
-		float m_yy = (float) number(args[base+3]);
-		float m_x = (float) number(args[base+4]);
-		float m_y = (float) number(args[base+5]);
-		return new Tran2D(m_xx, m_yx, m_xy, m_yy, m_x, m_y);
+	    public Value apply6(Value m_xx, Value m_yx, Value m_xy, 
+				Value m_yy, Value m_x, Value m_y) {
+		return new Tran2D((float) number(m_xx), (float) number(m_yx), 
+				  (float) number(m_xy), (float) number(m_yy), 
+				  (float) number(m_x), (float) number(m_y));
 	    }
 
 	    private Value args[] = new Value[6];
