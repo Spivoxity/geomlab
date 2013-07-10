@@ -223,9 +223,8 @@ class Method {
 	    case CHECKCAST:
 	    case INSTANCEOF:
 		stackOp(op);
-	        ConstPool.Item i = pool.classItem(cl);
 	        code.putByte(op);
-		code.putShort(i.index);
+		code.putShort(pool.classItem(cl));
 		break;
 	    case CONST:
 		/* False overloading */
@@ -277,19 +276,16 @@ class Method {
     private void genField(Op op, String owner, String name,
 	    		  Type ty, int delta) {
         stackChange(delta);
-        ConstPool.Item i = pool.fieldItem(owner, name, ty.desc);
         code.putByte(op);
-	code.putShort(i.index);
+	code.putShort(pool.fieldItem(owner, name, ty.desc));
     }
 
     /** A method call */
     private void genMethod(Op op, int type, String owner,
 	    		   String name, Type ty, int rcvr) {
-        ConstPool.Item i = pool.methodItem(type, owner, name, ty.desc);
-
         stackChange(- ty.asize - rcvr + ty.size);
         code.putByte(op);
-	code.putShort(i.index);
+	code.putShort(pool.methodItem(type, owner, name, ty.desc));
         if (op == INVOKEINTERFACE) {
 	    code.putByte(ty.asize);
 	    code.putByte(0);
@@ -305,7 +301,7 @@ class Method {
 	noteJump(label);
 	int source = code.length();
         code.putByte(op);
-        label.put(code, source, false);
+        label.put(code, source);
 	if (op == GOTO) unreachable();
     }
 
@@ -384,7 +380,6 @@ class Method {
 	    System.out.printf("%s:\n", label);
 
         label.resolve(code.length(), code);
-
 	label.setDepth(stack);
 	stack = label.getDepth();
     }
@@ -407,17 +402,17 @@ class Method {
         return size;
     }
 
-    /** Put the bytecode of this method into the given byte vector. */
+    /** Put the bytecode of this method into a byte vector. */
     public void put(ByteVector out) {
         out.putShort(access);
-        out.putShort(name.index);
-        out.putShort(desc.index);
+        out.putShort(name);
+        out.putShort(desc);
         int attributeCount = 0;
         if (code.length() > 0) attributeCount++;
         out.putShort(attributeCount);
         if (code.length() > 0) {
             int size = 12 + code.length() + 8 * handlers.size();
-            out.putShort(_Code_.index);
+            out.putShort(_Code_);
             out.putInt(size);
             out.putShort(maxStack);
             out.putShort(maxLocals);
@@ -446,7 +441,7 @@ class Method {
 	    start.put(out);
 	    end.put(out);
 	    handler.put(out);
-	    out.putShort((type != null ? type.index : 0));
+	    out.putShort(type);
 	}
     }
 }

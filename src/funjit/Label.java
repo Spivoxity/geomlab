@@ -56,35 +56,28 @@ class Label {
     @Override
     public String toString() { return String.format("L%d", serial); }
 
-    public void putRef(ByteVector code, int source, int pos, boolean wide) {
+    private void putRef(ByteVector code, int source, int pos) {
 	int offset = addr - source;
-	
-	if (wide)
-	    code.putInt(offset, pos);
-	else {
-	    if (offset < Short.MIN_VALUE || offset > Short.MAX_VALUE)
-		throw new Error("Method code too large");
-	    code.putShort(offset, pos);
-	}
+	if (offset < Short.MIN_VALUE || offset > Short.MAX_VALUE)
+	    throw new Error("Method code too large");
+	code.putShort(offset, pos);
     }
 
-    /** Put a reference to this label in the bytecode of a method. */
-    public void put(ByteVector code, int source, boolean wide) {
+    /** Put a reference to this label into a method as a displacement. */
+    public void put(ByteVector code, int source) {
 	int pos = code.length();
 
-	if (wide)
-	    code.putInt(-1);
-	else
-	    code.putShort(-1);
+	code.putShort(-1);
 
         if (! resolved) {
-            if (fixups == null) fixups = new ArrayList<>(6);
-	    fixups.add(new Fixup(source, pos, wide));
+            if (fixups == null) fixups = new ArrayList<>(2);
+	    fixups.add(new Fixup(source, pos));
         } else {
-	    putRef(code, source, pos, wide);
+	    putRef(code, source, pos);
         }
     }
 
+    /** Put the label value into a byte vector */
     public void put(ByteVector out) {
 	if (! resolved) throw new Error("unresolved label");
 	out.putShort(addr);
@@ -101,14 +94,13 @@ class Label {
     private class Fixup {
 	private int source;
 	private int pos;
-	private boolean wide;
 	
-	public Fixup(int source, int pos, boolean wide) {
-	    this.source = source; this.pos = pos; this.wide = wide;
+	public Fixup(int source, int pos) {
+	    this.source = source; this.pos = pos;
 	}
 
 	public void resolve(ByteVector code) {
-	    putRef(code, source, pos, wide);
+	    putRef(code, source, pos);
 	}
     }
 

@@ -77,6 +77,10 @@ class ByteVector {
         length += 2;
     }
 
+    public void putShort(ConstPool.Item i) {
+	putShort((i != null ? i.index : 0));
+    }
+
     /** Overwrite with a short at specified offset */
     public void putShort(int s, int offset) {
         data[offset++] = (byte) (s >>> 8);
