@@ -111,9 +111,9 @@ public class BushPicture extends Picture {
     private static void interp(String commands, View view) {
 	Vec2D pos = new Vec2D(0.0f, 0.0f), dir = new Vec2D(0.0f, 1.0f);
 	int col = 0;
-	Stack<Vec2D> pstack = new Stack<>();
-	Stack<Vec2D> dstack = new Stack<>();
-	Stack<Integer> hstack = new Stack<>();
+	Stack<Vec2D> pstack = new Stack<Vec2D>();
+	Stack<Vec2D> dstack = new Stack<Vec2D>();
+	Stack<Integer> hstack = new Stack<Integer>();
 	
 	view.move(pos, col, false);
 	

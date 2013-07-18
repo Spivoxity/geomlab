@@ -53,6 +53,7 @@ public class Vec2D extends Value {
     public Object getNative() {
 	if (peer == null)
 	    peer = Native.factory.vector(this);
+
 	return peer;
     }
 

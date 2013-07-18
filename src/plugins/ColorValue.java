@@ -117,6 +117,7 @@ public class ColorValue extends Picture {
     public Object getNative() { 
 	if (peer == null) 
 	    peer = Native.factory.color(this);
+
 	return peer; 
     }
     

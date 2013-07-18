@@ -70,21 +70,27 @@ public class Tran2D extends Value {
     public Object getNative() {
 	if (peer == null) 
 	    peer = Native.factory.transform(this);
+
 	return peer;
     }
     
     /** Compose this transform (on the left) with another one on the right */
-    public Tran2D concat(Tran2D t) {
+    public Tran2D concat(Tran2D other) {
+	return compose(this, other);
+    }
+
+    /** Compose two transformations */
+    public static Tran2D compose(Tran2D a, Tran2D b) {
 	//  [ a_xx  a_xy  a_x ] [ b_xx  b_xy  b_x ]
 	//  [ a_yx  a_yy  a_y ] [ b_yx  b_yy  b_y ]
 	//  [  0     0     1  ] [  0     0     1  ]
 	return new Tran2D(
-		m_xx * t.m_xx + m_xy * t.m_yx,
-		m_yx * t.m_xx + m_yy * t.m_yx,
-		m_xx * t.m_xy + m_xy * t.m_yy,
-		m_yx * t.m_xy + m_yy * t.m_yy,
-		m_xx * t.m_x + m_xy * t.m_y + m_x,
-		m_yx * t.m_x + m_yy * t.m_y + m_y);
+		a.m_xx * b.m_xx + a.m_xy * b.m_yx,
+		a.m_yx * b.m_xx + a.m_yy * b.m_yx,
+		a.m_xx * b.m_xy + a.m_xy * b.m_yy,
+		a.m_yx * b.m_xy + a.m_yy * b.m_yy,
+		a.m_xx * b.m_x + a.m_xy * b.m_y + a.m_x,
+		a.m_yx * b.m_x + a.m_yy * b.m_y + a.m_y);
     }
     
     public Tran2D translate(float dx, float dy) {

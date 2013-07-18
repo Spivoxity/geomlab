@@ -34,15 +34,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-/** Provides a factory for platform-dependent graphical elements */
+/** A factory for platform-dependent graphical elements */
 public abstract class Native {
-    /** Return an object that is the native representation of color c */
+    /** Return the native representation of a color */
     public abstract Object color(ColorValue c);
 
-    /** return an object that is the native representation of vector v */
+    /** Return the native representation of a vector */
     public abstract Object vector(Vec2D v);
 
-    /** Return an object that is the native representation of tranform t */
+    /** Return the native representation of a transform */
     public abstract Object transform(Tran2D t);
 
     /** Simple interface to a pixel image */

@@ -149,7 +149,6 @@ public class EPSWriter extends Stylus {
     @Override
     public void drawImage(Native.Image image) {
 	// See Red Book, page 310
-	
 	int w = image.getWidth(), h = image.getHeight();
 	pr.printf("/buf %d string def\n", 3*w);
 	writeTransform(trans);
@@ -177,7 +176,7 @@ public class EPSWriter extends Stylus {
 		a.x, a.y, b.x, b.y);
     }
 
-    private Set<Integer> knownTiles = new HashSet<>(50);
+    private Set<Integer> knownTiles = new HashSet<Integer>(50);
 
     /** Draw a tile.  Each kind of tile is saved as a pair of PostScript 
      * procedures so as to reduce the size of the file. */

@@ -38,6 +38,9 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 
+import java.util.*;
+import java.lang.ref.*;
+
 import funbase.Primitive;
 import funbase.Value;
 import funbase.Evaluator;
@@ -96,17 +99,17 @@ public class ImagePicture extends Picture {
 
     /** Write a serialized copy of the image.
      * 
-     *  The image is write in a simple, platform-indendent format.
-     *  The pixels are not writte at all if the resource can be
-     *  reconstituted from an application resource. */
+     *  The image is written in a simple, platform-indendent format.
+     *  The pixels are not written at all if the image can be
+     *  reloaded from an application resource. */
     private void writeObject(ObjectOutputStream stream) throws IOException {
 	stream.defaultWriteObject();
 	
 	if (resourceName != null) return;
 
 	int w = image.getWidth(), h = image.getHeight();
-	stream.writeInt(image.getWidth());
-	stream.writeInt(image.getHeight());
+	stream.writeInt(w);
+	stream.writeInt(h);
 	for (int y = 0; y < h; y++)
 	    for (int x = 0; x < w; x++)
 		stream.writeInt(image.getRGB(x, y));
@@ -131,7 +134,7 @@ public class ImagePicture extends Picture {
     }
     
     protected static Native.Image loadResource(String name) 
-    							throws IOException {
+    						throws IOException {
 	ClassLoader loader = ImagePicture.class.getClassLoader();
 	InputStream in = loader.getResourceAsStream(name);
 	Native.Image image = Native.factory.readImage(in);
@@ -139,15 +142,48 @@ public class ImagePicture extends Picture {
 	return image;
     }
     
+
+    /* Some explanation is needed here.  The typical use of the photo
+       primitive is a global definition
+
+       define mypic = photo("http://somewhere.com/picture.jpg")
+
+       Usually, there will be only a few such URL's used in a session,
+       and if the definition is typed in the code window and executed
+       multiple times, the second and subsequent executions will just
+       fetch the same image and store it as the same global variable.
+       So I don't care about the cache growing with stale entries (not 
+       many distinct URL's), and I only care about caching images that
+       remain strongly reachable from elsewhere (OK to use weak
+       references rather than soft ones). */
+
+    /** A cache for web images */
+    private static Map<String, Reference<Native.Image>> 
+	imageCache = new HashMap<String, Reference<Native.Image>>();
+
+    /** Load a web image or return it from the cache */
+    private static Native.Image cachedImage(String name) throws IOException {
+	Reference<Native.Image> ref = imageCache.get(name);
+	Native.Image image = 
+	    (ref == null ? null : ref.get());
+
+	if (image == null) {
+	    URL url = new URL(name);
+	    InputStream in = url.openStream();
+	    image = Native.factory.readImage(in);
+	    in.close();
+	    imageCache.put(name, new WeakReference<Native.Image>(image));
+	}
+
+	return image;
+    }
+
     public static final Primitive primitives[] = {
 	new Primitive.Prim1("photo") {
 	    @Override
 	    public Value apply1(Value name) {
 		try {
-		    URL url = new URL(string(name));
-		    InputStream in = url.openStream();
-		    Native.Image image = Native.factory.readImage(in);
-		    in.close();
+		    Native.Image image = cachedImage(string(name));
 		    return new ImagePicture(image);
 		}
 		catch (IOException e) {
