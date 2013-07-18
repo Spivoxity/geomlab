@@ -12,3 +12,11 @@ misc/bmark/hmark.o
 misc/bmark/omark
 misc/bmark/pmark
 stage?.boot
+web
+figs/*.eps
+figs/*.png
+figs/*.jpg
+figs/sheet*.fun
+figs/.sheet*
+figs/.tiles*
+figs/tiles.fun

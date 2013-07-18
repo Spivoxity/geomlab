@@ -1,11 +1,13 @@
 # Top level Makefile for GeomLab
 
+JAVAC = /usr/lib/jvm/java-6-openjdk-i386/bin/javac
+
 PACKAGES = funbase funjit geomlab plugins
 JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
 SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
-RESOURCES = DejaVuSansMono.ttf mike.jpg mikelet.jpg contents.html style.css \
-	splat.png $(HELP:%=%.html)
+RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
+	$(HELP:%=%.html) properties
 IMAGES = geomlab.gls examples.gls
 
 all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES:%=obj/%)
@@ -14,7 +16,7 @@ prep: force
 	@mkdir -p obj
 
 .compiled: $(wildcard src/*/*.java)
-	javac -d obj src/*/*.java
+	$(JAVAC) -d obj src/*/*.java
 	echo timestamp >$@
 
 obj/%: res/%; cp $< $@
