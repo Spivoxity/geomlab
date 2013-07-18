@@ -129,17 +129,17 @@ define mikelet = _pixelfun(_resource("mikelet.jpg"));
 
 define noblue(rgb(r, g, b)) = rgb(r, g, 0);
 
-define mappixels(f, p) = function (x, y) f(p(x, y));
+define mappixels(f, p) = function ([x, y]) f(p([x, y]));
 
 define dist([x, y], [u, v]) =
   let dx = x - u in let dy = y - v in
   sqrt(dx*dx + dy*dy);
 
-define redglowlet(x, y) =
+define redglowlet([x, y]) =
   let r = 1 - dist([x, y], [72, 72])/72 in
   rgb(r, 0, 0);
 
-define twinslet(x, y) =
+define twinslet([x, y]) =
   let r = 1 - dist([x, y], [72, 72])/72 in
   let g = 1 - dist([x, y], [108, 36])/36 in
   rgb(r, g, 0);

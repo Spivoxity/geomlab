@@ -1,0 +1,37 @@
+welcome: Welcome to GeomLab!
+fontname: VeraMono
+fontsize: 14
+lookandfeel: Nimbus
+session: geomlab.gls
+
+version: GeomLab version 3.0
+
+copyright: Copyright (c) 2005-2013 J. M. Spivey\n\
+  Font data Copyright (c) 2003 Bitstream, Inc.
+
+licence: Redistribution and use in source and binary forms, with or\n\
+  without modification, are permitted provided that the\n\
+  following conditions are met:\n\n\
+  1. Redistributions of source code must retain the above\n\
+     copyright notice, this list of conditions and the\n\
+     following disclaimer.\n\
+  2. Redistributions in binary form must reproduce the above\n\
+     copyright notice, this list of conditions and the\n\
+     following disclaimer in the documentation and/or other\n\
+     materials provided with the distribution.\n\
+  3. The name of the author may not be used to endorse or\n\
+     promote products derived from this software without\n\
+     specific prior written permission.\n\n\
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR \"AS IS\" AND\n\
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT \n\
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY\n\
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.\n\
+  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,\n\
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\n\
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF\n\
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n\
+  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND\n\
+  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT\n\
+  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)\n\
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN\n\
+  IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

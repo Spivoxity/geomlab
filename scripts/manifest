@@ -1,1 +1,3 @@
 Main-Class: geomlab/GeomLab
+Permissions: all-permissions
+Codebase: *
