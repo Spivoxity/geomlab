@@ -36,7 +36,7 @@ import funbase.Value.WrongKindException;
 
 /** A trivial runtime translator that interprets the funcode */
 public class Interp implements FunCode.Jit {
-    private static Stack<FunCode> stack = new Stack<>();
+    private static Stack<FunCode> stack = new Stack<FunCode>();
     private FunCode root = null;
 
     /** Create a function factory that builds interpreted closures */

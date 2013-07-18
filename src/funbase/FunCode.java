@@ -203,10 +203,10 @@ public class FunCode extends Value {
 		Opcode instrs[] = new Opcode[size];
 		int rands[] = new int[size];
 		int ip = 0, sp = 0, fsize = 0, ssize = 0;
-		List<Value> consts = new ArrayList<>();
+		List<Value> consts = new ArrayList<Value>();
 	
 		/** Mapping from integer labels to info about each label */
-		Map<Integer, Label> labels = new HashMap<>();
+		Map<Integer, Label> labels = new HashMap<Integer, Label>();
 	
 		for (Value xs = code; isCons(xs); xs = tail(xs)) {
 		    Value inst = head(xs);

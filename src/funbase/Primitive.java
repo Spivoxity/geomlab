@@ -132,7 +132,7 @@ public abstract class Primitive extends Function {
     /** Convert list argument to array of specified class */
     public <T extends Value> T[] toArray(Class<T> cl, Value xs, 
 							 String expected) {
-	List<T> elems = new ArrayList<>();
+	List<T> elems = new ArrayList<T>();
 
 	while (isCons(xs)) {
 	    elems.add(cast(cl, head(xs), expected));
@@ -280,7 +280,8 @@ public abstract class Primitive extends Function {
     }
     
     /** Table of all primitives */
-    protected static Map<String, Primitive> primitives = new HashMap<>(100);
+    protected static Map<String, Primitive> primitives = 
+	new HashMap<String, Primitive>(100);
     
     /** Register a new primitive */
     public static void register(Primitive p) {
