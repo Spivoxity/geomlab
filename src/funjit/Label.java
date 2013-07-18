@@ -70,7 +70,7 @@ class Label {
 	code.putShort(-1);
 
         if (! resolved) {
-            if (fixups == null) fixups = new ArrayList<>(2);
+            if (fixups == null) fixups = new ArrayList<Fixup>(2);
 	    fixups.add(new Fixup(source, pos));
         } else {
 	    putRef(code, source, pos);

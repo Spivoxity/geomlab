@@ -52,11 +52,11 @@ public class InlineTranslator extends JitTranslator {
 	color_cl = "plugins/ColorValue";
 
     /** Stack to track inlinable primitives in a nest of calls */
-    private Stack<Inliner> funstack = new Stack<>();
+    private Stack<Inliner> funstack = new Stack<Inliner>();
     
     /** Dictionary mapping primitive names to their inline
         code generators */
-    private Map<String, Inliner> primdict = new HashMap<>();
+    private Map<String, Inliner> primdict = new HashMap<String, Inliner>();
 
     /** Register an inline code generator */
     private void register(Inliner c) {

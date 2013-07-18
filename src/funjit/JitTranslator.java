@@ -74,12 +74,12 @@ public class JitTranslator implements FunCode.Jit {
     private int cache, nextcache;
 
     /** Stack of function arities to help with assembling arguments */
-    private Stack<Integer> nstack = new Stack<>();
+    private Stack<Integer> nstack = new Stack<Integer>();
 
     private Label loop;
     private Label trap;
 
-    private Map<Integer, Label> labdict = new HashMap<>();
+    private Map<Integer, Label> labdict = new HashMap<Integer, Label>();
     
     protected final Label makeLabel(int addr) {
 	Label lab = labdict.get(addr);
@@ -516,13 +516,13 @@ public class JitTranslator implements FunCode.Jit {
 
     /** A table giving for each opcode the rules that start with it */
     private EnumMap<Opcode, List<CodeHook>> hooks = 
-	new EnumMap<>(Opcode.class);
+	new EnumMap<Opcode, List<CodeHook>>(Opcode.class);
 
     protected final void addHook(CodeHook hook) {
 	Opcode op = hook.pattern[0];
 	List<CodeHook> list = hooks.get(op);
 	if (list == null) {
-	    list = new LinkedList<>(); hooks.put(op, list);
+	    list = new LinkedList<CodeHook>(); hooks.put(op, list);
 	}
 	list.add(0, hook);
     }
@@ -627,7 +627,8 @@ public class JitTranslator implements FunCode.Jit {
 	}
     }
 	
-    private Map<Handler, Handler> handlers = new HashMap<>();
+    private Map<Handler, Handler> handlers = 
+	new HashMap<Handler, Handler>();
 
     private Label makeHandler(Handler handler) {
 	Handler handler1 = handlers.get(handler);
@@ -701,7 +702,8 @@ public class JitTranslator implements FunCode.Jit {
 	}
     }
 
-    private Map<String, FunCode> class_table = new WeakHashMap<>();
+    private Map<String, FunCode> class_table = 
+	new WeakHashMap<String, FunCode>();
 
     private FunCode root = null;
 

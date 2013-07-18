@@ -53,7 +53,7 @@ class Method {
     private final ConstPool pool;
     
     /** Exception handlers */
-    private List<Handler> handlers = new LinkedList<>();
+    private List<Handler> handlers = new LinkedList<Handler>();
 
     /** The UTF8 string "Code" */
     private ConstPool.Item _Code_;
