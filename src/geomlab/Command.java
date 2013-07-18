@@ -261,16 +261,6 @@ public abstract class Command extends AbstractAction {
         	app.fontScale(1/1.2f);
             }
         });
-        menu.add(new Option("Smooth screen display", KeyEvent.VK_M) {
-            @Override
-            public boolean isValue() {
-        	return app.isAntialiased();
-            }
-            @Override
-            public void setValue(boolean value) {
-        	app.setAntialiased(value);
-            }
-        });
         menu.add(new Option("Count reduction steps", KeyEvent.VK_C) {
             @Override
             public boolean isValue() {
@@ -297,9 +287,7 @@ public abstract class Command extends AbstractAction {
         });
         menu.add(new Command("About GeomLab ...", KeyEvent.VK_A,  app) {
             @Override
-            public void perform() {
-        	AboutBox.aboutBox(app);
-            }
+	    public void perform() { app.aboutBox(); }
         });
 	return menu;
     }

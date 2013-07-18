@@ -41,7 +41,7 @@ import plugins.Stylus;
 /** The main GUI frame for the GeomLab application */
 public class AppFrame extends JFrame {
     protected final CodeInput input = new CodeInput(20, 50);
-    protected final MyTextArea results = new MyTextArea(20, 50);
+    protected final JTextArea results = new JTextArea(20, 50);
     protected final GraphBox arena = new GraphBox();
     protected final Spinner spinner = new Spinner();
     protected JTabbedPane output = new JTabbedPane();
@@ -79,7 +79,6 @@ public class AppFrame extends JFrame {
 
 	input.setLineWrap(true);
 	input.setBorder(myborder);
-	// input.setBorder(spacer);
 	input.setMinimumSize(new Dimension(100, 100));
 
 	JPanel controls = new JPanel(new BorderLayout());
@@ -143,12 +142,6 @@ public class AppFrame extends JFrame {
 	}
     }
     
-    public void setAntialiased(boolean antialiased) {
-	input.setAntialiased(antialiased);
-	results.setAntialiased(antialiased);
-        arena.setAntialiased(antialiased);
-    }
-    
     public void showError(int start, int end) {
 	input.setEnabled(true);
 	input.setSelectionStart(start);
@@ -167,7 +160,12 @@ public class AppFrame extends JFrame {
 	Writer writer = new Writer() {
 		@Override
 		public void write(char buf[], int base, int len) {
-		    results.append(new String(buf, base, len));
+		    final String s = new String(buf, base, len);
+		    SwingUtilities.invokeLater(new Runnable() { 
+			public void run() { 
+			    results.append(s); 
+			} 
+		    });
 		}
 	    
 		@Override

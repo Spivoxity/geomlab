@@ -41,19 +41,7 @@ import java.util.Stack;
 
 /** A mini-browser for help texts */
 public class HelpFrame extends JFrame {
-    protected static boolean antialiased = false;
-    
-    private JEditorPane browser = new JEditorPane() {
-	@Override
-	public void paint(Graphics g) {
-	    if (antialiased) {
-		Graphics2D g2 = (Graphics2D) g;
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-			RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-	    }
-	    super.paint(g);
-	}
-    };
+    private JEditorPane browser = new JEditorPane();
 
     private HelpFrame() {
 	super("GeomLab help");
@@ -95,7 +83,7 @@ public class HelpFrame extends JFrame {
     private static ClassLoader loader = HelpFrame.class.getClassLoader();
     
     /** History of pages visited */
-    private Stack<URL> history = new Stack<>();
+    private Stack<URL> history = new Stack<URL>();
     
     /** Index in the history */
     private int index = -1;
@@ -167,12 +155,6 @@ public class HelpFrame extends JFrame {
 	    theFrame.visitPage(errpage);
 	}
     }
-    
-    public static void setAntialiased(boolean antialiased) {
-	HelpFrame.antialiased = antialiased;
-    }
-    
-    public static boolean isAntialiased() { return antialiased; }
     
     /** For debugging */
     public static void main(String args[]){

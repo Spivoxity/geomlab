@@ -46,7 +46,6 @@ import geomlab.Command.CommandException;
 /** A panel for displaying a Picture object */
 public class GraphBox extends JPanel {
     protected Stylus.Drawable picture = null;
-    protected boolean antialiased = false;
 
     protected final JComponent canvas = new JComponent() {
 	@Override
@@ -70,9 +69,8 @@ public class GraphBox extends JPanel {
 		    ww = (int) (h * aspect + 0.5f);
 	    
 		Graphics2D g2 = (Graphics2D) g;
-		if (antialiased)
-		    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				    RenderingHints.VALUE_ANTIALIAS_ON);
 	    
 		g2.translate((w - ww)/2, (h - hh)/2);
 		plugins.Stylus t = new ScreenStylus(g2, sliderValue());
@@ -114,13 +112,6 @@ public class GraphBox extends JPanel {
 	slider.setVisible(pic != null && pic.isInteractive());
 	slider.revalidate();
 	prerender(pic);
-    }
-    
-    public boolean isAntialiased() { return antialiased; }
-    
-    public void setAntialiased(boolean antialiased) {
-        this.antialiased = antialiased;
-	repaint();
     }
     
     public float sliderValue() { return slider.getValue() / 100.0f; }

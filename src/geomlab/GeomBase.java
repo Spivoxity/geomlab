@@ -75,7 +75,7 @@ public class GeomBase {
     }
 
     public void logMessage(String msg) {
-	logWrite("\n[" + msg + "]");
+	logWrite("[" + msg + "]");
     }
 
     public void errorMessage(String msg, String errtag) {
@@ -136,6 +136,7 @@ public class GeomBase {
 	}
 
 	public void failure(Throwable e) {
+	    e.printStackTrace(log);
 	    evalError("Failure: ", e.toString(), "#failure");
 	}
     }

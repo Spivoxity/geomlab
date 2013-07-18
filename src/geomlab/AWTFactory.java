@@ -45,6 +45,7 @@ import plugins.Vec2D;
 import plugins.Tran2D;
 import plugins.Stylus;
 
+/** A Native factory for Java2D graphics */
 public class AWTFactory extends Native {
     @Override
     public Object color(ColorValue c) {
@@ -62,6 +63,7 @@ public class AWTFactory extends Native {
 				   t.m_yy, t.m_x, t.m_y);
     }
 
+    /** A GeomLab image implemented as an AWT BufferedImage */
     private static class AWTImage implements Image {
 	private final BufferedImage image;
 

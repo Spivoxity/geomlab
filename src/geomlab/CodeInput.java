@@ -48,7 +48,7 @@ import javax.swing.undo.UndoManager;
  *  model where replacing text is a single undoable action, allows
  *  highlighting the region between brackets when a closing bracket is
  *  typed. */
-public class CodeInput extends MyTextArea {
+public class CodeInput extends JTextArea {
     private ActionListener actionListener = null;
     private MyHighlightPainter lowlightPainter = new MyHighlightPainter();
     private Object lowlight = null;

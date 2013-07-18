@@ -43,6 +43,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.UIManager.*;
+import java.util.Properties;
 
 /** The main application class for GeomLab.
  * 
@@ -58,19 +59,36 @@ import javax.swing.UIManager.*;
  *  know any details of how pictures are made up.
  */
 public class GeomLab extends GeomBase {
-    public final AppFrame frame = new AppFrame();
+    public AppFrame frame;
     
-    public boolean antialiased = false;
-    
-    public GeomLab() {
-	setLog(frame.getLogWriter());
-	
-	frame.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		evaluate();
-	    }
-	});
+    public static final Properties properties = new Properties();
+
+    public void activate() {
+	try {
+	    SwingUtilities.invokeAndWait(new Runnable() {
+		public void run() {
+		    frame = new AppFrame();
+		    loadFontResource();
+		    setLog(frame.getLogWriter());
+
+		    frame.setJMenuBar(Command.makeAppMenuBar(GeomLab.this));
+		    frame.pack();
+
+		    frame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			    evaluate();
+			}
+		    });
+
+		    frame.setVisible(true);
+		    frame.input.requestFocusInWindow();
+		}
+	    });
+	}
+	catch (Exception e) {
+	    throw new Error(e);
+	}
     }
     
     /** Update the picture display */
@@ -105,9 +123,6 @@ public class GeomLab extends GeomBase {
 	frame.setEnabled(false);
 	frame.results.setText("");
 
-	// log.println(command);
-	// log.flush();
-	
 	final StringReader reader = new StringReader(command);
 	
 	Thread evalThread = new Thread() {
@@ -119,7 +134,6 @@ public class GeomLab extends GeomBase {
 		    public void run() {
 			frame.spinner.stop();
 			displayUpdate(last_val);
-			// if (done) frame.input.setText("");
 			frame.setEnabled(true);
 		    }
 		});
@@ -172,32 +186,44 @@ public class GeomLab extends GeomBase {
 	frame.input.setText(def);
     }
     
-
-    public boolean isAntialiased() {
-        return antialiased;
-    }
-
-    public void setAntialiased(boolean antialiased) {
-        this.antialiased = antialiased;
-        frame.setAntialiased(antialiased);
-        HelpFrame.setAntialiased(antialiased);
+    /** Command -- show the about box */
+    public void aboutBox() {
+        String version = properties.getProperty("version");
+	String copyright = properties.getProperty("copyright");
+        String licence = properties.getProperty("licence");
+        JTextArea licenceArea = new JTextArea(licence);
+        licenceArea.setEditable(false);
+        String javaVersion = System.getProperty("java.version");
+        Object contents[] = new Object[] { version, copyright, licenceArea, 
+        	"Java version " + javaVersion };
+        JOptionPane.showMessageDialog(frame, contents, "About GeomLab",
+        	JOptionPane.INFORMATION_MESSAGE);
     }
 
     private static Font fontResource = null;
 
-    private float fontSize = 12.0f;
+    private float fontScale = 1.0f;
 
     public void fontScale(float s) {
-	fontSize *= s;
+	fontScale *= s;
 	loadFontResource();
     }
 
     private void loadFontResource() {
-        String name = "DejaVuSansMono.ttf";
-        
-        if (fontResource == null) {
-            ClassLoader loader = AppFrame.class.getClassLoader();
-            InputStream stream = loader.getResourceAsStream(name);
+	String fontName = properties.getProperty("fontname");
+	String sizeSpec = properties.getProperty("fontsize", "14");
+	float fontSize;
+
+	try { 
+	    fontSize = Float.parseFloat(sizeSpec); 
+	}
+	catch (NumberFormatException _) { 
+	    throw new Error("bad fontsize");
+	}
+
+        if (fontName != null && fontResource == null) {
+            ClassLoader loader = GeomLab.class.getClassLoader();
+            InputStream stream = loader.getResourceAsStream(fontName + ".ttf");
         
             if (stream != null) {
         	try {
@@ -213,9 +239,10 @@ public class GeomLab extends GeomBase {
         }
             	
     	if (fontResource != null)
-    	    setFont(fontResource.deriveFont(fontSize));
-    	else
-    	    setFont(new Font("Default", Font.PLAIN, Math.round(fontSize)));
+    	    setFont(fontResource.deriveFont(fontScale * fontSize));
+	else
+    	    setFont(new Font("Default", Font.PLAIN, 
+			     Math.round(fontScale * fontSize)));
     }
     
     private void setFont(Font font) {
@@ -242,39 +269,51 @@ public class GeomLab extends GeomBase {
 	}
 
 	// Under Java Web Start, the default security manager doesn't allow
-	// creation of new class loaders.
+	// creation of new class loaders; and the policy doesn't allow
+	// loading of unsigned code.
 	System.setSecurityManager(null);
+	java.security.Policy.setPolicy(null);
 
+	// Read application properties
+	ClassLoader loader = GeomLab.class.getClassLoader();
+	InputStream propStream = loader.getResourceAsStream("properties");
+	if (propStream != null) {
+	    try {
+		properties.load(propStream);
+		propStream.close();
+	    }
+	    catch (IOException _) { }
+	}
+
+	// System-dependent UI tweaks
 	if (System.getProperty("mrj.version") != null) {
 	    // Use Mac menu bar
 	    System.setProperty("apple.laf.useScreenMenuBar", "true");
 	    System.setProperty(
                 "com.apple.mrj.application.apple.menu.about.name", "GeomLab");
 	} else {
-	    // Try for the Nimbus look and feel.
-	    try {
-		for (LookAndFeelInfo info : 
-			 UIManager.getInstalledLookAndFeels()) {
-		    if (info.getName().equals("Nimbus")) {
-			UIManager.setLookAndFeel(info.getClassName());
-			break;
+	    // Try for a specified look and feel.
+	    String spec = properties.getProperty("lookandfeel");
+	    if (spec != null) {
+		try {
+		    for (LookAndFeelInfo info : 
+			     UIManager.getInstalledLookAndFeels()) {
+			if (info.getName().equals(spec)) {
+			    UIManager.setLookAndFeel(info.getClassName());
+			    break;
+			}
 		    }
+		} catch (Exception e) {
+		    // Stick with default L&F
 		}
-	    } catch (Exception e) {
-		// Stick with default L&F
 	    }
 	}
 	
 	Native.register(new AWTFactory());
 	GeomLab app = new GeomLab();
 	GeomBase.registerApp(app);
-	app.loadFontResource();
-	app.setAntialiased(true);
-	app.frame.setJMenuBar(Command.makeAppMenuBar(app));
-	app.frame.pack();
-	app.frame.setVisible(true);
-	app.frame.input.requestFocusInWindow();
-	app.logWrite("Welcome to GeomLab");
+	app.activate();
+	app.logWrite(properties.getProperty("welcome", "Welcome to GeomLab"));
 	
 	funbase.FunCode.install
 	    (new funjit.TofuTranslator(new funjit.InlineTranslator()));
@@ -283,11 +322,11 @@ public class GeomLab extends GeomBase {
 	    if (sessfile != null)
 		Session.loadSession(sessfile);
 	    else {
-		String image = 
-		    System.getProperty("jnlp.session", "geomlab.gls");
+		String image = System.getProperty("jnlp.session");
+		if (image == null) 
+		    image = properties.getProperty("session", "geomlab.gls");
 		Session.loadResource(image);
 	    }
-
 	    Session.installPlugin(Command.class);
 	}
 	catch (CommandException e) {
