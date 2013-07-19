@@ -99,38 +99,22 @@ public class ImagePicture extends Picture {
 
     /** Write a serialized copy of the image.
      * 
-     *  The image is written in a simple, platform-indendent format.
      *  The pixels are not written at all if the image can be
      *  reloaded from an application resource. */
     private void writeObject(ObjectOutputStream stream) throws IOException {
 	stream.defaultWriteObject();
-	
-	if (resourceName != null) return;
-
-	int w = image.getWidth(), h = image.getHeight();
-	stream.writeInt(w);
-	stream.writeInt(h);
-	for (int y = 0; y < h; y++)
-	    for (int x = 0; x < w; x++)
-		stream.writeInt(image.getRGB(x, y));
+	if (resourceName == null)
+	    Native.factory.writeImage(image, "png", stream);
     }
     
     /** Reconsitute the image from a serialized stream. */
     private void readObject(ObjectInputStream stream) 
-    		throws IOException, ClassNotFoundException {
+		    		throws IOException, ClassNotFoundException {
 	stream.defaultReadObject();
-	
-	if (resourceName != null) {
+	if (resourceName != null)
 	    image = loadResource(resourceName);
-	    return;
-	}
-	
-	int w = stream.readInt();
-	int h = stream.readInt();
-	image = Native.factory.image(w, h);
-	for (int y = 0; y < h; y++)
-	    for (int x = 0; x < w; x++)
-		image.setRGB(x, y, stream.readInt());
+	else
+	    image = Native.factory.readImage(stream);
     }
     
     protected static Native.Image loadResource(String name) 

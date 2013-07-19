@@ -32,8 +32,7 @@ package geomlab;
 
 import java.awt.*;
 import java.awt.print.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import javax.swing.*;
 import javax.swing.event.*;
 

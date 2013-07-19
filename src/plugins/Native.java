@@ -30,9 +30,7 @@
 
 package plugins;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /** A factory for platform-dependent graphical elements */
 public abstract class Native {
@@ -74,9 +72,17 @@ public abstract class Native {
     /** Read an image from a file */
     public abstract Image readImage(InputStream in) throws IOException;
 
-    /** Write an image to a file in a specified format */
-    public abstract void writeImage(Image image, String format, File file)
-							throws IOException;
+    /** Write an image to an output stream in a specified format */
+    public abstract void writeImage(Image image, String format, 
+				    OutputStream out) throws IOException;
+
+    /** Write an image on a file */
+    public void writeImage(Image image, String format, File file)
+							throws IOException {
+	OutputStream out = new FileOutputStream(file);
+	writeImage(image, format, out);
+	out.close();
+    }
 
     /** The installed factory object for platform-dependent objects */
     public static Native factory;

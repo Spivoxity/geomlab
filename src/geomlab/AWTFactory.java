@@ -114,8 +114,8 @@ public class AWTFactory extends Native {
     }
     
     @Override
-    public void writeImage(Image image, String format, File file) 
-    						throws IOException {
-	ImageIO.write((BufferedImage) image.getNative(), format, file);
+    public void writeImage(Image image, String format, OutputStream out) 
+	    						throws IOException {
+	ImageIO.write((BufferedImage) image.getNative(), format, out);
     }
 }
