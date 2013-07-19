@@ -7,10 +7,10 @@ JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
 SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
 RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
-	$(HELP:%=%.html) properties
-IMAGES = geomlab.gls examples.gls
+	$(HELP:%=%.html) properties icon16.png icon32.png icon64.png icon128.png
+IMAGES = obj/geomlab.gls examples.gls
 
-all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES:%=obj/%)
+all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES)
 
 prep: force
 	@mkdir -p obj
@@ -25,6 +25,12 @@ obj/%: src/%; cp $< $@
 obj/%.html: wiki/%.wiki wiki/htmlframe scripts/htmltran.tcl
 	tclsh scripts/htmltran.tcl $< >$@
 
+obj/icon128.png:
+	runscript progs/solutions.txt -e 'savepic(colour(T), "$@", 128, 0.5, 0)'
+
+obj/icon%.png: obj/icon128.png
+	convert obj/icon128.png -scale $*x$* $@
+
 RUNSCRIPT = java -cp obj -ea geomlab.RunScript
 
 obj/geomlab.gls: .compiled src/boot.txt src/compiler.txt src/prelude.txt \
@@ -32,8 +38,8 @@ obj/geomlab.gls: .compiled src/boot.txt src/compiler.txt src/prelude.txt \
 	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt src/compiler.txt \
 		src/prelude.txt -e '_save("$@")'
 
-obj/examples.gls: obj/geomlab.gls src/examples.txt
-	$(RUNSCRIPT) src/examples.txt -e '_save("$@")'
+examples.gls: obj/geomlab.gls progs/examples.txt
+	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'
 
 bootstrap: .compiled force 
 	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt \
@@ -66,8 +72,8 @@ web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 	cd obj; jar cfm ../$@ ../scripts/manifest \
 		$(PACKAGES) $(RESOURCES) geomlab.gls
 
-web/examples.jar: obj/examples.gls
-	cd obj; jar cf ../$@ examples.gls
+web/examples.jar: examples.gls
+	jar cf $@ $<
 
 .signed: web/geomlab.jar web/examples.jar
 	for f in $?; do jarsigner -storepass `cat ~/.keypass` $$f mykey; done
@@ -87,7 +93,7 @@ publish: web force
 	rsync -rvt --delete web/ spivey:wiki/files/gl
 
 clean: force
-	rm -rf obj
+	rm -rf obj examples.gls
 	rm -f .compiled .signed
 
 force:

@@ -35,6 +35,8 @@ import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.util.*;
+import javax.imageio.*;
 
 import plugins.Stylus;
 
@@ -63,11 +65,27 @@ public class AppFrame extends JFrame {
 
     private static final int b = 5;
 
+    private static String icons[] = {
+	"icon16", "icon32", "icon64", "icon128"
+    };
+
     public AppFrame() {
 	super("GeomLab");
 	setLocation(50, 50);
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setGlassPane(spinner);
+
+	try {
+	    ClassLoader loader = AppFrame.class.getClassLoader();
+	    java.util.List<Image> images = new ArrayList<Image>();
+	    for (int i = 0; i < icons.length; i++) {
+		InputStream in = loader.getResourceAsStream(icons[i] + ".png");
+		images.add(ImageIO.read(in));
+		in.close();
+	    }
+	    setIconImages(images);
+	}
+	catch (IOException _) { }
 
 	Border bevel = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 	Border spacer = BorderFactory.createEmptyBorder(b, b, b, b);
