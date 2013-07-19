@@ -23,9 +23,9 @@ If your computer's operating system lets you choose the colour of the screen bac
 In fact, computer monitors cannot show all the colours that the human eye can tell apart, because with three primary colours you can reach only the interior of a triangle in "colour space" that has the three primaries at the corners, and inevitably some colours fall outside that triangle.  That's why high-end colour printers use more than three or four colours of ink.
 
 Making colours is all very well, but it quickly becomes boring unless we can create pictures that contain more than one colour.  The key to doing that in GeomLab is to define a function that takes a pair of coordinates and gives a colour.  For example, here is a function that produces different strengths of pure pink, depending on the value of&nbsp;@x@:
-:@define rose(x, y) = rgb(1, x/200, x/200)@
-For example, for any value of @y@, the value of @rose(0, y)@ is @rgb(1, 0, 0)@, pure red.  The value of @rose(100, y)@ is @rgb(1, 0.5, 0.5)@, the pink colour we first made.  And @rose(200, y) = rgb(1, 1, 1)@ is pure white.  GeomLab lets us show all these colours in a single picture by writing an expression such as
-{{GeomPic|9080|image(200, 200, rose)|!image(144, 144, function (x, y) rgb(1, x/144, x/144))}}
+:@define rose([x, y]) = rgb(1, x/200, x/200)@
+For example, for any value of @y@, the value of @rose([0, y])@ is @rgb(1, 0, 0)@, pure red.  The value of @rose(100, y)@ is @rgb(1, 0.5, 0.5)@, the pink colour we first made.  And @rose(200, y) = rgb(1, 1, 1)@ is pure white.  GeomLab lets us show all these colours in a single picture by writing an expression such as
+{{GeomPic|9080|image(200, 200, rose)|!image(144, 144, function ([x, y]) rgb(1, x/144, x/144))}}
 It's worth pausing a moment to spell out what is going on here.  Like all computer images, this one is made up of a rectangular array of coloured dots: in this case, the array contains 200 by 200 dots. In this picture, the colour of each dot is determined by the function @rose@ that we supply, so that the dot in the bottom left hand corner has a colour given by @rose(0, 0) = rgb(1, 0, 0)@, and going along the bottom row, successive dots have the colours
  rose(1, 0) = rgb(1, 0.05, 0.05)
  rose(2, 0) = rgb(1, 0.10, 0.10)
@@ -33,17 +33,17 @@ It's worth pausing a moment to spell out what is going on here.  Like all comput
   ...
  rose(199, 0) = rgb(1, 0.95, 0.95)
 Because the image is 200 pixels wide rather than 201, we never quite reach pure white, @rgb(1, 1, 1)@.  If you like, try replacing 200 by 201 in the expression that made the picture: in practice, it makes little difference.  Or replace 200 by 400 both in the definition of @rose@ and in the expression to get a bigger image.
-Since the value of @rose(x, y)@ doesn't depend on @y@, we see that all the dots in each column of the array have the same colour.
+Since the value of @rose([x, y])@ doesn't depend on @y@, we see that all the dots in each column of the array have the same colour.
 
 We can make a bigger range of colours by letting the amount of green and the amount of blue vary independently, say by increasing the green along the @x@ axis and the blue along the @y@ axis.  Let's make the definition
- define palette(x, y) = rgb(1, x/200, y/200)
+ define palette([x, y]) = rgb(1, x/200, y/200)
 Now we can write
-{{GeomPic|9090|image(200, 200, palette)|!image(144, 144, function (x, y) rgb(1, x/144, y/144))}}
+{{GeomPic|9090|image(200, 200, palette)|!image(144, 144, function ([x, y]) rgb(1, x/144, y/144))}}
 The colours in this image are pure red at the bottom left corner, tending towards pure yellow, @rgb(1, 1, 0)@ in the bottom right, pure magenta, @rgb(1, 0, 1)@, in the top left, and white, @rgb(1, 1, 1)@ in the top right.
 
 ----
 
-Pythagoras' theorem tells us that the distance between the two points with coordinates @(x, y)@ and @(u, v)@ is
+Pythagoras' theorem tells us that the distance between the two points with coordinates @[x, y]@ and @[u, v]@ is
 :{{IfWiki|<tt>sqrt((x-u)<sup>2</sup> + (y-v)<sup>2</sup>)</tt>|$\sqrt{(x-u)^2+(y-v)^2$}}.
 Let's define a function to compute this distance:
  define dist([x, y], [u, v]) =
@@ -51,9 +51,9 @@ Let's define a function to compute this distance:
    sqrt(dx*dx + dy*dy)
 Now the quantity
 :@1 - dist([x, y], [200, 200])/200@
-is 1 if @(x, y) = (200, 200)@ and decreases as we move away from that point, reaching zero at any point that is 200 units away.
+is 1 if @[x, y] = [200, 200]@ and decreases as we move away from that point, reaching zero at any point that is 200 units away.
 If we make the definition
- define redglow(x, y) =
+ define redglow([x, y]) =
    let r = 1 - dist([x, y], [200, 200])/200 in
    rgb(r, 0, 0)
 then this makes a picture where a red light appears to be shining at (200, 200), with its glow spread out as if in a fog:
@@ -71,6 +71,6 @@ A picture:
 A transformation:
  define noblue(rgb(r, g, b)) = rgb(r, g, 0)
 Applying it:
- define sepia(x, y) = noblue(mike(x, y))
+ define sepia([x, y]) = noblue(mike([x, y]))
 The result:
 {{GeomPic|9930|image(300, 400, sepia)|!image(125, 167, mappixels(noblue, mikelet))}}

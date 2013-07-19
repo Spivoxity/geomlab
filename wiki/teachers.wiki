@@ -138,7 +138,7 @@ our undergraduate students.
 
 The GeomLab language is implemented by a compiler that generates code
 for a very simple abstract machine, together with either an
-interpreter for the abstract machine language that is written in Java,
+interpreter (written in Java) for the abstract machine language,
 or a lower-level translator that produces code for the Java Virtual
 Machine. For the most part, the compiler and interpreter use standard
 techniques of language implementation that would be taught in a
@@ -147,13 +147,23 @@ are parsed by a hand-written recursive descent parser into abstract
 syntax trees, and these trees are then translated into the machine
 code in a recursive process.  The interpreter contains a 'big switch'
 inside a loop that executes the machine code one instruction at a
-time.
+time.  The lower-level translator transliterates the same sequence of operations into JVM code, consulting a database of rules for more efficient translation of calls to known primitives.  It assembles in memory exactly the same sequence of bytes that would be present in a @.class@ file for the object code, then presents the byte sequence to the Java Virtual Machine as a new class to be loaded.
 
 The implementation is structured so that new kinds of values, together
 with their associated primitives, can be introduced by dynamically
 loading Java classes. In fact, pictures and operations on pictures are
 implemented in exactly this way.
 The implementation uses Swing for the GUI, and needs to be compiled
-in version 1.5 or later of JDK. The development was carried out
-using Eclipse 3.1, but released binary versions are compiled using Sun
-JDK.
+in version 1.6 or later of JDK. Some of the development was carried out using Eclipse, but released binary versions are compiled using OpenJDK.
+
+==Languages used==
+
+It's fun to make a list of the different programming languages that I used in implementing GeomLab.
+:Java; provides the infrastructure for the whole GeomLab application.  The main window is built using Java's Swing GUI library, and all the pictures are drawn with the Java2D graphics package.
+:JVM code; is the target language for the GeomLab compiler.  The system includes a special-purpose library for putting together binary class files in memory.
+:The GeomLab language; itself is used to implement as much as possible of the system; in particular, the high-level compiler that translates the language into low-level stack operations, though initiall implemented in Java, now exists only as a GeomLab program capable of translating itself.
+:PostScript,; a page description language, is used as an alternative means of graphical output, so that the images can be captured in a high-quality form for printing.
+:JavaScript; is used to manage the process of launching the GeomLab program from a web page.
+:Plain TeX; is used for printing the PDF and paper version of the materials.  The TeX markup is generated automatically by a translation process that also collects and formats the embedded images.
+:MediaWiki markup; with special-purpose templates is used for writing the materials and displaying them online.
+:TCL; is a scripting language used to automate the process of building documents, images and web pages for the GeomLab site.

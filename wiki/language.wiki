@@ -252,7 +252,6 @@ is equivalent to
 
 ===Conditional expressions===
 
-
 An expression <code>if <i>e</i><sub>1</sub>
 then <i>e</i><sub>2</sub> else <i>e</i><sub>3</sub></code>
 is
