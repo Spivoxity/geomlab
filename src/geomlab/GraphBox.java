@@ -212,10 +212,11 @@ public class GraphBox extends JPanel {
     private static final int imageMean = 400;
 
     public void writePicture(File file) throws IOException {
+	Native factory = Native.instance();
 	float slider = sliderValue();
 	picture.prerender(slider);
 	Native.Image image = 
-	    Native.factory.render(picture, imageMean, slider, ColorValue.white);
-	Native.factory.writeImage(image, "png", file);
+	    factory.render(picture, imageMean, slider, ColorValue.white);
+	factory.writeImage(image, "png", file);
     }
 }   

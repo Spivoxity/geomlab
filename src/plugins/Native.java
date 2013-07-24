@@ -85,10 +85,15 @@ public abstract class Native {
     }
 
     /** The installed factory object for platform-dependent objects */
-    public static Native factory;
+    private static Native factory;
 
     /** Register a concrete factory object */
     public static void register(Native factory) {
 	Native.factory = factory;
+    }
+
+    /** Retreive the singleton factory */
+    public static Native instance() {
+	return factory;
     }
 }

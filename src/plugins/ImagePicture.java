@@ -103,8 +103,10 @@ public class ImagePicture extends Picture {
      *  reloaded from an application resource. */
     private void writeObject(ObjectOutputStream stream) throws IOException {
 	stream.defaultWriteObject();
-	if (resourceName == null)
-	    Native.factory.writeImage(image, "png", stream);
+	if (resourceName == null) {
+	    Native factory = Native.instance();
+	    factory.writeImage(image, "png", stream);
+	}
     }
     
     /** Reconsitute the image from a serialized stream. */
@@ -113,15 +115,18 @@ public class ImagePicture extends Picture {
 	stream.defaultReadObject();
 	if (resourceName != null)
 	    image = loadResource(resourceName);
-	else
-	    image = Native.factory.readImage(stream);
+	else {
+	    Native factory = Native.instance();
+	    image = factory.readImage(stream);
+	}
     }
     
     protected static Native.Image loadResource(String name) 
     						throws IOException {
 	ClassLoader loader = ImagePicture.class.getClassLoader();
 	InputStream in = loader.getResourceAsStream(name);
-	Native.Image image = Native.factory.readImage(in);
+	Native factory = Native.instance();
+	Native.Image image = factory.readImage(in);
 	in.close();
 	return image;
     }
@@ -148,13 +153,13 @@ public class ImagePicture extends Picture {
     /** Load a web image or return it from the cache */
     private static Native.Image cachedImage(String name) throws IOException {
 	Reference<Native.Image> ref = imageCache.get(name);
-	Native.Image image = 
-	    (ref == null ? null : ref.get());
+	Native.Image image = (ref == null ? null : ref.get());
 
 	if (image == null) {
 	    URL url = new URL(name);
 	    InputStream in = url.openStream();
-	    image = Native.factory.readImage(in);
+	    Native factory = Native.instance();
+	    image = factory.readImage(in);
 	    in.close();
 	    imageCache.put(name, new WeakReference<Native.Image>(image));
 	}
@@ -197,7 +202,8 @@ public class ImagePicture extends Picture {
 		int width = (int) number(width0);
 		int height = (int) number(height0);
 		FunValue fun = cast(FunValue.class, fun0, "function");
-		Native.Image image = Native.factory.image(width, height);
+		Native factory = Native.instance();
+		Native.Image image = factory.image(width, height);
 		Value args[] = new Value[2];
 		
 		for (int x = 0; x < width; x++) {
@@ -224,8 +230,8 @@ public class ImagePicture extends Picture {
 		float grey = (float) number(a3);
 		ColorValue bg = ColorValue.getGrey(grey);
 		pic.prerender(slider);
-		Native.Image image = 
-		    Native.factory.render(pic, size, slider, bg);
+		Native factory = Native.instance();
+		Native.Image image = factory.render(pic, size, slider, bg);
 		return new ImagePicture(image);
 	    }
 	},
@@ -269,9 +275,10 @@ public class ImagePicture extends Picture {
 		ImagePicture p = cast(ImagePicture.class, v, "image");
 		String format = string(fmt);
 		String fname = string(fn);
+		Native factory = Native.instance();
 
 		try {
-		    Native.factory.writeImage(p.image, format, new File(fname));
+		    factory.writeImage(p.image, format, new File(fname));
 		}
 		catch (IOException e) {
 		    Evaluator.error("I/O failed: " + e.getMessage());

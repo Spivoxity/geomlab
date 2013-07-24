@@ -115,8 +115,10 @@ public class ColorValue extends Picture {
 
     /** Compute the corresponding native colour object */
     public Object getNative() { 
-	if (peer == null) 
-	    peer = Native.factory.color(this);
+	if (peer == null) {
+	    Native factory = Native.instance();
+	    peer = factory.color(this);
+	}
 
 	return peer; 
     }

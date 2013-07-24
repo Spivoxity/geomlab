@@ -156,8 +156,8 @@ define __top() =
   let number(_, []) = []
     | number(n, x:xs) = [n, x] : number(n+1, xs) in
 
-  let fst([x, y]) = x in
-  let snd([x, y]) = y in
+  let fst(x:_) = x in
+  let snd(_:y:_) = y in
 
 
   { PARSER -- a slightly hacked-up recursive descent parser.  The global
@@ -662,6 +662,13 @@ define __top() =
 	pgen([#seq, [#TRAP, f], c_ref(cn, env), [#MPRIM, n]],
 	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ]),
              [[f, d]])
+
+    | c_patt([#cons, h, [#anon]], d, env) =
+        { A cons pattern h : _ }
+        let f = label() in
+	pgen([#seq, [#TRAP, f], [#MCONS]], 
+             [c_patt(h, d+1, env), [[#POP], []]],
+	     [[f, d]])
 
     | c_patt([#cons, h, t], d, env) =
         { A cons pattern h : t }

@@ -68,8 +68,10 @@ public class Tran2D extends Value {
 
     /** Convert to an AffineTransform object */
     public Object getNative() {
-	if (peer == null) 
-	    peer = Native.factory.transform(this);
+	if (peer == null) {
+	    Native factory = Native.instance();
+	    peer = factory.transform(this);
+	}
 
 	return peer;
     }

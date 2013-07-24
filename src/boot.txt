@@ -1142,35 +1142,27 @@ name #:
 name #+
 integer 1
 { end of number }
-funcode "fst" 1 14 0 2 2
+funcode "fst" 1 8 0 1 2
   ARG 0
-  TRAP 13
+  TRAP 7
   MCONS 0
   BIND 0
-  GETTAIL 0
-  TRAP 13
-  MCONS 0
-  BIND 1
-  GETTAIL 0
-  TRAP 13
-  MNIL 0
+  POP 0
   LOCAL 0
   RETURN 0
   FAIL 0
 { end of fst }
-funcode "snd" 1 14 0 2 2
+funcode "snd" 1 12 0 1 2
   ARG 0
-  TRAP 13
+  TRAP 11
+  MCONS 0
+  POP 0
+  GETTAIL 0
+  TRAP 11
   MCONS 0
   BIND 0
-  GETTAIL 0
-  TRAP 13
-  MCONS 0
-  BIND 1
-  GETTAIL 0
-  TRAP 13
-  MNIL 0
-  LOCAL 1
+  POP 0
+  LOCAL 0
   RETURN 0
   FAIL 0
 { end of snd }
@@ -5116,7 +5108,7 @@ name #map
 name #++
 name #concat
 { end of pgen }
-funcode "c_patt" 3 524 25 4 8
+funcode "c_patt" 3 620 25 4 8
   ARG 0
   TRAP 64
   MCONS 0
@@ -5401,21 +5393,117 @@ funcode "c_patt" 3 524 25 4 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 382
+  TRAP 379
   MCONS 0
-  TRAP 381
+  TRAP 378
   QUOTE 15
   MEQ 0
   GETTAIL 0
-  TRAP 382
+  TRAP 379
   MCONS 0
   BIND 0
   GETTAIL 0
-  TRAP 382
+  TRAP 379
+  MCONS 0
+  TRAP 378
+  MCONS 0
+  TRAP 377
+  QUOTE 7
+  MEQ 0
+  GETTAIL 0
+  TRAP 378
+  MNIL 0
+  GETTAIL 0
+  TRAP 379
+  MNIL 0
+  FVAR 1
+  PREP 0
+  CALL 0
+  BIND 1
+  FVAR 2
+  PREP 3
+  PRECONS 0
+  QUOTE 1
+  PRECONS 0
+  PRECONS 0
+  QUOTE 2
+  PRECONS 0
+  LOCAL 1
+  NIL 0
+  CONS 0
+  CONS 0
+  PRECONS 0
+  PRECONS 0
+  QUOTE 16
+  NIL 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  CONS 0
+  PUTARG 0
+  PRECONS 0
+  FVAR 0
+  PREP 3
+  LOCAL 0
+  PUTARG 0
+  GLOBAL 17
+  PREP 2
+  ARG 1
+  PUTARG 0
+  QUOTE 18
+  PUTARG 1
+  CALL 2
+  PUTARG 1
+  ARG 2
+  PUTARG 2
+  CALL 3
+  PRECONS 0
+  PRECONS 0
+  PRECONS 0
+  QUOTE 8
+  NIL 0
+  CONS 0
+  PRECONS 0
+  NIL 0
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  CONS 0
+  PUTARG 1
+  PRECONS 0
+  PRECONS 0
+  LOCAL 1
+  PRECONS 0
+  ARG 1
+  NIL 0
+  CONS 0
+  CONS 0
+  NIL 0
+  CONS 0
+  PUTARG 2
+  CALL 3
+  RETURN 0
+  POP 0
+  POP 0
+  ARG 0
+  TRAP 478
+  MCONS 0
+  TRAP 477
+  QUOTE 15
+  MEQ 0
+  GETTAIL 0
+  TRAP 478
+  MCONS 0
+  BIND 0
+  GETTAIL 0
+  TRAP 478
   MCONS 0
   BIND 1
   GETTAIL 0
-  TRAP 382
+  TRAP 478
   MNIL 0
   FVAR 1
   PREP 0
@@ -5500,13 +5588,13 @@ funcode "c_patt" 3 524 25 4 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 433
+  TRAP 529
   MCONS 0
-  TRAP 432
+  TRAP 528
   QUOTE 20
   MEQ 0
   GETTAIL 0
-  TRAP 433
+  TRAP 529
   MNIL 0
   FVAR 1
   PREP 0
@@ -5551,9 +5639,9 @@ funcode "c_patt" 3 524 25 4 8
   RETURN 0
   POP 0
   ARG 0
-  TRAP 450
+  TRAP 546
   MCONS 0
-  TRAP 449
+  TRAP 545
   QUOTE 22
   MEQ 0
   GETTAIL 0
@@ -5568,21 +5656,21 @@ funcode "c_patt" 3 524 25 4 8
   TCALL 3
   POP 0
   ARG 0
-  TRAP 523
+  TRAP 619
   MCONS 0
-  TRAP 522
+  TRAP 618
   QUOTE 23
   MEQ 0
   GETTAIL 0
-  TRAP 523
+  TRAP 619
   MCONS 0
   BIND 0
   GETTAIL 0
-  TRAP 523
+  TRAP 619
   MCONS 0
   BIND 1
   GETTAIL 0
-  TRAP 523
+  TRAP 619
   MNIL 0
   FVAR 1
   PREP 0

@@ -62,11 +62,11 @@ PREFIX = http://spivey.oriel.ox.ac.uk/wiki/files/gl
 web: web-dirs update .signed
 
 web-dirs: force
-	@mkdir -p web web/src $(PACKAGES:%=web/src/%)
+	@mkdir -p web
 
-update: web/.htaccess web/geomlab.jar web/examples.jar web/geomlab-src.jar \
+update: web/.htaccess web/geomlab.jar web/examples.jar \
 		web/geomlab.jnlp web/geomdemo.jnlp \
-		$(SOURCE:%=web/src/%) web/arrow.png
+		web/arrow.png web/icon32.png web/icon64.png
 
 web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 	cd obj; jar cfm ../$@ ../scripts/manifest \
@@ -79,12 +79,10 @@ web/examples.jar: examples.gls
 	for f in $?; do jarsigner -storepass `cat ~/.keypass` $$f mykey; done
 	echo timestamp >$@
 
-web/geomlab-src.jar: $(SOURCE:%=src/%) $(RESOURCES:%=obj/%)
-	jar cf $@ $^
-
 web/.htaccess: scripts/htaccess;		cp $< $@
-web/src/%: src/%;				cp $< $@
 web/%: res/%;					cp $< $@
+web/%: obj/%;					cp $< $@
+
 
 web/%.jnlp: scripts/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@

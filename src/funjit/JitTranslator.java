@@ -32,6 +32,8 @@ package funjit;
 
 import java.util.*;
 
+import java.lang.ref.WeakReference;
+
 import funbase.FunCode;
 import funbase.Function;
 import funbase.Name;
@@ -702,8 +704,11 @@ public class JitTranslator implements FunCode.Jit {
 	}
     }
 
-    private Map<String, FunCode> class_table = 
-	new WeakHashMap<String, FunCode>();
+    /** Table for intepreting stack traces */
+    private Map<String, WeakReference<FunCode>> classTable = 
+	new HashMap<String, WeakReference<FunCode>>();
+        /* The table will fill up with junk over time, but the weak references
+	   will at least prevent retention of stale FunCode objects */
 
     private FunCode root = null;
 
@@ -732,7 +737,7 @@ public class JitTranslator implements FunCode.Jit {
 
 	MyClassLoader loader = new MyClassLoader(className);
 	Class<?> bodyclass = loader.defineClass(code);
-	class_table.put(className, funcode);
+	classTable.put(className, new WeakReference<FunCode>(funcode));
 
 	try {
 	    JitFunction body = (JitFunction) bodyclass.newInstance();
@@ -751,8 +756,11 @@ public class JitTranslator implements FunCode.Jit {
 	String caller = null, callee = me;
 
 	for (int i = 0; i < stack.length; i++) {
-	    FunCode f = class_table.get(stack[i].getClassName());
-	    if (f == null) continue;
+	    WeakReference<FunCode> fr = 
+		classTable.get(stack[i].getClassName());
+	    if (fr == null) continue;
+	    FunCode f = fr.get();
+	    if (f == null) throw new Error("stack map entry disappeared");
 
 	    if (f == root) break;
 

@@ -51,8 +51,10 @@ public class Vec2D extends Value {
     /** Return the native counterpart of the vector, computed
      *  using the installed Native factory. */
     public Object getNative() {
-	if (peer == null)
-	    peer = Native.factory.vector(this);
+	if (peer == null) {
+	    Native factory = Native.instance();
+	    peer = factory.vector(this);
+	}
 
 	return peer;
     }
