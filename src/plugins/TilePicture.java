@@ -31,6 +31,7 @@
 package plugins;
 
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 
 /** A picture with fills and strokes specified by lists of coordinates */
@@ -86,57 +87,51 @@ public class TilePicture extends Picture {
 	}
     }
 
-    public static final Primitive primitives[] = {
-	new Primitive.Prim3("tile") {
-	    @Override
-	    public Value apply3(Value a, Value ss, Value fs) {
-		float aspect = (float) number(a);
-		int nStrokes = listLength(ss);
-		int nOutlines = listLength(fs);
-		Vec2D strokes[][] = new Vec2D[nStrokes][], 
-		outlines[][] = new Vec2D[nOutlines][];
-		Object colours[] = new Object[nOutlines];
-		Value xss;
+    @PRIMITIVE
+    public static Value _tile(Primitive prim, Value a, Value ss, Value fs) {
+	float aspect = (float) prim.number(a);
+	int nStrokes = prim.listLength(ss);
+	int nOutlines = prim.listLength(fs);
+	Vec2D strokes[][] = new Vec2D[nStrokes][], 
+	    outlines[][] = new Vec2D[nOutlines][];
+	Object colours[] = new Object[nOutlines];
+	Value xss;
 
-		xss = ss;
-		for (int i = 0; i < nStrokes; i++) {
-		    strokes[i] = 
-			toArray(Vec2D.class, head(xss), "vector list");
-		    xss = tail(xss);
-		}
-
-		xss = fs;
-		for (int i = 0; i < nOutlines; i++) {
-		    Value xs = head(xss);
-		    Value spec = head(xs);
-
-		    if (spec instanceof Value.NumValue)
-			colours[i] = (int) number(spec);
-		    else if (spec instanceof ColorValue)
-			colours[i] = spec;
-		    else
-			expect("colour or integer");
-
-		    outlines[i] = 
-			toArray(Vec2D.class, tail(xs), "vector list");
-		    xss = tail(xss);
-		}
-
-		return new TilePicture(aspect, strokes, outlines, colours);
-	    }
-	},
-
-	/** Set the palette of colours used for rendering Escher picture. */
-	new Primitive.Prim4("palette") {
-	    @Override
-	    public Value apply4(Value base, Value step, Value sval, 
-				Value bval) {
-		hbase = (float) number(base);
-		hstep = (float) number(step);
-		svalue = (float) number(sval);
-		bvalue = (float) number(bval);
-		return Value.nil;
-	    }
+	xss = ss;
+	for (int i = 0; i < nStrokes; i++) {
+	    strokes[i] = 
+		prim.toArray(Vec2D.class, prim.head(xss), "vector list");
+	    xss = prim.tail(xss);
 	}
-    };
+
+	xss = fs;
+	for (int i = 0; i < nOutlines; i++) {
+	    Value xs = prim.head(xss);
+	    Value spec = prim.head(xs);
+
+	    if (spec instanceof Value.NumValue)
+		colours[i] = (int) prim.number(spec);
+	    else if (spec instanceof ColorValue)
+		colours[i] = spec;
+	    else
+		prim.expect("colour or integer");
+
+	    outlines[i] = 
+		prim.toArray(Vec2D.class, prim.tail(xs), "vector list");
+	    xss = prim.tail(xss);
+	}
+
+	return new TilePicture(aspect, strokes, outlines, colours);
+    }
+
+    /** Set the palette of colours used for rendering Escher picture. */
+    @PRIMITIVE
+    public static Value _palette(Primitive prim, Value base, 
+				 Value step, Value sval, Value bval) {
+	hbase = (float) prim.number(base);
+	hstep = (float) prim.number(step);
+	svalue = (float) prim.number(sval);
+	bvalue = (float) prim.number(bval);
+	return Value.nil;
+    }
 }

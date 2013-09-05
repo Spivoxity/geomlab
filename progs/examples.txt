@@ -1,5 +1,4 @@
 define _init() =
-  let _examples = _primitive("examples") in
   let examples(menu) =
     let subst(s) = implode(map(function (c) if c = "/" then chr(10) else c,
 				  explode(s))) in
@@ -18,7 +17,7 @@ define _init() =
     "colour(side(2) $ T)", "colour(frame(blank, side(2), U))",
     "colour(frame(corner(2), side(2), U))", "colour(invlimit(8))",
     "hilbert(5)", "hilbslide", "turtle(dragon(12))", "bush(system(4))",
-    "plot(600, -1, 0.285, 0.02, mfun)", "transpic"]);
+    "plot(600, -1, 0.285, 0.02, mfun)", "transmike"]);
   
 define f(p) = p $ (p & p);
 
@@ -104,7 +103,6 @@ define plot(w, x0, y0, s, f) =
 { Image transformations }
 
 _install("SlidePicture");
-define slide = _primitive("slide");
 
 define interp(t, x, y) = (1-t)*x + t * y;
 
@@ -139,13 +137,12 @@ define slideimg(w, h, f) =
   slide(function (t) image(w, h, f(t)));
   
 { example -- shear mike, recolour him, and then transform non-linearly }
-define transpic =
+define transmike =
   slideimg(500, 500, triage([
     function (t) mike . shear(t/5),
     function (t) interpic(t, mike . shear(1/5), weird . mike . shear(1/5)),
     function (t) weird . mike . shear(1/5) . pp(t/250)]));
 
-define _render = _primitive("render");
 define render(p, w, h, g) = _pixelfun(_render(p, w, h, g));
 
 define intermin(t, f, g) = 

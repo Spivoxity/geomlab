@@ -29,30 +29,23 @@
  *}
  
 { At this point, the following plugins have been installed: GeomBase,
-  BasicPrims, Cell, StringPrims. Just enough scanner syntax is in place
-  to read the next few definitions. }
+  FunCode, BasicPrims, Cell, StringPrims. Just enough scanner syntax
+  is in place to read the next few definitions. }
 
 { LEXICAL TOKENS }
 
-define __token = _primitive("token");
-define _token(tag) = __token(tag, tag, 0, 0);
+define _tok(tag) = _token(tag, tag, 0, 0);
+_tok(#if); _tok(#then); _tok(#else); _tok(#let); _tok(#in); 
+_tok(#function); _tok(#when); _tok(#_); _tok(#>>); _tok(#..);
+_tok(#<-);
 
-_token(#if); _token(#then); _token(#else); _token(#let); _token(#in); 
-_token(#function); _token(#when); _token(#_); _token(#>>); _token(#..);
-_token(#<-);
+_token(#=, #=, 3, 4);
+_token(#+, #+, 5, 6);
+_token(#-, #-, 5, 6);
+_token(#:, #:, 7, 7);
 
-__token(#=, #=, 3, 4);
-__token(#+, #+, 5, 6);
-__token(#-, #-, 5, 6);
-__token(#:, #:, 7, 7);
-
-define = = _primitive("=");
-define + = _primitive("+");
-define - = _primitive("-");
-define : = _primitive(":");
-
-define _infixl(tag, p) = __token(tag, #binop, p, p+1);
-define _infixr(tag, p) = __token(tag, #binop, p, p);
+define _infixl(tag, p) = _token(tag, #binop, p, p+1);
+define _infixr(tag, p) = _token(tag, #binop, p, p);
 
 _infixl(#or, 1);
 _infixl(#and, 2);
@@ -61,28 +54,7 @@ _infixl(#>, 3); _infixl(#>=, 3);
 _infixr(#++, 4);
 _infixl(#^, 5);
 _infixl(#*, 6); _infixl(#/, 6);
-__token(#not, #monop, 0, 0);
-
-define * = _primitive("*");
-define / = _primitive("/");
-define _uminus = _primitive("uminus");
-
-define < = _primitive("<");
-define <= = _primitive("<=");
-define <> = _primitive("<>");
-define > = _primitive(">");
-define >= = _primitive(">=");
-
-define numeric = _primitive("numeric");
-define int = _primitive("int");
-define head = _primitive("head");
-define tail = _primitive("tail");
-define ^ = _primitive("^");
-
-{ Primitives must be defined globally to enable inlining }
-define _new = _primitive("new");
-define _get = _primitive("!");
-define _set = _primitive(":=");
+_token(#not, #monop, 0, 0);
 
 
 { BASIC DEFINITIONS }
@@ -138,18 +110,7 @@ define _rsect(f, y) = function (x) f(x, y);
   no-argument function one last time and save the resulting closure. }
 
 define __top() =
-  let scanner = _primitive("scan") in
-  let syntax_error = _primitive("synerror") in
-  let priority = _primitive("priority") in
-  let assemble = _primitive("assemble") in
-  let frozen = _primitive("frozen") in
-  let error = _primitive("error") in
-  let spelling = _primitive("spelling") in
-  let gensym = _primitive("gensym") in
-  let print = _primitive("print") in
-  let _debug = _primitive("debug") in
-
-  let debug(n, x) = if _debug() > n then print(x) else [] in
+  let debug(n, x) = if _debug() > n then _print(x) else [] in
 
   let member(x, []) = false | member(x, y:ys) = (x = y) or member(x, ys) in
 
@@ -188,7 +149,7 @@ define __top() =
     | describe(#rbrace) = "'}'"
     | describe(#eol) = "end of line"
     | describe(#eof) = "end of input" 
-    | describe(x) = "'" ^ spelling(x) ^ "'" in
+    | describe(x) = "'" ^ _spelling(x) ^ "'" in
 
   { tok -- latest lexer token }
   let tok = _new(0) in
@@ -198,7 +159,7 @@ define __top() =
 
   { scan -- call the lexer and set tok and val }
   let scan() =
-    let t = scanner() in
+    let t = _scan() in
     _set(tok, fst(t)) >> _set(val, snd(t)) in
 
   let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
@@ -209,7 +170,7 @@ define __top() =
   { eat -- match and consume token or report syntax error }
   let eat(t) =
     if see(t) then scan() else
-      syntax_error("I expected " ^ describe(t) ^ " here", "#eat") in
+      _synerror("I expected " ^ describe(t) ^ " here", "#eat") in
 
   { can_eat -- match and consume token or return false }
   let can_eat(t) =
@@ -280,7 +241,7 @@ define __top() =
       | case(#lpar) = brack(#lpar, p_pattern, #rpar)
       | case(#bra) = #list:brack1(#bra, p_patterns, #ket)
       | case(_) =
-	  syntax_error("I don't recognise this pattern", "#pattern") in
+	  _synerror("I don't recognise this pattern", "#pattern") in
     whichever(case) in
 
   let p_patfactor() =
@@ -305,14 +266,14 @@ define __top() =
     | expand(e1, [#gen, [#var, x], e2]:gs, a) =
         { Simple generator: "[ e1 | x <- e2, ... ] ++ a" = 
 	    _mapa(function (x, b) "[ e1 | ... ] ++ b", e2, a) }
-        let b = [#var, gensym()] in
+        let b = [#var, _gensym()] in
 	[#apply, [#var, #_mapa], [#function, 2, 
 	    [[[[#var, x], b], expand(e1, gs, b)]]], e2, a]
     | expand(e1, [#gen, patt, e2]:gs, a) =
         { Generator : "[ e1 | patt <- e2, ... ] ++ a" =
 	    _mapa((function (patt, b) -> "[ e1 | gs ] ++ b" | (_, b) -> b),
                       e2, a) }
-	let b = [#var, gensym()] in
+	let b = [#var, _gensym()] in
 	[#apply, [#var, #_mapa], [#function, 2, 
 	    [[[patt, b], expand(e1, gs, b)], [[[#anon], b], b]]], e2, a]
     | expand(e1, [#when, e2]:gs, a) =
@@ -361,7 +322,7 @@ define __top() =
       p_expr0(true)
     else
       (let w = p_sym(_get(tok)) in
-        let prio = priority(w) in
+        let prio = _priority(w) in
       	if see(#rpar) then 
 	  { An operator name (+) }
 	  [#var, w] 
@@ -380,9 +341,9 @@ define __top() =
       | case(#lpar) = brack(#lpar, p_parenexp, #rpar)
       | case(#bra) = brack(#bra, p_listexp, #ket)
       | case(#eof) =
-	  syntax_error("I expected an expression here", "#exp")
+	  _synerror("I expected an expression here", "#exp")
       | case(_) =
-	  syntax_error("I don't recognise this expression", "#badexp") in
+	  _synerror("I don't recognise this expression", "#badexp") in
     whichever(case) in
 
   let p_factor() =
@@ -411,7 +372,7 @@ define __top() =
       let t = _get(tok) in
       if not isbinop(t) then e1 else
 	(let w = _get(val) in
-	  let prio = priority(w) in
+	  let prio = _priority(w) in
 	  if fst(prio) < min then e1 else
 	    (eat(t) >>
 	      if secok and see(#rpar) then
@@ -462,11 +423,11 @@ define __top() =
   let p_rule(x, arity) =
     let y = p_name() in
     if x = y then [] else
-      syntax_error("the same function name should appear in each clause",
+      _synerror("the same function name should appear in each clause",
 		   "#names") >>
     let lhs = p_formals() in
     if length(lhs) = arity then [] else
-      syntax_error("each clause should have the same number of arguments", 
+      _synerror("each clause should have the same number of arguments", 
 		   "#arity") >>
     p_rhs(lhs) in
 
@@ -487,11 +448,11 @@ define __top() =
     if see(#eof) then #eof else
       (let p = if can_eat(#define) then p_defn() else p_expr() in
 	if see(#rpar) then
-	  syntax_error("Can't find matching '('", "#parenmatch")
+	  _synerror("can't find matching '('", "#parenmatch")
 	else if see(#ket) then
-	  syntax_error("Can't find matching '['", "#bramatch")
+	  _synerror("can't find matching '['", "#bramatch")
 	else if not see(#semi) and not see(#eof) then
-	  syntax_error("extra text appears after the end of the expression", 
+	  _synerror("extra text appears after the end of the expression", 
 		       "#junk")
 	else
 	  [] >>
@@ -763,7 +724,7 @@ define __top() =
     let fvs = e_fvars(env1) in
     let nfvs = length(fvs) in
     debug(1, code) >>
-    [#seq, [#QUOTE, assemble(f, n, code)], [#CLOPREP, nfvs],
+    [#seq, [#QUOTE, _assemble(f, n, code)], [#CLOPREP, nfvs],
       #seq:[ [#seq, c_ref(x, env), [#PUTFVAR, i]] | [i, x] <- number(1, fvs) ],
       [#CLOSURE, nfvs]] in
 
@@ -841,31 +802,10 @@ define __top() =
 
   _set(knot, c_exp) >> 
 
-  { topval -- display value of top level expression }
-  let topval = _primitive("topval") in
-
-  { topdef -- make global definition }
-  let topdef = _primitive("topdef") in
-
-  { toptext -- show top level phrase }
-  let toptext = _primitive("toptext") in
-
-  { setroot -- note root function for error reporting }
-  let setroot = _primitive("setroot") in
-
-  { closure -- form closure from funcode }
-  let closure = _primitive("closure") in
-
-  { glodef -- fetch global definition or fail }
-  let glodef = _primitive("glodef") in
-
-  { apply -- apply a function to a arguments presented as a list }
-  let apply = _primitive("apply") in
-
   { i_func -- compile a function for the interpreter }
   let i_func(f, n, body, env) =
     let code = flatten(c_body(body, newblock(f, n, env))) in
-    debug(1, code) >> closure(assemble(f, n, code)) in
+    debug(1, code) >> _closure(_assemble(f, n, code)) in
 
   { Function bodies are compiled, but expressions typed at the top-level
     prompt are evaluated by a little metacircular interpreter, which
@@ -875,10 +815,10 @@ define __top() =
   let interp([#const, v], env) = v
     | interp([#var, x], env) = 
         let case([_, #QUOTE, v]) = v
-	  | case([]) = glodef(x) in
+	  | case([]) = _glodef(x) in
 	case(lookup(x, env))
     | interp(#apply:f:args, env) = 
-        apply(interp(f, env), [ interp(e, env) | e <- args ])
+        _apply(interp(f, env), [ interp(e, env) | e <- args ])
     | interp([#if, e1, e2, e3], env) =
         if interp(e1, env) then interp(e2, env) else interp(e3, env)
     | interp([#let, [#val, x, e1], e2], env) =
@@ -902,32 +842,32 @@ define __top() =
 
   { redefine -- check that it's permitted to redefine a name }
   let redefine(x) =
-    if frozen(x) then
-      error("can't replace built-in definition of '" 
-            ^ spelling(x) ^ "'", "#redef")
+    if _frozen(x) then
+      _error("can't replace built-in definition of '" 
+             ^ _spelling(x) ^ "'", "#redef")
     else [] in
 
   { exec -- execute a top-level phrase }
   let exec([#val, x, e]) = 
         { A global value definition }
 	redefine(x) >>
-	topdef(x, interp(e, empty()))
+	_topdef(x, interp(e, empty()))
 
     | exec([#fun, f, n, rules]) = 
         { A global function definition }
 	redefine(f) >>
-	topdef(f, i_func(f, n, rules, empty()))
+	_topdef(f, i_func(f, n, rules, empty()))
 
     | exec(exp) = 
         { A top-level expression }
-	topval(interp(exp, empty())) in
+	_topval(interp(exp, empty())) in
 
   { The read-eval-print routine }
   let read_eval_print() =
     let p = parser() in
     if p = #eof then false else 
-      (toptext() >> debug(0, p) >> 
-        _set(labcount, 0) >> setroot(interp) >>
+      (_toptext() >> debug(0, p) >> 
+        _set(labcount, 0) >> _setroot(interp) >>
 	exec(p) >> true) in
 
   read_eval_print;

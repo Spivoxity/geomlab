@@ -33,6 +33,7 @@ package plugins;
 import java.io.PrintWriter;
 
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 import funbase.Evaluator;
 
@@ -147,63 +148,53 @@ public class ColorValue extends Picture {
 	    return arg;
     }
     
-    public static final Primitive primitives[] =  {
-	new Primitive.Prim3("rgb") {
-	    /* Create a colour from RGB values in the range [0, 1] */
-	    @Override
-	    public Value apply3(Value rpart, Value gpart, Value bpart) {
-		return new ColorValue(number(rpart), number(gpart), 
-				      number(bpart));
-	    }
+    /** Create a colour from RGB values in the range [0, 1] */
+    @PRIMITIVE
+    public static final Primitive rgbprim = new Primitive.Prim3("rgb") {
+	@Override
+	public Value apply3(Value rpart, Value gpart, Value bpart) {
+	    return new ColorValue(number(rpart), number(gpart), number(bpart));
+	}
 	    
-	    private Value args[] = new Value[3];
+	private Value args[] = new Value[3];
 
-	    @Override
-	    public Value[] pattMatch(Value obj, int nargs) {
-		if (nargs != 3) Evaluator.err_patnargs(name);
+	@Override
+	public Value[] pattMatch(Value obj, int nargs) {
+	    if (nargs != 3) Evaluator.err_patnargs(name);
+	    
+	    if (! (obj instanceof ColorValue)) return null;
 
-		if (! (obj instanceof ColorValue)) return null;
-
-		ColorValue v = (ColorValue) obj;
-		args[0] = Value.makeNumValue(v.rpart);
-		args[1] = Value.makeNumValue(v.gpart);
-		args[2] = Value.makeNumValue(v.bpart);
-		return args;
-	    }
-	},
-	
-	new Primitive.Prim1("rpart") {
-	    @Override
-	    public Value apply1(Value obj) {
-		ColorValue v = cast(ColorValue.class, obj, "colour");
-		return Value.makeNumValue(v.rpart);
-	    }
-	},
-	
-	new Primitive.Prim1("gpart") {
-	    @Override
-	    public Value apply1(Value obj) {
-		ColorValue v = cast(ColorValue.class, obj, "colour");
-		return Value.makeNumValue(v.gpart);
-	    }
-	},
-	
-	new Primitive.Prim1("bpart") {
-	    @Override
-	    public Value apply1(Value obj) {
-		ColorValue v = cast(ColorValue.class, obj, "colour");
-		return Value.makeNumValue(v.bpart);
-	    }
-	},
-	
-	new Primitive.Prim3("hsv") {
-	    /* Create a colour from HSV values in the range [0, 1] */
-	    @Override
-	    public Value apply3(Value h, Value s, Value v) {
-		return getHSB((float) number(h),
-			      (float) cutoff(number(s)),
-			      (float) cutoff(number(v)));
-	    }
+	    ColorValue v = (ColorValue) obj;
+	    args[0] = Value.makeNumValue(v.rpart);
+	    args[1] = Value.makeNumValue(v.gpart);
+	    args[2] = Value.makeNumValue(v.bpart);
+	    return args;
 	}
     };
+	
+    @PRIMITIVE
+    public static Value rpart(Primitive prim, Value obj) {
+	ColorValue v = prim.cast(ColorValue.class, obj, "colour");
+	return Value.makeNumValue(v.rpart);
+    }
+	
+    @PRIMITIVE
+    public static Value gpart(Primitive prim, Value obj) {
+	ColorValue v = prim.cast(ColorValue.class, obj, "colour");
+	return Value.makeNumValue(v.gpart);
+    }
+	
+    @PRIMITIVE
+    public static Value bpart(Primitive prim, Value obj) {
+	ColorValue v = prim.cast(ColorValue.class, obj, "colour");
+	return Value.makeNumValue(v.bpart);
+    }
+	
+    /* Create a colour from HSV values in the range [0, 1] */
+    @PRIMITIVE
+    public static Value hsv(Primitive prim, Value h, Value s, Value v) {
+	return getHSB((float) prim.number(h),
+		      (float) cutoff(prim.number(s)),
+		      (float) cutoff(prim.number(v)));
+    }
 }

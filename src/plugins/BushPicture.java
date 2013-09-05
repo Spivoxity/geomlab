@@ -33,7 +33,9 @@ package plugins;
 import java.util.Stack;
 
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.FunCode;
 
 /** Fractal plants */
 public class BushPicture extends Picture {
@@ -181,28 +183,21 @@ public class BushPicture extends Picture {
 		ColorValue.getHSB(inithue + (float) i / ncols, sat, val);
     }
     
-    public static final Primitive primitives[] = {
-	new Primitive.Prim1("bush") {
-	    /* Create a fractal picture from a string of commands */
-	    @Override
-	    public Value apply1(Value x) {
-		return new BushPicture(string(x));
-	    }	    
-	},
-	
-	new Primitive.PrimN("bushparams", 7) {
-	    /* Set parameters used to interpret commands */
-	    @Override
-	    public Value applyN(Value args[], int base) {
-		linewidth = (float) number(args[base+0]);
-		alpha = (float) number(args[base+1]);
-		theta = (float) number(args[base+2]);
-		setColours((int) number(args[base+3]),
-			(float) number(args[base+4]), 
-			(float) number(args[base+5]), 
-			(float) number(args[base+6]));
-		return Value.nil;
-	    }
-	}
-    };
+    /** Create a fractal picture from a string of commands */
+    @PRIMITIVE
+    public static Value bush(Primitive prim, Value x) {
+	return new BushPicture(prim.string(x));
+    }	    
+
+    /** Set parameters used to interpret commands */
+    @PRIMITIVE
+    public static Value _bushparams(Primitive prim, Value w, Value a, Value t,
+				    Value n, Value h, Value s, Value v) {
+	linewidth = (float) prim.number(w);
+	alpha = (float) prim.number(a);
+	theta = (float) prim.number(t);
+	setColours((int) prim.number(n), (float) prim.number(h), 
+		   (float) prim.number(s), (float) prim.number(v));
+	return Value.nil;
+    }
 }

@@ -43,6 +43,7 @@ import java.io.Reader;
 import funbase.Evaluator;
 import funbase.Name;
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Scanner;
 import funbase.Value;
 import funbase.FunCode;
@@ -220,9 +221,7 @@ public class GeomBase {
 	System.exit(0);
     }
 
-    public boolean getStatsFlag() {
-        return statsFlag;
-    }
+    public boolean getStatsFlag() { return statsFlag; }
 
     public void setStatsFlag(boolean statsFlag) {
         this.statsFlag = statsFlag;
@@ -232,9 +231,7 @@ public class GeomBase {
 
     public int getStatus() { return status; }
     
-    public String getEditText() {
-	return "";
-    }
+    public String getEditText() { return ""; }
     
     public void setEditText(String text) {
 	// So nothing
@@ -246,132 +243,104 @@ public class GeomBase {
 	theApp = app;
     }
 
-    public static final Primitive primitives[] = {
-	new Primitive.Prim0("scan") {
-	    @Override
-	    public Value apply0() {
-		return theApp.scan();
-	    }
-	},
+    @PRIMITIVE
+    public static Value _scan(Primitive prim) {
+	return theApp.scan();
+    }
 
-	new Primitive.Prim2("synerror") {
-	    @Override
-	    public Value apply2(Value msg, Value help) {
-		theApp.syntax_error(string(msg), string(help));
-		return Value.nil;
-	    }
-	},
+    @PRIMITIVE
+    public static Value _synerror(Primitive prim, Value msg, Value help) {
+	theApp.syntax_error(prim.string(msg), prim.string(help));
+	return Value.nil;
+    }
 
-	new Primitive.Prim1("setroot") {
-	    @Override
-	    public Value apply1(Value v) {
-		FunCode.setRoot(v);
-		Evaluator.startTimer();
-		return Value.nil;
-	    }
-	},
+    @PRIMITIVE
+    public static Value _setroot(Primitive prim, Value v) {
+	FunCode.setRoot(v);
+	Evaluator.startTimer();
+	return Value.nil;
+    }
 
-	new Primitive.Prim1("topval") {
-	    @Override
-	    public Value apply1(Value v) {
-		theApp.exprValue(v);
-		return Value.nil;
-	    }
-	},
+    @PRIMITIVE
+    public static Value _topval(Primitive prim, Value v) {
+	theApp.exprValue(v);
+	return Value.nil;
+    }
 
-	new Primitive.Prim2("topdef") {
-	    @Override
-	    public Value apply2(Value x, Value v) {
-		Name n = cast(Name.class, x, "name");
-		theApp.defnValue(n, v);
-		return Value.nil;
-	    }
-	},
-	
-	new Primitive.Prim0("toptext") {
-	    @Override
-	    public Value apply0() {
-		theApp.showPhrase();
-		return Value.nil;
-	    }
-	},
+    @PRIMITIVE
+    public static Value _topdef(Primitive prim, Value x, Value v) {
+	Name n = prim.cast(Name.class, x, "name");
+	theApp.defnValue(n, v);
+	return Value.nil;
+    }
 
-        new Primitive.Prim1("load") {
-            @Override
-            public Value apply1(Value fname0) {
-        	String fname = string(fname0);
-        	File current = theApp.getCurrentFile();
-        	File file = (current == null ? new File(fname)
-			     : new File(current.getParentFile(), fname));
-        	theApp.loadFromFile(file, false);
-        	return Value.nil;
-            }
-        },
+    @PRIMITIVE
+    public static Value _toptext(Primitive prim) {
+	theApp.showPhrase();
+	return Value.nil;
+    }
 
-	new Primitive.Prim1("print") {
-	    @Override
-	    public Value apply1(Value v) {
-		theApp.logWrite(v);
-		Thread.yield();
-		return v;
-	    }
-	},
+    @PRIMITIVE
+    public static Value _load(Primitive prim, Value fname0) {
+	String fname = prim.string(fname0);
+	File current = theApp.getCurrentFile();
+	File file = (current == null ? new File(fname)
+		     : new File(current.getParentFile(), fname));
+	theApp.loadFromFile(file, false);
+	return Value.nil;
+    }
 
-	new Primitive.Prim0("debug") {
-	    @Override
-	    public Value apply0() {
-		return Value.makeNumValue(funbase.Evaluator.debug);
-	    }
-	},
+    @PRIMITIVE
+    public static Value _print(Primitive prim, Value v) {
+	theApp.logWrite(v);
+	Thread.yield();
+	return v;
+    }
 
-        new Primitive.Prim1("install") {
-            /* Install a plug-in class with primitives. */
-            @Override
-	    public Value apply1(Value name) {
-        	String clname = string(name);
-        	try {
-        	    Session.installPlugin(Class.forName("plugins." + clname));
-        	}
-        	catch (Exception e) {
-        	    Evaluator.error("install failure for " + clname
-				     + " - " + e.getMessage(), "#install");
-        	}
-        	return Value.nil;
-            }
-        },
+    @PRIMITIVE
+    public static Value _debug(Primitive prim) {
+	return Value.makeNumValue(funbase.Evaluator.debug);
+    }
 
-        new Primitive.Prim1("save") {
-            @Override
-            public Value apply1(Value fname) {
-        	try {
-        	    Session.saveSession(new File(string(fname)));
-        	    return Value.nil;
-        	} catch (Command.CommandException e) {
-        	    Evaluator.error(e.toString());
-		    return null;
-        	}
-            }
-        },
+    /** Install a plug-in class with primitives. */
+    @PRIMITIVE
+    public static Value _install(Primitive prim, Value name) {
+	String clname = prim.string(name);
+	try {
+	    Session.loadPlugin(Class.forName("plugins." + clname), true);
+	}
+	catch (Exception e) {
+	    Evaluator.error("install failure for " + clname
+			    + " - " + e.getMessage(), "#install");
+	}
+	return Value.nil;
+    }
+
+    @PRIMITIVE
+    public static Value _save(Primitive prim, Value fname) {
+	try {
+	    Session.saveSession(new File(prim.string(fname)));
+	    return Value.nil;
+	} catch (Command.CommandException e) {
+	    Evaluator.error(e.toString());
+	    return null;
+	}
+    }
         
-	new Primitive.Prim1("restore") {
-	    @Override
-	    public Value apply1(Value fname) {
-		try {
-		    Session.loadSession(new File(string(fname)));
-		    return Value.nil;
-		} catch (Command.CommandException e) {
-		    Evaluator.error(e.toString());
-		    return null;
-		}
-	    }
-	},
+    @PRIMITIVE
+    public static Value _restore(Primitive prim, Value fname) {
+	try {
+	    Session.loadSession(new File(prim.string(fname)));
+	    return Value.nil;
+	} catch (Command.CommandException e) {
+	    Evaluator.error(e.toString());
+	    return null;
+	}
+    }
 
-        new Primitive.Prim0("quit") {
-            @Override
-            public Value apply0() {
-        	theApp.exit();
-        	return Value.nil;
-            }
-        }
-    };
+    @PRIMITIVE
+    public static Value quit(Primitive prim) {
+	theApp.exit();
+	return Value.nil;
+    }
 }

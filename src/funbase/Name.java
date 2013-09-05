@@ -59,6 +59,9 @@ public final class Name extends Value implements Comparable<Name> {
     /** True for names that are system-defined and may not be changed */
     private boolean frozen = false;
     
+    /** True if the global definition was inherited from bootstrap */
+    private boolean cursed = false;
+
     /** Token returned for this word by the scanner */
     public Name token;
 
@@ -74,12 +77,18 @@ public final class Name extends Value implements Comparable<Name> {
     }
     
     /** Set the global definition and defining text */
-    public void setGlodef(Value v, String text) { 
-	this.glodef = v;
-	this.deftext = text;
-	if (Name.freezer) frozen = true; 
+    public void setGlodef(Value v, String text, boolean cursed) { 
+	if (glodef != null && cursed) return;
+	glodef = v;
+	deftext = text;
+	if (freezer) frozen = true; 
+	this.cursed = cursed;
     }
     
+    public void setGlodef(Value v, String text) {
+	setGlodef(v, text, false);
+    }
+
     /** Get the global definition of a name */
     public Value getGlodef() { return glodef; }
     
@@ -87,7 +96,7 @@ public final class Name extends Value implements Comparable<Name> {
     public String getDeftext() { return deftext; }
     
     /** Test if the global definition is unmodifiable */
-    public boolean isFrozen() { return frozen && !Name.freezer; }
+    public boolean isFrozen() { return frozen && !freezer; }
     
     @Override
     public int compareTo(Name other) {
@@ -203,18 +212,18 @@ public final class Name extends Value implements Comparable<Name> {
     
     /** Save globally defined names in bootstrap format */
     public static void dumpNames(PrintWriter out) {
-	    // Sort the entries to help us reach a fixpoint
-	    ArrayList<String> names = new ArrayList<String>(nameTable.size());
-	    names.addAll(nameTable.keySet());
-	    Collections.sort(names);
-	    for (String k : names) {
-		Name x = find(k);
-		if (x.glodef != null) {
-		    out.printf("global #%s ", x.tag);
-		    x.glodef.dump(out);
-		}
+	// Sort the entries to help us reach a fixpoint
+	ArrayList<String> names = new ArrayList<String>(nameTable.size());
+	names.addAll(nameTable.keySet());
+	Collections.sort(names);
+	for (String k : names) {
+	    Name x = find(k);
+	    if (x.glodef != null && !x.cursed) {
+		out.printf("global #%s ", x.tag);
+		x.glodef.dump(out);
 	    }
-	    out.println("quit");
-	    out.close();
+	}
+	out.println("quit");
+	out.close();
     }
 }

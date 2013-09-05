@@ -31,58 +31,46 @@
 package plugins;
 
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 
 public class StringPrims {
-    public static final Primitive primitives[] = {	
-	new Primitive.Prim2("^") {
-	    /** Concatenate two strings */
-	    @Override
-	    public Value apply2(Value s1, Value s2) {
-		return Value.makeStringValue(string(s1) + string(s2));
-	    }
-	},
+    /** Concatenate two strings */
+    @PRIMITIVE("^")
+    public static Value concat(Primitive prim, Value s1, Value s2) {
+	return Value.makeStringValue(prim.string(s1) + prim.string(s2));
+    }
 
-	new Primitive.Prim1("explode") {
-	    /** Split a string into a list of single-character strings */
-	    @Override
-	    public Value apply1(Value x) {
-		String s = string(x);
-		Value result = Value.nil;
-		for (int i = s.length()-1; i >= 0; i--)
-		    result = 
-			Value.cons(Value.makeStringValue(s.charAt(i)), result);
-		return result;
-	    }
-	},
+    /** Split a string into a list of single-character strings */
+    @PRIMITIVE
+    public static Value explode(Primitive prim, Value x) {
+	String s = prim.string(x);
+	Value result = Value.nil;
+	for (int i = s.length()-1; i >= 0; i--)
+	    result = Value.cons(Value.makeStringValue(s.charAt(i)), result);
+	return result;
+    }
 
-	new Primitive.Prim1("implode") {
-	    /** Concatenate a list of strings into a single string */
-	    @Override
-	    public Value apply1(Value ys) {
-		StringBuffer result = new StringBuffer();
-		for (Value xs = ys; ! (xs instanceof Value.NilValue); 
-		     xs = tail(xs))
-		    result.append(string(head(xs)));
-		return Value.makeStringValue(result.toString());
-	    }
-	},
+    /** Concatenate a list of strings into a single string */
+    @PRIMITIVE
+    public static Value implode(Primitive prim, Value ys) {
+	StringBuffer result = new StringBuffer();
+	for (Value xs = ys; ! (xs instanceof Value.NilValue); 
+	     xs = prim.tail(xs))
+	    result.append(prim.string(prim.head(xs)));
+	return Value.makeStringValue(result.toString());
+    }
 
-	new Primitive.Prim1("chr") {
-	    /** Make character with specified ASCII code */
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeStringValue((char) number(x));
-	    }
-	},
+    /** Make character with specified ASCII code */
+    @PRIMITIVE
+    public static Value chr(Primitive prim, Value x) {
+	return Value.makeStringValue((char) prim.number(x));
+    }
 
-	new Primitive.Prim1("ord") {
-	    /** Return ASCII code of first character */
-	    @Override
-	    public Value apply1(Value x) {
-		String s = string(x);
-		return Value.makeNumValue(s.length() == 0 ? 0 : s.charAt(0));
-	    }
-	}
-    };
+    /** Return ASCII code of first character */
+    @PRIMITIVE
+    public static Value ord(Primitive prim, Value x) {
+	String s = prim.string(x);
+	return Value.makeNumValue(s.length() == 0 ? 0 : s.charAt(0));
+    }
 }

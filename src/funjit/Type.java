@@ -110,6 +110,9 @@ class Type {
 	jitfun_cl = "funjit/JitFunction",
 	jitlarge_cl = "funjit/JitFunction$FuncN",
 	jitsmall_cl = "funjit/JitFunction$Func",
+	primitive_cl = "funbase/Primitive",
+	primsmall_cl = "funbase/Primitive$Prim",
+	primlarge_cl = "funbase/Primitive$PrimN",
 	evaluator_cl = "funbase/Evaluator";
 
     public final static Type
@@ -118,7 +121,8 @@ class Type {
 	name_t = class_t(name_cl),
 	value_t = class_t(value_cl),
 	valarray_t = array_t(value_t),
-	function_t = class_t(function_cl);
+	function_t = class_t(function_cl),
+	prim_t = class_t(primitive_cl);
     
     public final static Type
 	fun_t = func_t(void_t),
@@ -131,6 +135,7 @@ class Type {
 	fun_DDD_V_t = func_t(double_t, double_t, double_t, value_t),
 	fun_N_t = func_t(name_t, void_t),
 	fun_O_B_t = func_t(object_t, bool_t),
+	fun_PAI_V_t = func_t(prim_t, valarray_t, int_t, value_t),
 	fun_S_t = func_t(string_t, void_t),
 	fun_SS_t = func_t(string_t, string_t, void_t),
 	fun_SI_t = func_t(string_t, int_t, void_t),
@@ -162,6 +167,29 @@ class Type {
 	func_t(value_t, value_t, value_t, value_t, value_t, value_t, void_t)
     };
 
+    private final static Type primitive_t[] = {
+	func_t(prim_t, value_t),
+	func_t(prim_t, value_t, value_t),
+	func_t(prim_t, value_t, value_t, value_t),
+	func_t(prim_t, value_t, value_t, value_t, value_t),
+	func_t(prim_t, value_t, value_t, value_t, value_t, value_t),
+	func_t(prim_t, value_t, value_t, value_t, value_t, value_t, value_t),
+	func_t(prim_t, value_t, value_t, value_t, value_t, value_t, value_t, 
+	       value_t)
+    };
+
+    public static Type make_prim_t(int arity) {
+	if (arity < primitive_t.length)
+	    return primitive_t[arity];
+
+	Type t[] = new Type[arity+2];
+	t[0] = prim_t;
+	for (int i = 0; i < arity; i++) t[i+1] = value_t;
+	t[arity+1] = value_t;
+	return func_t(t);
+    }
+
     public final static Type
-	apply_t = func_t(valarray_t, int_t, value_t);
+	apply_t = func_t(valarray_t, int_t, value_t),
+	applyN_t = func_t(valarray_t, int_t, value_t);
 }

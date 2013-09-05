@@ -34,6 +34,7 @@ import java.io.PrintWriter;
 
 import funbase.Value;
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Evaluator;
 
 /** Floating point vectors in 2D */
@@ -87,34 +88,33 @@ public class Vec2D extends Value {
 	Value.printNumber(out, y); out.print(")");
     }
 
-    static float cosd(float arg) {
+    public static float cosd(float arg) {
         return (float) Math.cos(arg * Math.PI/180);
     }
 
-    static float sind(float arg) {
+    public static float sind(float arg) {
         return (float) Math.sin(arg * Math.PI/180);
     }
 
-    public static final Primitive primitives[] = {
-	new Primitive.Prim2("vector") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return new Vec2D((float) number(x), (float) number(y));
-	    }
+    @PRIMITIVE
+    public static final Primitive vector = new Primitive.Prim2("_vector") {
+	@Override
+	public Value apply2(Value x, Value y) {
+	    return new Vec2D((float) number(x), (float) number(y));
+	}
 
-	    private Value args[] = new Value[3];
+	private Value args[] = new Value[2];
 
-	    @Override
-	    public Value[] pattMatch(Value obj, int nargs) {
-		if (nargs != 2) Evaluator.err_patnargs(name);
+	@Override
+	public Value[] pattMatch(Value obj, int nargs) {
+	    if (nargs != 2) Evaluator.err_patnargs(name);
 
-		if (! (obj instanceof Vec2D)) return null;
+	    if (! (obj instanceof Vec2D)) return null;
 
-		Vec2D v = (Vec2D) obj;
-		args[0] = Value.makeNumValue(v.x);
-		args[1] = Value.makeNumValue(v.y);
-		return args;
-	    }
+	    Vec2D v = (Vec2D) obj;
+	    args[0] = Value.makeNumValue(v.x);
+	    args[1] = Value.makeNumValue(v.y);
+	    return args;
 	}
     };
 }

@@ -30,8 +30,11 @@
 
 package funbase;
 
+import funbase.Primitive.PRIMITIVE;
+
 import java.io.PrintWriter;
 import java.util.*;
+import java.lang.reflect.Method;
 
 /** Code for a function body. */
 public class FunCode extends Value {
@@ -123,6 +126,10 @@ public class FunCode extends Value {
 	FunCode.translator = translator;
     }
     
+    public static Primitive primitive(String name, int arity, Method meth) {
+	return translator.primitive(name, arity, meth);
+    }
+
     public static String[] getContext(String me) {
 	return translator.getContext(me);
     }
@@ -189,101 +196,102 @@ public class FunCode extends Value {
     }
     
     /** Assemble a list of instructions into a function body */
-    public static final Primitive assemble = 
-	new Primitive.Prim3("assemble") {
-	    @Override
-	    public Value apply3(Value name0, Value arity0, Value code) {
-		String name = name0.toString(); // Could be name or string
-		int arity = (int) number(arity0);
-		int size = 0;
+    @PRIMITIVE
+    public static Value _assemble(Primitive prim, Value name0, 
+				  Value arity0, Value code) {
+	String name = name0.toString(); // Could be name or string
+	int arity = (int) prim.number(arity0);
+	int size = 0;
 
-		for (Value xs = code; isCons(xs); xs = tail(xs))
-		    if (isCons(head(xs))) size++;
+	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs))
+	    if (prim.isCons(prim.head(xs))) size++;
 	
-		Opcode instrs[] = new Opcode[size];
-		int rands[] = new int[size];
-		int ip = 0, sp = 0, fsize = 0, ssize = 0;
-		List<Value> consts = new ArrayList<Value>();
+	Opcode instrs[] = new Opcode[size];
+	int rands[] = new int[size];
+	int ip = 0, sp = 0, fsize = 0, ssize = 0;
+	List<Value> consts = new ArrayList<Value>();
 	
-		/** Mapping from integer labels to info about each label */
-		Map<Integer, Label> labels = new HashMap<Integer, Label>();
+	/** Mapping from integer labels to info about each label */
+	Map<Integer, Label> labels = new HashMap<Integer, Label>();
 	
-		for (Value xs = code; isCons(xs); xs = tail(xs)) {
-		    Value inst = head(xs);
-		    if (inst instanceof Value.NumValue) {
-			/* A label */
-			Label lab = labels.get((int) number(inst));
-			if (lab != null) {
-			    rands[lab.use] = ip;
-			    sp = lab.depth;
+	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs)) {
+	    Value inst = prim.head(xs);
+	    if (inst instanceof Value.NumValue) {
+		/* A label */
+		Label lab = labels.get((int) prim.number(inst));
+		if (lab != null) {
+		    rands[lab.use] = ip;
+		    sp = lab.depth;
+		}
+	    } else if (prim.isCons(inst)) {
+		/* An instruction [#op, arg] with optional arg */
+		Name x = prim.cast(Name.class, prim.head(inst), "opcode");
+		Opcode op = getOpcode(x.tag);
+		Value args = prim.tail(inst);
+		int rand;
+
+		if (! prim.isCons(args))
+		    /* No argument */
+		    rand = 0;
+		else {
+		    Value v = prim.head(args);
+		    if (op == Opcode.GLOBAL || op == Opcode.QUOTE
+			|| op == Opcode.MPLUS) {
+			/* An argument that goes in the constant pool */
+			rand = consts.indexOf(v);
+			if (rand < 0) {
+			    rand = consts.size();
+			    consts.add(v);
 			}
-		    } else if (isCons(inst)) {
-			/* An instruction [#op, arg] with optional arg */
-			Name x = cast(Name.class, head(inst), "opcode");
-			Opcode op = getOpcode(x.tag);
-			Value args = tail(inst);
-			int rand;
-
-			if (! isCons(args))
-			    /* No argument */
-			    rand = 0;
-			else {
-			    Value v = head(args);
-			    if (op == Opcode.GLOBAL || op == Opcode.QUOTE
-				|| op == Opcode.MPLUS) {
-				/* An argument that goes in the constant pool */
-				rand = consts.indexOf(v);
-				if (rand < 0) {
-				    rand = consts.size();
-				    consts.add(v);
-				}
-			    } else {
-				/* An integer argument */
-				rand = (int) number(v);
-			    }
-			}
-
-			instrs[ip] = op; rands[ip] = rand;
-			sp += instrs[ip].delta(rand);
-			if (sp > ssize) ssize = sp;
-
-			switch (op) {
-			    case BIND:
-				/* Update the frame size */
-				if (rand >= fsize) fsize = rand+1;
-				break;
-
-			    case JUMP:
-			    case JFALSE:
-				/* Create a label */
-				labels.put(rand, new Label(ip, sp));
-				break;
-				
-			    case TRAP:
-				/* Create a label, noting one value will 
-				   be popped */
-				labels.put(rand, new Label(ip, sp-1));
-				break;
-
-			    default:
-				break;
-			}
-
-			ip++;
 		    } else {
-			Evaluator.error("Bad instruction " + inst);
+			/* An integer argument */
+			rand = (int) prim.number(v);
 		    }
 		}
 
-		return new FunCode(name, arity, fsize, ssize, instrs, rands,
-				   consts.toArray(new Value[consts.size()]));
+		instrs[ip] = op; rands[ip] = rand;
+		sp += instrs[ip].delta(rand);
+		if (sp > ssize) ssize = sp;
+
+		switch (op) {
+		    case BIND:
+			/* Update the frame size */
+			if (rand >= fsize) fsize = rand+1;
+			break;
+
+		    case JUMP:
+		    case JFALSE:
+			/* Create a label */
+			labels.put(rand, new Label(ip, sp));
+			break;
+				
+		    case TRAP:
+			/* Create a label, noting one value will 
+			   be popped */
+			labels.put(rand, new Label(ip, sp-1));
+			break;
+
+		    default:
+			break;
+		}
+
+		ip++;
+	    } else {
+		Evaluator.error("Bad instruction " + inst);
 	    }
-	};
+	}
+	
+	return new FunCode(name, arity, fsize, ssize, instrs, rands,
+			   consts.toArray(new Value[consts.size()]));
+    }
 
     /** Interface for JIT translators */
     public interface Jit {
 	/** Translate funcode and create a factory for closures */
 	public Function.Factory translate(FunCode funcode);
+
+	/** Make a primitive by reflecting a static method */
+	public Primitive primitive(String name, int arity, Method meth);
 
 	/** Get execution context */
 	public String[] getContext(String me);

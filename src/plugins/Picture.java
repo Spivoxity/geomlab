@@ -34,7 +34,9 @@ import java.io.PrintWriter;
 
 import funbase.Evaluator;
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.FunCode;
 
 /* The pictures that GeomLab works with do not have a fixed size, but
  may be scaled uniformly to achieve any desired height or
@@ -68,6 +70,12 @@ public class Picture extends Value implements Stylus.Drawable {
     @Override
     public float getAspect() { return aspect; }
     
+    @PRIMITIVE
+    public static Value aspect(Primitive prim, Value x) {
+	Picture pic = prim.cast(Picture.class, x, "picture");
+	return makeNumValue(pic.aspect);
+    }
+
     @Override
     public boolean isInteractive() { return interactive; }
     
@@ -124,6 +132,11 @@ public class Picture extends Value implements Stylus.Drawable {
     
     public static final Picture nullPicture = new Picture(0.0f);
 
+    @PRIMITIVE
+    public static Value _null(Primitive prim) {
+	return nullPicture;
+    }
+
     /** A picture that combines two other pictures.
      * 
      *  The picture is drawn by drawing each of the components separately. */
@@ -149,6 +162,13 @@ public class Picture extends Value implements Stylus.Drawable {
 	    left.paintPart(layer, col, g, t);
 	    right.paintPart(layer, col, g, t);
 	}
+    }
+
+    @PRIMITIVE
+    public static Value _combine(Primitive prim, Value x, Value y, Value z) {
+	return new BinaryPicture((float) prim.number(x), 
+				 prim.cast(Picture.class, y, "picture"),
+				 prim.cast(Picture.class, z, "picture"));
     }
 
     /** A picture that is drawn with a specified transformation.
@@ -185,60 +205,25 @@ public class Picture extends Value implements Stylus.Drawable {
 	}
     }
 
-    public static final Primitive primitives[] = {
-	new Primitive.Prim0("null") {
-	    @Override
-	    public Value apply0() {
-		return nullPicture;
-	    }
-	},
-	
-	new Primitive.Prim4("transpic") {
-	    @Override
-	    public Value apply4(Value aspect, Value base, Value trans, 
-				Value inc) {
-		return new TransPicture((float) number(aspect),
-					cast(Picture.class, base, "picture"),
-					cast(Tran2D.class, trans, "transform"),
-					(int) number(inc));
-	    }
-	},
+    @PRIMITIVE
+    public static Value _transpic(Primitive prim, Value aspect, 
+				  Value base, Value trans, Value inc) {
+	return new TransPicture((float) prim.number(aspect),
+				prim.cast(Picture.class, base, "picture"),
+				prim.cast(Tran2D.class, trans, "transform"),
+				(int) prim.number(inc));
+    }
 
-	new Primitive.Prim3("combine") {
+    @PRIMITIVE
+    public static Value colour(Primitive prim, Value x) {
+	final Picture pic = prim.cast(Picture.class, x, "picture");
+	return new Picture(pic.aspect, true) {
 	    @Override
-	    public Value apply3(Value x, Value y, Value z) {
-		return new BinaryPicture
-		    ((float) number(x), 
-		     cast(Picture.class, y, "picture"),
-		     cast(Picture.class, z, "picture"));
+	    public void paint(int layer, int col, Stylus g, Tran2D t) {
+		/* Replace the colour index (presumably -1) with
+		   zero, so indexed fills are enabled */
+		pic.paintPart(layer, 0, g, t);
 	    }
-	},
-
-	new Primitive.Prim1("colour") {
-	    @Override
-	    public Value apply1(Value x) {
-		final Picture pic = 
-		    cast(Picture.class, x, "picture");
-
-		return new Picture(pic.aspect, true) {
-		    @Override
-		    public void paint(int layer, int col, 
-				      Stylus g, Tran2D t) {
-			/* Replace the colour index (presumably -1) with
-			   zero, so indexed fills are enabled */
-			pic.paintPart(layer, 0, g, t);
-		    }
-		};
-	    }
-	},
-	
-	new Primitive.Prim1("aspect") {
-	    @Override
-	    public Value apply1(Value x) {
-		Picture pic = 
-		    cast(Picture.class, x, "picture");
-		return makeNumValue(pic.aspect);
-	    }
-	}
-    };
+	};
+    }
 }

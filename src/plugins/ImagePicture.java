@@ -42,6 +42,7 @@ import java.util.*;
 import java.lang.ref.*;
 
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 import funbase.Evaluator;
 
@@ -167,125 +168,108 @@ public class ImagePicture extends Picture {
 	return image;
     }
 
-    public static final Primitive primitives[] = {
-	new Primitive.Prim1("photo") {
-	    @Override
-	    public Value apply1(Value name) {
-		try {
-		    Native.Image image = cachedImage(string(name));
-		    return new ImagePicture(image);
-		}
-		catch (IOException e) {
-		    Evaluator.error("Image I/O error - " + e);
-		    return null;
-		}
-	    }
-	},
+    @PRIMITIVE
+    public static Value _photo(Primitive prim, Value name) {
+	try {
+	    Native.Image image = cachedImage(prim.string(name));
+	    return new ImagePicture(image);
+	}
+	catch (IOException e) {
+	    Evaluator.error("Image I/O error - " + e);
+	    return null;
+	}
+    }
 	
-	new Primitive.Prim1("resource") {
-	    @Override
-	    public Value apply1(Value v) {
-		try {
-		    String name = string(v);
-		    return new ImagePicture(loadResource(name), name);
-		}
-		catch (IOException e) {
-		    Evaluator.error("Image I/O error - " + e);
-		    return null;
-		}
-	    }
-	},
+    @PRIMITIVE
+    public static Value _resource(Primitive prim, Value v) {
+	try {
+	    String name = prim.string(v);
+	    return new ImagePicture(loadResource(name), name);
+	}
+	catch (IOException e) {
+	    Evaluator.error("Image I/O error - " + e);
+	    return null;
+	}
+    }
 	
-	new Primitive.Prim3("image") {
-	    @Override
-	    public Value apply3(Value width0, Value height0, Value fun0) {
-		int width = (int) number(width0);
-		int height = (int) number(height0);
-		FunValue fun = cast(FunValue.class, fun0, "function");
-		Native factory = Native.instance();
-		Native.Image image = factory.image(width, height);
-		Value args[] = new Value[2];
+    @PRIMITIVE
+    public static Value _image(Primitive prim, Value width0, 
+			       Value height0, Value fun0) {
+	int width = (int) prim.number(width0);
+	int height = (int) prim.number(height0);
+	FunValue fun = prim.cast(FunValue.class, fun0, "function");
+	Native factory = Native.instance();
+	Native.Image image = factory.image(width, height);
+	Value args[] = new Value[2];
 		
-		for (int x = 0; x < width; x++) {
-		    args[0] = Value.makeNumValue(x);
-		    for (int y = 0; y < height; y++) {
-			args[1] = Value.makeNumValue(y);
-			Value v = fun.apply(args);
-			ColorValue col = 
-			    cast(ColorValue.class, v, "colour");
-			image.setRGB(x, height-y-1, col.rgb);
-		    }
-		}
-
-		return new ImagePicture(image);
-	    }
-	},
-	
-	new Primitive.Prim4("render") {
-	    @Override 
-	    public Value apply4(Value a0, Value a1, Value a2, Value a3) {
-		Picture pic = cast(Picture.class, a0, "picture");
-		int size = (int) Math.round(number(a1));
-		float slider = (float) number(a2);
-		float grey = (float) number(a3);
-		ColorValue bg = ColorValue.getGrey(grey);
-		pic.prerender(slider);
-		Native factory = Native.instance();
-		Native.Image image = factory.render(pic, size, slider, bg);
-		return new ImagePicture(image);
-	    }
-	},
-
-	new Primitive.Prim3("pixel") {
-	    @Override
-	    public Value apply3(Value p0, Value x0, Value y0) {
-		ImagePicture p = cast(ImagePicture.class, p0, "image");
-		int w = p.image.getWidth(), h = p.image.getHeight();
-		int x = (int) Math.round(number(x0));
-		int y = (int) Math.round(number(y0));
-		if (0 <= x && x < w && 0 <= y && y < h) {
-		    int rgb = p.image.getRGB(x, h-y-1);
-		    return new ColorValue(rgb);
-		} else {
-		    return ColorValue.white;
-		}
-	    }
-	},
-	
-	new Primitive.Prim1("width") {
-	    @Override
-	    public Value apply1(Value v) {
-		ImagePicture p = cast(ImagePicture.class, v, "image");
-		return Value.makeNumValue(p.image.getWidth());
-	    }
-	},
-	
-	new Primitive.Prim1("height") {
-	    @Override
-	    public Value apply1(Value v) {
-		ImagePicture p = cast(ImagePicture.class, v, "image");
-		return Value.makeNumValue(p.image.getHeight());
-	    }
-	},
-
-	/** Save image as a file */
-	new Primitive.Prim3("saveimg") {
-	    @Override
-	    public Value apply3(Value v, Value fmt, Value fn) {
-		ImagePicture p = cast(ImagePicture.class, v, "image");
-		String format = string(fmt);
-		String fname = string(fn);
-		Native factory = Native.instance();
-
-		try {
-		    factory.writeImage(p.image, format, new File(fname));
-		}
-		catch (IOException e) {
-		    Evaluator.error("I/O failed: " + e.getMessage());
-		}
-
-		return Value.nil;
+	for (int x = 0; x < width; x++) {
+	    args[0] = Value.makeNumValue(x);
+	    for (int y = 0; y < height; y++) {
+		args[1] = Value.makeNumValue(y);
+		Value v = fun.apply(args);
+		ColorValue col = prim.cast(ColorValue.class, v, "colour");
+		image.setRGB(x, height-y-1, col.rgb);
 	    }
 	}
-    };
+	
+	return new ImagePicture(image);
+    }
+	
+    @PRIMITIVE
+    public static Value _render(Primitive prim, Value a0, Value a1, 
+				Value a2, Value a3) {
+	Picture pic = prim.cast(Picture.class, a0, "picture");
+	int size = (int) Math.round(prim.number(a1));
+	float slider = (float) prim.number(a2);
+	float grey = (float) prim.number(a3);
+	ColorValue bg = ColorValue.getGrey(grey);
+	pic.prerender(slider);
+	Native factory = Native.instance();
+	Native.Image image = factory.render(pic, size, slider, bg);
+	return new ImagePicture(image);
+    }
+
+    @PRIMITIVE
+    public static Value _pixel(Primitive prim, Value p0, 
+			       Value x0, Value y0) {
+	ImagePicture p = prim.cast(ImagePicture.class, p0, "image");
+	int w = p.image.getWidth(), h = p.image.getHeight();
+	int x = (int) Math.round(prim.number(x0));
+	int y = (int) Math.round(prim.number(y0));
+	if (0 <= x && x < w && 0 <= y && y < h) {
+	    int rgb = p.image.getRGB(x, h-y-1);
+	    return new ColorValue(rgb);
+	} else {
+	    return ColorValue.white;
+	}
+    }
+	
+    @PRIMITIVE
+    public static Value width(Primitive prim, Value v) {
+	ImagePicture p = prim.cast(ImagePicture.class, v, "image");
+	return Value.makeNumValue(p.image.getWidth());
+    }
+	
+    @PRIMITIVE
+    public static Value height(Primitive prim, Value v) {
+	ImagePicture p = prim.cast(ImagePicture.class, v, "image");
+	return Value.makeNumValue(p.image.getHeight());
+    }
+
+    /** Save image as a file */
+    public static Value saveimg(Primitive prim, Value v, Value fmt, Value fn) {
+	ImagePicture p = prim.cast(ImagePicture.class, v, "image");
+	String format = prim.string(fmt);
+	String fname = prim.string(fn);
+	Native factory = Native.instance();
+
+	try {
+	    factory.writeImage(p.image, format, new File(fname));
+	}
+	catch (IOException e) {
+	    Evaluator.error("I/O failed: " + e.getMessage());
+	}
+
+	return Value.nil;
+    }
 }

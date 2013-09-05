@@ -127,10 +127,11 @@ public class RunScript extends GeomBase {
 
 	try {
 	    if (bootfile != null) {
-		Session.installPlugin(GeomBase.class);
-		Session.installPlugin(plugins.BasicPrims.class);
-		Session.installPlugin(plugins.Cell.class);
-		Session.installPlugin(plugins.StringPrims.class);
+		Session.loadPlugin(GeomBase.class, true);
+		Session.loadPlugin(funbase.FunCode.class, true);
+		Session.loadPlugin(plugins.BasicPrims.class, true);
+		Session.loadPlugin(plugins.Cell.class, true);
+		Session.loadPlugin(plugins.StringPrims.class, true);
 		BootLoader.bootstrap(bootfile);
 	    } else if (sessfile != null) {
 		Session.loadSession(sessfile);

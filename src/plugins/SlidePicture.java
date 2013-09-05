@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import funbase.Value;
 import funbase.Evaluator;
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 
 /** A picture given as a program dependent on the slider */
 public class SlidePicture extends Value implements Stylus.Drawable {
@@ -86,16 +87,9 @@ public class SlidePicture extends Value implements Stylus.Drawable {
 		new Value[] { Value.makeNumValue(slider) });
     }
 
-    public static Primitive primitives[] = {
-	new Primitive.Prim1("slide") {
-	    @Override
-	    public Value apply1(Value fun0) {
-		Value.FunValue fun = 
-		    cast(Value.FunValue.class, fun0, "function");
-		return new SlidePicture(fun);
-	    }
-	}
-    };
+    @PRIMITIVE
+    public static Value slide(Primitive prim, Value fun0) {
+	Value.FunValue fun = prim.cast(Value.FunValue.class, fun0, "function");
+	return new SlidePicture(fun);
+    }
 }
-
-	

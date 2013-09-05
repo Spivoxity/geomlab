@@ -182,7 +182,7 @@ public class InlineTranslator extends JitTranslator {
 	register(new Operator("+", DADD));
 	register(new Operator("-", DSUB));
 	register(new Operator("*", DMUL));
-	register(new Operator("uminus", DNEG));
+	register(new Operator("_uminus", DNEG));
 	register(new Comparison("<", DCMPG, IFGE));
 	register(new Comparison("<=", DCMPG, IFGT));
 	register(new Comparison(">", DCMPL, IFLE));
@@ -215,7 +215,7 @@ public class InlineTranslator extends JitTranslator {
 	    }
 	});
 
-	register(new SimpleInliner("new") {
+	register(new SimpleInliner("_new") {
 	    @Override 
 	    public void prepare() {
 		code.gen(NEW, cell_cl);
@@ -229,14 +229,14 @@ public class InlineTranslator extends JitTranslator {
 	    }
 	});
 
-	register(new Selector("!", cell_cl, "cell", "contents", Kind.VALUE));
+	register(new Selector("_get", cell_cl, "cell", "contents", Kind.VALUE));
 
-	register(new SimpleInliner(":=") {
+	register(new SimpleInliner("_set") {
 	    @Override 
 	    public int putArg(int i, Kind k) {
 		convValue(k);
 		if (i == 0)
-		    cast(cell_cl, new Expect(":=", "cell"));
+		    cast(cell_cl, new Expect("_set", "cell"));
 		return 1;
 	    }
 
@@ -358,11 +358,13 @@ public class InlineTranslator extends JitTranslator {
 	    this.argkind = argkind;
 	}
 
+	@Override
 	public Kind argkind(int i) {
 	    return argkind;
 	}
 
 	/** Compile code for an argument */
+	@Override
 	public int putArg(int i, Kind k) {
 	    convert(name, k, argkind);
 	    return 1;

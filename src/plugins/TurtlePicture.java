@@ -34,6 +34,7 @@ import java.io.PrintWriter;
 
 import funbase.Evaluator;
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 
 
@@ -176,6 +177,13 @@ public class TurtlePicture extends Picture {
 	}
     }
     
+    @PRIMITIVE
+    public static Value turtle(Primitive prim, Value xs) {
+	Command commands[] = 
+	    prim.toArray(Command.class, xs, "command list");
+	return new TurtlePicture(commands);
+    }	    
+	
     /** A turtle command */
     public static class Command extends Value {
 	/** Values for kind */
@@ -247,20 +255,11 @@ public class TurtlePicture extends Picture {
 	}
     }
     
-    public static final Primitive primitives[] = {
-	new Primitive.Prim1("turtle") {
-	    @Override
-	    public Value apply1(Value xs) {
-		Command commands[] = 
-		    toArray(Command.class, xs, "command list");
-		return new TurtlePicture(commands);
-	    }	    
-	},
-	
-	new CommandPrimitive("ahead", Command.AHEAD),
-	new CommandPrimitive("left", Command.LEFT),
-	new CommandPrimitive("right", Command.RIGHT),
-	new CommandPrimitive("turn", Command.TURN),
-	new CommandPrimitive("pen", Command.PEN)
-    };
+    @PRIMITIVE
+    public static final Primitive 
+	ahead = new CommandPrimitive("ahead", Command.AHEAD),
+	left = new CommandPrimitive("left", Command.LEFT),
+	right = new CommandPrimitive("right", Command.RIGHT),
+	turn = new CommandPrimitive("turn", Command.TURN),
+	pen = new CommandPrimitive("pen", Command.PEN);
 }

@@ -35,6 +35,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 
 import java.io.File;
@@ -322,18 +323,14 @@ public abstract class Command extends AbstractAction {
 	public abstract void setValue(boolean value);
     }
         
-    public static final Primitive primitives[] = {
-	new Primitive.Prim1("examples") {
-	    @Override
-	    public Value apply1(Value xs) {
-		Value args[] = toArray(xs);
-		String examples[] = new String[args.length];
-		for (int i = 0; i < args.length; i++)
-		    examples[i] = string(args[i]);
-		GeomLab app = (GeomLab) GeomBase.theApp;
-		fillExamplesMenu(examples, app);
-		return Value.nil;
-	    }
-	}
-    };
+    @PRIMITIVE
+    public static Value _examples(Primitive prim, Value xs) {
+	Value args[] = prim.toArray(xs);
+	String examples[] = new String[args.length];
+	for (int i = 0; i < args.length; i++)
+	    examples[i] = prim.string(args[i]);
+	GeomLab app = (GeomLab) GeomBase.theApp;
+	fillExamplesMenu(examples, app);
+	return Value.nil;
+    }
 }

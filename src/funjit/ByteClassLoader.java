@@ -1,5 +1,5 @@
 /*
- * Cell.java
+ * ByteClassLoader.java
  * 
  * This file is part of GeomLab
  * Copyright (c) 2005 J. M. Spivey
@@ -28,51 +28,39 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package plugins;
-
-import java.io.PrintWriter;
+package funjit;
 
 import funbase.Evaluator;
-import funbase.Primitive;
-import funbase.Primitive.PRIMITIVE;
-import funbase.Value;
 
-/** An assignable cell, as in ML.
- * 
- *  Assignable variables aren't an official feature of the GeomLab
- *  language, but the compiler makes heavy use of them for convenience.
- *  Do as I day, not as I do! */
-public class Cell extends Value {
-    private static final long serialVersionUID = 1L;
+class ByteClassLoader extends ClassLoader {
+    private String name;
 
-    /** Contents of the cell */
-    public Value contents;
-    
-    public Cell(Value contents) { 
-	Evaluator.countCons();
-	this.contents = contents; 
-    }
-   
-    @Override
-    public void printOn(PrintWriter out) {
-	out.print("ref ");
-	contents.printOn(out);
-    }
-    
-    @PRIMITIVE("_new")
-    public static Value newcell(Primitive prim, Value x) {
-	return new Cell(x); 
+    private ByteClassLoader(String name) { 
+	/* Don't fall back on the system class loader, but instead use
+	   the class loader that loaded us: this is needed for Web Start */
+	super(ByteClassLoader.class.getClassLoader());
+	this.name = name;
     }
 
-    @PRIMITIVE("_get")
-    public static Value deref(Primitive prim, Value v) {
-	Cell x = prim.cast(Cell.class, v, "cell");
-	return x.contents;
+    public Class<?> defineClass(byte[] b) {
+	return defineClass(name, b, 0, b.length);
     }
 
-    @PRIMITIVE("_set")
-    public static Value assign(Primitive prim, Value v, Value y) {
-	Cell x = prim.cast(Cell.class, v, "cell");
-	return (x.contents = y);
+    @Override 
+    public void finalize() {
+	if (Evaluator.debug > 2)
+	    System.out.printf("Discarding class %s\n", name);
+    }
+
+    public static Object instantiate(String name, byte code[]) {
+	ByteClassLoader loader = new ByteClassLoader(name);
+	Class<?> cl = loader.defineClass(code);
+
+	try {
+	    return cl.newInstance();
+	}
+	catch (Exception e) {
+	    throw new Error(e);
+	}
     }
 }

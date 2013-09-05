@@ -80,6 +80,12 @@ public class TofuTranslator implements FunCode.Jit {
 	};
     }
 
+    /** Use reflection to create a primitive */
+    public Primitive primitive(String name, int arity, 
+			       java.lang.reflect.Method meth) {
+	return translator.primitive(name, arity, meth);
+    }
+
     @Override
     public String[] getContext(String me) {
 	return translator.getContext(me);

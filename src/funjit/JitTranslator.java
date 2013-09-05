@@ -42,6 +42,7 @@ import funbase.Evaluator;
 import funbase.Value.FunValue;
 import funbase.Function.Closure;
 import funbase.FunCode.Opcode;
+import funbase.Primitive;
 
 import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
@@ -56,8 +57,8 @@ public class JitTranslator implements FunCode.Jit {
 
     /* Stack layout:
 
-         0: this
-	 1: arg 0	OR  1: args
+         0: this        OR  0: this
+	 1: arg 0	    1: args
 	 2: arg 1	    2: nargs
 	 ...                3: temp
          n: arg n-1         4: local 0
@@ -683,28 +684,7 @@ public class JitTranslator implements FunCode.Jit {
 	return String.format("G%04d_%s", ++gcount, name);
     }
 
-    private static class MyClassLoader extends ClassLoader {
-	private String name;
-
-	public MyClassLoader(String name) { 
-	    /* Don't fall back on the system class loader, but instead use
-	       the class loader that loaded us: this is needed for Web Start */
-	    super(MyClassLoader.class.getClassLoader());
-	    this.name = name;
-	}
-	
-	public Class<?> defineClass(byte[] b) {
-	    return defineClass(name, b, 0, b.length);
-	}
-
-	@Override 
-	public void finalize() {
-	    if (Evaluator.debug > 2)
-		System.out.printf("Discarding class %s\n", name);
-	}
-    }
-
-    /** Table for intepreting stack traces */
+    /** Table for interpreting stack traces */
     private Map<String, WeakReference<FunCode>> classTable = 
 	new HashMap<String, WeakReference<FunCode>>();
         /* The table will fill up with junk over time, but the weak references
@@ -735,18 +715,63 @@ public class JitTranslator implements FunCode.Jit {
 	    catch (java.io.IOException _) { }
 	}
 
-	MyClassLoader loader = new MyClassLoader(className);
-	Class<?> bodyclass = loader.defineClass(code);
 	classTable.put(className, new WeakReference<FunCode>(funcode));
+	JitFunction body = 
+	    (JitFunction) ByteClassLoader.instantiate(className, code);
+	body.init(funcode);
+	return body;
+    }
 
-	try {
-	    JitFunction body = (JitFunction) bodyclass.newInstance();
-	    body.init(funcode);
-	    return body;
+    /** Use reflection to create a primitive */
+    public Primitive primitive(String name, int arity, 
+			       java.lang.reflect.Method meth) {
+	Class<?> cl = meth.getDeclaringClass();
+	String prim = meth.getName();
+	boolean small = (arity < MANY);
+
+	// class Prim_name extends Primitive.Prim<n>
+	className = "Prim_" + prim;
+	clfile = new ClassFile(ACC_PUBLIC+ACC_SUPER, className, 
+			       (small ? primsmall_cl+arity : primlarge_cl));
+
+	// public Prim_name() { super(name); }
+	code = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
+	if (small) {
+	    code.gen(ALOAD, 0);
+	    code.gen(CONST, name);
+	    code.gen(INVOKESPECIAL, primsmall_cl+arity, "<init>", fun_S_t);
+	} else {
+	    code.gen(ALOAD, 0);
+	    code.gen(CONST, name);
+	    code.gen(CONST, arity);
+	    code.gen(INVOKESPECIAL, primlarge_cl, "<init>", fun_SI_t);
 	}
-	catch (Exception e) {
-	    throw new Error(e);
+	code.gen(RETURN);
+
+	// public Value apply<n>(Value arg1, ..., Value arg<n>) {
+	// return cl.name(this, arg1, ..., arg<n>)
+	String clname = cl.getName();
+	if (small) {
+	    code = clfile.addMethod(ACC_PUBLIC, "apply"+arity, applyn_t[arity]);
+	    code.gen(ALOAD, 0); // this
+	    for (int i = 0; i < arity; i++) code.gen(ALOAD, i+1);
+	} else {
+	    code = clfile.addMethod(ACC_PUBLIC, "applyN", applyN_t);
+	    code.gen(ALOAD, 0); // this
+	    for (int i = 0; i < arity; i++) {
+		code.gen(ALOAD, 1); // args
+		code.gen(ILOAD, 2); // base
+		code.gen(CONST, i);
+		code.gen(IADD);
+		code.gen(AALOAD);
+	    }
 	}
+	code.gen(INVOKESTATIC, clname.replace('.', '/'), prim, 
+		 make_prim_t(arity));
+	code.gen(ARETURN);
+	
+	byte code[] = clfile.toByteArray();
+	return (Primitive) ByteClassLoader.instantiate(className, code);
     }
 
     @Override 

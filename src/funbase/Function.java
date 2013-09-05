@@ -200,6 +200,7 @@ public abstract class Function implements Serializable {
     }
 
     public static final Function nullFunction = new Function(-1) {
+	@Override
 	public Value apply(Value args[], int base, int nargs) {
 	    Evaluator.err_apply();
 	    return null;

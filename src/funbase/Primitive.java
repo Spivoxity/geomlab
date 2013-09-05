@@ -32,7 +32,8 @@ package funbase;
 
 import java.util.*;
 import java.io.*;
-import java.lang.reflect.Array;
+import java.lang.reflect.*;
+import java.lang.annotation.*;
 
 import funbase.Evaluator.*;
 import funbase.Value.WrongKindException;
@@ -278,14 +279,52 @@ public abstract class Primitive extends Function {
 	    return applyN(args, base);
 	}
     }
-    
+
+    public static Primitive reflect(String name, int arity, final Method meth) {
+	// We could gain some efficiency by defining reflect0 ... reflect6,
+	// but it's better to use dynamic code generation to avoid reflection
+	// entirely.
+
+	return new PrimN(name, arity) {
+	    public Value applyN(Value args[], int base) {
+		Object theArgs[] = new Object[arity+1];
+		theArgs[0] = this;
+		System.arraycopy(args, base, theArgs, 1, arity);
+		try {
+		    return (Value) meth.invoke(null, theArgs);
+		}
+		catch (InvocationTargetException e) {
+		    Throwable e0 = e.getCause();
+		    if (e0 instanceof Error)
+			throw (Error) e0;
+		    else if (e0 instanceof RuntimeException)
+			throw (RuntimeException) e0;
+		    else
+			throw new Error(e0);
+		}
+		catch (IllegalAccessException _) {
+		    throw new Error("reflection failed for " + name);
+		}
+	    }
+	};
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface PRIMITIVE {
+	public String value() default "";
+    }
+
     /** Table of all primitives */
     protected static Map<String, Primitive> primitives = 
 	new HashMap<String, Primitive>(100);
     
     /** Register a new primitive */
-    public static void register(Primitive p) {
+    public static void register(Primitive p, boolean install) {
 	primitives.put(p.name, p);
+	if (install) {
+	    Name n = Name.find(p.name);
+	    n.setGlodef(Value.makeFunValue(p), null);
+	}
     }
     
     /** Find a registered primitive */

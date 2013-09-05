@@ -34,6 +34,7 @@ import java.io.PrintWriter;
 
 import funbase.Value;
 import funbase.Primitive;
+import funbase.Primitive.PRIMITIVE;
 import funbase.Evaluator;
 
 /** An affine transformation in 2D, represented by six real coefficients:
@@ -164,33 +165,32 @@ public class Tran2D extends Value {
 	Value.printNumber(out, m_y); out.print(")");
     }
 
-    public static final Primitive primitives[] = {
-	new Primitive.Prim6("transform") {
-	    @Override
-	    public Value apply6(Value m_xx, Value m_yx, Value m_xy, 
-				Value m_yy, Value m_x, Value m_y) {
-		return new Tran2D((float) number(m_xx), (float) number(m_yx), 
-				  (float) number(m_xy), (float) number(m_yy), 
-				  (float) number(m_x), (float) number(m_y));
-	    }
+    @PRIMITIVE
+    public static final Primitive trans = new Primitive.Prim6("_transform") {
+	@Override
+	public Value apply6(Value m_xx, Value m_yx, Value m_xy, 
+			    Value m_yy, Value m_x, Value m_y) {
+	    return new Tran2D((float) number(m_xx), (float) number(m_yx), 
+			      (float) number(m_xy), (float) number(m_yy), 
+			      (float) number(m_x), (float) number(m_y));
+	}
 
-	    private Value args[] = new Value[6];
+	private Value args[] = new Value[6];
 
-	    @Override
-	    public Value[] pattMatch(Value obj, int nargs) {
-		if (nargs != 6) Evaluator.err_patnargs(name);
+	@Override
+	public Value[] pattMatch(Value obj, int nargs) {
+	    if (nargs != 6) Evaluator.err_patnargs(name);
 
-		if (! (obj instanceof Tran2D)) return null;
+	    if (! (obj instanceof Tran2D)) return null;
 
-		Tran2D v = (Tran2D) obj;
-		args[0] = Value.makeNumValue(v.m_xx); 
-		args[1] = Value.makeNumValue(v.m_yx);
-		args[2] = Value.makeNumValue(v.m_xy); 
-		args[3] = Value.makeNumValue(v.m_yy);
-		args[4] = Value.makeNumValue(v.m_x); 
-		args[5] = Value.makeNumValue(v.m_y);
-		return args;
-	    }
+	    Tran2D v = (Tran2D) obj;
+	    args[0] = Value.makeNumValue(v.m_xx); 
+	    args[1] = Value.makeNumValue(v.m_yx);
+	    args[2] = Value.makeNumValue(v.m_xy); 
+	    args[3] = Value.makeNumValue(v.m_yy);
+	    args[4] = Value.makeNumValue(v.m_x); 
+	    args[5] = Value.makeNumValue(v.m_y);
+	    return args;
 	}
     };
 }

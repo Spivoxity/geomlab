@@ -69,7 +69,7 @@ public class BootLoader {
 
 	    Name x = (Name) get("atom");
 	    Value v = value();
-	    x.setGlodef(v, null);
+	    x.setGlodef(v, null, true);
 	}
     }
     

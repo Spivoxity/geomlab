@@ -41,333 +41,257 @@ import funbase.Name;
 import funbase.FunCode;
 import funbase.Evaluator;
 import funbase.Scanner;
+import funbase.Primitive.PRIMITIVE;
 
 /** Basic primitives for handling numbers, booleans and lists */
 public class BasicPrims {
-    public static final Primitive primitives[] = {
-	new Primitive.Prim2("=") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeBoolValue(x.equals(y));
-	    }
-	},
+    @PRIMITIVE("=")
+    public static Value equal(Primitive prim, Value x, Value y) {
+	return Value.makeBoolValue(x.equals(y));
+    }
+    
+    @PRIMITIVE("<>")
+    public static Value unequal(Primitive prim, Value x, Value y) {
+	return Value.makeBoolValue(! x.equals(y));
+    }
 	
-	new Primitive.Prim2("<>") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeBoolValue(! x.equals(y));
-	    }
-	},
+    @PRIMITIVE("+")
+    public static Value plus(Primitive prim, Value x, Value y) {
+	return Value.makeNumValue(prim.number(x) + prim.number(y));
+    }
+
+    @PRIMITIVE("-")
+    public static Value minus(Primitive prim, Value x, Value y) {
+	return Value.makeNumValue(prim.number(x) - prim.number(y));
+    }
+
+    @PRIMITIVE("*")
+    public static Value times(Primitive prim, Value x, Value y) {
+	return Value.makeNumValue(prim.number(x) * prim.number(y));
+    }
+
+    @PRIMITIVE("/")
+    public static Value divide(Primitive prim, Value x, Value y) {
+	double yy = prim.number(y);
+	if (yy == 0.0) 
+	    Evaluator.error("division by zero", "#divzero");
+	return Value.makeNumValue(prim.number(x) / yy);
+    }
 	
-	new Primitive.Prim2("+") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeNumValue(number(x) + number(y));
-	    }
-	},
+    @PRIMITIVE
+    public static final Primitive uminus = new Primitive.Prim1("_uminus") {
+	@Override 
+	public Value apply1(Value x) {
+	    return Value.makeNumValue(- number(x));
+	}
 
-	new Primitive.Prim2("-") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeNumValue(number(x) - number(y));
-	    }
-	},
-	
-	new Primitive.Prim2("*") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeNumValue(number(x) * number(y));
-	    }
-	},
-	
-	new Primitive.Prim2("/") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		if (number(y) == 0.0) 
-		    Evaluator.error("division by zero", "#divzero");
-		return Value.makeNumValue(number(x) / number(y));
-	    }
-	},
-	
-	new Primitive.Prim1("uminus") {
-	    @Override 
-	    public Value apply1(Value x) {
-		return Value.makeNumValue(- number(x));
-	    }
-
-	    @Override 
-	    public String getPName() {
-		return "unary -";
-	    }
-	},
-	
-	new Primitive.Prim2("<") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeBoolValue(number(x) < number(y));
-	    }
-	},
-	
-	new Primitive.Prim2("<=") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeBoolValue(number(x) <= number(y));
-	    }
-	},
-	
-	new Primitive.Prim2(">") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeBoolValue(number(x) > number(y));
-	    }
-	},
-	
-	new Primitive.Prim2(">=") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		return Value.makeBoolValue(number(x) >= number(y));
-	    }
-	},
-	
-	new Primitive.Prim1("numeric") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeBoolValue(x instanceof Value.NumValue);
-	    }
-	},
-	
-	new Primitive.Prim1("int") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeNumValue(Math.floor(number(x)));
-	    }
-	},
-	
-	new Primitive.Prim1("sqrt") {
-	    @Override
-	    public Value apply1(Value x) {
-		if (number(x) < 0.0) 
-		    Evaluator.error("taking square root of a negative number", 
-				     "#sqrt");
-		return Value.makeNumValue(Math.sqrt(number(x)));
-	    }
-	},
-	
-	new Primitive.Prim1("exp") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeNumValue(Math.exp(number(x)));
-	    }
-	},
-
-	new Primitive.Prim1("sin") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeNumValue
-		    (Math.sin(number(x) * Math.PI / 180));
-	    }
-	},
-	
-	new Primitive.Prim1("cos") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeNumValue
-		    (Math.cos(number(x) * Math.PI / 180));
-	    }
-	},
-	
-	new Primitive.Prim1("tan") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Value.makeNumValue
-		    (Math.tan(number(x) * Math.PI / 180));
-	    }
-	},
-	
-	new Primitive.Prim2("atan2") {
-	    @Override
-	    public Value apply2(Value y, Value x) {
-		return Value.makeNumValue
-		    (Math.atan2(number(y), number(x)) * 180 / Math.PI);
-	    }
-	},
-
-	new Primitive.Prim0("random") {
-	    @Override
-	    public Value apply0() {
-		return Value.makeNumValue(Math.random());
-	    }
-	},
-	
-	new Primitive.Prim1("name") {
-	    @Override
-	    public Value apply1(Value x) {
-		return Name.find(string(x));
-	    }
-	},
-
-	new Primitive.Prim1("head") {
-	    @Override
-	    public Value apply1(Value x) { return head(x); }
-	},
-	
-	new Primitive.Prim1("tail") {
-	    @Override
-	    public Value apply1(Value x) { return tail(x); }
-	},
-	
-	new Primitive.Prim2(":") {
-	    @Override
-	    public Value apply2(Value hd, Value tl) {
-		if (! isCons(tl) && ! tl.equals(Value.nil)) expect("list");
-		return Value.cons(hd, tl);
-	    }
-	    
-	    private Value args[] = new Value[2];
-
-	    @Override
-	    public Value[] pattMatch(Value obj, int nargs) {
-		if (nargs != 2) Evaluator.err_patnargs(name);
-		try {
-		    Value.ConsValue cell = (Value.ConsValue) obj;
-		    args[0] = cell.tail;
-		    args[1] = cell.head;
-		    return args;
-		}
-		catch (ClassCastException _) {
-		    return null;
-		}
-	    }
-	},
-
-        /* A few system-oriented primitives */
-
-        new Primitive.Prim1("primitive") {
-            /* Look up a primitive */
-            @Override
-	    public Value apply1(Value name) {
-        	return Value.makeFunValue(Primitive.find(string(name)));
-            }
-        },
-
-	FunCode.assemble,
-
-	new Primitive.Prim1("glodef") {
-	    @Override
-	    public Value apply1(Value x) {
-		Name n = name(x);
-		Value v = n.getGlodef();
-		if (v == null) Evaluator.err_notdef(n);
-		return v;
-	    }
-	},
-
-	new Primitive.Prim2("apply") {
-	    @Override
-	    public Value apply2(Value x, Value y) {
-		try {
-		    Value.FunValue fun = (Value.FunValue) x;
-		    Value args[] = toArray(y);
-		    return fun.apply(args);
-		}
-		catch (ClassCastException _) {
-		    Evaluator.err_apply();
-		    return null;
-		}
-	    }
-	},
-
-	new Primitive.Prim1("closure") {
-	    @Override
-	    public Value apply1(Value x) {
-		FunCode body = cast(FunCode.class, x, "funcode");
-		return body.makeClosure(new Value[1]);
-	    }
-	},
-
-        new Primitive.Prim0("freeze") {
-            @Override
-            public Value apply0() {
-        	Name.freezeGlobals();
-        	return Value.nil;
-            }
-        },
-
-	new Primitive.Prim1("frozen") {
-	    @Override
-	    public Value apply1(Value x) {
-		Name n = name(x);
-		return Value.makeBoolValue(n.isFrozen());
-	    }
-	},
-
-	new Primitive.Prim1("spelling") {
-	    @Override
-	    public Value apply1(Value x) {
-		Name n = name(x);
-		return Value.makeStringValue(n.toString());
-	    }
-	},
-
-	new Primitive.Prim0("gensym") {
-	    private int g = 0;
-
-	    @Override
-	    public Value apply0() {
-		return Name.find(String.format("$g%d", ++g));
-	    }
-	},
-
-        new Primitive.Prim2("error") {
-            @Override
-	    public Value apply2(Value msg, Value help) {
-        	Evaluator.error(string(msg), string(help));
-        	return null;
-            }
-        },
-        
-	new Primitive.Prim4("token") {
-	    @Override
-	    public Value apply4(Value tag, Value tok, Value p, Value rp) {
-		Scanner.makeToken(name(tag), name(tok), (int) number(p), 
-				  (int) number(rp));
-		return Value.nil;
-	    }
-	},
-
-	new Primitive.Prim1("priority") {
-	    @Override
-	    public Value apply1(Value x) {
-		Name n = name(x);
-		return Value.makeList(Value.makeNumValue(n.prio),
-				      Value.makeNumValue(n.rprio));
-	    }
-	},
-
-        new Primitive.Prim3("limit") {
-            @Override
-	    public Value apply3(Value time, Value steps, Value conses) {
-               Evaluator.setLimits((int) number(time),
-				   (int) number(steps), 
-				   (int) number(conses));
-               return Value.nil;
-           }
-        },
-
-        new Primitive.Prim1("dump") {
-            @Override
-            public Value apply1(Value x) {
-		try {
-		    String fname = string(x);
-		    PrintWriter out = 
-			new PrintWriter(new BufferedWriter
-					(new FileWriter(fname)));
-		    Name.dumpNames(out);
-		    return Value.nil;
-		} catch (IOException e) {
-		    throw new Evaluator.EvalException(e.getMessage());
-		}
-            }
-        }
+	@Override 
+	public String getPName() { return "unary -"; }
     };
+
+    @PRIMITIVE("<")
+    public static Value less(Primitive prim, Value x, Value y) {
+	return Value.makeBoolValue(prim.number(x) < prim.number(y));
+    }
+
+    @PRIMITIVE("<=")
+    public static Value lesseq(Primitive prim, Value x, Value y) {
+	return Value.makeBoolValue(prim.number(x) <= prim.number(y));
+    }
+
+    @PRIMITIVE(">")
+    public static Value greater(Primitive prim, Value x, Value y) {
+	return Value.makeBoolValue(prim.number(x) > prim.number(y));
+    }
+
+    @PRIMITIVE(">=")
+    public static Value greatereq(Primitive prim, Value x, Value y) {
+	return Value.makeBoolValue(prim.number(x) >= prim.number(y));
+    }
+
+    @PRIMITIVE
+    public static Value numeric(Primitive prim, Value x) {
+	return Value.makeBoolValue(x instanceof Value.NumValue);
+    }
+	
+    @PRIMITIVE("int")
+    public static Value intpart(Primitive prim, Value x) {
+	return Value.makeNumValue(Math.floor(prim.number(x)));
+    }
+
+    @PRIMITIVE
+    public static Value sqrt(Primitive prim, Value x) {
+	double arg = prim.number(x);
+	if (arg < 0.0) 
+	    Evaluator.error("taking square root of a negative number", "#sqrt");
+	return Value.makeNumValue(Math.sqrt(arg));
+    }
+
+    @PRIMITIVE
+    public static Value exp(Primitive prim, Value x) {
+	return Value.makeNumValue(Math.exp(prim.number(x)));
+    }
+
+    @PRIMITIVE
+    public static Value sin(Primitive prim, Value x) {
+	return Value.makeNumValue(Math.sin(prim.number(x) * Math.PI / 180));
+    }
+	
+    @PRIMITIVE
+    public static Value cos(Primitive prim, Value x) {
+	return Value.makeNumValue(Math.cos(prim.number(x) * Math.PI / 180));
+    }
+	
+    @PRIMITIVE
+    public static Value tan(Primitive prim, Value x) {
+	return Value.makeNumValue(Math.sin(prim.number(x) * Math.PI / 180));
+    }
+	
+    @PRIMITIVE
+    public static Value atan2(Primitive prim, Value y, Value x) {
+	return Value.makeNumValue(Math.atan2(prim.number(y), prim.number(x)) 
+				  * 180 / Math.PI);
+    }
+
+    @PRIMITIVE
+    public static Value random(Primitive prim) {
+	return Value.makeNumValue(Math.random());
+    }
+
+    @PRIMITIVE
+    public static Value name(Primitive prim, Value x) {
+	return Name.find(prim.string(x));
+    }
+
+    @PRIMITIVE
+    public static final Primitive cons = new Primitive.Prim2(":") {
+	@Override
+	public Value apply2(Value hd, Value tl) {
+	    if (! isCons(tl) && ! tl.equals(Value.nil)) expect("list");
+	    return Value.cons(hd, tl);
+	}
+	    
+	private Value args[] = new Value[2];
+
+	@Override
+	public Value[] pattMatch(Value obj, int nargs) {
+	    if (nargs != 2) Evaluator.err_patnargs(name);
+	    try {
+		Value.ConsValue cell = (Value.ConsValue) obj;
+		args[0] = cell.tail;
+		args[1] = cell.head;
+		return args;
+	    }
+	    catch (ClassCastException _) {
+		return null;
+	    }
+	}
+    };
+
+    @PRIMITIVE
+    public static Value head(Primitive prim, Value x) {
+	return prim.head(x);
+    }
+	
+    @PRIMITIVE
+    public static Value tail(Primitive prim, Value x) {
+	return prim.tail(x);
+    }
+	
+    /* A few system-oriented primitives */
+
+    @PRIMITIVE
+    public static Value _glodef(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	Value v = n.getGlodef();
+	if (v == null) Evaluator.err_notdef(n);
+	return v;
+    }
+
+    @PRIMITIVE
+    public static Value _apply(Primitive prim, Value x, Value y) {
+	try {
+	    Value.FunValue fun = (Value.FunValue) x;
+	    Value args[] = prim.toArray(y);
+	    return fun.apply(args);
+	}
+	catch (ClassCastException _) {
+	    Evaluator.err_apply();
+	    return null;
+	}
+    }
+
+    @PRIMITIVE
+    public static Value _closure(Primitive prim, Value x) {
+	FunCode body = prim.cast(FunCode.class, x, "funcode");
+	return body.makeClosure(new Value[1]);
+    }
+
+    @PRIMITIVE
+    public static Value _freeze(Primitive prim) {
+	Name.freezeGlobals();
+	return Value.nil;
+    }
+
+    @PRIMITIVE
+    public static Value _frozen(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	return Value.makeBoolValue(n.isFrozen());
+    }
+
+    @PRIMITIVE
+    public static Value _spelling(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	return Value.makeStringValue(n.toString());
+    }
+
+    private static int g = 0;
+
+    @PRIMITIVE
+    public static Value _gensym(Primitive prim) {
+	return Name.find(String.format("$g%d", ++g));
+    }
+
+    @PRIMITIVE
+    public static Value _error(Primitive prim, Value msg, Value help) {
+	Evaluator.error(prim.string(msg), prim.string(help));
+	return null;
+    }
+
+    @PRIMITIVE
+    public static Value _token(Primitive prim, Value tag, Value tok, 
+			       Value p, Value rp) {
+	Scanner.makeToken(prim.name(tag), prim.name(tok), 
+			  (int) prim.number(p), (int) prim.number(rp));
+	return Value.nil;
+    }
+
+    @PRIMITIVE
+    public static Value _priority(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	return Value.makeList(Value.makeNumValue(n.prio),
+			      Value.makeNumValue(n.rprio));
+    }
+
+    @PRIMITIVE
+    public static Value _limit(Primitive prim, Value time, 
+			       Value steps, Value conses) {
+	Evaluator.setLimits((int) prim.number(time),
+			    (int) prim.number(steps), 
+			    (int) prim.number(conses));
+	return Value.nil;
+    }
+
+    @PRIMITIVE
+    public static Value _dump(Primitive prim, Value x) {
+	try {
+	    String fname = prim.string(x);
+	    PrintWriter out = 
+		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
+	    Name.dumpNames(out);
+	    return Value.nil;
+	} catch (IOException e) {
+	    throw new Evaluator.EvalException(e.getMessage());
+	}
+    }
 }

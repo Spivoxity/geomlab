@@ -31,6 +31,7 @@
 package funbase;
 
 import java.util.Stack;
+import java.lang.reflect.Method;
 
 import funbase.Value.WrongKindException;
 
@@ -49,6 +50,11 @@ public class Interp implements FunCode.Jit {
 	    }
 	};
     }  
+
+    /** Use reflection to create a primitive */
+    public Primitive primitive(String name, int arity, Method meth) {
+	return Primitive.reflect(name, arity, meth);
+    }
 
     @Override
     public void initStack() {
@@ -144,9 +150,6 @@ public class Interp implements FunCode.Jit {
 			frame[sp++] = Value.nil;
 			break;
 
-		    case PRECONS:
-			break;
-
 		    case CONS:
 			sp--;
 			frame[sp-1] = Value.cons(frame[sp-1], frame[sp]);
@@ -230,8 +233,8 @@ public class Interp implements FunCode.Jit {
 		    case MCONS: {
 			try {
 			    Value.ConsValue cell = 
-				(Value.ConsValue) frame[sp];
-			    frame[++sp] = cell.head;
+				(Value.ConsValue) frame[sp-1];
+			    frame[sp++] = cell.head;
 			} catch (ClassCastException _) {
 			    pc = trap;
 			}
@@ -239,7 +242,7 @@ public class Interp implements FunCode.Jit {
 		    }
 
 		    case GETTAIL:
-			frame[sp] = ((Value.ConsValue) frame[sp]).tail;
+			frame[sp-1] = ((Value.ConsValue) frame[sp-1]).tail;
 			break;
 
 		    case MPRIM: {
@@ -252,12 +255,14 @@ public class Interp implements FunCode.Jit {
 			    System.arraycopy(vs, 0, frame, sp, rand);
 			    sp += rand;
 			}
+			break;
 		    }
 
 		    case PREP:
 		    case PUTARG:
 		    case CLOPREP:
 		    case PUTFVAR:
+		    case PRECONS:
 			// Used only by JIT
 			break;
 

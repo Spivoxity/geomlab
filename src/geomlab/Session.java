@@ -33,10 +33,12 @@ package geomlab;
 import funbase.Name;
 import funbase.Primitive;
 import funbase.Scanner;
+import funbase.Primitive.PRIMITIVE;
+import funbase.FunCode;
 import geomlab.Command.CommandException;
 
 import java.io.*;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -57,16 +59,35 @@ public class Session {
     /** Table of loaded plugins */
     private static Set<String> plugins = new LinkedHashSet<String>(10);
     
-    /** Install a class containing primitives */
-    public static void installPlugin(Class<?> plugin) throws CommandException {
+    /** Load a class containing primitives */
+    public static void loadPlugin(Class<?> plugin, boolean install) 
+						throws CommandException {
 	if (plugins.contains(plugin.getName())) return;
 	plugins.add(plugin.getName());
 
 	try {
-	    Field primField = plugin.getField("primitives");
-	    Primitive prims[] = (Primitive []) primField.get(null);
-	    for (int i = 0; i < prims.length; i++) 
-		Primitive.register(prims[i]);
+	    // Look for the PRIMITIVE annotation on methods
+	    for (Method m : plugin.getDeclaredMethods()) {
+		PRIMITIVE spec = m.getAnnotation(PRIMITIVE.class);
+		if (spec != null) {
+		    String name = spec.value();
+		    if (name.equals("")) name = m.getName();
+		    Class params[] = m.getParameterTypes();
+		    // Cross your fingers
+		    int arity = params.length-1;
+		    Primitive p = FunCode.primitive(name, arity, m);
+		    Primitive.register(p, install);
+		}
+	    }
+
+	    // Class variables too
+	    for (Field f : plugin.getDeclaredFields()) {
+		PRIMITIVE spec = f.getAnnotation(PRIMITIVE.class);
+		if (spec != null) {
+		    Primitive p = (Primitive) f.get(null);
+		    Primitive.register(p, install);
+		}
+	    }
 	}
 	catch (Exception e) {
 	    throw new CommandException(e.toString(), "#nohelp"); 
@@ -123,7 +144,7 @@ public class Session {
 	    Set<String> sessionPlugins = (Set<String>) in.readObject();
 	    for (String x : sessionPlugins) {
 		Class<?> plugin = Class.forName(x);
-		installPlugin(plugin);
+		loadPlugin(plugin, false);
 	    }
 	
 	    // Read definitions for global names

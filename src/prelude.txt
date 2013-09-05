@@ -35,55 +35,15 @@ define _top = __top();
  
 { INSTALL LOADABLE MODULES }
 
-define _install = _primitive("install");
-define _freeze = _primitive("freeze");
-define _error = _primitive("error");
-define _load = _primitive("load");
-define _limit = _primitive("limit");
-define _save = _primitive("save");
-define _restore = _primitive("restore");
-define quit = _primitive("quit");
-
-define sqrt = _primitive("sqrt");
-define exp = _primitive("exp");
-define sin = _primitive("sin");
-define cos = _primitive("cos");
-define tan = _primitive("tan");
-define atan2 = _primitive("atan2");
-define random = _primitive("random");
-
 _install("StringPrims");
 _infixl(#^, 5);
-define ^ = _primitive("^");
-define explode = _primitive("explode");
-define implode = _primitive("implode");
-define chr = _primitive("chr");
-define ord = _primitive("ord");
 
 _install("Picture");
-define _null = _primitive("null");
-define _transpic = _primitive("transpic");
-define _combine = _primitive("combine");
-define colour = _primitive("colour");
-define aspect = _primitive("aspect");
-
 _install("TilePicture");
-define __tile = _primitive("tile");
-define _palette = _primitive("palette");
-
 _install("Vec2D");
-define _vector = _primitive("vector");
-
 _install("Tran2D");
-define _transform = _primitive("transform");
 
 _install("ColorValue");
-define rgb = _primitive("rgb");
-define hsv = _primitive("hsv");
-define rpart = _primitive("rpart");
-define gpart = _primitive("gpart");
-define bpart = _primitive("bpart");
-
 define white = rgb(1, 1, 1);
 define black = rgb(0, 0, 0);
 define red = rgb(1, 0, 0);
@@ -91,27 +51,10 @@ define green = rgb(0, 1, 0);
 define blue = rgb(0, 0, 1);
 
 _install("TurtlePicture");
-define turtle = _primitive("turtle");
-define left = _primitive("left");
-define right = _primitive("right");
-define ahead = _primitive("ahead");
-define turn = _primitive("turn");
-define pen = _primitive("pen");
-
 _install("BushPicture");
-define bush = _primitive("bush");
-define _bushparams = _primitive("bushparams");
 
 _install("ImagePicture");
-define _photo = _primitive("photo");
-define _image = _primitive("image");
-define _pixel = _primitive("pixel");
-define width = _primitive("width");
-define height = _primitive("height");
-define _resource = _primitive("resource");
-
 define image(w, h, f) = _image(w, h, function (x, y) f([x, y]));
-
 define _pixelfun(img) = function ([x, y]) _pixel(img, x, y);
 define mike = _pixelfun(_resource("mike.jpg"));
 define photo(url) = _pixelfun(_photo(url));
@@ -191,21 +134,21 @@ define black = rgb(0, 0, 0);
 
 { For convenience, allow coordinates to be specified on a W x H grid
   with the origin offset from the BL corner }
-define _tile(w, h, x0, y0, strokes, fills) =
+define __tile(w, h, x0, y0, strokes, fills) =
   let cvts(x:y:vs) = _vector((x0+x)/w, (y0+y)/h) : cvts(vs)
     | cvts([]) = [] in
   let cvtf(c:vs) = c : cvts(vs) in
-  __tile(w/h, map(cvts, strokes), map(cvtf, fills));
+  _tile(w/h, map(cvts, strokes), map(cvtf, fills));
 
-define _blank(r) = _tile(r, 1, 0, 0, [], []);
+define _blank(r) = __tile(r, 1, 0, 0, [], []);
 
 define blank = _blank(1);
 define null = _null();
 
 define solid(r, c) = 
-  _tile(r, 1, 0, 0, [], [[c, 0,0, r,0, r,1, 0,1]]);
+  __tile(r, 1, 0, 0, [], [[c, 0,0, r,0, r,1, 0,1]]);
 
-define square = _tile(1, 1, 0, 0, [[0,0, 1,0, 1,1, 0,1, 0,0]], []);
+define square = __tile(1, 1, 0, 0, [[0,0, 1,0, 1,1, 0,1, 0,0]], []);
 
 define _identity = _transform(1, 0, 0, 1, 0, 0);
 
@@ -255,7 +198,7 @@ define _super(back, front) =
 { BASIC TILES }
 
 define _stick(w, h, x, y, col, outline) =
-    _tile(w, h, x, y, [outline], [col:outline]);
+    __tile(w, h, x, y, [outline], [col:outline]);
     
 define man = 
     _stick(12, 22, -1, -1, rgb(0.85, 0.85, 1.0),
@@ -287,7 +230,7 @@ define star =
    consequently, tiles 1, 2, 3, 4 become C, A, D, B }
    
 define C =
-    rot(_tile(16, 16, 0, 0,
+    rot(__tile(16, 16, 0, 0,
         [[11,0, 8,8, 7,11, 5,13, 0,16],		{ Top of large body }
             [0,4, 0,8, 3,5, 0,4],               { Left eye }
             [4,6, 4,10, 7,7, 4,6],              { Right eye }
@@ -309,7 +252,7 @@ define C =
             [1, 16,12, 12,12, 8,14, 8,16, 16,16]]));
     
 define A =
-    rot(_tile(16, 16, 0, 0,
+    rot(__tile(16, 16, 0, 0,
         [[0,16, 0,12, 8,16],                    { Top of upper body }
             [0,0, 0,8, 5,7, 8,8, 11,9, 13,11, 16,16],
 						{ Bottom of upper body }
@@ -335,7 +278,7 @@ define A =
             [0, 16,8, 14,8, 12,4, 12,0, 16,0]]));
     
 define D =
-    rot(_tile(16, 16, 0, 0,
+    rot(__tile(16, 16, 0, 0,
         [[0,16, 2,12, 8,8, 16,4, 16,0],         { Bottom of body }
             [11,16, 12,12, 16,8],               { Top of body }
             [6,16, 10,10, 16,6],                { Median }
@@ -354,7 +297,7 @@ define D =
             [3, 0,0, 8,8, 16,4, 16,0]]));
 
 define B =
-    rot(_tile(16, 16, 0, 0,
+    rot(__tile(16, 16, 0, 0,
         [[0,0, 4,2, 8,2, 16,0],                 { Bottom of large body }
             [16,0, 11,3, 9,5, 8,8, 6,6, 0,8],   { Top of large body }
             [8,8, 7,11, 8,16, 0,16],            { Left side of small body }
@@ -373,7 +316,7 @@ define B =
             [3, 0,0, 4,2, 8,2, 16,0]]));
 
 define E =
-    _tile(16, 16, 0, 0,
+    __tile(16, 16, 0, 0,
         [[11,0, 8,8, 7,11, 5,13, 0,16],         { Top of large body }
             [0,4, 0,8, 3,5, 0,4],               { Left eye }
             [4,6, 4,10, 7,7, 4,6],              { Right eye }
@@ -388,7 +331,7 @@ define E =
             [1, 0,16, 8,14, 12,14, 16,16]]);   
             
 define F =
-    _rot2(_tile(16, 16, 0, 0,
+    _rot2(__tile(16, 16, 0, 0,
         [[0,16, 2,12, 8,8, 16,4, 16,0],         { Bottom of body }
             [11,16, 12,12, 16,8],               { Top of body }
             [6,16, 10,10, 16,6],                { Median }
@@ -408,11 +351,11 @@ define _close(path) = path ++ [head(path), head(tail(path))];
 
 define bend =
     let p = [2,0.8, 1.2,0.8, 1.2,0, 0.8,0, 0.8,1.2, 2,1.2] in
-    _tile(2, 2, 0, 0, [_close(p)], [rgb(0,0,0):p]);
+    __tile(2, 2, 0, 0, [_close(p)], [rgb(0,0,0):p]);
 
 define straight = 
     let p = [0,0.8, 2,0.8, 2,1.2, 0,1.2] in
-    _tile(2, 2, 0, 0, [_close(p)], [rgb(0,0,0):p]);
+    __tile(2, 2, 0, 0, [_close(p)], [rgb(0,0,0):p]);
 
 define nub = 
     let c = 0.2 in
@@ -420,7 +363,7 @@ define nub =
     let b = c*sqrt(2) in
     let p = [2-c,0, 2-c,1-a, 1-b,2, 2,3+b, 3+a,2+c, 4,2+c,
 		  4,2-c, 3-a,2-c, 2,3-b, 1+b,2, 2+c,1+a, 2+c,0] in
-    _tile(4, 4, 0, 0, [_close(p)], [rgb(0,0,0):p]);
+    __tile(4, 4, 0, 0, [_close(p)], [rgb(0,0,0):p]);
 
 define link = 
     let c = 0.2 in
@@ -428,18 +371,18 @@ define link =
     let b = c*sqrt(2) in
     let p = [2-c,0, 2-c,1-a, 1-a,2-c, 0,2-c, 0,2+c, 1+a,2+c, 2+c,1+a, 2+c,0] in
     let q = [2+c,4, 2+c,3+a, 3+a,2+c, 4,2+c, 4,2-c, 3-a,2-c, 2-c,3-a, 2-c,4] in
-    _tile(4, 4, 0, 0, [_close(p), _close(q)], [rgb(0,0,0):p, rgb(0,0,0):q]);
+    __tile(4, 4, 0, 0, [_close(p), _close(q)], [rgb(0,0,0):p, rgb(0,0,0):q]);
     
 define expand(f, x0, 0) = x0 
   | expand(f, x0, n+1) = expand(f, implode(map(f, explode(x0))), n);
 
-define border1(p) =
+define border(p) =
   let r = aspect(p) in
-  _super(p, _tile(r, 1, 0, 0, [[0,0, r,0, r,1, 0,1, 0,0]], []));
+  _super(p, __tile(r, 1, 0, 0, [[0,0, r,0, r,1, 0,1, 0,0]], []));
   
 define background(p, c) =
   let r = aspect(p) in
-  _super(_tile(r, 1, 0, 0, [], [[c, 0,0, r,0, r,1, 0,1]]), p);
+  _super(__tile(r, 1, 0, 0, [], [[c, 0,0, r,0, r,1, 0,1]]), p);
 
 
 { Freeze all definitions made so far }

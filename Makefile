@@ -7,10 +7,11 @@ JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
 SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
 RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
-	$(HELP:%=%.html) properties icon16.png icon32.png icon64.png icon128.png
+	$(HELP:%=%.html) properties
+ICONS = icon16.png icon32.png icon64.png icon128.png
 IMAGES = obj/geomlab.gls examples.gls
 
-all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES)
+all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES) $(ICONS:%=obj/%)
 
 prep: force
 	@mkdir -p obj
@@ -33,8 +34,7 @@ obj/icon%.png: obj/icon128.png
 
 RUNSCRIPT = java -cp obj -ea geomlab.RunScript
 
-obj/geomlab.gls: .compiled src/boot.txt src/compiler.txt src/prelude.txt \
-		$(RESOURCES:%=obj/%)
+obj/geomlab.gls: .compiled src/boot.txt src/compiler.txt src/prelude.txt
 	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt src/compiler.txt \
 		src/prelude.txt -e '_save("$@")'
 
@@ -42,12 +42,9 @@ examples.gls: obj/geomlab.gls progs/examples.txt
 	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'
 
 bootstrap: .compiled force 
-	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt \
-		-e 'let dump = _primitive("dump") in dump("stage1.boot")'
-	$(RUNSCRIPT) -b stage1.boot src/compiler.txt \
-		-e 'let dump = _primitive("dump") in dump("stage2.boot")'
-	$(RUNSCRIPT) -b stage2.boot src/compiler.txt \
-		-e 'let dump = _primitive("dump") in dump("stage3.boot")'
+	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("stage1.boot")'
+	$(RUNSCRIPT) -b stage1.boot src/compiler.txt -e '_dump("stage2.boot")'
+	$(RUNSCRIPT) -b stage2.boot src/compiler.txt -e '_dump("stage3.boot")'
 	cmp stage2.boot stage3.boot
 
 bootup: stage2.boot force
