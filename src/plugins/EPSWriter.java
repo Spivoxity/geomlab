@@ -341,7 +341,7 @@ public class EPSWriter extends Stylus {
     /** Save a picture as Encapsulated PostScript */
     public static Value epswrite(Primitive prim, Value a0, Value a1, 
 				 Value a2, Value a3, Value a4) {
-	Picture pic = prim.cast(Picture.class, a0, "picture");
+	Picture pic = prim.cast(Picture.class, a0, "a picture");
 	String fname = prim.string(a1);
 	float meanSize = (float) prim.number(a2);
 	float slider = (float) prim.number(a3);
@@ -369,7 +369,7 @@ public class EPSWriter extends Stylus {
 	    g.close();
 	}
 	catch (IOException e) {
-	    Evaluator.error("I/O failed: " + e.getMessage());
+	    Evaluator.error("#epswrite", e);
 	}
 	
 	return Value.nil;		

@@ -129,6 +129,8 @@ define __top() =
     sections like (2*x+), where we discover that it is a section only after 
     parsing the 2*x. }
 
+  let synerror(tag) = _synerror(tag, []) in
+
   { describe -- string describing a token for error messages }
   let describe(#ident) = "an identifier"
     | describe(#number) = "a number"
@@ -169,8 +171,7 @@ define __top() =
 
   { eat -- match and consume token or report syntax error }
   let eat(t) =
-    if see(t) then scan() else
-      _synerror("I expected " ^ describe(t) ^ " here", "#eat") in
+    if see(t) then scan() else _synerror("#eat", [describe(t)]) in
 
   { can_eat -- match and consume token or return false }
   let can_eat(t) =
@@ -240,8 +241,7 @@ define __top() =
       | case(#string) = [#const, p_sym(#string)]
       | case(#lpar) = brack(#lpar, p_pattern, #rpar)
       | case(#bra) = #list:brack1(#bra, p_patterns, #ket)
-      | case(_) =
-	  _synerror("I don't recognise this pattern", "#pattern") in
+      | case(_) = synerror("#pattern") in
     whichever(case) in
 
   let p_patfactor() =
@@ -340,10 +340,8 @@ define __top() =
 	    #apply:[#var, x]:brack1(#lpar, p_exprs, #rpar)
       | case(#lpar) = brack(#lpar, p_parenexp, #rpar)
       | case(#bra) = brack(#bra, p_listexp, #ket)
-      | case(#eof) =
-	  _synerror("I expected an expression here", "#exp")
-      | case(_) =
-	  _synerror("I don't recognise this expression", "#badexp") in
+      | case(#eof) = synerror("#exp")
+      | case(_) = synerror("#badexp") in
     whichever(case) in
 
   let p_factor() =
@@ -422,13 +420,9 @@ define __top() =
   { p_rule -- parse one clause of a function definition }
   let p_rule(x, arity) =
     let y = p_name() in
-    if x = y then [] else
-      _synerror("the same function name should appear in each clause",
-		   "#names") >>
+    if x = y then [] else synerror("#names") >>
     let lhs = p_formals() in
-    if length(lhs) = arity then [] else
-      _synerror("each clause should have the same number of arguments", 
-		   "#arity") >>
+    if length(lhs) = arity then [] else synerror("#arity") >>
     p_rhs(lhs) in
 
   { p_defn -- parse a definition }
@@ -447,17 +441,11 @@ define __top() =
   let p_para() =
     if see(#eof) then #eof else
       (let p = if can_eat(#define) then p_defn() else p_expr() in
-	if see(#rpar) then
-	  _synerror("can't find matching '('", "#parenmatch")
-	else if see(#ket) then
-	  _synerror("can't find matching '['", "#bramatch")
-	else if not see(#semi) and not see(#eof) then
-	  _synerror("extra text appears after the end of the expression", 
-		       "#junk")
-	else
-	  [] >>
-
-	p) in
+	if see(#rpar) then synerror("#parenmatch")
+	else if see(#ket) then synerror("#bramatch")
+	else if not see(#semi) and not see(#eof) then synerror("#junk")
+	else [] >> 
+        p) in
 
   _set(eknot, p_expr_body) >>
   _set(tknot, p_term_body) >>
@@ -840,22 +828,15 @@ define __top() =
     | interp([#seq, e1, e2], env) =
 	interp(e1, env) >> interp(e2, env) in
 
-  { redefine -- check that it's permitted to redefine a name }
-  let redefine(x) =
-    if _frozen(x) then
-      _error("can't replace built-in definition of '" 
-             ^ _spelling(x) ^ "'", "#redef")
-    else [] in
-
   { exec -- execute a top-level phrase }
   let exec([#val, x, e]) = 
         { A global value definition }
-	redefine(x) >>
+	_redefine(x) >>
 	_topdef(x, interp(e, empty()))
 
     | exec([#fun, f, n, rules]) = 
         { A global function definition }
-	redefine(f) >>
+	_redefine(f) >>
 	_topdef(f, i_func(f, n, rules, empty()))
 
     | exec(exp) = 

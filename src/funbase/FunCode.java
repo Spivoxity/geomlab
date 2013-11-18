@@ -225,7 +225,7 @@ public class FunCode extends Value {
 		}
 	    } else if (prim.isCons(inst)) {
 		/* An instruction [#op, arg] with optional arg */
-		Name x = prim.cast(Name.class, prim.head(inst), "opcode");
+		Name x = prim.cast(Name.class, prim.head(inst), "an opcode");
 		Opcode op = getOpcode(x.tag);
 		Value args = prim.tail(inst);
 		int rand;
@@ -277,7 +277,7 @@ public class FunCode extends Value {
 
 		ip++;
 	    } else {
-		Evaluator.error("Bad instruction " + inst);
+		throw new Error("Bad instruction " + inst);
 	    }
 	}
 	

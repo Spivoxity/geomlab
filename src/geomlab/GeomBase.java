@@ -40,6 +40,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 
+import java.util.Properties;
+
 import funbase.Evaluator;
 import funbase.Name;
 import funbase.Primitive;
@@ -59,6 +61,23 @@ public class GeomBase {
     protected PrintWriter log;
     protected Value last_val = null;
     protected Scanner scanner;
+    public static final Properties properties = new Properties();
+
+    /** Read application properties */
+    public static void loadProperties() {
+	ClassLoader loader = GeomLab.class.getClassLoader();
+	InputStream propStream = loader.getResourceAsStream("properties");
+	if (propStream != null) {
+	    try {
+		properties.load(propStream);
+		propStream.close();
+	    }
+	    catch (IOException _) { 
+		System.out.println("Panic -- couldn't find properties file");
+		System.exit(2);
+	    }
+	}
+    }
 
     public void setLog(PrintWriter log) {
         this.log = log;
@@ -123,23 +142,30 @@ public class GeomBase {
 	return scanner.nextToken();
     }
 
-    protected void syntax_error(String msg, String help) {
-	scanner.syntax_error(msg, help);
+    public String formatError(String tag, Object args[]) {
+	String msg = properties.getProperty("err"+tag, tag);
+	return String.format(msg, args);
     }
 
-    public class ErrReporter {
-	public void syntaxError(Scanner.SyntaxException e) {
-	    evalError("Oops: ", e.toString(), e.getErrtag());
-	}
+    public void runtimeError(Evaluator.EvalError e) {
+	String cxt = (e.context == null ? "" :
+		      String.format(" in function '%s'", e.context));
+	evalError("Aargh: ", 
+		  formatError(e.errtag, e.args) + cxt, 
+		  e.errtag);
+    }
 
-	public void runtimeError(Evaluator.EvalException e) {
-	    evalError("Aargh: ", e.getMessage(), e.getErrtag());
-	}
+    public void syntaxError(Scanner.SyntaxError e) {
+	evalError("Oops: ", 
+		  String.format("%s (at %s on line %d)",
+				formatError(e.errtag, e.args), 
+				e.errtok, e.line), 
+		  e.errtag);
+    }
 
-	public void failure(Throwable e) {
-	    e.printStackTrace(log);
-	    evalError("Failure: ", e.toString(), "#failure");
-	}
+    public void failure(Throwable e) {
+	e.printStackTrace(log);
+	evalError("Failure: ", e.toString(), "#failure");
     }
 
     protected boolean eval_loop(Reader reader, boolean display) {
@@ -147,16 +173,6 @@ public class GeomBase {
     }
 
     protected boolean eval_loop(Reader reader, boolean echo, boolean display) {
-	return eval_loop(reader, echo, display, new ErrReporter());
-    }
-
-    protected boolean eval_loop(Reader reader, boolean display, 
-				ErrReporter err) {
-	return eval_loop(reader, display, display, err);
-    }
-
-    protected boolean eval_loop(Reader reader, boolean echo, boolean display, 
-				ErrReporter err) {
 	Name top = Name.find("_top");
 	Value.FunValue topdef = (Value.FunValue) top.glodef;
 	Scanner scanner = new Scanner(reader);
@@ -177,16 +193,16 @@ public class GeomBase {
 		    log.flush();
 		}
 	    }
-	    catch (Scanner.SyntaxException e) {
-		err.syntaxError(e);
+	    catch (Scanner.SyntaxError e) {
+		syntaxError(e);
 		return false;
 	    }
-	    catch (Evaluator.EvalException e) {
-		err.runtimeError(e);
+	    catch (Evaluator.EvalError e) {
+		runtimeError(e);
 		return false;
 	    }
 	    catch (Throwable e) {
-		err.failure(e);
+		failure(e);
 	        return false;
 	    }
 	}
@@ -234,7 +250,7 @@ public class GeomBase {
     public String getEditText() { return ""; }
     
     public void setEditText(String text) {
-	// So nothing
+	// Do nothing
     }
 
     public static GeomBase theApp;
@@ -249,8 +265,8 @@ public class GeomBase {
     }
 
     @PRIMITIVE
-    public static Value _synerror(Primitive prim, Value msg, Value help) {
-	theApp.syntax_error(prim.string(msg), prim.string(help));
+    public static Value _synerror(Primitive prim, Value tag, Value args) {
+	theApp.scanner.syntax_error(prim.string(tag), prim.toArray(args));
 	return Value.nil;
     }
 
@@ -269,7 +285,7 @@ public class GeomBase {
 
     @PRIMITIVE
     public static Value _topdef(Primitive prim, Value x, Value v) {
-	Name n = prim.cast(Name.class, x, "name");
+	Name n = prim.cast(Name.class, x, "a name");
 	theApp.defnValue(n, v);
 	return Value.nil;
     }
@@ -310,8 +326,7 @@ public class GeomBase {
 	    Session.loadPlugin(Class.forName("plugins." + clname), true);
 	}
 	catch (Exception e) {
-	    Evaluator.error("install failure for " + clname
-			    + " - " + e.getMessage(), "#install");
+	    throw new Error(e);
 	}
 	return Value.nil;
     }
@@ -322,7 +337,7 @@ public class GeomBase {
 	    Session.saveSession(new File(prim.string(fname)));
 	    return Value.nil;
 	} catch (Command.CommandException e) {
-	    Evaluator.error(e.toString());
+	    Evaluator.error("#save", e);
 	    return null;
 	}
     }
@@ -333,7 +348,7 @@ public class GeomBase {
 	    Session.loadSession(new File(prim.string(fname)));
 	    return Value.nil;
 	} catch (Command.CommandException e) {
-	    Evaluator.error(e.toString());
+	    Evaluator.error("#restore", e);
 	    return null;
 	}
     }

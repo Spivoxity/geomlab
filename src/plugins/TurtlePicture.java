@@ -180,7 +180,7 @@ public class TurtlePicture extends Picture {
     @PRIMITIVE
     public static Value turtle(Primitive prim, Value xs) {
 	Command commands[] = 
-	    prim.toArray(Command.class, xs, "command list");
+	    prim.toArray(Command.class, xs, "a command list");
 	return new TurtlePicture(commands);
     }	    
 	

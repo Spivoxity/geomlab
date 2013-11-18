@@ -46,17 +46,17 @@ public class Cell extends Value {
     private static final long serialVersionUID = 1L;
 
     /** Contents of the cell */
-    public Value contents;
+    public Value val;
     
-    public Cell(Value contents) { 
+    public Cell(Value val) { 
 	Evaluator.countCons();
-	this.contents = contents; 
+	this.val = val; 
     }
    
     @Override
     public void printOn(PrintWriter out) {
 	out.print("ref ");
-	contents.printOn(out);
+	val.printOn(out);
     }
     
     @PRIMITIVE("_new")
@@ -66,13 +66,13 @@ public class Cell extends Value {
 
     @PRIMITIVE("_get")
     public static Value deref(Primitive prim, Value v) {
-	Cell x = prim.cast(Cell.class, v, "cell");
-	return x.contents;
+	Cell x = prim.cast(Cell.class, v, "a cell");
+	return x.val;
     }
 
     @PRIMITIVE("_set")
     public static Value assign(Primitive prim, Value v, Value y) {
-	Cell x = prim.cast(Cell.class, v, "cell");
-	return (x.contents = y);
+	Cell x = prim.cast(Cell.class, v, "a cell");
+	return (x.val = y);
     }
 }

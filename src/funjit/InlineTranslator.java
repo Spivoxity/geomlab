@@ -187,8 +187,8 @@ public class InlineTranslator extends JitTranslator {
 	register(new Comparison("<=", DCMPG, IFGT));
 	register(new Comparison(">", DCMPL, IFLE));
 	register(new Comparison(">=", DCMPG, IFLT));
-	register(new ListSelect("head"));
-	register(new ListSelect("tail"));
+	register(new ListSelect("head", "#head"));
+	register(new ListSelect("tail", "#tail"));
 	register(new Selector("rpart", color_cl, "colour", Kind.NUMBER));
 	register(new Selector("gpart", color_cl, "colour", Kind.NUMBER));
 	register(new Selector("bpart", color_cl, "colour", Kind.NUMBER));
@@ -229,7 +229,7 @@ public class InlineTranslator extends JitTranslator {
 	    }
 	});
 
-	register(new Selector("_get", cell_cl, "cell", "contents", Kind.VALUE));
+	register(new Selector("_get", cell_cl, "cell", "val", Kind.VALUE));
 
 	register(new SimpleInliner("_set") {
 	    @Override 
@@ -243,7 +243,7 @@ public class InlineTranslator extends JitTranslator {
 	    @Override 
 	    public Kind call() {
 		code.gen(DUP_X1);
-		code.gen(PUTFIELD, cell_cl, "contents", value_t);
+		code.gen(PUTFIELD, cell_cl, "val", value_t);
 		return Kind.VALUE;
 	    }
 	});
@@ -462,8 +462,11 @@ public class InlineTranslator extends JitTranslator {
 
     /** Inliner for head and tail */
     public class ListSelect extends SimpleInliner {
-	public ListSelect(String name) {
+	String errtag;
+
+	public ListSelect(String name, String errtag) {
 	    super(name);
+	    this.errtag = errtag;
 	}
 
 	@Override 
@@ -475,7 +478,7 @@ public class InlineTranslator extends JitTranslator {
 		    public void compile() {
 			// Evaluator.list_fail(<msg>);
 			code.gen(ALOAD, _temp);
-			code.gen(CONST, prim);
+			code.gen(CONST, errtag);
 			code.gen(INVOKESTATIC, evaluator_cl, "list_fail", 
 				 fun_VS_t);
 		    }

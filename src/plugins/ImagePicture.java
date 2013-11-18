@@ -175,7 +175,7 @@ public class ImagePicture extends Picture {
 	    return new ImagePicture(image);
 	}
 	catch (IOException e) {
-	    Evaluator.error("Image I/O error - " + e);
+	    Evaluator.error("#imageio", e);
 	    return null;
 	}
     }
@@ -187,7 +187,7 @@ public class ImagePicture extends Picture {
 	    return new ImagePicture(loadResource(name), name);
 	}
 	catch (IOException e) {
-	    Evaluator.error("Image I/O error - " + e);
+	    Evaluator.error("#imageio", e);
 	    return null;
 	}
     }
@@ -197,7 +197,7 @@ public class ImagePicture extends Picture {
 			       Value height0, Value fun0) {
 	int width = (int) prim.number(width0);
 	int height = (int) prim.number(height0);
-	FunValue fun = prim.cast(FunValue.class, fun0, "function");
+	FunValue fun = prim.cast(FunValue.class, fun0, "a function");
 	Native factory = Native.instance();
 	Native.Image image = factory.image(width, height);
 	Value args[] = new Value[2];
@@ -207,7 +207,7 @@ public class ImagePicture extends Picture {
 	    for (int y = 0; y < height; y++) {
 		args[1] = Value.makeNumValue(y);
 		Value v = fun.apply(args);
-		ColorValue col = prim.cast(ColorValue.class, v, "colour");
+		ColorValue col = prim.cast(ColorValue.class, v, "a colour");
 		image.setRGB(x, height-y-1, col.rgb);
 	    }
 	}
@@ -218,7 +218,7 @@ public class ImagePicture extends Picture {
     @PRIMITIVE
     public static Value _render(Primitive prim, Value a0, Value a1, 
 				Value a2, Value a3) {
-	Picture pic = prim.cast(Picture.class, a0, "picture");
+	Picture pic = prim.cast(Picture.class, a0, "a picture");
 	int size = (int) Math.round(prim.number(a1));
 	float slider = (float) prim.number(a2);
 	float grey = (float) prim.number(a3);
@@ -232,7 +232,7 @@ public class ImagePicture extends Picture {
     @PRIMITIVE
     public static Value _pixel(Primitive prim, Value p0, 
 			       Value x0, Value y0) {
-	ImagePicture p = prim.cast(ImagePicture.class, p0, "image");
+	ImagePicture p = prim.cast(ImagePicture.class, p0, "an image");
 	int w = p.image.getWidth(), h = p.image.getHeight();
 	int x = (int) Math.round(prim.number(x0));
 	int y = (int) Math.round(prim.number(y0));
@@ -246,19 +246,20 @@ public class ImagePicture extends Picture {
 	
     @PRIMITIVE
     public static Value width(Primitive prim, Value v) {
-	ImagePicture p = prim.cast(ImagePicture.class, v, "image");
+	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
 	return Value.makeNumValue(p.image.getWidth());
     }
 	
     @PRIMITIVE
     public static Value height(Primitive prim, Value v) {
-	ImagePicture p = prim.cast(ImagePicture.class, v, "image");
+	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
 	return Value.makeNumValue(p.image.getHeight());
     }
 
     /** Save image as a file */
-    public static Value saveimg(Primitive prim, Value v, Value fmt, Value fn) {
-	ImagePicture p = prim.cast(ImagePicture.class, v, "image");
+    @PRIMITIVE
+    public static Value _saveimg(Primitive prim, Value v, Value fmt, Value fn) {
+	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
 	String format = prim.string(fmt);
 	String fname = prim.string(fn);
 	Native factory = Native.instance();
@@ -267,7 +268,7 @@ public class ImagePicture extends Picture {
 	    factory.writeImage(p.image, format, new File(fname));
 	}
 	catch (IOException e) {
-	    Evaluator.error("I/O failed: " + e.getMessage());
+	    Evaluator.error("#imageio", e);
 	}
 
 	return Value.nil;

@@ -100,6 +100,7 @@ public class Vec2D extends Value {
     public static final Primitive vector = new Primitive.Prim2("_vector") {
 	@Override
 	public Value apply2(Value x, Value y) {
+	    Evaluator.countCons();
 	    return new Vec2D((float) number(x), (float) number(y));
 	}
 

@@ -153,6 +153,7 @@ public class ColorValue extends Picture {
     public static final Primitive rgbprim = new Primitive.Prim3("rgb") {
 	@Override
 	public Value apply3(Value rpart, Value gpart, Value bpart) {
+	    Evaluator.countCons();
 	    return new ColorValue(number(rpart), number(gpart), number(bpart));
 	}
 	    
@@ -174,19 +175,19 @@ public class ColorValue extends Picture {
 	
     @PRIMITIVE
     public static Value rpart(Primitive prim, Value obj) {
-	ColorValue v = prim.cast(ColorValue.class, obj, "colour");
+	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
 	return Value.makeNumValue(v.rpart);
     }
 	
     @PRIMITIVE
     public static Value gpart(Primitive prim, Value obj) {
-	ColorValue v = prim.cast(ColorValue.class, obj, "colour");
+	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
 	return Value.makeNumValue(v.gpart);
     }
 	
     @PRIMITIVE
     public static Value bpart(Primitive prim, Value obj) {
-	ColorValue v = prim.cast(ColorValue.class, obj, "colour");
+	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
 	return Value.makeNumValue(v.bpart);
     }
 	

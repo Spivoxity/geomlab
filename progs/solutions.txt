@@ -148,19 +148,16 @@ define twinslet([x, y]) =
 { Making tiles }
 
 define tile1 = 
-  _tile(8, 12, 1, 1, [[1,0, 5,0, 5,4, 1,4, 1,0]],
+  __tile(8, 12, 1, 1, [[1,0, 5,0, 5,4, 1,4, 1,0]],
     [[red, 2,3, 6,3, 6,7, 2,7],
       [green, 0,6, 4,6, 4,10, 0,10]]);
 
 
 { Helper functions for saving pictures }
 
-define render = _primitive("render");
-define saveimg = _primitive("saveimg");
 _install("EPSWriter");
-define epswrite = _primitive("epswrite");
 
-define savepic(p, f, r, s, g) = saveimg(render(p, r, s, g), "png", f);
+define savepic(p, f, r, s, g) = _saveimg(_render(p, r, s, g), "png", f);
 
 define makepic_r(p, f, r) = 
   savepic(p, f ^ ".png", r, 0.5, 0.95) >>

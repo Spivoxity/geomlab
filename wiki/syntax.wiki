@@ -1,0 +1,232 @@
+  let p_patterns(endtok) = p_list(p_pattern, endtok) in
+
+  let p_patprim() =
+    let case(#ident) = 
+    	  let x = p_sym(#ident) in
+	  if not see(#lpar) then [#var, x] else
+	    #prim:x:brack1(#lpar, p_patterns, #rpar)
+      | case(#atom) = [#const, p_sym(#atom)]
+      | case(#_) = eat(#_) >> [#anon]
+      | case(#number) = [#const, p_sym(#number)]
+      | case(#-) = eat(#-) >> [#const, -p_sym(#number)]
+      | case(#string) = [#const, p_sym(#string)]
+      | case(#lpar) = brack(#lpar, p_pattern, #rpar)
+      | case(#bra) = #list:brack1(#bra, p_patterns, #ket)
+      | case(_) =
+	  syntax_error("I don't recognise this pattern", "#pattern") in
+    whichever(case) in
+
+  let p_patfactor() =
+    let p = p_patprim() in
+    if can_eat(#:) then [#cons, p, p_patfactor()] else p in
+
+  let p_pattern_body() =
+    let chain(p) =
+      if can_eat(#+) then chain([#plus, p, p_sym(#number)]) else p in
+    chain(p_patfactor()) in
+
+  { p_formals -- parse formal parameters }
+  let p_formals() = brack1(#lpar, p_patterns, #rpar) in
+
+  { p_exprs -- parse optional list of expressions }
+  let p_exprs(endtok) = p_list(p_expr, endtok) in
+
+  { expand -- expand list comprehension into code with accumulator }
+  let expand(e1, [], a) = 
+        { Base case: "[ e1 | ] ++ a" = e1:a }
+        [#cons, e1, a]
+    | expand(e1, [#gen, [#var, x], e2]:gs, a) =
+        { Simple generator: "[ e1 | x <- e2, ... ] ++ a" = 
+	    _mapa(function (x, b) "[ e1 | ... ] ++ b", e2, a) }
+        let b = [#var, gensym()] in
+	[#apply, [#var, #_mapa], [#function, 2, 
+	    [[[[#var, x], b], expand(e1, gs, b)]]], e2, a]
+    | expand(e1, [#gen, patt, e2]:gs, a) =
+        { Generator : "[ e1 | patt <- e2, ... ] ++ a" =
+	    _mapa((function (patt, b) -> "[ e1 | gs ] ++ b" | (_, b) -> b),
+                      e2, a) }
+	let b = [#var, gensym()] in
+	[#apply, [#var, #_mapa], [#function, 2, 
+	    [[[patt, b], expand(e1, gs, b)], [[[#anon], b], b]]], e2, a]
+    | expand(e1, [#when, e2]:gs, a) =
+        { Test: "[ e1 | when e2, ...] ++ a" =
+	    if e2 then "[e1 | ...] ++ a" else a }
+	[#if, e2, expand(e1, gs, a), a] in
+
+  let p_gen() = 
+    let p = p_pattern() in eat(#<-) >> [#gen, p, p_expr()] in
+
+  { p_gens -- parse generators for a list comprehension }
+  let p_gens() =
+    let p_tail() =    
+      let case(#when) = 
+      	    eat(#when) >> let e = p_expr() in [#when, e] : p_tail()
+        | case(#comma) = 
+	    eat(#comma) >> let g = p_gen() in g : p_tail()
+	| case(_) = [] in
+      whichever(case) in
+    let g = p_gen() in g : p_tail() in
+
+  { p_listexp -- parse contents of [ ... ] }
+  let p_listexp() =
+    if see(#ket) then 
+      { An empty list }
+      [#nil]
+    else
+      (let e1 = p_expr() in
+        let case(#comma) =
+	      { A display of two or more items }
+              #list:e1:p_tail(p_expr, #comma)
+          | case(#..) =
+	      { A range [e1 .. e2] }
+              eat(#..) >> [#apply, [#var, #_range], e1, p_expr()]
+          | case(#vbar) =
+	      { A list comprehension }
+	      eat(#vbar) >> expand(e1, p_gens(), [#nil])
+          | case(_) =
+	      { A singleton list }
+ 	      [#list, e1] in
+        whichever(case)) in
+
+  { p_parenexp -- parse expression after left paren }
+  let p_parenexp() =
+    if not isbinop(_get(tok)) then
+      p_expr0(true)
+    else
+      (let w = p_sym(_get(tok)) in
+        let prio = priority(w) in
+      	if see(#rpar) then 
+	  { An operator name (+) }
+	  [#var, w] 
+        else
+	  { A right section (+1) }
+	  [#apply, [#var, #_rsect], [#var, w], p_term(snd(prio), false)]) in
+
+  let p_primary() =
+    let case(#number) = [#const, p_sym(#number)]
+      | case(#atom) = [#const, p_sym(#atom)]
+      | case(#string) = [#const, p_sym(#string)]
+      | case(#ident) = 
+          let x = p_sym(#ident) in
+	  if not see(#lpar) then [#var, x] else
+	    #apply:[#var, x]:brack1(#lpar, p_exprs, #rpar)
+      | case(#lpar) = brack(#lpar, p_parenexp, #rpar)
+      | case(#bra) = brack(#bra, p_listexp, #ket)
+      | case(#eof) =
+	  syntax_error("I expected an expression here", "#exp")
+      | case(_) =
+	  syntax_error("I don't recognise this expression", "#badexp") in
+    whichever(case) in
+
+  let p_factor() =
+    let case(#monop) =
+	  let w = [#var, p_sym(#monop)] in [#apply, w, p_factor()]
+      | case(#-) =
+	  eat(#-) >>
+	  if see(#number) then
+	    [#const, - p_sym(#number)]
+	  else
+	    [#apply, [#var, #_uminus], p_factor()]
+      | case(_) = p_primary() in
+    whichever(case) in
+
+  { makebin -- create binary operator, treating 'and' and 'or' as special }
+  let makebin(w, e1, e2) =
+    if w = #and then [#if, e1, e2, [#const, false]]
+    else if w = #or then [#if, e1, [#const, true], e2]
+    else [#apply, [#var, w], e1, e2] in
+
+  { p_term -- parse a term containing operators with priority >= min.
+      If secok is true, allow a left section (1+) }
+  let p_term_body(min, secok) = 
+    { p_termcont -- loop to parse a sequence of operators and operands }
+    let p_termcont(e1, min) =
+      let t = _get(tok) in
+      if not isbinop(t) then e1 else
+	(let w = _get(val) in
+	  let prio = priority(w) in
+	  if fst(prio) < min then e1 else
+	    (eat(t) >>
+	      if secok and see(#rpar) then
+	        { A left section }
+	        [#apply, [#var, #_lsect], [#var, w], e1]
+              else
+		{ Got an operator: look for its right operand }
+	        (let e2 = p_term(snd(prio), false) in
+		  { Continue by looking for the next operator }
+		  p_termcont(makebin(w, e1, e2), min)))) in
+    p_termcont(p_factor(), min) in
+
+  { p_cond -- parse a conditional, maybe also allowing a left section }
+  let p_cond(secok) =
+    if can_eat(#if) then
+      (let e1 = p_cond(false) in 
+        eat(#then) >> let e2 = p_cond(false) in
+	eat(#else) >> let e3 = p_cond(false) in [#if, e1, e2, e3])
+    else
+      p_term(1, secok) in
+
+  { p_expr -- parse an expression or perhaps a left section }
+  let p_expr_body(secok) =
+    let case(#let) =
+	  eat(#let) >> let d = p_defn() in
+	  eat(#in) >> [#let, d, p_expr()]
+      | case(#function) =
+	  eat(#function) >> let formals = p_formals() in
+	  [#function, length(formals), [[formals, p_expr()]]]
+      | case(_) = 
+	  let e = p_cond(secok) in
+	  if can_eat(#>>) then [#seq, e, p_expr()] else e in
+    whichever(case) in
+
+  { p_name -- parse the name on the LHS of a definition }
+  let p_name() =
+    if isbinop(_get(tok)) or see(#monop) then 
+      p_sym(_get(tok)) 
+    else
+      p_sym(#ident) in
+
+  { p_rhs -- parse right hand side of equation } 
+  let p_rhs(lhs) =
+    eat(#=) >> let e = p_expr() in
+    if can_eat(#when) then [lhs, p_expr(), e] else [lhs, e] in
+
+  { p_rule -- parse one clause of a function definition }
+  let p_rule(x, arity) =
+    let y = p_name() in
+    if x = y then [] else
+      syntax_error("the same function name should appear in each clause",
+		   "#names") >>
+    let lhs = p_formals() in
+    if length(lhs) = arity then [] else
+      syntax_error("each clause should have the same number of arguments", 
+		   "#arity") >>
+    p_rhs(lhs) in
+
+  { p_defn -- parse a definition }
+  let p_defn_body() =
+    let x = p_name() in
+    if not see(#lpar) then
+      (eat(#=) >> [#val, x, p_expr()])
+    else
+      (let lhs = p_formals() in
+	let arity = length(lhs) in
+	let rule = p_rhs(lhs) in
+	[#fun, x, arity, rule : 
+	  p_tail(function () p_rule(x, arity), #vbar)]) in
+
+  { p_para -- parse a top-level paragraph }
+  let p_para() =
+    if see(#eof) then #eof else
+      (let p = if can_eat(#define) then p_defn() else p_expr() in
+	if see(#rpar) then
+	  syntax_error("Can't find matching '('", "#parenmatch")
+	else if see(#ket) then
+	  syntax_error("Can't find matching '['", "#bramatch")
+	else if not see(#semi) and not see(#eof) then
+	  syntax_error("extra text appears after the end of the expression", 
+		       "#junk")
+	else
+	  [] >>
+
+	p) in

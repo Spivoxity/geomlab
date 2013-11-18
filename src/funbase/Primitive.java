@@ -67,7 +67,7 @@ public abstract class Primitive extends Function {
 	    return a.asNumber();
 	}
 	catch (WrongKindException _) {
-	    expect("numeric");
+	    expect("a numeric");
 	    return 0.0;
 	}
     }
@@ -75,26 +75,26 @@ public abstract class Primitive extends Function {
     /** Fetch value of a StringValue object, or throw EvalException */ 
     public String string(Value a) {
 	Value.StringValue s = 
-	    cast(Value.StringValue.class, a, "string");
+	    cast(Value.StringValue.class, a, "a string");
 	return s.text;
     }
     
     /** Cast an argument to type Name */
     public Name name(Value a) {
-	return cast(Name.class, a, "name");
+	return cast(Name.class, a, "a name");
     }
 
     /** Fetch head of a ConsValue object, or throw EvalException */ 
     public Value head(Value xs) {
 	Value.ConsValue cell = 
-	    cast(Value.ConsValue.class, xs, "list");
+	    cast(Value.ConsValue.class, xs, "a list");
 	return cell.head;
     }
 
     /** Fetch tail of a ConsValue object, or throw EvalException */ 
     public Value tail(Value xs) {
 	Value.ConsValue cell = 
-	    cast(Value.ConsValue.class, xs, "list");
+	    cast(Value.ConsValue.class, xs, "a list");
 	return cell.tail;
     }
 
@@ -110,7 +110,7 @@ public abstract class Primitive extends Function {
         while (isCons(ys)) {
             ys = tail(ys); n++;
         }
-        if (! ys.equals(Value.nil)) expect("list");
+        if (! ys.equals(Value.nil)) expect("a list");
         return n;
     }
 
@@ -127,12 +127,12 @@ public abstract class Primitive extends Function {
 
     /** Convert list argument to array */
     public Value[] toArray(Value xs) {
-	return toArray(Value.class, xs, "list");
+	return toArray(Value.class, xs, "a list");
     }
 
     /** Convert list argument to array of specified class */
-    public <T extends Value> T[] toArray(Class<T> cl, Value xs, 
-							 String expected) {
+    public <T extends Value> T[] 
+		      toArray(Class<T> cl, Value xs, String expected) {
 	List<T> elems = new ArrayList<T>();
 
 	while (isCons(xs)) {
@@ -143,7 +143,7 @@ public abstract class Primitive extends Function {
 	if (! xs.equals(Value.nil)) expect(expected);
 
 	@SuppressWarnings("unchecked")
-	T[] result = (T[]) Array.newInstance(cl, elems.size());
+	T result[] = (T[]) Array.newInstance(cl, elems.size());
 	return elems.toArray(result);
     }
 
@@ -331,7 +331,7 @@ public abstract class Primitive extends Function {
     public static Primitive find(String name) {
 	Primitive prim = primitives.get(name);
 	if (prim == null)
-	    throw new EvalException("Primitive " + name + " is not defined");
+	    throw new Error(String.format("Primitive %s is not defined", name));
 	return prim;
     }
     

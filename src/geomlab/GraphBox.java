@@ -151,9 +151,8 @@ public class GraphBox extends JPanel {
 		try {
 		    picture.prerender(slider);
 		}
-		catch (Evaluator.EvalException e) {
-		    GeomBase.theApp.evalError("Aargh: ", 
-			    e.toString(), e.getErrtag());
+		catch (Evaluator.EvalError e) {
+		    GeomBase.theApp.runtimeError(e);
 		    newpic = null;
 		}
 		

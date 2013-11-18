@@ -89,7 +89,8 @@ public class SlidePicture extends Value implements Stylus.Drawable {
 
     @PRIMITIVE
     public static Value slide(Primitive prim, Value fun0) {
-	Value.FunValue fun = prim.cast(Value.FunValue.class, fun0, "function");
+	Value.FunValue fun = 
+	    prim.cast(Value.FunValue.class, fun0, "a function");
 	return new SlidePicture(fun);
     }
 }

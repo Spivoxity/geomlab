@@ -166,7 +166,7 @@ public class Scanner {
 			    line_num++;
 			else if (ch == '\0') {
 			    start_char = char_num; tok = EOF;
-			    syntax_error("unterminated comment", "#comment");
+			    syntax_error("#comment");
 			}
 			
 			ch = getChar();
@@ -174,7 +174,7 @@ public class Scanner {
 		    break; 
 		}
 		case '}':
-		    syntax_error("Can't find matching '{'", "#bracematch");
+		    syntax_error("#bracematch");
 		    break;
 		case '(':
 		    tok = LPAR; break;
@@ -204,7 +204,7 @@ public class Scanner {
 			pushBack(ch);
 			start_char = char_num;
 			tok = (ch == '\n' ? EOL : EOF);
-			syntax_error("unterminated string constant", "#string");
+			syntax_error("#string");
 		    }
 		    break;
 		}
@@ -223,8 +223,7 @@ public class Scanner {
 			}
 		    }
 		    else {
-			syntax_error("I expected an identifier or operator",
-				     "#nohelp");
+			syntax_error("#idop");
 		    }
 		    pushBack(ch);
 		    tok = ATOM;
@@ -301,50 +300,43 @@ public class Scanner {
     }
 
     private void badToken() {
-	syntax_error("unknown symbol", "#badtok");
+	syntax_error("#badtok");
     }
     
+    private String error_chars() {
+	if (tok == EOF)
+	    return "end of input";
+	else if (tok == EOL)
+	    return "end of line";
+	else
+	    return ("'" + text.substring(start_char - root_char) + "'");
+    }
+
     /** Report a syntax error at the current token */
-    public void syntax_error(String msg, String errtag) {
-	String chars = 
-	    (tok == EOF ? "end of input" :
-		tok == EOL ? "end of line" :
-		"'" + text.substring(start_char - root_char) + "'");
-	throw new SyntaxException(msg, line_num, start_char, char_num, 
-		chars, errtag);
+    public void syntax_error(String errtag, Object args[]) {
+	throw new SyntaxError(errtag, args, line_num, 
+			       start_char, char_num, error_chars());
     }
-    
-    public static class SyntaxException extends RuntimeException {
-	private int line, start, end;
-	private String errtok, errtag;
+
+    /** Report a syntax error at the current token */
+    public void syntax_error(String errtag) {
+	throw new SyntaxError(errtag, null, line_num, 
+			       start_char, char_num, error_chars());
+    }
+
+    public static class SyntaxError extends Error {
+	public final int line, start, end;
+	public final String errtag, errtok;
+	public final Object args[];
 	
-	public SyntaxException(String msg, int line, int start, int end, 
-		String etok, String errtag) {
-	    super(msg);
+	public SyntaxError(String errtag, Object args[], int line, 
+			    int start, int end, String errtok) {
+	    this.errtag = errtag;
+	    this.args = args;
 	    this.line = line;
 	    this.start = start;
 	    this.end = end;
-	    this.errtok = etok;
-	    this.errtag = errtag;
+	    this.errtok = errtok;
 	}
-	
-	public String shortMessage() {
-	    return getMessage() + " (at " + errtok + ")";
-	}
-	
-	@Override
-	public String toString() {
-	    return getMessage() + " (at " + errtok + " on line " + line + ")";
-	}
-	
-	/** Get the start position of the token where the error was detected */
-	public int getStart() { return start; }
-	
-	/** Get the end position of the token where the error was detected */
-	public int getEnd() { return end; }
-	
-	/** Get the help file tag for the error */
-	public String getErrtag() { return errtag; }
     }
 }
-

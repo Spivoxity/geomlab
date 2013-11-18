@@ -109,17 +109,15 @@ public class JitTranslator implements FunCode.Jit {
 				   jitsmall_cl+arity);
 
 	    // public Gnnnn { super(name); }
-	    code = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
-	    code.gen(ALOAD, 0);
-	    code.gen(CONST, funcode.name);
-	    code.gen(INVOKESPECIAL, jitsmall_cl+arity, "<init>", fun_S_t);
-	    code.gen(RETURN);
+	    Method init = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
+	    init.gen(ALOAD, 0);
+	    init.gen(CONST, funcode.name);
+	    init.gen(INVOKESPECIAL, jitsmall_cl+arity, "<init>", fun_S_t);
+	    init.gen(RETURN);
 
 	    // public Value apply<n>(Value x_1, ..., x_n) {
 	    code = clfile.addMethod(ACC_PUBLIC, "apply"+arity, 
 				    applyn_t[arity]);
-	    checkpoint();
-
 	    _temp = arity+1; 
 	    _frame = arity+2;
 	} else {
@@ -128,16 +126,15 @@ public class JitTranslator implements FunCode.Jit {
 				   jitlarge_cl);
 
 	    // public Gnnnn { super(name, arity); }
-	    code = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
-	    code.gen(ALOAD, 0);
-	    code.gen(CONST, funcode.name);
-	    code.gen(CONST, arity);
-	    code.gen(INVOKESPECIAL, jitlarge_cl, "<init>", fun_SI_t);
-	    code.gen(RETURN);
+	    Method init = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
+	    init.gen(ALOAD, 0);
+	    init.gen(CONST, funcode.name);
+	    init.gen(CONST, arity);
+	    init.gen(INVOKESPECIAL, jitlarge_cl, "<init>", fun_SI_t);
+	    init.gen(RETURN);
 
 	    // public Value apply(Value args[], int nargs)
 	    code = clfile.addMethod(ACC_PUBLIC, "apply", apply_t);
-	    checkpoint();
 
 	    // if (nargs != arity) 
 	    //     ErrContext.err_nargs(this.name, nargs, arity)
@@ -160,6 +157,7 @@ public class JitTranslator implements FunCode.Jit {
 
 	loop = new Label();
 	code.label(loop);
+	checkpoint();
     }
 
     private void checkpoint() {
@@ -563,7 +561,7 @@ public class JitTranslator implements FunCode.Jit {
 	});
     }
 
-    private byte[] process(FunCode funcode) {
+    private void process(FunCode funcode) {
 	init();
     	start(funcode);
 
@@ -601,7 +599,6 @@ public class JitTranslator implements FunCode.Jit {
 	}
 
 	compileHandlers();
-	return clfile.toByteArray();
     }
 
     protected abstract class Handler {
@@ -700,16 +697,18 @@ public class JitTranslator implements FunCode.Jit {
 	    System.out.flush();
 	}
 
-	byte code[] = process(funcode);
+	process(funcode);
+
+	byte binary[] = clfile.toByteArray();
 
 	if (Evaluator.debug > 2)
-	    System.out.printf("(%s, %d bytes)\n", className, code.length);
+	    System.out.printf("(%s, %d bytes)\n", className, binary.length);
 
 	if (Evaluator.debug > 4) {
 	    try {
 		java.io.OutputStream dump = 
 		    new java.io.FileOutputStream(className + ".class");
-		dump.write(code);
+		dump.write(binary);
 		dump.close();
 	    }
 	    catch (java.io.IOException _) { }
@@ -717,61 +716,69 @@ public class JitTranslator implements FunCode.Jit {
 
 	classTable.put(className, new WeakReference<FunCode>(funcode));
 	JitFunction body = 
-	    (JitFunction) ByteClassLoader.instantiate(className, code);
+	    (JitFunction) ByteClassLoader.instantiate(className, binary);
 	body.init(funcode);
 	return body;
     }
 
-    /** Use reflection to create a primitive */
-    public Primitive primitive(String name, int arity, 
-			       java.lang.reflect.Method meth) {
-	Class<?> cl = meth.getDeclaringClass();
+    /** Build an adapter to turn a static method into a primitive */
+    private static Primitive makePrimitive(String name, int arity, 
+					   java.lang.reflect.Method meth) {
+	Class<?> target = meth.getDeclaringClass();
 	String prim = meth.getName();
-	boolean small = (arity < MANY);
 
 	// class Prim_name extends Primitive.Prim<n>
-	className = "Prim_" + prim;
-	clfile = new ClassFile(ACC_PUBLIC+ACC_SUPER, className, 
-			       (small ? primsmall_cl+arity : primlarge_cl));
+	String className = "Prim_" + prim;
+	ClassFile clfile = 
+	    new ClassFile(ACC_PUBLIC+ACC_SUPER, className, 
+			  (arity < MANY ? primsmall_cl+arity : primlarge_cl));
 
 	// public Prim_name() { super(name); }
-	code = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
-	if (small) {
-	    code.gen(ALOAD, 0);
-	    code.gen(CONST, name);
-	    code.gen(INVOKESPECIAL, primsmall_cl+arity, "<init>", fun_S_t);
+	Method init = clfile.addMethod(ACC_PUBLIC, "<init>", fun_t);
+	if (arity < MANY) {
+	    init.gen(ALOAD, 0);
+	    init.gen(CONST, name);
+	    init.gen(INVOKESPECIAL, primsmall_cl+arity, "<init>", fun_S_t);
 	} else {
-	    code.gen(ALOAD, 0);
-	    code.gen(CONST, name);
-	    code.gen(CONST, arity);
-	    code.gen(INVOKESPECIAL, primlarge_cl, "<init>", fun_SI_t);
+	    init.gen(ALOAD, 0);
+	    init.gen(CONST, name);
+	    init.gen(CONST, arity);
+	    init.gen(INVOKESPECIAL, primlarge_cl, "<init>", fun_SI_t);
 	}
-	code.gen(RETURN);
+	init.gen(RETURN);
 
 	// public Value apply<n>(Value arg1, ..., Value arg<n>) {
 	// return cl.name(this, arg1, ..., arg<n>)
-	String clname = cl.getName();
-	if (small) {
-	    code = clfile.addMethod(ACC_PUBLIC, "apply"+arity, applyn_t[arity]);
-	    code.gen(ALOAD, 0); // this
-	    for (int i = 0; i < arity; i++) code.gen(ALOAD, i+1);
+	String tname = target.getName();
+	Method apply;
+	if (arity < MANY) {
+	    apply = clfile.addMethod(ACC_PUBLIC, "apply"+arity, 
+				     applyn_t[arity]);
+	    apply.gen(ALOAD, 0); // this
+	    for (int i = 0; i < arity; i++) apply.gen(ALOAD, i+1);
 	} else {
-	    code = clfile.addMethod(ACC_PUBLIC, "applyN", applyN_t);
-	    code.gen(ALOAD, 0); // this
+	    apply = clfile.addMethod(ACC_PUBLIC, "applyN", applyN_t);
+	    apply.gen(ALOAD, 0); // this
 	    for (int i = 0; i < arity; i++) {
-		code.gen(ALOAD, 1); // args
-		code.gen(ILOAD, 2); // base
-		code.gen(CONST, i);
-		code.gen(IADD);
-		code.gen(AALOAD);
+		apply.gen(ALOAD, 1); // args
+		apply.gen(ILOAD, 2); // base
+		apply.gen(CONST, i);
+		apply.gen(IADD);
+		apply.gen(AALOAD);
 	    }
 	}
-	code.gen(INVOKESTATIC, clname.replace('.', '/'), prim, 
-		 make_prim_t(arity));
-	code.gen(ARETURN);
-	
-	byte code[] = clfile.toByteArray();
-	return (Primitive) ByteClassLoader.instantiate(className, code);
+	apply.gen(INVOKESTATIC, tname.replace('.', '/'), prim, 
+		  make_prim_t(arity));
+	apply.gen(ARETURN);
+
+	byte binary[] = clfile.toByteArray();
+	return (Primitive) ByteClassLoader.instantiate(className, binary);
+    }
+
+    @Override
+    public Primitive primitive(String name, int arity, 
+			       java.lang.reflect.Method meth) {
+	return makePrimitive(name, arity, meth);
     }
 
     @Override 

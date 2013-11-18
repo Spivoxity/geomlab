@@ -48,18 +48,18 @@ public class Evaluator {
        4 -- see JVM code 
        5 -- save JVM code as class files */
 
-    public static final int Q = 10000;
-    public static int quantum = Q;
+    public static final int QUANTUM = 10000;
+    public static int quantum = QUANTUM;
 
     protected static int timeLimit = 30000;
-    protected static int stepLimit = 0; // 2000000000;
+    protected static int stepLimit = 500000000;
     protected static int consLimit = 10000000;
 
     private static class ExecThread extends Thread {
 	public Function fun;
 	public Value args[];
 	public Value result;
-	public RuntimeException excep = null;
+	public Error error = null;
 
 	private static int thrcount = 0;
 
@@ -74,7 +74,7 @@ public class Evaluator {
 		checkpoint();
 	    }
 	    catch (StackOverflowError e) {
-		throw new EvalException("recursion went too deep", "#stack");
+		throw new EvalError("#stack");
 	    }
 	}
 
@@ -83,8 +83,8 @@ public class Evaluator {
 	    try {
 		body();
 	    }
-	    catch (RuntimeException e) {
-		excep = e;
+	    catch (Error e) {
+		error = e;
 	    }
 	}
     }
@@ -92,21 +92,21 @@ public class Evaluator {
     public static Value execute(Function fun, Value... args) {
 	runFlag = true; steps = conses = 0; timer = null;
 	FunCode.initStack();
-	
 	ExecThread exec = new ExecThread(fun, args);
+	startTimer();
 
 	try { 
 	    exec.start();
 	    exec.join(); 
 	} 
 	catch (InterruptedException e) {
-	    throw new EvalException("Interrupted!");
+	    throw new EvalError("#interrupt");
 	}
 	finally {
 	    if (timer != null) timer.interrupt();
 	}
 
-	if (exec.excep != null) throw exec.excep;
+	if (exec.error != null) throw exec.error;
 	return exec.result;
     }
 
@@ -127,20 +127,19 @@ public class Evaluator {
     }
 
     public static void checkpoint() {
-	steps += (Q - quantum);
-	if (stepLimit > 0 && steps > stepLimit) timeout("many steps");
-	if (! runFlag) timeout("long");
-	quantum = Q;
+	steps += (QUANTUM - quantum);
+	if (stepLimit > 0 && steps > stepLimit) 
+	    throw new EvalError("#steps");
+	if (! runFlag) 
+	    throw new EvalError("#time");
+	quantum = QUANTUM;
 	Thread.yield();
-    }
-    
-    private static void timeout(String resource) {
-	throw new EvalException("sorry, that took too " + resource, "#time");
     }
     
     public static void countCons() { 
 	conses++; 
-	if (consLimit > 0 && conses > consLimit) timeout("much memory");
+	if (consLimit > 0 && conses > consLimit) 
+	    throw new EvalError("#memory");
     }
     
     public static void setLimits(int timeLimit, int stepLimit, int consLimit) {
@@ -156,65 +155,48 @@ public class Evaluator {
     }
 
     /** An exception raised because of a run-time error */
-    public static class EvalException extends RuntimeException {
-	private String errtag;
-	
-	public EvalException(String message, String errtag) {
-	    super(message);
+    public static class EvalError extends Error {
+	public final String errtag;
+	public final Object args[];
+	public final String context;
+
+	public EvalError(String errtag, Object args[], String context) {
 	    this.errtag = errtag;
+	    this.args = args;
+	    this.context = context;
 	}
 
-	public EvalException(String message) {
-	    this(message, "#nohelp");
+	public EvalError(String errtag) {
+	    this(errtag, null, null);
 	}
-	
-	public String getErrtag() { return errtag; }
     }
 
-    private static String format(String msg, String name) {
-	if (name != null)
-	    return msg + " in function '" + name + "'";
-	else
-	    return msg;
-    }
-
-    private static String message(String msg) {
+    public static void error(String errtag, Object... args) {
 	String context[] = FunCode.getContext(null);
-	return format(msg, context[0]);
-    }
-
-    public static void error(String msg) {
-	throw new EvalException(message(msg));
-    }
-
-    public static void error(String msg, String help) {
-	throw new EvalException(message(msg), help);
+	throw new EvalError(errtag, args, context[0]);
     }
 
     public static void expect(String name, String expected) {
 	String context[] = FunCode.getContext(name);
-	String vowels = "aeiou";
-	String a = (vowels.indexOf(expected.charAt(0)) >= 0 ? "an" : "a");
-	throw new EvalException
-	    (format("'" + context[1] + "' expects " + a + " "
-		    + expected + " argument", context[0]), "#type");
+	error("#expect", context[1], expected);
     }
 
     /** Complain about calling a non-function */
     public static void err_apply() {
-	error("applying a non-function", "#apply");
+	error("#apply");
     }
 
     /** Complain about pattern-matching with a non-constructor */
     public static void err_match() {
-	error("matching must use a constructor", "#constr");
+	error("#constr");
     }
 
-    /** Complain when the wrong number of arguments are provided */
+    /** Complain when the wrong number of arguments is provided */
     public static void err_nargs(String name, int nargs, int arity) {
-	error("function " + name + " called with " + nargs
-	      + (nargs == 1 ? " argument" : " arguments")
-	      + " but needs " + arity, "#numargs");
+	if (nargs == 1)
+	    error("#numargs1", name, arity);
+	else
+	    error("#numargs", name, nargs, arity);
     }
 
     /** Complain when no pattern matches in a function definition */
@@ -226,8 +208,10 @@ public class Evaluator {
 		buf.append(", " + args[base+i]);
 	}
 
-	error("no pattern matches "
-	      + (arity == 1 ? "argument " : "arguments ") + buf, "#match");
+	if (arity == 1)
+	    error("#match1", buf);
+	else
+	    error("#match", buf);
     }
 
     public static void err_nomatch0() {
@@ -263,25 +247,22 @@ public class Evaluator {
 
     /** Complain about an undefined name */
     public static void err_notdef(Name x) {
-	error("'" + x + "' is not defined", "#undef");
+	error("#undef", x);
     }
 
     /** Complain about a non-boolean guard or 'if' condition */
     public static void err_boolcond() {
-	error("boolean expected as condition", "#condbool");
+	error("#condbool");
     }
 
     /** Complain about matching against a constructor with the
      *  wrong number of argument patterns */
     public static void err_patnargs(String name) {
-	error("matching constructor '" + name 
-	      + "' with wrong number of arguments", "#patnargs");
+	error("#patnargs", name);
     }
 
     public static void list_fail(Value xs, String msg) {
-	error("taking " + msg + " of " 
-	      + (xs instanceof Value.NilValue ? "the empty list" 
-		 : "a non-list"),
-	      "#" + msg);
+	error(msg, (xs instanceof Value.NilValue 
+		    ? "the empty list" : "a non-list"));
     }    
 }

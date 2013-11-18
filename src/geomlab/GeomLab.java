@@ -43,7 +43,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.*;
 import javax.swing.UIManager.*;
-import java.util.Properties;
 
 /** The main application class for GeomLab.
  * 
@@ -61,8 +60,6 @@ import java.util.Properties;
 public class GeomLab extends GeomBase {
     public AppFrame frame;
     
-    public static final Properties properties = new Properties();
-
     public void activate() {
 	try {
 	    SwingUtilities.invokeAndWait(new Runnable() {
@@ -104,13 +101,11 @@ public class GeomLab extends GeomBase {
 	loadFromFile(file, true);
     }
 
-    /** Subclass of ErrReporter that displays location of syntax errors. */
-    public class ShowError extends ErrReporter {
-	@Override
-	public void syntaxError(funbase.Scanner.SyntaxException e) {
-	    evalError("Oops: ", e.shortMessage(), e.getErrtag());
-	    frame.showError(e.getStart(), e.getEnd());	
-	}
+    /** Display location of syntax error. */
+    @Override
+    public void syntaxError(funbase.Scanner.SyntaxError e) {
+	evalError("Oops: ", formatError(e.errtag, e.args), e.errtag);
+	frame.showError(e.start, e.end);	
     }
 
     /** Command -- evaluate expressions */
@@ -128,7 +123,7 @@ public class GeomLab extends GeomBase {
 	Thread evalThread = new Thread() {
 	    @Override
 	    public void run() {
-		eval_loop(reader, true, new ShowError());
+		eval_loop(reader, true);
 		EventQueue.invokeLater(new Runnable() {
 		    @Override
 		    public void run() {
@@ -273,17 +268,7 @@ public class GeomLab extends GeomBase {
 	// loading of unsigned code.
 	System.setSecurityManager(null);
 	java.security.Policy.setPolicy(null);
-
-	// Read application properties
-	ClassLoader loader = GeomLab.class.getClassLoader();
-	InputStream propStream = loader.getResourceAsStream("properties");
-	if (propStream != null) {
-	    try {
-		properties.load(propStream);
-		propStream.close();
-	    }
-	    catch (IOException _) { }
-	}
+	GeomBase.loadProperties();
 
 	// System-dependent UI tweaks
 	if (System.getProperty("mrj.version") != null) {

@@ -72,7 +72,7 @@ public class Picture extends Value implements Stylus.Drawable {
     
     @PRIMITIVE
     public static Value aspect(Primitive prim, Value x) {
-	Picture pic = prim.cast(Picture.class, x, "picture");
+	Picture pic = prim.cast(Picture.class, x, "a picture");
 	return makeNumValue(pic.aspect);
     }
 
@@ -167,8 +167,8 @@ public class Picture extends Value implements Stylus.Drawable {
     @PRIMITIVE
     public static Value _combine(Primitive prim, Value x, Value y, Value z) {
 	return new BinaryPicture((float) prim.number(x), 
-				 prim.cast(Picture.class, y, "picture"),
-				 prim.cast(Picture.class, z, "picture"));
+				 prim.cast(Picture.class, y, "a picture"),
+				 prim.cast(Picture.class, z, "a picture"));
     }
 
     /** A picture that is drawn with a specified transformation.
@@ -209,14 +209,14 @@ public class Picture extends Value implements Stylus.Drawable {
     public static Value _transpic(Primitive prim, Value aspect, 
 				  Value base, Value trans, Value inc) {
 	return new TransPicture((float) prim.number(aspect),
-				prim.cast(Picture.class, base, "picture"),
-				prim.cast(Tran2D.class, trans, "transform"),
+				prim.cast(Picture.class, base, "a picture"),
+				prim.cast(Tran2D.class, trans, "a transform"),
 				(int) prim.number(inc));
     }
 
     @PRIMITIVE
     public static Value colour(Primitive prim, Value x) {
-	final Picture pic = prim.cast(Picture.class, x, "picture");
+	final Picture pic = prim.cast(Picture.class, x, "a picture");
 	return new Picture(pic.aspect, true) {
 	    @Override
 	    public void paint(int layer, int col, Stylus g, Tran2D t) {

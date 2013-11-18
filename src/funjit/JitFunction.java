@@ -34,7 +34,6 @@ import funbase.FunCode;
 import funbase.Function;
 import funbase.Value;
 import funbase.Evaluator;
-import funbase.Evaluator.EvalException;
 
 /** Superclass for all JIT-compiled functions */
 public abstract class JitFunction extends Function.Closure 
@@ -62,7 +61,7 @@ public abstract class JitFunction extends Function.Closure
 	    body.fvars = fvars;
 	    return body;
 	} catch (CloneNotSupportedException _) {
-	    throw new EvalException("Couldn't clone for closure");
+	    throw new Error("Couldn't clone for closure");
 	}
     }
 

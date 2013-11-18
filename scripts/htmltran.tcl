@@ -23,7 +23,8 @@ regsub -line -all {==(.*)==} $content {<h2>\1</h2>} content
 regsub -all {{{GeomLab}}} $content "" content
 regsub -all {''(.*?)''} $content {<i>\1</i>} content
 regsub -all {{{Markup\|(.*?)}}} $content {<\1>} content
-regsub -all {{{Message\|(.*?)\|(.*?)\|(.*?)}}} $content {\2: \3} content
+regsub -all {{{Message\|(.*?)\|(.*?)\|(.*?)}}} $content \
+    {<a name="\1">\2: \3</a>} content
 regsub -line -all {^;(.*)$} $content {<dt>\1</dt>} content
 regsub -line -all {^::(.*)$} $content {<dd><dl><dd>\1</dd></dl></dd>} content
 regsub -line -all {^:(.*)$} $content {<dd>\1</dd>} content

@@ -66,8 +66,7 @@ public abstract class Value implements Serializable {
     
     /** Dump the value to standard output in boot format */
     public void dump(PrintWriter out) {
-	throw new EvalException
-	    (String.format("can't dump %s", this.getClass()));
+	throw new Error(String.format("can't dump %s", this.getClass()));
     }
     
 
@@ -96,6 +95,7 @@ public abstract class Value implements Serializable {
     public static final Value nil = new NilValue();
 
     public static Value cons(Value hd, Value tl) {
+	Evaluator.countCons();
 	return new ConsValue(hd, tl);
     }
     
@@ -332,8 +332,10 @@ public abstract class Value implements Serializable {
 		return emptyString;
 	    else if (text.length() == 1 && text.charAt(0) < 256)
 		return charStrings[text.charAt(0)];
-	    else
+	    else {
+		Evaluator.countCons();
 		return new StringValue(text);
+	    }
 	}
 
 	/* After input from a serialized stream, readResolve lets us replace

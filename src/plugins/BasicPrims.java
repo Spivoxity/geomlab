@@ -73,8 +73,7 @@ public class BasicPrims {
     @PRIMITIVE("/")
     public static Value divide(Primitive prim, Value x, Value y) {
 	double yy = prim.number(y);
-	if (yy == 0.0) 
-	    Evaluator.error("division by zero", "#divzero");
+	if (yy == 0.0) Evaluator.error("#divzero");
 	return Value.makeNumValue(prim.number(x) / yy);
     }
 	
@@ -122,8 +121,7 @@ public class BasicPrims {
     @PRIMITIVE
     public static Value sqrt(Primitive prim, Value x) {
 	double arg = prim.number(x);
-	if (arg < 0.0) 
-	    Evaluator.error("taking square root of a negative number", "#sqrt");
+	if (arg < 0.0) Evaluator.error("#sqrt");
 	return Value.makeNumValue(Math.sqrt(arg));
     }
 
@@ -167,7 +165,7 @@ public class BasicPrims {
     public static final Primitive cons = new Primitive.Prim2(":") {
 	@Override
 	public Value apply2(Value hd, Value tl) {
-	    if (! isCons(tl) && ! tl.equals(Value.nil)) expect("list");
+	    if (! isCons(tl) && ! tl.equals(Value.nil)) expect("a list");
 	    return Value.cons(hd, tl);
 	}
 	    
@@ -190,12 +188,26 @@ public class BasicPrims {
 
     @PRIMITIVE
     public static Value head(Primitive prim, Value x) {
-	return prim.head(x);
+	try {
+	    Value.ConsValue xs = (Value.ConsValue) x;
+	    return xs.head;
+	}
+	catch (ClassCastException _) {
+	    Evaluator.list_fail(x, "#head");
+	    return null;
+	}
     }
 	
     @PRIMITIVE
     public static Value tail(Primitive prim, Value x) {
-	return prim.tail(x);
+	try {
+	    Value.ConsValue xs = (Value.ConsValue) x;
+	    return xs.tail;
+	}
+	catch (ClassCastException _) {
+	    Evaluator.list_fail(x, "#tail");
+	    return null;
+	}
     }
 	
     /* A few system-oriented primitives */
@@ -223,7 +235,7 @@ public class BasicPrims {
 
     @PRIMITIVE
     public static Value _closure(Primitive prim, Value x) {
-	FunCode body = prim.cast(FunCode.class, x, "funcode");
+	FunCode body = prim.cast(FunCode.class, x, "a funcode");
 	return body.makeClosure(new Value[1]);
     }
 
@@ -234,9 +246,11 @@ public class BasicPrims {
     }
 
     @PRIMITIVE
-    public static Value _frozen(Primitive prim, Value x) {
+    public static Value _redefine(Primitive prim, Value x) {
 	Name n = prim.name(x);
-	return Value.makeBoolValue(n.isFrozen());
+	if (n.isFrozen())
+	    Evaluator.error("#redef", x);
+	return Value.nil;
     }
 
     @PRIMITIVE
@@ -253,8 +267,8 @@ public class BasicPrims {
     }
 
     @PRIMITIVE
-    public static Value _error(Primitive prim, Value msg, Value help) {
-	Evaluator.error(prim.string(msg), prim.string(help));
+    public static Value _error(Primitive prim, Value tag, Value args) {
+	Evaluator.error(prim.string(tag), (Object []) prim.toArray(args));
 	return null;
     }
 
@@ -291,7 +305,7 @@ public class BasicPrims {
 	    Name.dumpNames(out);
 	    return Value.nil;
 	} catch (IOException e) {
-	    throw new Evaluator.EvalException(e.getMessage());
+	    throw new Error(e);
 	}
     }
 }

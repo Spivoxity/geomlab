@@ -30,7 +30,6 @@
 
 package funbase;
 
-import funbase.Evaluator.EvalException;
 import java.io.PrintWriter;
 import java.io.Serializable;
 
@@ -110,7 +109,7 @@ public abstract class Function implements Serializable {
     }
 
     public void dump(PrintWriter out) {
-	throw new EvalException("dumping a dummy function");
+	throw new Error("dumping a dummy function");
     }
 
     /** Method called by FunValue.writeReplace to determine a proxy. */
@@ -147,16 +146,13 @@ public abstract class Function implements Serializable {
 
 	@Override
 	public Value apply(Value args[], int base, int arity) {
-	    Evaluator.error("Can't call an abstract closure");
-	    return null;
+	    throw new Error("Calling an abstract closure");
 	}
 
         @Override
         public void dump(PrintWriter out) {
             if (fvars != null && fvars.length > 1)
-        	throw new EvalException
-        		("Can't dump a closure with free variables");
-
+        	throw new Error("Dumping a closure with free variables");
             out.print("closure ");
             code.dump(out);
         }

@@ -100,7 +100,7 @@ public class TilePicture extends Picture {
 	xss = ss;
 	for (int i = 0; i < nStrokes; i++) {
 	    strokes[i] = 
-		prim.toArray(Vec2D.class, prim.head(xss), "vector list");
+		prim.toArray(Vec2D.class, prim.head(xss), "a vector list");
 	    xss = prim.tail(xss);
 	}
 
@@ -114,10 +114,10 @@ public class TilePicture extends Picture {
 	    else if (spec instanceof ColorValue)
 		colours[i] = spec;
 	    else
-		prim.expect("colour or integer");
+		prim.expect("a colour or integer");
 
 	    outlines[i] = 
-		prim.toArray(Vec2D.class, prim.tail(xs), "vector list");
+		prim.toArray(Vec2D.class, prim.tail(xs), "a vector list");
 	    xss = prim.tail(xss);
 	}
 

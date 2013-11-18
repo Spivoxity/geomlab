@@ -95,6 +95,7 @@ public class RunScript extends GeomBase {
 
     public static void main(String args[]) {
 	System.setProperty("java.awt.headless", "true");
+	GeomBase.loadProperties();
 	
 	Scanner.initSyntax();
 	Native.register(new AWTFactory());

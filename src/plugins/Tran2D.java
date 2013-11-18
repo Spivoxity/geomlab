@@ -170,6 +170,7 @@ public class Tran2D extends Value {
 	@Override
 	public Value apply6(Value m_xx, Value m_yx, Value m_xy, 
 			    Value m_yy, Value m_x, Value m_y) {
+	    Evaluator.countCons();
 	    return new Tran2D((float) number(m_xx), (float) number(m_yx), 
 			      (float) number(m_xy), (float) number(m_yy), 
 			      (float) number(m_x), (float) number(m_y));
