@@ -42,47 +42,39 @@ public class FunCode extends Value {
 
     /** Enumerated type of opcodes for the Fun machine */
     public enum Opcode {
-	GLOBAL(1),   /* [#global, x] becomes GLOBAL i where consts[i] = x:
+	GLOBAL,      /* [#global, x] becomes GLOBAL i where consts[i] = x:
 			push value of global name x */
-	LOCAL(1),    /* [#local, n]: push value of local variable n */
-	ARG(1),	     /* [#arg, n]: push value of argument n */
-	FVAR(1),     /* [#fvar, n]: push value of free variable n */
-	BIND(-1),    /* [#bind, n]: pop value and store as local n */
-	POP(-1),     /* [#pop]: pop and discard a value */
-	QUOTE(1),    /* [#quote, x] becomes QUOTE i where consts[i] = x:
+	LOCAL,       /* [#local, n]: push value of local variable n */
+	ARG,	     /* [#arg, n]: push value of argument n */
+	FVAR,        /* [#fvar, n]: push value of free variable n */
+	BIND,        /* [#bind, n]: pop value and store as local n */
+	POP,         /* [#pop]: pop and discard a value */
+	QUOTE,       /* [#quote, x] becomes QUOTE i where consts[i] = x:
 		        push the constant x */
-	NIL(1),	     /* [#nil]: push the empty list */
-	PRECONS(0),  /* [#precons]: prepare for CONS */
-	CONS(-1),    /* [#cons]: pop a tail then a head, push a cons */
-	TRAP(0),     /* [#trap, lab] becomes TRAP i: set trap register */
-	FAIL(0),     /* [#fail]: die with "no clause matched" */
-	JFALSE(-1),  /* [#jfalse, lab] becomes JFALSE n:
+	NIL,	     /* [#nil]: push the empty list */
+	PRECONS,     /* [#precons]: prepare for CONS */
+	CONS,        /* [#cons]: pop a tail then a head, push a cons */
+	TRAP,        /* [#trap, lab] becomes TRAP i: set trap register */
+	FAIL,        /* [#fail]: die with "no clause matched" */
+	JFALSE,      /* [#jfalse, lab] becomes JFALSE n:
 		     	pop a boolean and jump if false */
-	JUMP(0),     /* [#jump, lab] becomes JUMP n:
+	JUMP,        /* [#jump, lab] becomes JUMP n:
 		     	jump to instruction at offset n */
-	PREP(0),     /* [#prep, n]: prepare for a call with n arguments */
-	CLOPREP(0),  /* [#cloprep, n]: prepare a closure with n fvars */
-	RETURN(-1),  /* [#return]: return from function */
-	MPLUS(0),    /* [#mplus, k]: match an n+k pattern by popping integer
+	PREP,        /* [#prep, n]: prepare for a call with n arguments */
+	CLOPREP,     /* [#cloprep, n]: prepare a closure with n fvars */
+	RETURN,      /* [#return]: return from function */
+	MPLUS,       /* [#mplus, k]: match an n+k pattern by popping integer
 		     	x with x >= k and pushing x-k; otherwise trap */
-	MEQ(-2),     /* [#meq]: pop two values and trap if not equal */
-	MNIL(-1),    /* [#mnil]: pop the empty list; otherwise trap */
-	MCONS(1),    /* [#mcons]: pop a cons cell and push its tail and head */
-	GETTAIL(0),  /* [#gettail]: fetch tail following MCONS */
-	TCALL(0),    /* [#tcall, n]: tail recursive call */
-	PUTARG(0),   /* [#putarg, i]: mark i'th argument of a call */
-	PUTFVAR(0),  /* [#putfvar, i]: mark i'th free var of a closure */
-	CALL { @Override public int delta(int arg) { return -arg; } }, 
-	             /* [#call, n]: call a function with n arguments */
-	CLOSURE { @Override public int delta(int arg) { return -arg; } }, 
-		     /* [#closure, n]: form a closure with n free variables */
-	MPRIM { @Override public int delta(int arg) { return arg-2; } };
-	      	     /* [#mprim, n]: pattern match a constructor with n args */
-
-	private final int delta;
-	private Opcode() { this(0); }
-	private Opcode(int delta) { this.delta = delta; }
-	public int delta(int arg) { return delta; }
+	MEQ,         /* [#meq]: pop two values and trap if not equal */
+	MNIL,        /* [#mnil]: pop the empty list; otherwise trap */
+	MCONS,       /* [#mcons]: pop a cons cell and push its tail and head */
+	GETTAIL,     /* [#gettail]: fetch tail following MCONS */
+	TCALL,       /* [#tcall, n]: tail recursive call */
+	PUTARG,      /* [#putarg, i]: mark i'th argument of a call */
+	PUTFVAR,     /* [#putfvar, i]: mark i'th free var of a closure */
+        CALL,        /* [#call, n]: call a function with n arguments */
+        CLOSURE,     /* [#closure, n]: form a closure with n free variables */
+        MPRIM;       /* [#mprim, n]: pattern match a constructor with n args */
     }
     
     /** Name of the function (used for error messages) */
@@ -179,50 +171,29 @@ public class FunCode extends Value {
 	return Enum.valueOf(Opcode.class, x); 
     }
     
-    /** A label in the code for a function.
-     * 
-     *  Each label may be used in only one jump instruction, and all
-     *  jumps are forward jumps. */
-    private static class Label {
-	/* Offset where the label is used. */
-	public final int use;
-	
-	/** Stack depth at jump target. */
-	public final int depth;
-
-	public Label(int use, int depth) {
-	    this.use = use; this.depth = depth;
-	}
-    }
-    
     /** Assemble a list of instructions into a function body */
     @PRIMITIVE
-    public static Value _assemble(Primitive prim, Value name0, 
-				  Value arity0, Value code) {
-	String name = name0.toString(); // Could be name or string
-	int arity = (int) prim.number(arity0);
+    public static Value _assemble(Primitive prim, Value name, 
+				  Value arity, Value fsize,
+                                  Value ssize, Value code) {
 	int size = 0;
-
 	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs))
 	    if (prim.isCons(prim.head(xs))) size++;
 	
 	Opcode instrs[] = new Opcode[size];
 	int rands[] = new int[size];
-	int ip = 0, sp = 0, fsize = 0, ssize = 0;
+	int ip = 0;
 	List<Value> consts = new ArrayList<Value>();
 	
-	/** Mapping from integer labels to info about each label */
-	Map<Integer, Label> labels = new HashMap<Integer, Label>();
+	/** Mapping from integer labels to use point of each label */
+	Map<Integer, Integer> labels = new HashMap<Integer, Integer>();
 	
 	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs)) {
 	    Value inst = prim.head(xs);
 	    if (inst instanceof Value.NumValue) {
 		/* A label */
-		Label lab = labels.get((int) prim.number(inst));
-		if (lab != null) {
-		    rands[lab.use] = ip;
-		    sp = lab.depth;
-		}
+		Integer use = labels.get((int) prim.number(inst));
+		if (use != null) rands[use] = ip;
 	    } else if (prim.isCons(inst)) {
 		/* An instruction [#op, arg] with optional arg */
 		Name x = prim.cast(Name.class, prim.head(inst), "an opcode");
@@ -250,25 +221,12 @@ public class FunCode extends Value {
 		}
 
 		instrs[ip] = op; rands[ip] = rand;
-		sp += instrs[ip].delta(rand);
-		if (sp > ssize) ssize = sp;
 
 		switch (op) {
-		    case BIND:
-			/* Update the frame size */
-			if (rand >= fsize) fsize = rand+1;
-			break;
-
 		    case JUMP:
 		    case JFALSE:
-			/* Create a label */
-			labels.put(rand, new Label(ip, sp));
-			break;
-				
 		    case TRAP:
-			/* Create a label, noting one value will 
-			   be popped */
-			labels.put(rand, new Label(ip, sp-1));
+			labels.put(rand, ip);
 			break;
 
 		    default:
@@ -281,7 +239,11 @@ public class FunCode extends Value {
 	    }
 	}
 	
-	return new FunCode(name, arity, fsize, ssize, instrs, rands,
+	return new FunCode(name.toString(), // Could be name or string
+                           (int) prim.number(arity), 
+                           (int) prim.number(fsize), 
+                           (int) prim.number(ssize), 
+                           instrs, rands,
 			   consts.toArray(new Value[consts.size()]));
     }
 

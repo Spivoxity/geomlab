@@ -88,6 +88,7 @@ define filter(p, []) = []
   | filter(p, x:xs) = if p(x) then x:filter(p, xs) else filter(p, xs);
 
 define foldr(f, a, []) = a | foldr(f, a, x:xs) = f(x, foldr(f, a, xs));
+define foldl(f, a, []) = a | foldl(f, a, x:xs) = foldl(f, f(a, x), xs);
 
 { Helper function for list comprehensions }
 define _mapa(f, [], acc) = acc
@@ -119,6 +120,8 @@ define __top() =
 
   let fst(x:_) = x in
   let snd(_:y:_) = y in
+
+  let max(x, y) = if x > y then x else y in
 
 
   { PARSER -- a slightly hacked-up recursive descent parser.  The global
@@ -467,6 +470,46 @@ define __top() =
       | flat(c, a) = c:a in
     flat(c, []) in
 
+  let assemble(f, n, code) = 
+    let ssize = _new(0) in 
+    let fsize = _new(0) in
+    let ltab = _new([]) in
+    let deflab(lab, d) = _set(ltab, [lab, d]:_get(ltab)) in
+    let visit(d, n) =
+          let d1 = assoc(n, _get(ltab)) in if d1 <> [] then d1 else d
+          when numeric(n)
+      | visit(d, [#GLOBAL, _]) = d+1
+      | visit(d, [#LOCAL, _]) = d+1
+      | visit(d, [#ARG, _]) = d+1
+      | visit(d, [#FVAR, _]) = d+1
+      | visit(d, [#BIND, n]) = _set(fsize, max(n+1, _get(fsize))) >> d-1
+      | visit(d, [#POP]) = d-1
+      | visit(d, [#QUOTE, _]) = d+1
+      | visit(d, [#NIL]) = d+1
+      | visit(d, [#PRECONS]) = d
+      | visit(d, [#CONS]) = d-1
+      | visit(d, [#TRAP, lab]) = deflab(lab, d-1) >> d
+      | visit(d, [#FAIL]) = d
+      | visit(d, [#JFALSE, lab]) = deflab(lab, d-1) >> d-1
+      | visit(d, [#JUMP, lab]) = deflab(lab, d) >> d
+      | visit(d, [#PREP, _]) = d
+      | visit(d, [#CLOPREP, _]) = d
+      | visit(d, [#RETURN]) = d-1
+      | visit(d, [#MPLUS, _]) = d
+      | visit(d, [#MEQ]) = d-2
+      | visit(d, [#MNIL]) = d-1
+      | visit(d, [#MCONS]) = d+1
+      | visit(d, [#GETTAIL]) = d
+      | visit(d, [#TCALL, _]) = d
+      | visit(d, [#PUTARG, _]) = d
+      | visit(d, [#PUTFVAR, _]) = d
+      | visit(d, [#CALL, n]) = d-n
+      | visit(d, [#CLOSURE, n]) = d-n
+      | visit(d, [#MPRIM, n]) = d+n-2 in
+    foldl((function (d, i) let d1 = visit(d, i) in 
+		_set(ssize, max(d1, _get(ssize))) >> d1), 0, code) >>
+    _assemble(f, n, _get(fsize), _get(ssize), code) in
+
 
   { ENVIRONMENTS -- An environment is a 5-list [lev, arity, dict, fvs, size], 
     where
@@ -712,7 +755,7 @@ define __top() =
     let fvs = e_fvars(env1) in
     let nfvs = length(fvs) in
     debug(1, code) >>
-    [#seq, [#QUOTE, _assemble(f, n, code)], [#CLOPREP, nfvs],
+    [#seq, [#QUOTE, assemble(f, n, code)], [#CLOPREP, nfvs],
       #seq:[ [#seq, c_ref(x, env), [#PUTFVAR, i]] | [i, x] <- number(1, fvs) ],
       [#CLOSURE, nfvs]] in
 
@@ -793,7 +836,7 @@ define __top() =
   { i_func -- compile a function for the interpreter }
   let i_func(f, n, body, env) =
     let code = flatten(c_body(body, newblock(f, n, env))) in
-    debug(1, code) >> _closure(_assemble(f, n, code)) in
+    debug(1, code) >> _closure(assemble(f, n, code)) in
 
   { Function bodies are compiled, but expressions typed at the top-level
     prompt are evaluated by a little metacircular interpreter, which
