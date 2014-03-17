@@ -174,69 +174,46 @@ public class FunCode extends Value {
     /** Assemble a list of instructions into a function body */
     @PRIMITIVE
     public static Value _assemble(Primitive prim, Value name, 
-				  Value arity, Value fsize,
+                                  Value arity, Value fsize,
                                   Value ssize, Value code) {
-	int size = 0;
-	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs))
-	    if (prim.isCons(prim.head(xs))) size++;
-	
+	int size = prim.listLength(code);
 	Opcode instrs[] = new Opcode[size];
 	int rands[] = new int[size];
 	int ip = 0;
 	List<Value> consts = new ArrayList<Value>();
 	
-	/** Mapping from integer labels to use point of each label */
-	Map<Integer, Integer> labels = new HashMap<Integer, Integer>();
-	
 	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs)) {
 	    Value inst = prim.head(xs);
-	    if (inst instanceof Value.NumValue) {
-		/* A label */
-		Integer use = labels.get((int) prim.number(inst));
-		if (use != null) rands[use] = ip;
-	    } else if (prim.isCons(inst)) {
-		/* An instruction [#op, arg] with optional arg */
-		Name x = prim.cast(Name.class, prim.head(inst), "an opcode");
-		Opcode op = getOpcode(x.tag);
-		Value args = prim.tail(inst);
-		int rand;
+            Name x = prim.cast(Name.class, prim.head(inst), "an opcode");
+            Opcode op = getOpcode(x.tag);
+            Value args = prim.tail(inst);
+            int rand;
 
-		if (! prim.isCons(args))
-		    /* No argument */
-		    rand = 0;
-		else {
-		    Value v = prim.head(args);
-		    if (op == Opcode.GLOBAL || op == Opcode.QUOTE
-			|| op == Opcode.MPLUS) {
-			/* An argument that goes in the constant pool */
-			rand = consts.indexOf(v);
-			if (rand < 0) {
-			    rand = consts.size();
-			    consts.add(v);
-			}
-		    } else {
-			/* An integer argument */
-			rand = (int) prim.number(v);
-		    }
-		}
+            if (! prim.isCons(args))
+                /* No argument */
+                rand = 0;
+            else {
+                Value v = prim.head(args);
+                switch (op) {
+                    case GLOBAL:
+                    case QUOTE:
+                    case MPLUS:
+                        /* An argument that goes in the constant pool */
+                        rand = consts.indexOf(v);
+                        if (rand < 0) {
+                            rand = consts.size();
+                            consts.add(v);
+                        }
+                        break;
+                    default:
+                        /* An integer argument */
+                        rand = (int) prim.number(v);
+                        break;
+                }
+            }
 
-		instrs[ip] = op; rands[ip] = rand;
-
-		switch (op) {
-		    case JUMP:
-		    case JFALSE:
-		    case TRAP:
-			labels.put(rand, ip);
-			break;
-
-		    default:
-			break;
-		}
-
-		ip++;
-	    } else {
-		throw new Error("Bad instruction " + inst);
-	    }
+            instrs[ip] = op; rands[ip] = rand;
+            ip++;
 	}
 	
 	return new FunCode(name.toString(), // Could be name or string

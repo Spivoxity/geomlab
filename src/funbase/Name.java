@@ -218,7 +218,8 @@ public final class Name extends Value implements Comparable<Name> {
 	Collections.sort(names);
 	for (String k : names) {
 	    Name x = find(k);
-	    if (x.glodef != null && !x.cursed) {
+	    if (x.glodef != null && !x.cursed 
+                && !(x.glodef.subr instanceof Primitive)) {
 		out.printf("global #%s ", x.tag);
 		x.glodef.dump(out);
 	    }

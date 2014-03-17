@@ -471,12 +471,13 @@ define __top() =
     flat(c, []) in
 
   let assemble(f, n, code) = 
+    { Determine stack and frame sizes }
     let ssize = _new(0) in 
     let fsize = _new(0) in
-    let ltab = _new([]) in
-    let deflab(lab, d) = _set(ltab, [lab, d]:_get(ltab)) in
+    let labdepth = _new([]) in
+    let setlab(lab, d) = _set(labdepth, [lab, d]:_get(labdepth)) in
     let visit(d, n) =
-          let d1 = assoc(n, _get(ltab)) in if d1 <> [] then d1 else d
+          let d1 = assoc(n, _get(labdepth)) in if d1 <> [] then d1 else d
           when numeric(n)
       | visit(d, [#GLOBAL, _]) = d+1
       | visit(d, [#LOCAL, _]) = d+1
@@ -488,10 +489,10 @@ define __top() =
       | visit(d, [#NIL]) = d+1
       | visit(d, [#PRECONS]) = d
       | visit(d, [#CONS]) = d-1
-      | visit(d, [#TRAP, lab]) = deflab(lab, d-1) >> d
+      | visit(d, [#TRAP, lab]) = setlab(lab, d-1) >> d
       | visit(d, [#FAIL]) = d
-      | visit(d, [#JFALSE, lab]) = deflab(lab, d-1) >> d-1
-      | visit(d, [#JUMP, lab]) = deflab(lab, d) >> d
+      | visit(d, [#JFALSE, lab]) = setlab(lab, d-1) >> d-1
+      | visit(d, [#JUMP, lab]) = setlab(lab, d) >> d
       | visit(d, [#PREP, _]) = d
       | visit(d, [#CLOPREP, _]) = d
       | visit(d, [#RETURN]) = d-1
@@ -508,7 +509,21 @@ define __top() =
       | visit(d, [#MPRIM, n]) = d+n-2 in
     foldl((function (d, i) let d1 = visit(d, i) in 
 		_set(ssize, max(d1, _get(ssize))) >> d1), 0, code) >>
-    _assemble(f, n, _get(fsize), _get(ssize), code) in
+
+    { Fix up labels }
+    let ltab = _new([]) in
+    let fixlab(lab) = assoc(lab, _get(ltab)) in
+    let pass1(n, [], a) = a
+      | pass1(n, lab:code, a) = 
+          _set(ltab, [lab, n]:_get(ltab)) >> pass1(n, code, a) when numeric(lab)
+      | pass1(n, inst:code, a) = pass1(n+1, code, inst:a) in
+    let fixup([#JUMP, lab]) = [#JUMP, fixlab(lab)]
+      | fixup([#JFALSE, lab]) = [#JFALSE, fixlab(lab)]
+      | fixup([#TRAP, lab]) = [#TRAP, fixlab(lab)]
+      | fixup(inst) = inst in
+    let pass2(code) = 
+      foldl((function (a, inst) fixup(inst):a), [], code) in
+    _assemble(f, n, _get(fsize), _get(ssize), pass2(pass1(0, code, []))) in
 
 
   { ENVIRONMENTS -- An environment is a 5-list [lev, arity, dict, fvs, size], 
