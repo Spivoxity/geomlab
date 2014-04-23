@@ -102,8 +102,6 @@ define plot(w, x0, y0, s, f) =
 
 { Image transformations }
 
-_install("SlidePicture");
-
 define interp(t, x, y) = (1-t)*x + t * y;
 
 define intercolour(t, rgb(r1,g1,b1), rgb(r2,g2,b2))

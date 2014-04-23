@@ -36,6 +36,8 @@ regsub -line -all {{{GeomPic\|(.*?)\|(.*?)}}} $content \
 regsub -line -all {{{GeomLab}}} $content {} content
 regsub -line -all {^:(.*)$} $content "\\\\quotation\n\\1\n\\\\endquote" content
 
+regsub -line -all {{{IfWiki\|.*?\|(.*?)}}} $content "\\1" content
+
 proc verbfun {s} {
     regsub -all -line {^ } $s "" s
     return "\n\\verbatim$s\n\\endverb"

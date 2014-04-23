@@ -71,6 +71,5 @@ worksheet introduces another way of describing them: as sequences of
 instructions for following the curve by turning to the left and to the
 right.
 
-
-
-
+[[Worksheet 9: Colours and images]].
+A hotch-potch of pictures that are waiting for a connecting thread of explanation.

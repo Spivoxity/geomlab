@@ -3,7 +3,7 @@
 all: workbook.pdf
 
 TRAN = intro.tex sheet1.tex sheet2.tex sheet3.tex sheet4.tex \
-	sheet5.tex sheet6.tex sheet7.tex sheet8.tex
+	sheet5.tex sheet6.tex sheet7.tex sheet8.tex sheet9.tex
 
 workbook.dvi: $(TRAN)
 

@@ -1,6 +1,6 @@
 {{GeomLab}}
 All the colours that can be shown on a computer screen are made up of a mixture of the three primary colours red, green and blue.
-GeomLab uses the notation @rgb(r, g, b)@ for a colour that contains an amount @r@ of red, an amount @g@ of green and an amount @b@ of blue, with the three numbers @r@, @g@ and @b@ varying between 0 and 1.
+GeomLab uses the notation @rgb(r, g, b)@ for a colour that contains an amount @r@ of red, an amount @g@ of green and an amount&nbsp;@b@ of blue, with the three numbers @r@, @g@ and @b@ varying between 0 and 1.
 For example, the colour @rgb(1, 0, 0)@ is pure, bright red:
 {{GeomPic|9010|rgb(1, 0, 0)|red}}
 (if you type an expression that yields a colour, then GeomLab both prints the colour in the form @rgb(...)@ and shows a circle filled with that colour.)  For convenience, @red@ is a predefined constant with this colour as its value, and other constants @green@, @blue@, @white@ and @black@ are also defined.  Try them!
@@ -8,7 +8,7 @@ For example, the colour @rgb(1, 0, 0)@ is pure, bright red:
 Apart from these pure colours, many other can be made as mixtures.
 For example, the colour @rgb(1, 0.5, 0.5)@ is a shade of pink:
 {{GeomPic|9020|rgb(1, 0.5, 0.5)|*}}
-This colour is halfway between pure red, @rgb(1, 0, 0)$, and white, @rgb(1, 1, 1)@.  Adding a bit more green than blue gives an apricot colour:
+This colour is halfway between pure red, @rgb(1, 0, 0)@, and white, @rgb(1, 1, 1)@.  Adding a bit more green than blue gives an apricot colour:
 {{GeomPic|9030|rgb(1, 0.6, 0.4)|*}}
 On the other hand, increasing the amount of blue gives a colour that is more like shocking pink than rose-petal:
 {{GeomPic|9040|rgb(1, 0.4, 0.6)|*}}
@@ -44,7 +44,7 @@ The colours in this image are pure red at the bottom left corner, tending toward
 ----
 
 Pythagoras' theorem tells us that the distance between the two points with coordinates @[x, y]@ and @[u, v]@ is
-:{{IfWiki|<tt>sqrt((x-u)<sup>2</sup> + (y-v)<sup>2</sup>)</tt>|$\sqrt{(x-u)^2+(y-v)^2$}}.
+:{{IfWiki|<tt>sqrt((x-u)<sup>2</sup> + (y-v)<sup>2</sup>)</tt>|$\sqrt{(x-u)^2+(y-v)^2}$}}.
 Let's define a function to compute this distance:
  define dist([x, y], [u, v]) =
    let dx = x - u in let dy = y - v in
@@ -61,7 +61,7 @@ then this makes a picture where a red light appears to be shining at (200, 200),
 (For points that are further than 200 units from (200, 200), the computed value of @r@ is negative; but luckily that doesn't matter, because GeomLab treats the @r@, @g@, @b@ components of a colour as 0 if they a negative value is given, and as 1 if the value given is greater than&nbsp;1.)
 
 Here is another picture that contains both red and green lights:
-{{GeomPic|9320|image(400, 400, twolights)|!image(144, 144, twinslet)}}
+{{GeomPic|9320|image(400, 400, twolights)|!image(144, 144, twolights)}}
 Notice that the green glow is smaller in diameter than the red glow.  Can you produce something similar?
 
 ----
@@ -74,3 +74,22 @@ Applying it:
  define sepia([x, y]) = noblue(mike([x, y]))
 The result:
 {{GeomPic|9930|image(300, 400, sepia)|!image(125, 167, mappixels(noblue, mikelet))}}
+
+----
+
+Colour wheel:
+{{GeomPic|9940|image(400, 400, wheel)|!}}
+
+
+Chessboard:
+ define odd(x) = (x mod 2 = 1);
+
+ define curry(f) =
+   function (a) (function (b) f(a, b));
+
+ define check(t, [x, y]) =
+   if odd(int(x/t)) = odd(int(y/t)) then black else white;
+then
+{{GeomPic|9945|let g {{=}} curry(check) in image(400, 400, g(50))|*}}
+or
+{{GeomPic|9946|let g {{=}} curry(check) in<br/>slide(function(t) image(400, 400, g(200*t+0.01)))|*}}

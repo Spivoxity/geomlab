@@ -139,10 +139,25 @@ define redglowlet([x, y]) =
   let r = 1 - dist([x, y], [72, 72])/72 in
   rgb(r, 0, 0);
 
-define twinslet([x, y]) =
+define twolights([x, y]) =
   let r = 1 - dist([x, y], [72, 72])/72 in
   let g = 1 - dist([x, y], [108, 36])/36 in
   rgb(r, g, 0);
+
+define wheel([x, y]) =
+  let u = x - 200 in
+  let v = y - 200 in
+  let angle = atan2(v, u) in
+  let radius = sqrt(u*u+v*v) in
+  hsv(angle/360, radius/200, 1);
+
+define odd(x) = (x mod 2 = 1);
+
+define curry(f) =
+  function (a) (function (b) f(a, b));
+
+define check(t, [x, y]) =
+  if odd(int(x/t)) = odd(int(y/t)) then black else white;
 
 
 { Making tiles }
@@ -165,4 +180,6 @@ define makepic_r(p, f, r) =
 
 define makepic(p, f) = makepic_r(p, f, 144);
 
-define makeimg(p, f) = saveimg(p, "jpg", f ^ ".jpg");
+define makeimg(p, f) = 
+  _saveimg(p, "jpg", f ^ ".jpg") >>
+  epswrite(p, f ^ ".eps", 144, 0.5, 0.95);

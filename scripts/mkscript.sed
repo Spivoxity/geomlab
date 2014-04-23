@@ -11,6 +11,10 @@ s/&nbsp;/ /g
     s//define \2\3; makepic(\2, "\1");/p
 }
 
+/{{GeomPic|\(.*\)|\(.*\)|!}}/s//makeimg(\2, "\1");/p
+
 /{{GeomPic|\(.*\)|.*|!\(.*\)}}/s//makeimg(\2, "\1");/p
 
 /{{GeomPic|\(.*\)|.*|\(.*\)}}/s//makepic(\2, "\1");/p
+
+/{{GeomJpg|\(.*\)|.*|\(.*\)}}/s//makeimg(\2, "\1");/p

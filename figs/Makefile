@@ -11,10 +11,10 @@ blank.png: ../progs/solutions.txt
 	$(RUNSCRIPT) -e 'makepic(solid(1, white), "blank")'
 
 limit3-%.png: ../progs/solutions.txt
-	$(RUNSCRIPT) -e 'makepic_r(limit(3), "limit3-$*", $*)'
+	$(RUNSCRIPT) -e 'makepic_r(colour(limit(3)), "limit3-$*", $*)'
 
 invlimit-%.png: ../progs/solutions.txt
-	$(RUNSCRIPT) -e 'makepic_r(invlimit(10), "invlimit-$*", $*)'
+	$(RUNSCRIPT) -e 'makepic_r(colour(invlimit(10)), "invlimit-$*", $*)'
 
 .%-fig: %.fun ../progs/solutions.txt
 	$(RUNSCRIPT) $<

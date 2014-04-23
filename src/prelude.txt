@@ -54,10 +54,13 @@ _install("TurtlePicture");
 _install("BushPicture");
 
 _install("ImagePicture");
-define image(w, h, f) = _image(w, h, function (x, y) f([x, y]));
+define image(w, h, f) = 
+  _image(w, h, function (x, y) f([x, y]));
 define _pixelfun(img) = function ([x, y]) _pixel(img, x, y);
 define mike = _pixelfun(_resource("mike.jpg"));
 define photo(url) = _pixelfun(_photo(url));
+
+_install("SlidePicture");
 
 
 { BASIC DEFINITIONS }
