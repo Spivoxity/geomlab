@@ -54,8 +54,8 @@ public class ColorValue extends Picture {
     /** Composite RGB value */
     public final int rgb;
     
-    public ColorValue(double rf, double gf, double bf) {
-	super(1.0f, false);
+    private ColorValue(double rf, double gf, double bf) {
+	super(1.0f);
 	rpart = cutoff(rf); gpart = cutoff(gf); bpart = cutoff(bf);
 	int rx = Math.round(255.0f * (float) rpart); 
 	int gx = Math.round(255.0f * (float) gpart);
@@ -63,8 +63,8 @@ public class ColorValue extends Picture {
 	rgb = (rx << 16) + (gx << 8) + bx;
     }
     
-    public ColorValue(int rgb) {
-	super(1.0f, false);
+    private ColorValue(int rgb) {
+	super(1.0f);
 	this.rgb = rgb;
 	rpart = ((rgb >> 16) & 0xff)/255.0;
 	gpart = ((rgb >> 8) & 0xff)/255.0;
@@ -78,9 +78,12 @@ public class ColorValue extends Picture {
 	return new ColorValue(g, g, g);
     }
 
-    /** Provided for invocation from inlined JIT code */
     public static Value getInstance(double rf, double gf, double bf) {
 	return new ColorValue(rf, gf, bf);
+    }
+
+    public static Value getInstance(int rgb) {
+        return new ColorValue(rgb);
     }
 
     /** Compute a colour from Hue, Saturation and Brightness values,

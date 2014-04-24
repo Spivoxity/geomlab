@@ -211,14 +211,8 @@ public class InlineTranslator extends JitTranslator {
 
 	register(new SimpleInliner("_new") {
 	    @Override 
-	    public void prepare() {
-		code.gen(NEW, cell_cl);
-		code.gen(DUP);
-	    }
-
-	    @Override 
 	    public Kind call() {
-		code.gen(INVOKESPECIAL, cell_cl, "<init>", fun_V_t);
+		code.gen(INVOKESTATIC, cell_cl, "newInstance", fun_V_V_t);
 		return Kind.VALUE;
 	    }
 	});

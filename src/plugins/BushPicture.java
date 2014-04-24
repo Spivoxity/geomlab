@@ -51,7 +51,7 @@ public class BushPicture extends Picture {
     private String commands;
     protected final float xmin, xmax, ymin, ymax;
     
-    public BushPicture(String commands) {
+    private BushPicture(String commands) {
 	super(calcAspect(commands), true);
 	this.commands = commands;
 	xmin = _xmin; xmax = _xmax; 

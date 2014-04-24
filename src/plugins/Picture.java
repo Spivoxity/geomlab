@@ -59,9 +59,9 @@ public class Picture extends Stylus.AbstractDrawable {
     public final float aspect;	       // = width / height
     private final boolean interactive; // whether we use slider value
     
-    public Picture(float aspect) { this(aspect, false); }
+    protected Picture(float aspect) { this(aspect, false); }
     
-    public Picture(float aspect, boolean interactive) {
+    protected Picture(float aspect, boolean interactive) {
 	Evaluator.countCons();
 	this.aspect = aspect;
 	this.interactive = interactive;
@@ -145,7 +145,7 @@ public class Picture extends Stylus.AbstractDrawable {
 	/** One of the component pictures. */
 	private final Picture left, right;
 	
-	public BinaryPicture(float aspect, Picture left, Picture right) {
+	private BinaryPicture(float aspect, Picture left, Picture right) {
 	    super(aspect, left.isInteractive() || right.isInteractive());
 	    this.left = left; this.right = right;
 	}
@@ -187,7 +187,8 @@ public class Picture extends Stylus.AbstractDrawable {
 	/** The increment to be added to the colour index. */
 	private final int inc;
 	
-	public TransPicture(float aspect, Picture base, Tran2D trans, int inc) {
+	private TransPicture(float aspect, Picture base, 
+                             Tran2D trans, int inc) {
 	    super(aspect, base.isInteractive());
 	    this.base = base; this.trans = trans; this.inc = inc;
 	}

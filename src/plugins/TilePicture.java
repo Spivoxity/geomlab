@@ -45,8 +45,8 @@ public class TilePicture extends Picture {
     protected Vec2D outlines[][];
     protected Object colours[];
 
-    public TilePicture(float aspect,
-	    Vec2D strokes[][], Vec2D outlines[][], Object colours[]) {
+    private TilePicture(float aspect, Vec2D strokes[][], 
+                        Vec2D outlines[][], Object colours[]) {
 	super(aspect);
 	this.strokes = strokes;
 	this.outlines = outlines;

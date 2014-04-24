@@ -50,7 +50,9 @@ public class SlidePicture extends Stylus.AbstractDrawable {
     /** Cached picture from last update */
     private Picture cache;
 
-    public SlidePicture(Value.FunValue render) { this.render = render; }
+    private SlidePicture(Value.FunValue render) { 
+        this.render = render; 
+    }
 	
     @Override
     public float getAspect() {

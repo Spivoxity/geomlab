@@ -56,13 +56,13 @@ public class ImagePicture extends Picture {
     /** Name of a resource from which the image can be reloaded, if any */
     private String resourceName = null;
     
-    public ImagePicture(Native.Image image, String resourceName) {
+    private ImagePicture(Native.Image image, String resourceName) {
 	super((float) image.getWidth() / image.getHeight());
 	this.image = image;
 	this.resourceName = resourceName;
     }
     
-    public ImagePicture(Native.Image image) {
+    private ImagePicture(Native.Image image) {
 	this(image, null);
     }
     
@@ -239,7 +239,7 @@ public class ImagePicture extends Picture {
 	int y = (int) Math.round(prim.number(y0));
 	if (0 <= x && x < w && 0 <= y && y < h) {
 	    int rgb = p.image.getRGB(x, h-y-1);
-	    return new ColorValue(rgb);
+	    return ColorValue.getInstance(rgb);
 	} else {
 	    return ColorValue.white;
 	}

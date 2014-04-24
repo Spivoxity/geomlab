@@ -48,30 +48,34 @@ public class Cell extends Value {
     /** Contents of the cell */
     public Value val;
     
-    public Cell(Value val) { 
-	Evaluator.countCons();
+    private Cell(Value val) { 
 	this.val = val; 
     }
    
+    public static Value newInstance(Value val) {
+        return new Cell(val);
+    }
+
     @Override
     public void printOn(PrintWriter out) {
 	out.print("ref ");
 	val.printOn(out);
     }
     
-    @PRIMITIVE("_new")
-    public static Value newcell(Primitive prim, Value x) {
+    @PRIMITIVE
+    public static Value _new(Primitive prim, Value x) {
+	Evaluator.countCons();
 	return new Cell(x); 
     }
 
-    @PRIMITIVE("_get")
-    public static Value deref(Primitive prim, Value v) {
+    @PRIMITIVE
+    public static Value _get(Primitive prim, Value v) {
 	Cell x = prim.cast(Cell.class, v, "a cell");
 	return x.val;
     }
 
-    @PRIMITIVE("_set")
-    public static Value assign(Primitive prim, Value v, Value y) {
+    @PRIMITIVE
+    public static Value _set(Primitive prim, Value v, Value y) {
 	Cell x = prim.cast(Cell.class, v, "a cell");
 	return (x.val = y);
     }
