@@ -154,7 +154,6 @@ public class Session {
 	
 	    // Install the same plugins
 	    plugins.clear();
-	    Primitive.clearPrimitives();
             Name.clearNameTable();
 	    Set<String> sessionPlugins = (Set<String>) in.readObject();
 	    for (String x : sessionPlugins)

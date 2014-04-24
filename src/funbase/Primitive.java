@@ -313,28 +313,21 @@ public abstract class Primitive extends Function {
 	public String value() default "";
     }
 
-    /** Table of all primitives */
-    protected static Map<String, Primitive> primitives = 
-	new HashMap<String, Primitive>(100);
-    
     /** Register a new primitive */
     public static void register(Primitive p) {
-	primitives.put(p.name, p);
         Name n = Name.find(p.name);
         n.setGlodef(FunValue.getInstance(p), null);
     }
     
     /** Find a registered primitive */
     public static Primitive find(String name) {
-	Primitive prim = primitives.get(name);
-	if (prim == null)
+        Name n = Name.find(name);
+        try {
+            return (Primitive) n.glodef.subr;
+        }
+        catch (ClassCastException e) {
 	    throw new Error(String.format("Primitive %s is not defined", name));
-	return prim;
-    }
-    
-    /** Discard all registered primitives */
-    public static void clearPrimitives() {
-	primitives.clear();
+        }
     }
     
     /** Serialized substitute for a primitive */
@@ -349,11 +342,7 @@ public abstract class Primitive extends Function {
 	
 	private Object readResolve() throws ObjectStreamException {
 	    /* Replace the memento by the genuine primitive */
-	    Object prim = primitives.get(name);
-	    if (prim == null)
-		throw new InvalidObjectException(
-			"Primitive " + name + " could not be found");
-	    return prim;
+            return find(name);
 	}
     }
 }
