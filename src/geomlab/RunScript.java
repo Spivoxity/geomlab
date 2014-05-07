@@ -30,7 +30,6 @@
 
 package geomlab;
 
-import funbase.BootLoader;
 import funbase.Scanner;
 import geomlab.Command.CommandException;
 import plugins.Native;
@@ -38,9 +37,7 @@ import plugins.Native;
 import java.io.*;
 
 /** RunScript allows expressions to be evaluated from the command line, and
- * that is convenient for preparing images to be included in documents.
- * It is also capable of bootstrapping the compiler from a text file
- * containing a dump of the object code. */
+ * that is convenient for preparing images to be included in documents. */
 public class RunScript extends GeomBase {
     public void evalString(String exp) {
 	StringReader reader = new StringReader(exp);
@@ -105,14 +102,11 @@ public class RunScript extends GeomBase {
 	
 	int i = 0;
 	funbase.FunCode.Jit translator = null;
-	File bootfile = null;
 	File sessfile = null;
 
 	for (; i < args.length; i++) {
 	    if (args[i].equals("-i"))
 		translator = new funbase.Interp();
-	    else if (i+1 < args.length && args[i].equals("-b"))
-		bootfile = new File(args[++i]);
 	    else if (i+1 < args.length && args[i].equals("-s"))
 		sessfile = new File(args[++i]);
 	    else if (i+1 < args.length && args[i].equals("-d"))
@@ -127,18 +121,10 @@ public class RunScript extends GeomBase {
 	funbase.FunCode.install(translator);
 
 	try {
-	    if (bootfile != null) {
-		Session.loadPlugin(GeomBase.class, true);
-		Session.loadPlugin(funbase.FunCode.class, true);
-		Session.loadPlugin(plugins.BasicPrims.class, true);
-		Session.loadPlugin(plugins.Cell.class, true);
-		Session.loadPlugin(plugins.StringPrims.class, true);
-		BootLoader.bootstrap(bootfile);
-	    } else if (sessfile != null) {
-		Session.loadSession(sessfile);
-	    } else {
-		Session.loadResource("geomlab.gls");
-	    }
+            if (sessfile != null)
+                Session.loadSession(sessfile);
+            else
+                Session.loadResource("geomlab.gls");
 	}
 	catch (CommandException e) {
 	    throw new Error(e);

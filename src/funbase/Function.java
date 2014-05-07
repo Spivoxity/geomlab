@@ -110,7 +110,7 @@ public abstract class Function implements Serializable {
 	return null;
     }
 
-    public void dump(PrintWriter out) {
+    public void dump(int indent, PrintWriter out) {
 	throw new Error("dumping a dummy function");
     }
 
@@ -152,11 +152,12 @@ public abstract class Function implements Serializable {
 	}
 
         @Override
-        public void dump(PrintWriter out) {
+        public void dump(int indent, PrintWriter out) {
             if (fvars != null && fvars.length > 1)
         	throw new Error("Dumping a closure with free variables");
-            out.print("closure ");
-            code.dump(out);
+            out.printf("closure(");
+            code.dump(indent, out);
+            out.printf(")");
         }
 
         @Override

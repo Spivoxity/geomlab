@@ -149,8 +149,8 @@ public abstract class Primitive extends Function {
     }
 
     @Override
-    public void dump(PrintWriter out) {
-	out.printf("primitive \"%s\"\n", name);
+    public void dump(int indent, PrintWriter out) {
+	out.printf("primitive(\"%s\")\n", name);
     }
 
     /* Primitives are replaced by Memento objects when making a serialized 

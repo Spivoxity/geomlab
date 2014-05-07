@@ -309,4 +309,17 @@ public class BasicPrims {
 	    throw new Error(e);
 	}
     }
+
+    @PRIMITIVE
+    public static Value _newdump(Primitive prim, Value x) {
+	try {
+	    String fname = prim.string(x);
+	    PrintWriter out = 
+		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
+	    Name.dumpNames(out);
+	    return Value.nil;
+	} catch (IOException e) {
+	    throw new Error(e);
+	}
+    }
 }

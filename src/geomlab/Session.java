@@ -90,7 +90,8 @@ public class Session {
 	    }
 	}
 	catch (Exception e) {
-	    throw new CommandException(e.toString(), "#nohelp"); 
+            throw new Error(e);
+	    // throw new CommandException(e.toString(), "#nohelp"); 
 	}
     }
 
@@ -151,7 +152,6 @@ public class Session {
 	    Name.clearNameTable();
 	    Scanner.initSyntax();
 	    Name.readNameTable(in);
-	    Name.freezeGlobals();
 	    
 	    // Read contents of edit buffer
 	    GeomBase.theApp.setEditText((String) in.readObject());

@@ -121,8 +121,8 @@ public final class Name extends Value implements Comparable<Name> {
     }
     
     @Override
-    public void dump(PrintWriter out) {
-	out.printf("name #%s\n", tag);
+    public void dump(int indent, PrintWriter out) {
+	out.printf("name(\"%s\")", tag);
     }
 
     /** A global mapping of strings to Name objects */
@@ -154,6 +154,7 @@ public final class Name extends Value implements Comparable<Name> {
     /** Read global definitions from a serialized stream */
     public static void readNameTable(ObjectInputStream in) 
     		throws IOException, ClassNotFoundException {
+        freezer = (Boolean) in.readObject();
 	for (;;) {
 	    Name x = (Name) in.readObject();
 	    if (x == null) break;
@@ -164,6 +165,7 @@ public final class Name extends Value implements Comparable<Name> {
     /** Write global definitions to a serialized stream */
     public static void writeNameTable(ObjectOutputStream out) 
     		throws IOException {
+        out.writeObject(freezer);
 	for (Name x : nameTable.values()) {
 	    if (x.glodef != null || x.token != IDENT) {
 		out.writeObject(x); 
@@ -216,15 +218,30 @@ public final class Name extends Value implements Comparable<Name> {
 	ArrayList<String> names = new ArrayList<String>(nameTable.size());
 	names.addAll(nameTable.keySet());
 	Collections.sort(names);
+
+        out.printf("package boot;\n\n");
+        out.printf("import static funbase.FunCode.Opcode.*;\n\n");
+        out.printf("public class GeomBoot extends Bootstrap {\n");
+        out.printf("    @Override\n");
+        out.printf("    public void boot() {\n");
 	for (String k : names) {
 	    Name x = find(k);
 	    if (x.glodef != null && !x.cursed 
                 && !(x.glodef.subr instanceof Primitive)) {
-		out.printf("global #%s ", x.tag);
-		x.glodef.dump(out);
+		out.printf("        define(\"%s\", ", x.tag);
+		x.glodef.dump(5, out);
+                out.printf(");\n");
 	    }
 	}
-	out.println("quit");
+	out.printf("    }\n\n");
+        
+        FunCode.postDump(out);
+
+        out.printf("    public static void main(String args[]) {\n");
+        out.printf("        GeomBoot boot = new GeomBoot();\n");
+        out.printf("        boot.bootstrap(args[0]);\n");
+        out.printf("    }\n");
+	out.printf("}\n");
 	out.close();
     }
 }

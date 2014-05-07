@@ -65,7 +65,7 @@ public abstract class Value implements Serializable {
     public abstract void printOn(PrintWriter out);
     
     /** Dump the value to standard output in boot format */
-    public void dump(PrintWriter out) {
+    public void dump(int indent, PrintWriter out) {
 	throw new Error(String.format("can't dump %s", this.getClass()));
     }
     
@@ -182,11 +182,11 @@ public abstract class Value implements Serializable {
 	}
 
 	@Override
-	public void dump(PrintWriter out) {
+        public void dump(int indent, PrintWriter out) {
 	    if (val == (int) val)
-		out.printf("integer %d\n", (int) val);
+		out.printf("number(%d)", (int) val);
 	    else
-		out.printf("real %.12g\n", val);
+		out.printf("number(%.12g)", val);
 	}
     }
     
@@ -219,10 +219,10 @@ public abstract class Value implements Serializable {
 	 * the constructed instance with one of the standard instances. */
 	public Object readResolve() { return getInstance(val); }
 	
- 	@Override
-	public void dump(PrintWriter out) {
-	    out.printf("boolean %d\n", (val ? 1 : 0));
-        }
+	@Override
+	public void dump(int indent, PrintWriter out) {
+	    out.printf("%s", (val ? "truth" : "falsity"));
+	}
 
 	public static final BoolValue 
 	    truth = new BoolValue(true), 
@@ -238,8 +238,8 @@ public abstract class Value implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Override
-	public void dump(PrintWriter out) {
-	    subr.dump(out);
+	public void dump(int indent, PrintWriter out) {
+	    subr.dump(indent, out);
 	}
 
 	private FunValue(Function subr) {
@@ -332,8 +332,8 @@ public abstract class Value implements Serializable {
 	}
 	
 	@Override
-	public void dump(PrintWriter out) {
-	    out.printf("string \"%s\"\n", text);
+	public void dump(int indent, PrintWriter out) {
+	    out.printf("string(\"%s\")", text);
 	}
     }
     
@@ -356,8 +356,8 @@ public abstract class Value implements Serializable {
 	public Object readResolve() { return Value.nil; }
 	
 	@Override
-	public void dump(PrintWriter out) {
-	    out.printf("nil\n");
+	public void dump(int indent, PrintWriter out) {
+	    out.printf("nil");
 	}
     }
     

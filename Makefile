@@ -16,8 +16,9 @@ all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES) $(ICONS:%=obj/%)
 prep: force
 	@mkdir -p obj
 
-.compiled: $(wildcard src/*/*.java)
-	$(JAVAC) -d obj src/*/*.java
+JFILES = src/*/*.java
+.compiled: $(wildcard $(JFILES))
+	$(JAVAC) -d obj $(JFILES)
 	echo timestamp >$@
 
 obj/%: res/%; cp $< $@
@@ -32,29 +33,36 @@ obj/icon128.png:
 obj/icon%.png: obj/icon128.png
 	convert obj/icon128.png -scale $*x$* $@
 
-RUNSCRIPT = java -cp obj -ea geomlab.RunScript
+RUNJAVA = java -cp obj -ea
+RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
-obj/geomlab.gls: .compiled src/boot.txt src/compiler.txt src/prelude.txt
-	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt src/compiler.txt \
+boot.gls: .compiled
+	$(RUNJAVA) boot.GeomBoot boot.gls
+
+obj/geomlab.gls: boot.gls src/compiler.txt src/prelude.txt
+	$(RUNSCRIPT) -s boot.gls src/compiler.txt src/compiler.txt \
 		src/prelude.txt -e '_save("$@")'
 
 examples.gls: obj/geomlab.gls progs/examples.txt
 	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'
 
-bootstrap: .compiled force 
-	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("stage1.boot")'
-	$(RUNSCRIPT) -b stage1.boot src/compiler.txt -e '_dump("stage2.boot")'
-	$(RUNSCRIPT) -b stage2.boot src/compiler.txt -e '_dump("stage3.boot")'
+bootstrap: boot.gls force 
+	$(RUNSCRIPT) -s boot.gls src/compiler.txt \
+		-e '_newdump("stage1.boot")' -e '_save("boot1.gls")'
+	$(RUNSCRIPT) -s boot1.gls src/compiler.txt \
+		-e '_newdump("stage2.boot")' -e '_save("boot2.gls")'
+	$(RUNSCRIPT) -s boot2.gls src/compiler.txt \
+		-e '_newdump("stage3.boot")'
 	cmp stage2.boot stage3.boot
 
 bootup: stage2.boot force
-	(sed -e 's/compiler.txt/boot.txt/' -e '/^ *$$/q' src/compiler.txt; \
-		cat stage2.boot) >src/boot.txt
+	(sed -e 's/Bootstrap/GeomBoot/' -e '/^ *$$/q' src/boot/Bootstrap.java; \
+		cat stage2.boot) >src/boot/GeomBoot.java
 
 
 # Web resources
 
-PREFIX = http://spivey.oriel.ox.ac.uk/wiki/files/gl
+PREFIX = https://spivey.oriel.ox.ac.uk/wiki/files/gl
 
 web: web-dirs update .signed
 
@@ -79,7 +87,6 @@ web/examples.jar: examples.gls
 web/.htaccess: scripts/htaccess;		cp $< $@
 web/%: res/%;					cp $< $@
 web/%: obj/%;					cp $< $@
-
 
 web/%.jnlp: scripts/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
