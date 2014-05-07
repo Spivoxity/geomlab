@@ -28,18 +28,18 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *}
  
-{ At this point, the following plugins have been installed: GeomBase,
-  FunCode, BasicPrims, Cell, StringPrims. Just enough scanner syntax
-  is in place to read the next few definitions. }
-
 { LEXICAL TOKENS }
 
-define _tok(tag) = _token(tag, tag, 0, 0);
-_tok(#if); _tok(#then); _tok(#else); _tok(#let); _tok(#in); 
-_tok(#function); _tok(#when); _tok(#_); _tok(#>>); _tok(#..);
-_tok(#<-);
+_update(_syntax, #define, [#define, 0, 0]);
+_update(_syntax, #=, [#=, 3, 4]);
 
-_token(#=, #=, 3, 4);
+define _token(tag, tok, p, rp) = _update(_syntax, tag, [tok, p, rp]);
+
+define _tok(tag) = _token(tag, tag, 0, 0);
+
+_tok(#if); _tok(#then); _tok(#else); _tok(#let); _tok(#in); 
+_tok(#function); _tok(#when); _tok(#_); _tok(#>>); _tok(#..); _tok(#<-);
+
 _token(#+, #+, 5, 6);
 _token(#-, #-, 5, 6);
 _token(#:, #:, 7, 7);
@@ -55,6 +55,10 @@ _infixr(#++, 4);
 _infixl(#^, 5);
 _infixl(#*, 6); _infixl(#/, 6);
 _token(#not, #monop, 0, 0);
+
+define _priority(op) =
+  let tk = _lookup(_syntax, op) in
+  if tk <> [] then tail(tk) else [0, 0];
 
 
 { BASIC DEFINITIONS }
@@ -165,7 +169,15 @@ define __top() =
   { scan -- call the lexer and set tok and val }
   let scan() =
     let t = _scan() in
-    _set(tok, fst(t)) >> _set(val, snd(t)) in
+    let case(#ident) =
+          let tk = _lookup(_syntax, snd(t)) in
+          _set(tok, if tk <> [] then fst(tk) else #ident)
+      | case(#op) =
+          let tk = _lookup(_syntax, snd(t)) in
+          if tk <> [] then _set(tok, fst(tk)) else synerror("#badtok")
+      | case(x) =
+          _set(tok, x) in
+    case(fst(t)) >> _set(val, snd(t)) in
 
   let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
 
@@ -361,9 +373,10 @@ define __top() =
 
   { makebin -- create binary operator, treating 'and' and 'or' as special }
   let makebin(w, e1, e2) =
-    if w = #and then [#if, e1, e2, [#const, false]]
-    else if w = #or then [#if, e1, [#const, true], e2]
-    else [#apply, [#var, w], e1, e2] in
+    let case(#and) = [#if, e1, e2, [#const, false]]
+      | case(#or) = [#if, e1, [#const, true], e2]
+      | case(_) = [#apply, [#var, w], e1, e2] in
+    case(w) in
 
   { p_term -- parse a term containing operators with priority >= min.
       If secok is true, allow a left section (1+) }
@@ -474,10 +487,10 @@ define __top() =
     { Determine stack and frame sizes }
     let ssize = _new(0) in 
     let fsize = _new(0) in
-    let labdepth = _new([]) in
-    let setlab(lab, d) = _set(labdepth, [lab, d]:_get(labdepth)) in
+    let labdepth = _hash() in
+    let setlab(lab, d) = _update(labdepth, lab, d) in
     let visit(d, n) =
-          let d1 = assoc(n, _get(labdepth)) in if d1 <> [] then d1 else d
+          let d1 = _lookup(labdepth, n) in if d1 <> [] then d1 else d
           when numeric(n)
       | visit(d, [#GLOBAL, _]) = d+1
       | visit(d, [#LOCAL, _]) = d+1
@@ -510,11 +523,11 @@ define __top() =
 		_set(ssize, max(d1, _get(ssize))) >> d1), 0, code) >>
 
     { Fix up labels }
-    let ltab = _new([]) in
-    let fixlab(lab) = assoc(lab, _get(ltab)) in
+    let ltab = _hash() in
+    let fixlab(lab) = _lookup(ltab, lab) in
     let pass1(n, [], a) = a
       | pass1(n, lab:code, a) = 
-          _set(ltab, [lab, n]:_get(ltab)) >> pass1(n, code, a) when numeric(lab)
+          _update(ltab, lab, n) >> pass1(n, code, a) when numeric(lab)
       | pass1(n, inst:code, a) = pass1(n+1, code, inst:a) in
     let fixup([#JUMP, lab]) = [#JUMP, fixlab(lab)]
       | fixup([#JFALSE, lab]) = [#JFALSE, fixlab(lab)]
@@ -910,6 +923,8 @@ define __top() =
 
   read_eval_print;
 
-define _top() = let t = __top() in t();
+define _top() = 
+  if _syntax = [] then _topdef(#_syntax, _hash()) else [] >>
+  (let t = __top() in t());
   
 { After bootstrapping, redefine _top = __top() for efficiency }

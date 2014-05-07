@@ -100,56 +100,64 @@ public class GeomBoot extends Bootstrap {
                   name("_spelling"))),
               name("_new"),
               number(0),
-              funcode("scan", 0, 1, 4, c10,
+              funcode("scan", 0, 2, 6, c10,
                 consts(name("_scan"),
+                  funcode("case", 1, 1, 5, c11,
+                    consts(name("ident"),
+                      name("_lookup"),
+                      name("_syntax"),
+                      name("_set"),
+                      name("<>"),
+                      name("op"),
+                      string("#badtok"))),
                   name("_set"))),
-              funcode("isbinop", 1, 0, 8, c11,
+              funcode("isbinop", 1, 0, 8, c12,
                 consts(name("binop"),
                   name("="),
                   name("-"),
                   name("+"),
                   name(":"))),
-              funcode("see", 1, 0, 3, c12,
+              funcode("see", 1, 0, 3, c13,
                 consts(name("="),
                   name("_get"))),
-              funcode("eat", 1, 0, 4, c13,
+              funcode("eat", 1, 0, 4, c14,
                 consts(name("_synerror"),
                   string("#eat"))),
-              funcode("can_eat", 1, 0, 2, c14,
+              funcode("can_eat", 1, 0, 2, c15,
                 consts(name("true"),
                   name("false"))),
-              funcode("whichever", 1, 0, 3, c15,
+              funcode("whichever", 1, 0, 3, c16,
                 consts(name("_get"))),
-              funcode("p_sym", 1, 1, 2, c16,
+              funcode("p_sym", 1, 1, 2, c17,
                 consts(name("_get"))),
-              funcode("brack", 3, 1, 2, c17, null),
-              funcode("brack1", 3, 1, 2, c18, null),
-              funcode("p_tail", 2, 1, 5, c19,
+              funcode("brack", 3, 1, 2, c18, null),
+              funcode("brack1", 3, 1, 2, c19, null),
+              funcode("p_tail", 2, 1, 5, c20,
                 consts(name(":"))),
-              funcode("p_list1", 1, 1, 5, c20,
+              funcode("p_list1", 1, 1, 5, c21,
                 consts(name(":"),
                   name("comma"))),
-              funcode("p_list", 2, 0, 2, c21,
+              funcode("p_list", 2, 0, 2, c22,
                 consts(truth,
                   name("eof"))),
-              funcode("p_expr0", 1, 1, 2, c22,
+              funcode("p_expr0", 1, 1, 2, c23,
                 consts(name("_get"))),
-              funcode("p_expr", 0, 0, 2, c23,
+              funcode("p_expr", 0, 0, 2, c24,
                 consts(name("false"))),
-              funcode("p_term", 2, 1, 3, c24,
+              funcode("p_term", 2, 1, 3, c25,
                 consts(name("_get"))),
-              funcode("p_pattern", 0, 1, 2, c25,
+              funcode("p_pattern", 0, 1, 2, c26,
                 consts(name("_get"))),
-              funcode("p_defn", 0, 1, 2, c26,
+              funcode("p_defn", 0, 1, 2, c27,
                 consts(name("_get"))),
-              funcode("listify", 1, 0, 4, c27,
+              funcode("listify", 1, 0, 4, c28,
                 consts(name("foldr"),
-                  funcode("<function>", 2, 0, 4, c28,
+                  funcode("<function>", 2, 0, 4, c29,
                     consts(name("cons"))),
                   name("nil"))),
-              funcode("p_patterns", 1, 0, 3, c29, null),
-              funcode("p_patprim", 0, 1, 9, c30,
-                consts(funcode("case", 1, 1, 8, c31,
+              funcode("p_patterns", 1, 0, 3, c30, null),
+              funcode("p_patprim", 0, 1, 9, c31,
+                consts(funcode("case", 1, 1, 8, c32,
                     consts(name("ident"),
                       name("not"),
                       name("lpar"),
@@ -169,19 +177,19 @@ public class GeomBoot extends Bootstrap {
                       name("list"),
                       name("ket"),
                       string("#pattern"))))),
-              funcode("p_patfactor", 0, 1, 4, c32,
+              funcode("p_patfactor", 0, 1, 4, c33,
                 consts(name(":"),
                   name("cons"))),
-              funcode("p_pattern_body", 0, 1, 3, c33,
-                consts(funcode("chain", 1, 0, 4, c34,
+              funcode("p_pattern_body", 0, 1, 3, c34,
+                consts(funcode("chain", 1, 0, 4, c35,
                     consts(name("+"),
                       name("plus"),
                       name("number"))))),
-              funcode("p_formals", 0, 0, 4, c35,
+              funcode("p_formals", 0, 0, 4, c36,
                 consts(name("lpar"),
                   name("rpar"))),
-              funcode("p_exprs", 1, 0, 3, c36, null),
-              funcode("expand", 3, 4, 9, c37,
+              funcode("p_exprs", 1, 0, 3, c37, null),
+              funcode("expand", 3, 4, 9, c38,
                 consts(name("cons"),
                   name("gen"),
                   name("var"),
@@ -193,20 +201,20 @@ public class GeomBoot extends Bootstrap {
                   name("anon"),
                   name("when"),
                   name("if"))),
-              funcode("p_gen", 0, 1, 4, c38,
+              funcode("p_gen", 0, 1, 4, c39,
                 consts(name("<-"),
                   name("gen"))),
-              funcode("p_gens", 0, 2, 5, c39,
-                consts(funcode("p_tail", 0, 1, 5, c40,
-                    consts(funcode("case", 1, 1, 4, c41,
+              funcode("p_gens", 0, 2, 5, c40,
+                consts(funcode("p_tail", 0, 1, 5, c41,
+                    consts(funcode("case", 1, 1, 4, c42,
                         consts(name("when"),
                           name(":"),
                           name("comma"))))),
                   name(":"))),
-              funcode("p_listexp", 0, 2, 7, c42,
+              funcode("p_listexp", 0, 2, 7, c43,
                 consts(name("ket"),
                   name("nil"),
-                  funcode("case", 1, 0, 7, c43,
+                  funcode("case", 1, 0, 7, c44,
                     consts(name("comma"),
                       name(":"),
                       name("list"),
@@ -216,7 +224,7 @@ public class GeomBoot extends Bootstrap {
                       name("_range"),
                       name("vbar"),
                       name("nil"))))),
-              funcode("p_parenexp", 0, 2, 6, c44,
+              funcode("p_parenexp", 0, 2, 6, c45,
                 consts(name("not"),
                   name("_get"),
                   name("true"),
@@ -226,8 +234,8 @@ public class GeomBoot extends Bootstrap {
                   name("apply"),
                   name("_rsect"),
                   name("false"))),
-              funcode("p_primary", 0, 1, 9, c45,
-                consts(funcode("case", 1, 1, 8, c46,
+              funcode("p_primary", 0, 1, 9, c46,
+                consts(funcode("case", 1, 1, 8, c47,
                     consts(name("number"),
                       name("const"),
                       name("atom"),
@@ -244,8 +252,8 @@ public class GeomBoot extends Bootstrap {
                       name("eof"),
                       string("#exp"),
                       string("#badexp"))))),
-              funcode("p_factor", 0, 1, 6, c47,
-                consts(funcode("case", 1, 1, 4, c48,
+              funcode("p_factor", 0, 1, 6, c48,
+                consts(funcode("case", 1, 1, 4, c49,
                     consts(name("monop"),
                       name("var"),
                       name("apply"),
@@ -253,7 +261,7 @@ public class GeomBoot extends Bootstrap {
                       name("number"),
                       name("const"),
                       name("_uminus"))))),
-              funcode("makebin", 3, 0, 6, c49,
+              funcode("makebin", 3, 0, 6, c50,
                 consts(name("="),
                   name("and"),
                   name("if"),
@@ -263,8 +271,8 @@ public class GeomBoot extends Bootstrap {
                   name("true"),
                   name("apply"),
                   name("var"))),
-              funcode("p_term_body", 2, 1, 11, c50,
-                consts(funcode("p_termcont", 2, 4, 5, c51,
+              funcode("p_term_body", 2, 1, 11, c51,
+                consts(funcode("p_termcont", 2, 4, 5, c52,
                     consts(name("_get"),
                       name("not"),
                       name("_priority"),
@@ -275,34 +283,34 @@ public class GeomBoot extends Bootstrap {
                       name("var"),
                       name("_lsect"),
                       name("false"))))),
-              funcode("p_cond", 1, 3, 5, c52,
+              funcode("p_cond", 1, 3, 5, c53,
                 consts(name("if"),
                   name("false"),
                   name("then"),
                   name("else"),
                   number(1))),
-              funcode("p_expr_body", 1, 1, 8, c53,
-                consts(funcode("case", 1, 1, 5, c54,
+              funcode("p_expr_body", 1, 1, 8, c54,
+                consts(funcode("case", 1, 1, 5, c55,
                     consts(name("let"),
                       name("in"),
                       name("function"),
                       name("length"),
                       name(">>"),
                       name("seq"))))),
-              funcode("p_name", 0, 0, 3, c55,
+              funcode("p_name", 0, 0, 3, c56,
                 consts(name("_get"),
                   truth,
                   name("monop"),
                   name("ident"))),
-              funcode("p_rhs", 1, 1, 4, c56,
+              funcode("p_rhs", 1, 1, 4, c57,
                 consts(name("="),
                   name("when"))),
-              funcode("p_rule", 2, 2, 3, c57,
+              funcode("p_rule", 2, 2, 3, c58,
                 consts(name("="),
                   string("#names"),
                   name("length"),
                   string("#arity"))),
-              funcode("p_defn_body", 0, 4, 10, c58,
+              funcode("p_defn_body", 0, 4, 10, c59,
                 consts(name("not"),
                   name("lpar"),
                   name("="),
@@ -310,9 +318,9 @@ public class GeomBoot extends Bootstrap {
                   name("length"),
                   name("fun"),
                   name(":"),
-                  funcode("<function>", 0, 0, 3, c59, null),
+                  funcode("<function>", 0, 0, 3, c60, null),
                   name("vbar"))),
-              funcode("p_para", 0, 1, 3, c60,
+              funcode("p_para", 0, 1, 3, c61,
                 consts(name("eof"),
                   name("define"),
                   name("rpar"),
@@ -324,23 +332,21 @@ public class GeomBoot extends Bootstrap {
                   falsity,
                   string("#junk"))),
               name("_set"),
-              funcode("parser", 0, 0, 1, c61, null),
-              funcode("flatten", 1, 1, 3, c62,
-                consts(funcode("flat", 2, 1, 4, c63,
+              funcode("parser", 0, 0, 1, c62, null),
+              funcode("flatten", 1, 1, 3, c63,
+                consts(funcode("flat", 2, 1, 4, c64,
                     consts(name("seq"),
                       name("foldr"),
                       name(":"))))),
-              funcode("assemble", 3, 10, 10, c64,
+              funcode("assemble", 3, 10, 10, c65,
                 consts(name("_new"),
                   number(0),
-                  funcode("setlab", 2, 0, 6, c65,
-                    consts(name("_set"),
-                      name(":"),
-                      name("_get"))),
-                  funcode("visit", 2, 1, 6, c66,
+                  name("_hash"),
+                  funcode("setlab", 2, 0, 4, c66,
+                    consts(name("_update"))),
+                  funcode("visit", 2, 1, 6, c67,
                     consts(name("numeric"),
-                      name("assoc"),
-                      name("_get"),
+                      name("_lookup"),
                       name("<>"),
                       name("GLOBAL"),
                       name("+"),
@@ -350,6 +356,7 @@ public class GeomBoot extends Bootstrap {
                       name("FVAR"),
                       name("BIND"),
                       name("_set"),
+                      name("_get"),
                       name("-"),
                       name("POP"),
                       name("QUOTE"),
@@ -375,36 +382,34 @@ public class GeomBoot extends Bootstrap {
                       name("CLOSURE"),
                       name("MPRIM"))),
                   name("foldl"),
-                  funcode("<function>", 2, 1, 6, c67,
+                  funcode("<function>", 2, 1, 6, c68,
                     consts(name("_set"),
                       name("_get"))),
-                  funcode("fixlab", 1, 0, 4, c68,
-                    consts(name("assoc"),
-                      name("_get"))),
-                  funcode("pass1", 3, 2, 6, c69,
+                  funcode("fixlab", 1, 0, 3, c69,
+                    consts(name("_lookup"))),
+                  funcode("pass1", 3, 2, 5, c70,
                     consts(name("numeric"),
-                      name("_set"),
-                      name(":"),
-                      name("_get"),
+                      name("_update"),
                       name("+"),
-                      number(1))),
-                  funcode("fixup", 1, 1, 3, c70,
+                      number(1),
+                      name(":"))),
+                  funcode("fixup", 1, 1, 3, c71,
                     consts(name("JUMP"),
                       name("JFALSE"),
                       name("TRAP"))),
-                  funcode("pass2", 1, 0, 4, c71,
+                  funcode("pass2", 1, 0, 4, c72,
                     consts(name("foldl"),
-                      funcode("<function>", 2, 0, 3, c72,
+                      funcode("<function>", 2, 0, 3, c73,
                         consts(name(":"))))),
                   name("_assemble"),
                   name("_get"))),
-              funcode("lookup", 2, 1, 4, c73,
+              funcode("lookup", 2, 1, 4, c74,
                 consts(name("assoc"),
                   name("_get"))),
-              funcode("empty", 0, 0, 6, c74,
+              funcode("empty", 0, 0, 6, c75,
                 consts(number(0),
                   name("_new"))),
-              funcode("newblock", 3, 3, 7, c75,
+              funcode("newblock", 3, 3, 7, c76,
                 consts(name("="),
                   string("<function>"),
                   name("+"),
@@ -414,51 +419,51 @@ public class GeomBoot extends Bootstrap {
                   name("_new"),
                   name("++"),
                   name("_get"))),
-              funcode("e_level", 1, 1, 2, c76, null),
-              funcode("e_arity", 1, 1, 2, c77, null),
-              funcode("e_fvars", 1, 1, 2, c78,
+              funcode("e_level", 1, 1, 2, c77, null),
+              funcode("e_arity", 1, 1, 2, c78, null),
+              funcode("e_fvars", 1, 1, 2, c79,
                 consts(name("_get"))),
-              funcode("e_size", 1, 1, 2, c79,
+              funcode("e_size", 1, 1, 2, c80,
                 consts(name("_get"))),
-              funcode("inc_size", 2, 1, 5, c80,
+              funcode("inc_size", 2, 1, 5, c81,
                 consts(name("_set"),
                   name("+"),
                   name("_get"))),
-              funcode("bind", 4, 2, 8, c81,
+              funcode("bind", 4, 2, 8, c82,
                 consts(name("_set"),
                   name(":"),
                   name("_get"))),
-              funcode("unbind", 2, 2, 5, c82,
-                consts(funcode("h", 1, 2, 4, c83,
+              funcode("unbind", 2, 2, 5, c83,
+                consts(funcode("h", 1, 2, 4, c84,
                     consts(name("="),
                       name(":"))),
                   name("_set"),
                   name("_get"))),
-              funcode("alloc", 2, 1, 5, c84,
+              funcode("alloc", 2, 1, 5, c85,
                 consts(name("LOCAL"),
                   number(1))),
-              funcode("dealloc", 2, 0, 3, c85,
+              funcode("dealloc", 2, 0, 3, c86,
                 consts(number(-1))),
-              funcode("alloc_fv", 2, 2, 6, c86,
+              funcode("alloc_fv", 2, 2, 6, c87,
                 consts(name("+"),
                   name("length"),
                   name("_get"),
                   number(1),
                   name("_set"),
                   name("++"))),
-              funcode("islocal", 2, 1, 4, c87,
-                consts(funcode("case", 1, 2, 4, c88,
+              funcode("islocal", 2, 1, 4, c88,
+                consts(funcode("case", 1, 2, 4, c89,
                     consts(name("="),
                       name("LOCAL"),
                       truth,
                       name("ARG"),
                       name("false"))))),
-              funcode("selfrec", 2, 0, 6, c89,
+              funcode("selfrec", 2, 0, 6, c90,
                 consts(name("="),
                   name("FVAR"),
                   number(0))),
-              funcode("reset", 1, 4, 6, c90,
-                consts(funcode("h", 1, 2, 3, c91,
+              funcode("reset", 1, 4, 6, c91,
+                consts(funcode("h", 1, 2, 3, c92,
                     consts(name("="),
                       name("LOCAL"),
                       truth,
@@ -469,30 +474,30 @@ public class GeomBoot extends Bootstrap {
                   name("filter"),
                   name("_get"),
                   number(0))),
-              funcode("label", 0, 0, 5, c92,
+              funcode("label", 0, 0, 5, c93,
                 consts(name("_set"),
                   name("+"),
                   name("_get"),
                   number(1))),
-              funcode("c_ref", 2, 1, 6, c93,
-                consts(funcode("case", 1, 3, 5, c94,
+              funcode("c_ref", 2, 1, 6, c94,
+                consts(funcode("case", 1, 3, 5, c95,
                     consts(name("="),
                       truth,
                       name("QUOTE"),
                       name("FVAR"),
                       name("GLOBAL"))))),
-              funcode("trapsort", 1, 1, 4, c95,
-                consts(funcode("insert", 2, 5, 6, c96,
+              funcode("trapsort", 1, 1, 4, c96,
+                consts(funcode("insert", 2, 5, 6, c97,
                     consts(name("<="),
                       name(":"))),
                   name("foldr"))),
-              funcode("pgen", 3, 0, 7, c97,
+              funcode("pgen", 3, 0, 7, c98,
                 consts(name("seq"),
                   name(":"),
                   name("map"),
                   name("++"),
                   name("concat"))),
-              funcode("c_patt", 3, 4, 8, c98,
+              funcode("c_patt", 3, 4, 8, c99,
                 consts(name("const"),
                   name("seq"),
                   name("TRAP"),
@@ -507,7 +512,7 @@ public class GeomBoot extends Bootstrap {
                   name("MPRIM"),
                   name("reverse"),
                   name("_mapa"),
-                  funcode("<function>", 2, 2, 4, c99, null),
+                  funcode("<function>", 2, 2, 4, c100, null),
                   name("cons"),
                   name("MCONS"),
                   name("+"),
@@ -518,15 +523,15 @@ public class GeomBoot extends Bootstrap {
                   name("list"),
                   name("plus"),
                   name("MPLUS"))),
-              funcode("c_arg", 3, 1, 6, c100,
+              funcode("c_arg", 3, 1, 6, c101,
                 consts(name("var"),
                   name("not"),
                   name("ARG"),
                   name("anon"),
                   name("seq"),
                   number(0))),
-              funcode("c_match", 2, 2, 5, c101,
-                consts(funcode("compile", 2, 3, 6, c102,
+              funcode("c_match", 2, 2, 5, c102,
+                consts(funcode("compile", 2, 3, 6, c103,
                     consts(name(":"),
                       name("+"),
                       number(1))),
@@ -535,7 +540,7 @@ public class GeomBoot extends Bootstrap {
                   name("seq"),
                   name("map"),
                   name("concat"))),
-              funcode("c_rule", 2, 8, 6, c103,
+              funcode("c_rule", 2, 8, 6, c104,
                 consts(name("_get"),
                   name("true"),
                   name("seq"),
@@ -543,8 +548,8 @@ public class GeomBoot extends Bootstrap {
                   name("JFALSE"),
                   name(":"),
                   number(0))),
-              funcode("c_traps", 1, 1, 6, c104,
-                consts(funcode("h", 3, 3, 5, c105,
+              funcode("c_traps", 1, 1, 6, c105,
+                consts(funcode("h", 3, 3, 5, c106,
                     consts(name("="),
                       name(":"),
                       name("+"),
@@ -553,12 +558,12 @@ public class GeomBoot extends Bootstrap {
                   name(":"),
                   name("seq"),
                   number(0))),
-              funcode("c_body", 2, 5, 7, c106,
+              funcode("c_body", 2, 5, 7, c107,
                 consts(name("FAIL"),
                   name("map"),
                   name("seq"),
                   name("="))),
-              funcode("c_closure", 4, 4, 10, c107,
+              funcode("c_closure", 4, 4, 10, c108,
                 consts(name("length"),
                   number(1),
                   name("seq"),
@@ -566,14 +571,14 @@ public class GeomBoot extends Bootstrap {
                   name("CLOPREP"),
                   name(":"),
                   name("_mapa"),
-                  funcode("<function>", 2, 2, 5, c108,
+                  funcode("<function>", 2, 2, 5, c109,
                     consts(name("seq"),
                       name("PUTFVAR"))),
                   name("CLOSURE"))),
-              funcode("yield", 2, 0, 4, c109,
+              funcode("yield", 2, 0, 4, c110,
                 consts(name("seq"),
                   name("RETURN"))),
-              funcode("c_exp", 3, 7, 12, c110,
+              funcode("c_exp", 3, 7, 12, c111,
                 consts(name("const"),
                   name("QUOTE"),
                   name("var"),
@@ -584,12 +589,12 @@ public class GeomBoot extends Bootstrap {
                   name("seq"),
                   name(":"),
                   name("_mapa"),
-                  funcode("<function>", 2, 0, 4, c111,
+                  funcode("<function>", 2, 0, 4, c112,
                     consts(name("false"))),
                   name("TCALL"),
                   name("false"),
                   name("PREP"),
-                  funcode("<function>", 2, 2, 5, c112,
+                  funcode("<function>", 2, 2, 5, c113,
                     consts(name("seq"),
                       name("false"),
                       name("PUTARG"))),
@@ -611,19 +616,19 @@ public class GeomBoot extends Bootstrap {
                   name("NIL"),
                   name("list"),
                   name("POP"))),
-              funcode("i_func", 4, 1, 7, c113,
+              funcode("i_func", 4, 1, 7, c114,
                 consts(number(1),
                   name("_closure"))),
-              funcode("interp", 2, 5, 8, c114,
+              funcode("interp", 2, 5, 8, c115,
                 consts(name("const"),
                   name("var"),
-                  funcode("case", 1, 1, 3, c115,
+                  funcode("case", 1, 1, 3, c116,
                     consts(name("QUOTE"),
                       name("_glodef"))),
                   name("apply"),
                   name("_apply"),
                   name("_mapa"),
-                  funcode("<function>", 2, 0, 3, c116, null),
+                  funcode("<function>", 2, 0, 3, c117, null),
                   name("if"),
                   name("let"),
                   name("val"),
@@ -635,15 +640,15 @@ public class GeomBoot extends Bootstrap {
                   name(":"),
                   name("nil"),
                   name("list"),
-                  funcode("<function>", 2, 0, 3, c117, null),
+                  funcode("<function>", 2, 0, 3, c118, null),
                   name("seq"))),
-              funcode("exec", 1, 3, 7, c118,
+              funcode("exec", 1, 3, 7, c119,
                 consts(name("val"),
                   name("_redefine"),
                   name("_topdef"),
                   name("fun"),
                   name("_topval"))),
-              funcode("read_eval_print", 0, 1, 3, c119,
+              funcode("read_eval_print", 0, 1, 3, c120,
                 consts(name("="),
                   name("eof"),
                   name("false"),
@@ -652,49 +657,62 @@ public class GeomBoot extends Bootstrap {
                   name("_set"),
                   name("_setroot"),
                   name("true")))))));
-        define("_infixl", closure(funcode("_infixl", 2, 0, 7, c120,
+        define("_infixl", closure(funcode("_infixl", 2, 0, 7, c121,
             consts(name("_token"),
               name("binop"),
               name("+"),
               number(1)))));
-        define("_infixr", closure(funcode("_infixr", 2, 0, 5, c121,
+        define("_infixr", closure(funcode("_infixr", 2, 0, 5, c122,
             consts(name("_token"),
               name("binop")))));
-        define("_lsect", closure(funcode("_lsect", 2, 0, 3, c122,
-            consts(funcode("<function>", 1, 0, 3, c123, null)))));
-        define("_mapa", closure(funcode("_mapa", 3, 2, 6, c124, null)));
-        define("_range", closure(funcode("_range", 2, 0, 6, c125,
+        define("_lsect", closure(funcode("_lsect", 2, 0, 3, c123,
+            consts(funcode("<function>", 1, 0, 3, c124, null)))));
+        define("_mapa", closure(funcode("_mapa", 3, 2, 6, c125, null)));
+        define("_priority", closure(funcode("_priority", 1, 1, 3, c126,
+            consts(name("_lookup"),
+              name("_syntax"),
+              name("<>"),
+              name("tail"),
+              number(0)))));
+        define("_range", closure(funcode("_range", 2, 0, 6, c127,
             consts(name(">"),
               name(":"),
               name("+"),
               number(1)))));
-        define("_rsect", closure(funcode("_rsect", 2, 0, 3, c126,
-            consts(funcode("<function>", 1, 0, 3, c127, null)))));
-        define("_tok", closure(funcode("_tok", 1, 0, 5, c128,
+        define("_rsect", closure(funcode("_rsect", 2, 0, 3, c128,
+            consts(funcode("<function>", 1, 0, 3, c129, null)))));
+        define("_tok", closure(funcode("_tok", 1, 0, 5, c130,
             consts(name("_token"),
               number(0)))));
-        define("_top", closure(funcode("_top", 0, 1, 1, c129,
-            consts(name("__top")))));
-        define("assoc", closure(funcode("assoc", 2, 3, 3, c130,
+        define("_token", closure(funcode("_token", 4, 0, 7, c131,
+            consts(name("_update"),
+              name("_syntax")))));
+        define("_top", closure(funcode("_top", 0, 1, 3, c132,
+            consts(name("="),
+              name("_syntax"),
+              name("_topdef"),
+              name("_hash"),
+              name("__top")))));
+        define("assoc", closure(funcode("assoc", 2, 3, 3, c133,
             consts(name("=")))));
-        define("concat", closure(funcode("concat", 1, 2, 4, c131,
+        define("concat", closure(funcode("concat", 1, 2, 4, c134,
             consts(name("++")))));
         define("false", falsity);
-        define("filter", closure(funcode("filter", 2, 2, 5, c132,
+        define("filter", closure(funcode("filter", 2, 2, 5, c135,
             consts(name(":")))));
-        define("foldl", closure(funcode("foldl", 3, 2, 4, c133, null)));
-        define("foldr", closure(funcode("foldr", 3, 2, 6, c134, null)));
-        define("length", closure(funcode("length", 1, 2, 3, c135,
+        define("foldl", closure(funcode("foldl", 3, 2, 4, c136, null)));
+        define("foldr", closure(funcode("foldr", 3, 2, 6, c137, null)));
+        define("length", closure(funcode("length", 1, 2, 3, c138,
             consts(number(0),
               name("+"),
               number(1)))));
-        define("map", closure(funcode("map", 2, 2, 5, c136,
+        define("map", closure(funcode("map", 2, 2, 5, c139,
             consts(name(":")))));
-        define("not", closure(funcode("not", 1, 0, 1, c137,
+        define("not", closure(funcode("not", 1, 0, 1, c140,
             consts(name("false"),
               name("true")))));
-        define("reverse", closure(funcode("reverse", 1, 1, 3, c138,
-            consts(funcode("reva", 2, 2, 4, c139,
+        define("reverse", closure(funcode("reverse", 1, 1, 3, c141,
+            consts(funcode("reva", 2, 2, 4, c142,
                 consts(name(":")))))));
         define("true", truth);
     }
@@ -782,16 +800,18 @@ public class GeomBoot extends Bootstrap {
             instr(CALL, 1),
             instr(BIND, 9),
             instr(QUOTE, 10),
-            instr(CLOPREP, 4),
-            instr(LOCAL, 3),
+            instr(CLOPREP, 5),
+            instr(LOCAL, 6),
             instr(PUTFVAR, 1),
             instr(LOCAL, 8),
             instr(PUTFVAR, 2),
-            instr(LOCAL, 4),
+            instr(LOCAL, 3),
             instr(PUTFVAR, 3),
-            instr(LOCAL, 9),
+            instr(LOCAL, 4),
             instr(PUTFVAR, 4),
-            instr(CLOSURE, 4),
+            instr(LOCAL, 9),
+            instr(PUTFVAR, 5),
+            instr(CLOSURE, 5),
             instr(BIND, 10),
             instr(QUOTE, 11),
             instr(CLOPREP, 1),
@@ -1900,23 +1920,35 @@ public class GeomBoot extends Bootstrap {
             instr(PREP, 0),
             instr(CALL, 0),
             instr(BIND, 0),
-            instr(GLOBAL, 1),
-            instr(PREP, 2),
+            instr(QUOTE, 1),
+            instr(CLOPREP, 5),
+            instr(FVAR, 4),
+            instr(PUTFVAR, 1),
+            instr(LOCAL, 0),
+            instr(PUTFVAR, 2),
+            instr(FVAR, 3),
+            instr(PUTFVAR, 3),
             instr(FVAR, 2),
-            instr(PUTARG, 0),
+            instr(PUTFVAR, 4),
             instr(FVAR, 1),
+            instr(PUTFVAR, 5),
+            instr(CLOSURE, 5),
+            instr(BIND, 1),
+            instr(LOCAL, 1),
+            instr(PREP, 1),
+            instr(FVAR, 3),
             instr(PREP, 1),
             instr(LOCAL, 0),
             instr(PUTARG, 0),
             instr(CALL, 1),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
-            instr(POP, 0),
-            instr(GLOBAL, 1),
-            instr(PREP, 2),
-            instr(FVAR, 4),
             instr(PUTARG, 0),
-            instr(FVAR, 3),
+            instr(CALL, 1),
+            instr(POP, 0),
+            instr(GLOBAL, 2),
+            instr(PREP, 2),
+            instr(FVAR, 5),
+            instr(PUTARG, 0),
+            instr(FVAR, 4),
             instr(PREP, 1),
             instr(LOCAL, 0),
             instr(PUTARG, 0),
@@ -1932,6 +1964,102 @@ public class GeomBoot extends Bootstrap {
 
     private static void s11() {
         c11 = body(
+            instr(ARG, 0),
+            instr(TRAP, 38),
+            instr(QUOTE, 0),
+            instr(MEQ, 0),
+            instr(GLOBAL, 1),
+            instr(PREP, 2),
+            instr(GLOBAL, 2),
+            instr(PUTARG, 0),
+            instr(FVAR, 1),
+            instr(PREP, 1),
+            instr(FVAR, 2),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(BIND, 0),
+            instr(GLOBAL, 3),
+            instr(PREP, 2),
+            instr(FVAR, 4),
+            instr(PUTARG, 0),
+            instr(GLOBAL, 4),
+            instr(PREP, 2),
+            instr(LOCAL, 0),
+            instr(PUTARG, 0),
+            instr(NIL, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(JFALSE, 34),
+            instr(FVAR, 3),
+            instr(PREP, 1),
+            instr(LOCAL, 0),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(JUMP, 35),
+            instr(QUOTE, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(RETURN, 0),
+            instr(ARG, 0),
+            instr(TRAP, 80),
+            instr(QUOTE, 5),
+            instr(MEQ, 0),
+            instr(GLOBAL, 1),
+            instr(PREP, 2),
+            instr(GLOBAL, 2),
+            instr(PUTARG, 0),
+            instr(FVAR, 1),
+            instr(PREP, 1),
+            instr(FVAR, 2),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(BIND, 0),
+            instr(GLOBAL, 4),
+            instr(PREP, 2),
+            instr(LOCAL, 0),
+            instr(PUTARG, 0),
+            instr(NIL, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(JFALSE, 74),
+            instr(GLOBAL, 3),
+            instr(PREP, 2),
+            instr(FVAR, 4),
+            instr(PUTARG, 0),
+            instr(FVAR, 3),
+            instr(PREP, 1),
+            instr(LOCAL, 0),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(RETURN, 0),
+            instr(FVAR, 5),
+            instr(PREP, 1),
+            instr(QUOTE, 6),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(RETURN, 0),
+            instr(GLOBAL, 3),
+            instr(PREP, 2),
+            instr(FVAR, 4),
+            instr(PUTARG, 0),
+            instr(ARG, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(RETURN, 0));
+    }
+
+    static { s11(); }
+
+    private static Body c12;
+
+    private static void s12() {
+        c12 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(ARG, 0),
@@ -1952,12 +2080,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s11(); }
+    static { s12(); }
 
-    private static Body c12;
+    private static Body c13;
 
-    private static void s12() {
-        c12 = body(
+    private static void s13() {
+        c13 = body(
             instr(GLOBAL, 0),
             instr(PREP, 2),
             instr(GLOBAL, 1),
@@ -1972,12 +2100,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s12(); }
+    static { s13(); }
 
-    private static Body c13;
+    private static Body c14;
 
-    private static void s13() {
-        c13 = body(
+    private static void s14() {
+        c14 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(ARG, 0),
@@ -2004,12 +2132,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s13(); }
+    static { s14(); }
 
-    private static Body c14;
+    private static Body c15;
 
-    private static void s14() {
-        c14 = body(
+    private static void s15() {
+        c15 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(ARG, 0),
@@ -2026,43 +2154,21 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s14(); }
-
-    private static Body c15;
-
-    private static void s15() {
-        c15 = body(
-            instr(ARG, 0),
-            instr(PREP, 1),
-            instr(GLOBAL, 0),
-            instr(PREP, 1),
-            instr(FVAR, 1),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(RETURN, 0));
-    }
-
     static { s15(); }
 
     private static Body c16;
 
     private static void s16() {
         c16 = body(
+            instr(ARG, 0),
+            instr(PREP, 1),
             instr(GLOBAL, 0),
             instr(PREP, 1),
             instr(FVAR, 1),
             instr(PUTARG, 0),
             instr(CALL, 1),
-            instr(BIND, 0),
-            instr(FVAR, 2),
-            instr(PREP, 1),
-            instr(ARG, 0),
             instr(PUTARG, 0),
             instr(CALL, 1),
-            instr(POP, 0),
-            instr(LOCAL, 0),
             instr(RETURN, 0));
     }
 
@@ -2072,19 +2178,15 @@ public class GeomBoot extends Bootstrap {
 
     private static void s17() {
         c17 = body(
-            instr(FVAR, 1),
+            instr(GLOBAL, 0),
             instr(PREP, 1),
-            instr(ARG, 0),
+            instr(FVAR, 1),
             instr(PUTARG, 0),
             instr(CALL, 1),
-            instr(POP, 0),
-            instr(ARG, 1),
-            instr(PREP, 0),
-            instr(CALL, 0),
             instr(BIND, 0),
-            instr(FVAR, 1),
+            instr(FVAR, 2),
             instr(PREP, 1),
-            instr(ARG, 2),
+            instr(ARG, 0),
             instr(PUTARG, 0),
             instr(CALL, 1),
             instr(POP, 0),
@@ -2105,10 +2207,8 @@ public class GeomBoot extends Bootstrap {
             instr(CALL, 1),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(PREP, 1),
-            instr(ARG, 2),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
+            instr(PREP, 0),
+            instr(CALL, 0),
             instr(BIND, 0),
             instr(FVAR, 1),
             instr(PREP, 1),
@@ -2126,6 +2226,34 @@ public class GeomBoot extends Bootstrap {
 
     private static void s19() {
         c19 = body(
+            instr(FVAR, 1),
+            instr(PREP, 1),
+            instr(ARG, 0),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(POP, 0),
+            instr(ARG, 1),
+            instr(PREP, 1),
+            instr(ARG, 2),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(BIND, 0),
+            instr(FVAR, 1),
+            instr(PREP, 1),
+            instr(ARG, 2),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(POP, 0),
+            instr(LOCAL, 0),
+            instr(RETURN, 0));
+    }
+
+    static { s19(); }
+
+    private static Body c20;
+
+    private static void s20() {
+        c20 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(ARG, 1),
@@ -2154,12 +2282,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s19(); }
+    static { s20(); }
 
-    private static Body c20;
+    private static Body c21;
 
-    private static void s20() {
-        c20 = body(
+    private static void s21() {
+        c21 = body(
             instr(ARG, 0),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -2180,12 +2308,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s20(); }
+    static { s21(); }
 
-    private static Body c21;
+    private static Body c22;
 
-    private static void s21() {
-        c21 = body(
+    private static void s22() {
+        c22 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(ARG, 1),
@@ -2210,12 +2338,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s21(); }
+    static { s22(); }
 
-    private static Body c22;
+    private static Body c23;
 
-    private static void s22() {
-        c22 = body(
+    private static void s23() {
+        c23 = body(
             instr(GLOBAL, 0),
             instr(PREP, 1),
             instr(FVAR, 1),
@@ -2225,20 +2353,6 @@ public class GeomBoot extends Bootstrap {
             instr(LOCAL, 0),
             instr(PREP, 1),
             instr(ARG, 0),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(RETURN, 0));
-    }
-
-    static { s22(); }
-
-    private static Body c23;
-
-    private static void s23() {
-        c23 = body(
-            instr(FVAR, 1),
-            instr(PREP, 1),
-            instr(GLOBAL, 0),
             instr(PUTARG, 0),
             instr(CALL, 1),
             instr(RETURN, 0));
@@ -2250,19 +2364,11 @@ public class GeomBoot extends Bootstrap {
 
     private static void s24() {
         c24 = body(
-            instr(GLOBAL, 0),
-            instr(PREP, 1),
             instr(FVAR, 1),
+            instr(PREP, 1),
+            instr(GLOBAL, 0),
             instr(PUTARG, 0),
             instr(CALL, 1),
-            instr(BIND, 0),
-            instr(LOCAL, 0),
-            instr(PREP, 2),
-            instr(ARG, 0),
-            instr(PUTARG, 0),
-            instr(ARG, 1),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
             instr(RETURN, 0));
     }
 
@@ -2279,8 +2385,12 @@ public class GeomBoot extends Bootstrap {
             instr(CALL, 1),
             instr(BIND, 0),
             instr(LOCAL, 0),
-            instr(PREP, 0),
-            instr(CALL, 0),
+            instr(PREP, 2),
+            instr(ARG, 0),
+            instr(PUTARG, 0),
+            instr(ARG, 1),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
             instr(RETURN, 0));
     }
 
@@ -2309,6 +2419,24 @@ public class GeomBoot extends Bootstrap {
     private static void s27() {
         c27 = body(
             instr(GLOBAL, 0),
+            instr(PREP, 1),
+            instr(FVAR, 1),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(BIND, 0),
+            instr(LOCAL, 0),
+            instr(PREP, 0),
+            instr(CALL, 0),
+            instr(RETURN, 0));
+    }
+
+    static { s27(); }
+
+    private static Body c28;
+
+    private static void s28() {
+        c28 = body(
+            instr(GLOBAL, 0),
             instr(PREP, 3),
             instr(QUOTE, 1),
             instr(CLOPREP, 0),
@@ -2324,12 +2452,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s27(); }
+    static { s28(); }
 
-    private static Body c28;
+    private static Body c29;
 
-    private static void s28() {
-        c28 = body(
+    private static void s29() {
+        c29 = body(
             instr(QUOTE, 0),
             instr(ARG, 0),
             instr(ARG, 1),
@@ -2340,12 +2468,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s28(); }
+    static { s29(); }
 
-    private static Body c29;
+    private static Body c30;
 
-    private static void s29() {
-        c29 = body(
+    private static void s30() {
+        c30 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(FVAR, 2),
@@ -2356,12 +2484,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s29(); }
+    static { s30(); }
 
-    private static Body c30;
+    private static Body c31;
 
-    private static void s30() {
-        c30 = body(
+    private static void s31() {
+        c31 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 8),
             instr(FVAR, 8),
@@ -2390,12 +2518,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s30(); }
+    static { s31(); }
 
-    private static Body c31;
+    private static Body c32;
 
-    private static void s31() {
-        c31 = body(
+    private static void s32() {
+        c32 = body(
             instr(ARG, 0),
             instr(TRAP, 48),
             instr(QUOTE, 0),
@@ -2566,12 +2694,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s31(); }
+    static { s32(); }
 
-    private static Body c32;
+    private static Body c33;
 
-    private static void s32() {
-        c32 = body(
+    private static void s33() {
+        c33 = body(
             instr(FVAR, 1),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -2596,12 +2724,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s32(); }
+    static { s33(); }
 
-    private static Body c33;
+    private static Body c34;
 
-    private static void s33() {
-        c33 = body(
+    private static void s34() {
+        c34 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 2),
             instr(FVAR, 2),
@@ -2620,12 +2748,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s33(); }
+    static { s34(); }
 
-    private static Body c34;
+    private static Body c35;
 
-    private static void s34() {
-        c34 = body(
+    private static void s35() {
+        c35 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(QUOTE, 0),
@@ -2648,12 +2776,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s34(); }
+    static { s35(); }
 
-    private static Body c35;
+    private static Body c36;
 
-    private static void s35() {
-        c35 = body(
+    private static void s36() {
+        c36 = body(
             instr(FVAR, 1),
             instr(PREP, 3),
             instr(QUOTE, 0),
@@ -2666,12 +2794,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s35(); }
+    static { s36(); }
 
-    private static Body c36;
+    private static Body c37;
 
-    private static void s36() {
-        c36 = body(
+    private static void s37() {
+        c37 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(FVAR, 2),
@@ -2682,12 +2810,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s36(); }
+    static { s37(); }
 
-    private static Body c37;
+    private static Body c38;
 
-    private static void s37() {
-        c37 = body(
+    private static void s38() {
+        c38 = body(
             instr(ARG, 1),
             instr(TRAP, 11),
             instr(MNIL, 0),
@@ -2909,12 +3037,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s37(); }
+    static { s38(); }
 
-    private static Body c38;
+    private static Body c39;
 
-    private static void s38() {
-        c38 = body(
+    private static void s39() {
+        c39 = body(
             instr(FVAR, 1),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -2937,12 +3065,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s38(); }
+    static { s39(); }
 
-    private static Body c39;
+    private static Body c40;
 
-    private static void s39() {
-        c39 = body(
+    private static void s40() {
+        c40 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 4),
             instr(FVAR, 4),
@@ -2971,12 +3099,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s39(); }
+    static { s40(); }
 
-    private static Body c40;
+    private static Body c41;
 
-    private static void s40() {
-        c40 = body(
+    private static void s41() {
+        c41 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 4),
             instr(FVAR, 3),
@@ -2997,12 +3125,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s40(); }
+    static { s41(); }
 
-    private static Body c41;
+    private static Body c42;
 
-    private static void s41() {
-        c41 = body(
+    private static void s42() {
+        c42 = body(
             instr(ARG, 0),
             instr(TRAP, 28),
             instr(QUOTE, 0),
@@ -3059,12 +3187,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s41(); }
+    static { s42(); }
 
-    private static Body c42;
+    private static Body c43;
 
-    private static void s42() {
-        c42 = body(
+    private static void s43() {
+        c43 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(QUOTE, 0),
@@ -3103,12 +3231,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s42(); }
+    static { s43(); }
 
-    private static Body c43;
+    private static Body c44;
 
-    private static void s43() {
-        c43 = body(
+    private static void s44() {
+        c44 = body(
             instr(ARG, 0),
             instr(TRAP, 24),
             instr(QUOTE, 0),
@@ -3191,12 +3319,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s43(); }
+    static { s44(); }
 
-    private static Body c44;
+    private static Body c45;
 
-    private static void s44() {
-        c44 = body(
+    private static void s45() {
+        c45 = body(
             instr(GLOBAL, 0),
             instr(PREP, 1),
             instr(FVAR, 1),
@@ -3275,12 +3403,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s44(); }
+    static { s45(); }
 
-    private static Body c45;
+    private static Body c46;
 
-    private static void s45() {
-        c45 = body(
+    private static void s46() {
+        c46 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 8),
             instr(FVAR, 8),
@@ -3309,12 +3437,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s45(); }
+    static { s46(); }
 
-    private static Body c46;
+    private static Body c47;
 
-    private static void s46() {
-        c46 = body(
+    private static void s47() {
+        c47 = body(
             instr(ARG, 0),
             instr(TRAP, 14),
             instr(QUOTE, 0),
@@ -3455,12 +3583,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s46(); }
+    static { s47(); }
 
-    private static Body c47;
+    private static Body c48;
 
-    private static void s47() {
-        c47 = body(
+    private static void s48() {
+        c48 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 5),
             instr(FVAR, 4),
@@ -3483,12 +3611,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s47(); }
+    static { s48(); }
 
-    private static Body c48;
+    private static Body c49;
 
-    private static void s48() {
-        c48 = body(
+    private static void s49() {
+        c49 = body(
             instr(ARG, 0),
             instr(TRAP, 24),
             instr(QUOTE, 0),
@@ -3563,12 +3691,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s48(); }
+    static { s49(); }
 
-    private static Body c49;
+    private static Body c50;
 
-    private static void s49() {
-        c49 = body(
+    private static void s50() {
+        c50 = body(
             instr(GLOBAL, 0),
             instr(PREP, 2),
             instr(ARG, 0),
@@ -3629,12 +3757,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s49(); }
+    static { s50(); }
 
-    private static Body c50;
+    private static Body c51;
 
-    private static void s50() {
-        c50 = body(
+    private static void s51() {
+        c51 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 10),
             instr(FVAR, 9),
@@ -3671,12 +3799,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s50(); }
+    static { s51(); }
 
-    private static Body c51;
+    private static Body c52;
 
-    private static void s51() {
-        c51 = body(
+    private static void s52() {
+        c52 = body(
             instr(GLOBAL, 0),
             instr(PREP, 1),
             instr(FVAR, 1),
@@ -3780,12 +3908,12 @@ public class GeomBoot extends Bootstrap {
             instr(TCALL, 2));
     }
 
-    static { s51(); }
+    static { s52(); }
 
-    private static Body c52;
+    private static Body c53;
 
-    private static void s52() {
-        c52 = body(
+    private static void s53() {
+        c53 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(QUOTE, 0),
@@ -3842,12 +3970,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s52(); }
+    static { s53(); }
 
-    private static Body c53;
+    private static Body c54;
 
-    private static void s53() {
-        c53 = body(
+    private static void s54() {
+        c54 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 7),
             instr(FVAR, 6),
@@ -3874,12 +4002,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s53(); }
+    static { s54(); }
 
-    private static Body c54;
+    private static Body c55;
 
-    private static void s54() {
-        c54 = body(
+    private static void s55() {
+        c55 = body(
             instr(ARG, 0),
             instr(TRAP, 30),
             instr(QUOTE, 0),
@@ -3970,12 +4098,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s54(); }
+    static { s55(); }
 
-    private static Body c55;
+    private static Body c56;
 
-    private static void s55() {
-        c55 = body(
+    private static void s56() {
+        c56 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(GLOBAL, 0),
@@ -4012,12 +4140,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s55(); }
+    static { s56(); }
 
-    private static Body c56;
+    private static Body c57;
 
-    private static void s56() {
-        c56 = body(
+    private static void s57() {
+        c57 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(QUOTE, 0),
@@ -4052,12 +4180,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s56(); }
+    static { s57(); }
 
-    private static Body c57;
+    private static Body c58;
 
-    private static void s57() {
-        c57 = body(
+    private static void s58() {
+        c58 = body(
             instr(FVAR, 1),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -4110,12 +4238,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s57(); }
+    static { s58(); }
 
-    private static Body c58;
+    private static Body c59;
 
-    private static void s58() {
-        c58 = body(
+    private static void s59() {
+        c59 = body(
             instr(FVAR, 1),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -4194,12 +4322,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s58(); }
+    static { s59(); }
 
-    private static Body c59;
+    private static Body c60;
 
-    private static void s59() {
-        c59 = body(
+    private static void s60() {
+        c60 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(FVAR, 3),
@@ -4210,12 +4338,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s59(); }
+    static { s60(); }
 
-    private static Body c60;
+    private static Body c61;
 
-    private static void s60() {
-        c60 = body(
+    private static void s61() {
+        c61 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(QUOTE, 0),
@@ -4296,12 +4424,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s60(); }
+    static { s61(); }
 
-    private static Body c61;
+    private static Body c62;
 
-    private static void s61() {
-        c61 = body(
+    private static void s62() {
+        c62 = body(
             instr(FVAR, 1),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -4312,12 +4440,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s61(); }
+    static { s62(); }
 
-    private static Body c62;
+    private static Body c63;
 
-    private static void s62() {
-        c62 = body(
+    private static void s63() {
+        c63 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 0),
             instr(CLOSURE, 0),
@@ -4332,12 +4460,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s62(); }
+    static { s63(); }
 
-    private static Body c63;
+    private static Body c64;
 
-    private static void s63() {
-        c63 = body(
+    private static void s64() {
+        c64 = body(
             instr(ARG, 0),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -4372,12 +4500,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s63(); }
+    static { s64(); }
 
-    private static Body c64;
+    private static Body c65;
 
-    private static void s64() {
-        c64 = body(
+    private static void s65() {
+        c65 = body(
             instr(GLOBAL, 0),
             instr(PREP, 1),
             instr(QUOTE, 1),
@@ -4390,19 +4518,17 @@ public class GeomBoot extends Bootstrap {
             instr(PUTARG, 0),
             instr(CALL, 1),
             instr(BIND, 1),
-            instr(GLOBAL, 0),
-            instr(PREP, 1),
-            instr(NIL, 0),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
+            instr(GLOBAL, 2),
+            instr(PREP, 0),
+            instr(CALL, 0),
             instr(BIND, 2),
-            instr(QUOTE, 2),
+            instr(QUOTE, 3),
             instr(CLOPREP, 1),
             instr(LOCAL, 2),
             instr(PUTFVAR, 1),
             instr(CLOSURE, 1),
             instr(BIND, 3),
-            instr(QUOTE, 3),
+            instr(QUOTE, 4),
             instr(CLOPREP, 4),
             instr(LOCAL, 2),
             instr(PUTFVAR, 1),
@@ -4414,9 +4540,9 @@ public class GeomBoot extends Bootstrap {
             instr(PUTFVAR, 4),
             instr(CLOSURE, 4),
             instr(BIND, 4),
-            instr(GLOBAL, 4),
+            instr(GLOBAL, 5),
             instr(PREP, 3),
-            instr(QUOTE, 5),
+            instr(QUOTE, 6),
             instr(CLOPREP, 3),
             instr(LOCAL, 4),
             instr(PUTFVAR, 1),
@@ -4432,49 +4558,47 @@ public class GeomBoot extends Bootstrap {
             instr(PUTARG, 2),
             instr(CALL, 3),
             instr(POP, 0),
-            instr(GLOBAL, 0),
-            instr(PREP, 1),
-            instr(NIL, 0),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
+            instr(GLOBAL, 2),
+            instr(PREP, 0),
+            instr(CALL, 0),
             instr(BIND, 5),
-            instr(QUOTE, 6),
-            instr(CLOPREP, 1),
-            instr(LOCAL, 5),
-            instr(PUTFVAR, 1),
-            instr(CLOSURE, 1),
-            instr(BIND, 6),
             instr(QUOTE, 7),
             instr(CLOPREP, 1),
             instr(LOCAL, 5),
             instr(PUTFVAR, 1),
             instr(CLOSURE, 1),
-            instr(BIND, 7),
+            instr(BIND, 6),
             instr(QUOTE, 8),
+            instr(CLOPREP, 1),
+            instr(LOCAL, 5),
+            instr(PUTFVAR, 1),
+            instr(CLOSURE, 1),
+            instr(BIND, 7),
+            instr(QUOTE, 9),
             instr(CLOPREP, 1),
             instr(LOCAL, 6),
             instr(PUTFVAR, 1),
             instr(CLOSURE, 1),
             instr(BIND, 8),
-            instr(QUOTE, 9),
+            instr(QUOTE, 10),
             instr(CLOPREP, 1),
             instr(LOCAL, 8),
             instr(PUTFVAR, 1),
             instr(CLOSURE, 1),
             instr(BIND, 9),
-            instr(GLOBAL, 10),
+            instr(GLOBAL, 11),
             instr(PREP, 5),
             instr(ARG, 0),
             instr(PUTARG, 0),
             instr(ARG, 1),
             instr(PUTARG, 1),
-            instr(GLOBAL, 11),
+            instr(GLOBAL, 12),
             instr(PREP, 1),
             instr(LOCAL, 1),
             instr(PUTARG, 0),
             instr(CALL, 1),
             instr(PUTARG, 2),
-            instr(GLOBAL, 11),
+            instr(GLOBAL, 12),
             instr(PREP, 1),
             instr(LOCAL, 0),
             instr(PUTARG, 0),
@@ -4498,36 +4622,6 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s64(); }
-
-    private static Body c65;
-
-    private static void s65() {
-        c65 = body(
-            instr(GLOBAL, 0),
-            instr(PREP, 2),
-            instr(FVAR, 1),
-            instr(PUTARG, 0),
-            instr(GLOBAL, 1),
-            instr(PREP, 2),
-            instr(ARG, 0),
-            instr(ARG, 1),
-            instr(NIL, 0),
-            instr(CONS, 0),
-            instr(CONS, 0),
-            instr(PUTARG, 0),
-            instr(GLOBAL, 2),
-            instr(PREP, 1),
-            instr(FVAR, 1),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
-            instr(RETURN, 0));
-    }
-
     static { s65(); }
 
     private static Body c66;
@@ -4535,151 +4629,165 @@ public class GeomBoot extends Bootstrap {
     private static void s66() {
         c66 = body(
             instr(GLOBAL, 0),
-            instr(PREP, 1),
-            instr(ARG, 1),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(JFALSE, 30),
-            instr(GLOBAL, 1),
-            instr(PREP, 2),
-            instr(ARG, 1),
-            instr(PUTARG, 0),
-            instr(GLOBAL, 2),
-            instr(PREP, 1),
+            instr(PREP, 3),
             instr(FVAR, 1),
             instr(PUTARG, 0),
+            instr(ARG, 0),
+            instr(PUTARG, 1),
+            instr(ARG, 1),
+            instr(PUTARG, 2),
+            instr(CALL, 3),
+            instr(RETURN, 0));
+    }
+
+    static { s66(); }
+
+    private static Body c67;
+
+    private static void s67() {
+        c67 = body(
+            instr(GLOBAL, 0),
+            instr(PREP, 1),
+            instr(ARG, 1),
+            instr(PUTARG, 0),
             instr(CALL, 1),
+            instr(JFALSE, 26),
+            instr(GLOBAL, 1),
+            instr(PREP, 2),
+            instr(FVAR, 1),
+            instr(PUTARG, 0),
+            instr(ARG, 1),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(BIND, 0),
-            instr(GLOBAL, 3),
+            instr(GLOBAL, 2),
             instr(PREP, 2),
             instr(LOCAL, 0),
             instr(PUTARG, 0),
             instr(NIL, 0),
             instr(PUTARG, 1),
             instr(CALL, 2),
-            instr(JFALSE, 28),
+            instr(JFALSE, 24),
             instr(LOCAL, 0),
             instr(RETURN, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(ARG, 1),
-            instr(TRAP, 52),
+            instr(TRAP, 48),
             instr(MCONS, 0),
-            instr(TRAP, 51),
-            instr(QUOTE, 4),
+            instr(TRAP, 47),
+            instr(QUOTE, 3),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 52),
+            instr(TRAP, 48),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 52),
+            instr(TRAP, 48),
             instr(MNIL, 0),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 74),
+            instr(TRAP, 70),
             instr(MCONS, 0),
-            instr(TRAP, 73),
+            instr(TRAP, 69),
+            instr(QUOTE, 6),
+            instr(MEQ, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 70),
+            instr(MCONS, 0),
+            instr(POP, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 70),
+            instr(MNIL, 0),
+            instr(GLOBAL, 4),
+            instr(PREP, 2),
+            instr(ARG, 0),
+            instr(PUTARG, 0),
+            instr(QUOTE, 5),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(RETURN, 0),
+            instr(POP, 0),
+            instr(ARG, 1),
+            instr(TRAP, 92),
+            instr(MCONS, 0),
+            instr(TRAP, 91),
             instr(QUOTE, 7),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 74),
+            instr(TRAP, 92),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 74),
+            instr(TRAP, 92),
             instr(MNIL, 0),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 96),
+            instr(TRAP, 114),
             instr(MCONS, 0),
-            instr(TRAP, 95),
+            instr(TRAP, 113),
             instr(QUOTE, 8),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 96),
+            instr(TRAP, 114),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 96),
+            instr(TRAP, 114),
             instr(MNIL, 0),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 118),
+            instr(TRAP, 160),
             instr(MCONS, 0),
-            instr(TRAP, 117),
+            instr(TRAP, 159),
             instr(QUOTE, 9),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 118),
-            instr(MCONS, 0),
-            instr(POP, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 118),
-            instr(MNIL, 0),
-            instr(GLOBAL, 5),
-            instr(PREP, 2),
-            instr(ARG, 0),
-            instr(PUTARG, 0),
-            instr(QUOTE, 6),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
-            instr(RETURN, 0),
-            instr(POP, 0),
-            instr(ARG, 1),
-            instr(TRAP, 164),
-            instr(MCONS, 0),
-            instr(TRAP, 163),
-            instr(QUOTE, 10),
-            instr(MEQ, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 164),
+            instr(TRAP, 160),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 164),
+            instr(TRAP, 160),
             instr(MNIL, 0),
-            instr(GLOBAL, 11),
+            instr(GLOBAL, 10),
             instr(PREP, 2),
             instr(FVAR, 3),
             instr(PUTARG, 0),
             instr(FVAR, 2),
             instr(PREP, 2),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(LOCAL, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(PUTARG, 0),
-            instr(GLOBAL, 2),
+            instr(GLOBAL, 11),
             instr(PREP, 1),
             instr(FVAR, 3),
             instr(PUTARG, 0),
@@ -4693,99 +4801,99 @@ public class GeomBoot extends Bootstrap {
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 182),
+            instr(TRAP, 178),
             instr(MCONS, 0),
-            instr(TRAP, 181),
+            instr(TRAP, 177),
             instr(QUOTE, 13),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 182),
+            instr(TRAP, 178),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 204),
+            instr(TRAP, 200),
             instr(MCONS, 0),
-            instr(TRAP, 203),
+            instr(TRAP, 199),
             instr(QUOTE, 14),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 204),
+            instr(TRAP, 200),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 204),
+            instr(TRAP, 200),
             instr(MNIL, 0),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 222),
+            instr(TRAP, 218),
             instr(MCONS, 0),
-            instr(TRAP, 221),
+            instr(TRAP, 217),
             instr(QUOTE, 15),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 222),
+            instr(TRAP, 218),
             instr(MNIL, 0),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 240),
+            instr(TRAP, 236),
             instr(MCONS, 0),
-            instr(TRAP, 239),
+            instr(TRAP, 235),
             instr(QUOTE, 16),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 240),
+            instr(TRAP, 236),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 270),
+            instr(TRAP, 266),
             instr(MCONS, 0),
-            instr(TRAP, 269),
+            instr(TRAP, 265),
             instr(QUOTE, 17),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 270),
+            instr(TRAP, 266),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 270),
+            instr(TRAP, 266),
             instr(MNIL, 0),
             instr(FVAR, 4),
             instr(PREP, 2),
@@ -4795,7 +4903,7 @@ public class GeomBoot extends Bootstrap {
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(PUTARG, 1),
@@ -4805,29 +4913,29 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 282),
+            instr(TRAP, 278),
             instr(MCONS, 0),
-            instr(TRAP, 281),
+            instr(TRAP, 277),
             instr(QUOTE, 18),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 282),
+            instr(TRAP, 278),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 318),
+            instr(TRAP, 314),
             instr(MCONS, 0),
-            instr(TRAP, 317),
+            instr(TRAP, 313),
             instr(QUOTE, 19),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 318),
+            instr(TRAP, 314),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 318),
+            instr(TRAP, 314),
             instr(MNIL, 0),
             instr(FVAR, 4),
             instr(PREP, 2),
@@ -4837,7 +4945,7 @@ public class GeomBoot extends Bootstrap {
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(PUTARG, 1),
@@ -4847,23 +4955,23 @@ public class GeomBoot extends Bootstrap {
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 342),
+            instr(TRAP, 338),
             instr(MCONS, 0),
-            instr(TRAP, 341),
+            instr(TRAP, 337),
             instr(QUOTE, 20),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 342),
+            instr(TRAP, 338),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 342),
+            instr(TRAP, 338),
             instr(MNIL, 0),
             instr(FVAR, 4),
             instr(PREP, 2),
@@ -4877,79 +4985,79 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 358),
+            instr(TRAP, 354),
             instr(MCONS, 0),
-            instr(TRAP, 357),
+            instr(TRAP, 353),
             instr(QUOTE, 21),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 358),
+            instr(TRAP, 354),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 358),
+            instr(TRAP, 354),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 374),
+            instr(TRAP, 370),
             instr(MCONS, 0),
-            instr(TRAP, 373),
+            instr(TRAP, 369),
             instr(QUOTE, 22),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 374),
+            instr(TRAP, 370),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 374),
+            instr(TRAP, 370),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 392),
+            instr(TRAP, 388),
             instr(MCONS, 0),
-            instr(TRAP, 391),
+            instr(TRAP, 387),
             instr(QUOTE, 23),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 392),
+            instr(TRAP, 388),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 408),
+            instr(TRAP, 404),
             instr(MCONS, 0),
-            instr(TRAP, 407),
+            instr(TRAP, 403),
             instr(QUOTE, 24),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 408),
+            instr(TRAP, 404),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 408),
+            instr(TRAP, 404),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 426),
+            instr(TRAP, 422),
             instr(MCONS, 0),
-            instr(TRAP, 425),
+            instr(TRAP, 421),
             instr(QUOTE, 25),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 426),
+            instr(TRAP, 422),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
@@ -4961,113 +5069,113 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 444),
+            instr(TRAP, 440),
             instr(MCONS, 0),
-            instr(TRAP, 443),
+            instr(TRAP, 439),
             instr(QUOTE, 27),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 444),
+            instr(TRAP, 440),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 462),
+            instr(TRAP, 458),
             instr(MCONS, 0),
-            instr(TRAP, 461),
+            instr(TRAP, 457),
             instr(QUOTE, 28),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 462),
+            instr(TRAP, 458),
             instr(MNIL, 0),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 6),
+            instr(QUOTE, 5),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 474),
+            instr(TRAP, 470),
             instr(MCONS, 0),
-            instr(TRAP, 473),
+            instr(TRAP, 469),
             instr(QUOTE, 29),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 474),
+            instr(TRAP, 470),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 490),
+            instr(TRAP, 486),
             instr(MCONS, 0),
-            instr(TRAP, 489),
+            instr(TRAP, 485),
             instr(QUOTE, 30),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 490),
+            instr(TRAP, 486),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 490),
+            instr(TRAP, 486),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 506),
+            instr(TRAP, 502),
             instr(MCONS, 0),
-            instr(TRAP, 505),
+            instr(TRAP, 501),
             instr(QUOTE, 31),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 506),
+            instr(TRAP, 502),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 506),
+            instr(TRAP, 502),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 522),
+            instr(TRAP, 518),
             instr(MCONS, 0),
-            instr(TRAP, 521),
+            instr(TRAP, 517),
             instr(QUOTE, 32),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 522),
+            instr(TRAP, 518),
             instr(MCONS, 0),
             instr(POP, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 522),
+            instr(TRAP, 518),
             instr(MNIL, 0),
             instr(ARG, 0),
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 544),
+            instr(TRAP, 540),
             instr(MCONS, 0),
-            instr(TRAP, 543),
+            instr(TRAP, 539),
             instr(QUOTE, 33),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 544),
+            instr(TRAP, 540),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 544),
+            instr(TRAP, 540),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
@@ -5079,17 +5187,17 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 566),
+            instr(TRAP, 562),
             instr(MCONS, 0),
-            instr(TRAP, 565),
+            instr(TRAP, 561),
             instr(QUOTE, 34),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 566),
+            instr(TRAP, 562),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 566),
+            instr(TRAP, 562),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
@@ -5101,21 +5209,21 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0),
             instr(POP, 0),
             instr(ARG, 1),
-            instr(TRAP, 594),
+            instr(TRAP, 590),
             instr(MCONS, 0),
-            instr(TRAP, 593),
+            instr(TRAP, 589),
             instr(QUOTE, 35),
             instr(MEQ, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 594),
+            instr(TRAP, 590),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
-            instr(TRAP, 594),
+            instr(TRAP, 590),
             instr(MNIL, 0),
             instr(GLOBAL, 12),
             instr(PREP, 2),
-            instr(GLOBAL, 5),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
@@ -5131,12 +5239,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s66(); }
+    static { s67(); }
 
-    private static Body c67;
+    private static Body c68;
 
-    private static void s67() {
-        c67 = body(
+    private static void s68() {
+        c68 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(ARG, 0),
@@ -5164,26 +5272,6 @@ public class GeomBoot extends Bootstrap {
             instr(CALL, 2),
             instr(POP, 0),
             instr(LOCAL, 0),
-            instr(RETURN, 0));
-    }
-
-    static { s67(); }
-
-    private static Body c68;
-
-    private static void s68() {
-        c68 = body(
-            instr(GLOBAL, 0),
-            instr(PREP, 2),
-            instr(ARG, 0),
-            instr(PUTARG, 0),
-            instr(GLOBAL, 1),
-            instr(PREP, 1),
-            instr(FVAR, 1),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
             instr(RETURN, 0));
     }
 
@@ -5193,13 +5281,29 @@ public class GeomBoot extends Bootstrap {
 
     private static void s69() {
         c69 = body(
+            instr(GLOBAL, 0),
+            instr(PREP, 2),
+            instr(FVAR, 1),
+            instr(PUTARG, 0),
+            instr(ARG, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(RETURN, 0));
+    }
+
+    static { s69(); }
+
+    private static Body c70;
+
+    private static void s70() {
+        c70 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
             instr(ARG, 2),
             instr(RETURN, 0),
             instr(ARG, 1),
-            instr(TRAP, 43),
+            instr(TRAP, 31),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
@@ -5209,48 +5313,36 @@ public class GeomBoot extends Bootstrap {
             instr(LOCAL, 0),
             instr(PUTARG, 0),
             instr(CALL, 1),
-            instr(JFALSE, 43),
+            instr(JFALSE, 31),
             instr(GLOBAL, 1),
-            instr(PREP, 2),
+            instr(PREP, 3),
             instr(FVAR, 1),
             instr(PUTARG, 0),
-            instr(GLOBAL, 2),
-            instr(PREP, 2),
             instr(LOCAL, 0),
+            instr(PUTARG, 1),
             instr(ARG, 0),
-            instr(NIL, 0),
-            instr(CONS, 0),
-            instr(CONS, 0),
-            instr(PUTARG, 0),
-            instr(GLOBAL, 3),
-            instr(PREP, 1),
-            instr(FVAR, 1),
-            instr(PUTARG, 0),
-            instr(CALL, 1),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
+            instr(PUTARG, 2),
+            instr(CALL, 3),
             instr(POP, 0),
             instr(ARG, 0),
             instr(LOCAL, 1),
             instr(ARG, 2),
             instr(TCALL, 3),
             instr(ARG, 1),
-            instr(TRAP, 65),
+            instr(TRAP, 53),
             instr(MCONS, 0),
             instr(BIND, 0),
             instr(GETTAIL, 0),
             instr(BIND, 1),
-            instr(GLOBAL, 4),
+            instr(GLOBAL, 2),
             instr(PREP, 2),
             instr(ARG, 0),
             instr(PUTARG, 0),
-            instr(QUOTE, 5),
+            instr(QUOTE, 3),
             instr(PUTARG, 1),
             instr(CALL, 2),
             instr(LOCAL, 1),
-            instr(GLOBAL, 2),
+            instr(GLOBAL, 4),
             instr(PREP, 2),
             instr(LOCAL, 0),
             instr(PUTARG, 0),
@@ -5261,12 +5353,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s69(); }
+    static { s70(); }
 
-    private static Body c70;
+    private static Body c71;
 
-    private static void s70() {
-        c70 = body(
+    private static void s71() {
+        c71 = body(
             instr(ARG, 0),
             instr(TRAP, 24),
             instr(MCONS, 0),
@@ -5343,12 +5435,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s70(); }
+    static { s71(); }
 
-    private static Body c71;
+    private static Body c72;
 
-    private static void s71() {
-        c71 = body(
+    private static void s72() {
+        c72 = body(
             instr(GLOBAL, 0),
             instr(PREP, 3),
             instr(QUOTE, 1),
@@ -5365,12 +5457,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s71(); }
+    static { s72(); }
 
-    private static Body c72;
+    private static Body c73;
 
-    private static void s72() {
-        c72 = body(
+    private static void s73() {
+        c73 = body(
             instr(GLOBAL, 0),
             instr(PREP, 2),
             instr(FVAR, 1),
@@ -5385,12 +5477,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s72(); }
+    static { s73(); }
 
-    private static Body c73;
+    private static Body c74;
 
-    private static void s73() {
-        c73 = body(
+    private static void s74() {
+        c74 = body(
             instr(ARG, 1),
             instr(TRAP, 35),
             instr(MCONS, 0),
@@ -5429,12 +5521,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s73(); }
+    static { s74(); }
 
-    private static Body c74;
+    private static Body c75;
 
-    private static void s74() {
-        c74 = body(
+    private static void s75() {
+        c75 = body(
             instr(QUOTE, 0),
             instr(QUOTE, 0),
             instr(GLOBAL, 1),
@@ -5461,12 +5553,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s74(); }
+    static { s75(); }
 
-    private static Body c75;
+    private static Body c76;
 
-    private static void s75() {
-        c75 = body(
+    private static void s76() {
+        c76 = body(
             instr(ARG, 2),
             instr(TRAP, 93),
             instr(MCONS, 0),
@@ -5563,40 +5655,6 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s75(); }
-
-    private static Body c76;
-
-    private static void s76() {
-        c76 = body(
-            instr(ARG, 0),
-            instr(TRAP, 25),
-            instr(MCONS, 0),
-            instr(BIND, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 25),
-            instr(MCONS, 0),
-            instr(POP, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 25),
-            instr(MCONS, 0),
-            instr(POP, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 25),
-            instr(MCONS, 0),
-            instr(POP, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 25),
-            instr(MCONS, 0),
-            instr(POP, 0),
-            instr(GETTAIL, 0),
-            instr(TRAP, 25),
-            instr(MNIL, 0),
-            instr(LOCAL, 0),
-            instr(RETURN, 0),
-            instr(FAIL, 0));
-    }
-
     static { s76(); }
 
     private static Body c77;
@@ -5606,11 +5664,11 @@ public class GeomBoot extends Bootstrap {
             instr(ARG, 0),
             instr(TRAP, 25),
             instr(MCONS, 0),
-            instr(POP, 0),
+            instr(BIND, 0),
             instr(GETTAIL, 0),
             instr(TRAP, 25),
             instr(MCONS, 0),
-            instr(BIND, 0),
+            instr(POP, 0),
             instr(GETTAIL, 0),
             instr(TRAP, 25),
             instr(MCONS, 0),
@@ -5638,6 +5696,40 @@ public class GeomBoot extends Bootstrap {
     private static void s78() {
         c78 = body(
             instr(ARG, 0),
+            instr(TRAP, 25),
+            instr(MCONS, 0),
+            instr(POP, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 25),
+            instr(MCONS, 0),
+            instr(BIND, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 25),
+            instr(MCONS, 0),
+            instr(POP, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 25),
+            instr(MCONS, 0),
+            instr(POP, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 25),
+            instr(MCONS, 0),
+            instr(POP, 0),
+            instr(GETTAIL, 0),
+            instr(TRAP, 25),
+            instr(MNIL, 0),
+            instr(LOCAL, 0),
+            instr(RETURN, 0),
+            instr(FAIL, 0));
+    }
+
+    static { s78(); }
+
+    private static Body c79;
+
+    private static void s79() {
+        c79 = body(
+            instr(ARG, 0),
             instr(TRAP, 29),
             instr(MCONS, 0),
             instr(POP, 0),
@@ -5669,12 +5761,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s78(); }
+    static { s79(); }
 
-    private static Body c79;
+    private static Body c80;
 
-    private static void s79() {
-        c79 = body(
+    private static void s80() {
+        c80 = body(
             instr(ARG, 0),
             instr(TRAP, 29),
             instr(MCONS, 0),
@@ -5707,12 +5799,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s79(); }
+    static { s80(); }
 
-    private static Body c80;
+    private static Body c81;
 
-    private static void s80() {
-        c80 = body(
+    private static void s81() {
+        c81 = body(
             instr(ARG, 0),
             instr(TRAP, 41),
             instr(MCONS, 0),
@@ -5757,12 +5849,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s80(); }
+    static { s81(); }
 
-    private static Body c81;
+    private static Body c82;
 
-    private static void s81() {
-        c81 = body(
+    private static void s82() {
+        c82 = body(
             instr(ARG, 3),
             instr(TRAP, 51),
             instr(MCONS, 0),
@@ -5817,12 +5909,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s81(); }
+    static { s82(); }
 
-    private static Body c82;
+    private static Body c83;
 
-    private static void s82() {
-        c82 = body(
+    private static void s83() {
+        c83 = body(
             instr(ARG, 1),
             instr(TRAP, 45),
             instr(MCONS, 0),
@@ -5871,12 +5963,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s82(); }
+    static { s83(); }
 
-    private static Body c83;
+    private static Body c84;
 
-    private static void s83() {
-        c83 = body(
+    private static void s84() {
+        c84 = body(
             instr(ARG, 0),
             instr(TRAP, 26),
             instr(MCONS, 0),
@@ -5929,12 +6021,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s83(); }
+    static { s84(); }
 
-    private static Body c84;
+    private static Body c85;
 
-    private static void s84() {
-        c84 = body(
+    private static void s85() {
+        c85 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(ARG, 1),
@@ -5965,12 +6057,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s84(); }
+    static { s85(); }
 
-    private static Body c85;
+    private static Body c86;
 
-    private static void s85() {
-        c85 = body(
+    private static void s86() {
+        c86 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(ARG, 0),
@@ -5989,12 +6081,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s85(); }
+    static { s86(); }
 
-    private static Body c86;
+    private static Body c87;
 
-    private static void s86() {
-        c86 = body(
+    private static void s87() {
+        c87 = body(
             instr(ARG, 1),
             instr(TRAP, 61),
             instr(MCONS, 0),
@@ -6059,12 +6151,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s86(); }
+    static { s87(); }
 
-    private static Body c87;
+    private static Body c88;
 
-    private static void s87() {
-        c87 = body(
+    private static void s88() {
+        c88 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 2),
             instr(FVAR, 1),
@@ -6087,12 +6179,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s87(); }
+    static { s88(); }
 
-    private static Body c88;
+    private static Body c89;
 
-    private static void s88() {
-        c88 = body(
+    private static void s89() {
+        c89 = body(
             instr(ARG, 0),
             instr(TRAP, 45),
             instr(MCONS, 0),
@@ -6142,12 +6234,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s88(); }
+    static { s89(); }
 
-    private static Body c89;
+    private static Body c90;
 
-    private static void s89() {
-        c89 = body(
+    private static void s90() {
+        c90 = body(
             instr(GLOBAL, 0),
             instr(PREP, 2),
             instr(FVAR, 2),
@@ -6174,12 +6266,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s89(); }
+    static { s90(); }
 
-    private static Body c90;
+    private static Body c91;
 
-    private static void s90() {
-        c90 = body(
+    private static void s91() {
+        c91 = body(
             instr(ARG, 0),
             instr(TRAP, 55),
             instr(MCONS, 0),
@@ -6238,12 +6330,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s90(); }
+    static { s91(); }
 
-    private static Body c91;
+    private static Body c92;
 
-    private static void s91() {
-        c91 = body(
+    private static void s92() {
+        c92 = body(
             instr(ARG, 0),
             instr(TRAP, 51),
             instr(MCONS, 0),
@@ -6299,12 +6391,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s91(); }
+    static { s92(); }
 
-    private static Body c92;
+    private static Body c93;
 
-    private static void s92() {
-        c92 = body(
+    private static void s93() {
+        c93 = body(
             instr(GLOBAL, 0),
             instr(PREP, 2),
             instr(FVAR, 1),
@@ -6325,12 +6417,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s92(); }
+    static { s93(); }
 
-    private static Body c93;
+    private static Body c94;
 
-    private static void s93() {
-        c93 = body(
+    private static void s94() {
+        c94 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 5),
             instr(FVAR, 3),
@@ -6359,12 +6451,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s93(); }
+    static { s94(); }
 
-    private static Body c94;
+    private static Body c95;
 
-    private static void s94() {
-        c94 = body(
+    private static void s95() {
+        c95 = body(
             instr(ARG, 0),
             instr(TRAP, 43),
             instr(MCONS, 0),
@@ -6461,12 +6553,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s94(); }
+    static { s95(); }
 
-    private static Body c95;
+    private static Body c96;
 
-    private static void s95() {
-        c95 = body(
+    private static void s96() {
+        c96 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 0),
             instr(CLOSURE, 0),
@@ -6483,12 +6575,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s95(); }
+    static { s96(); }
 
-    private static Body c96;
+    private static Body c97;
 
-    private static void s96() {
-        c96 = body(
+    private static void s97() {
+        c97 = body(
             instr(ARG, 0),
             instr(TRAP, 22),
             instr(MCONS, 0),
@@ -6593,12 +6685,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s96(); }
+    static { s97(); }
 
-    private static Body c97;
+    private static Body c98;
 
-    private static void s97() {
-        c97 = body(
+    private static void s98() {
+        c98 = body(
             instr(QUOTE, 0),
             instr(ARG, 0),
             instr(GLOBAL, 1),
@@ -6641,12 +6733,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s97(); }
+    static { s98(); }
 
-    private static Body c98;
+    private static Body c99;
 
-    private static void s98() {
-        c98 = body(
+    private static void s99() {
+        c99 = body(
             instr(ARG, 0),
             instr(TRAP, 52),
             instr(MCONS, 0),
@@ -7182,12 +7274,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s98(); }
+    static { s99(); }
 
-    private static Body c99;
+    private static Body c100;
 
-    private static void s99() {
-        c99 = body(
+    private static void s100() {
+        c100 = body(
             instr(ARG, 0),
             instr(TRAP, 23),
             instr(MCONS, 0),
@@ -7215,12 +7307,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s99(); }
+    static { s100(); }
 
-    private static Body c100;
+    private static Body c101;
 
-    private static void s100() {
-        c100 = body(
+    private static void s101() {
+        c101 = body(
             instr(ARG, 1),
             instr(TRAP, 48),
             instr(MCONS, 0),
@@ -7319,12 +7411,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s100(); }
+    static { s101(); }
 
-    private static Body c101;
+    private static Body c102;
 
-    private static void s101() {
-        c101 = body(
+    private static void s102() {
+        c102 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 2),
             instr(FVAR, 1),
@@ -7371,12 +7463,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s101(); }
+    static { s102(); }
 
-    private static Body c102;
+    private static Body c103;
 
-    private static void s102() {
-        c102 = body(
+    private static void s103() {
+        c103 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -7421,12 +7513,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s102(); }
+    static { s103(); }
 
-    private static Body c103;
+    private static Body c104;
 
-    private static void s103() {
-        c103 = body(
+    private static void s104() {
+        c104 = body(
             instr(ARG, 0),
             instr(TRAP, 61),
             instr(MCONS, 0),
@@ -7588,12 +7680,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s103(); }
+    static { s104(); }
 
-    private static Body c104;
+    private static Body c105;
 
-    private static void s104() {
-        c104 = body(
+    private static void s105() {
+        c105 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 0),
             instr(CLOSURE, 0),
@@ -7616,12 +7708,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s104(); }
+    static { s105(); }
 
-    private static Body c105;
+    private static Body c106;
 
-    private static void s105() {
-        c105 = body(
+    private static void s106() {
+        c106 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -7692,12 +7784,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s105(); }
+    static { s106(); }
 
-    private static Body c106;
+    private static Body c107;
 
-    private static void s106() {
-        c106 = body(
+    private static void s107() {
+        c107 = body(
             instr(ARG, 0),
             instr(TRAP, 7),
             instr(MNIL, 0),
@@ -7782,12 +7874,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s106(); }
+    static { s107(); }
 
-    private static Body c107;
+    private static Body c108;
 
-    private static void s107() {
-        c107 = body(
+    private static void s108() {
+        c108 = body(
             instr(FVAR, 1),
             instr(PREP, 3),
             instr(ARG, 0),
@@ -7890,12 +7982,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s107(); }
+    static { s108(); }
 
-    private static Body c108;
+    private static Body c109;
 
-    private static void s108() {
-        c108 = body(
+    private static void s109() {
+        c109 = body(
             instr(ARG, 0),
             instr(TRAP, 31),
             instr(MCONS, 0),
@@ -7931,12 +8023,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s108(); }
+    static { s109(); }
 
-    private static Body c109;
+    private static Body c110;
 
-    private static void s109() {
-        c109 = body(
+    private static void s110() {
+        c110 = body(
             instr(ARG, 1),
             instr(JFALSE, 12),
             instr(QUOTE, 0),
@@ -7953,12 +8045,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s109(); }
+    static { s110(); }
 
-    private static Body c110;
+    private static Body c111;
 
-    private static void s110() {
-        c110 = body(
+    private static void s111() {
+        c111 = body(
             instr(ARG, 0),
             instr(TRAP, 26),
             instr(MCONS, 0),
@@ -8737,12 +8829,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s110(); }
+    static { s111(); }
 
-    private static Body c111;
+    private static Body c112;
 
-    private static void s111() {
-        c111 = body(
+    private static void s112() {
+        c112 = body(
             instr(FVAR, 1),
             instr(PREP, 3),
             instr(ARG, 0),
@@ -8757,12 +8849,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s111(); }
+    static { s112(); }
 
-    private static Body c112;
+    private static Body c113;
 
-    private static void s112() {
-        c112 = body(
+    private static void s113() {
+        c113 = body(
             instr(ARG, 0),
             instr(TRAP, 33),
             instr(MCONS, 0),
@@ -8800,12 +8892,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s112(); }
+    static { s113(); }
 
-    private static Body c113;
+    private static Body c114;
 
-    private static void s113() {
-        c113 = body(
+    private static void s114() {
+        c114 = body(
             instr(FVAR, 1),
             instr(PREP, 1),
             instr(FVAR, 2),
@@ -8850,12 +8942,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s113(); }
+    static { s114(); }
 
-    private static Body c114;
+    private static Body c115;
 
-    private static void s114() {
-        c114 = body(
+    private static void s115() {
+        c115 = body(
             instr(ARG, 0),
             instr(TRAP, 16),
             instr(MCONS, 0),
@@ -9266,12 +9358,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s114(); }
+    static { s115(); }
 
-    private static Body c115;
+    private static Body c116;
 
-    private static void s115() {
-        c115 = body(
+    private static void s116() {
+        c116 = body(
             instr(ARG, 0),
             instr(TRAP, 20),
             instr(MCONS, 0),
@@ -9304,24 +9396,6 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s115(); }
-
-    private static Body c116;
-
-    private static void s116() {
-        c116 = body(
-            instr(FVAR, 1),
-            instr(PREP, 2),
-            instr(ARG, 0),
-            instr(PUTARG, 0),
-            instr(FVAR, 2),
-            instr(PUTARG, 1),
-            instr(CALL, 2),
-            instr(ARG, 1),
-            instr(CONS, 0),
-            instr(RETURN, 0));
-    }
-
     static { s116(); }
 
     private static Body c117;
@@ -9346,6 +9420,24 @@ public class GeomBoot extends Bootstrap {
 
     private static void s118() {
         c118 = body(
+            instr(FVAR, 1),
+            instr(PREP, 2),
+            instr(ARG, 0),
+            instr(PUTARG, 0),
+            instr(FVAR, 2),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(ARG, 1),
+            instr(CONS, 0),
+            instr(RETURN, 0));
+    }
+
+    static { s118(); }
+
+    private static Body c119;
+
+    private static void s119() {
+        c119 = body(
             instr(ARG, 0),
             instr(TRAP, 40),
             instr(MCONS, 0),
@@ -9450,12 +9542,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s118(); }
+    static { s119(); }
 
-    private static Body c119;
+    private static Body c120;
 
-    private static void s119() {
-        c119 = body(
+    private static void s120() {
+        c120 = body(
             instr(FVAR, 1),
             instr(PREP, 0),
             instr(CALL, 0),
@@ -9506,12 +9598,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s119(); }
+    static { s120(); }
 
-    private static Body c120;
+    private static Body c121;
 
-    private static void s120() {
-        c120 = body(
+    private static void s121() {
+        c121 = body(
             instr(GLOBAL, 0),
             instr(PREP, 4),
             instr(ARG, 0),
@@ -9532,12 +9624,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s120(); }
+    static { s121(); }
 
-    private static Body c121;
+    private static Body c122;
 
-    private static void s121() {
-        c121 = body(
+    private static void s122() {
+        c122 = body(
             instr(GLOBAL, 0),
             instr(PREP, 4),
             instr(ARG, 0),
@@ -9552,12 +9644,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s121(); }
+    static { s122(); }
 
-    private static Body c122;
+    private static Body c123;
 
-    private static void s122() {
-        c122 = body(
+    private static void s123() {
+        c123 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 2),
             instr(ARG, 0),
@@ -9568,12 +9660,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s122(); }
+    static { s123(); }
 
-    private static Body c123;
+    private static Body c124;
 
-    private static void s123() {
-        c123 = body(
+    private static void s124() {
+        c124 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(FVAR, 2),
@@ -9584,12 +9676,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s123(); }
+    static { s124(); }
 
-    private static Body c124;
+    private static Body c125;
 
-    private static void s124() {
-        c124 = body(
+    private static void s125() {
+        c125 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9620,12 +9712,48 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s124(); }
+    static { s125(); }
 
-    private static Body c125;
+    private static Body c126;
 
-    private static void s125() {
-        c125 = body(
+    private static void s126() {
+        c126 = body(
+            instr(GLOBAL, 0),
+            instr(PREP, 2),
+            instr(GLOBAL, 1),
+            instr(PUTARG, 0),
+            instr(ARG, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(BIND, 0),
+            instr(GLOBAL, 2),
+            instr(PREP, 2),
+            instr(LOCAL, 0),
+            instr(PUTARG, 0),
+            instr(NIL, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(JFALSE, 22),
+            instr(GLOBAL, 3),
+            instr(PREP, 1),
+            instr(LOCAL, 0),
+            instr(PUTARG, 0),
+            instr(CALL, 1),
+            instr(RETURN, 0),
+            instr(QUOTE, 4),
+            instr(QUOTE, 4),
+            instr(NIL, 0),
+            instr(CONS, 0),
+            instr(CONS, 0),
+            instr(RETURN, 0));
+    }
+
+    static { s126(); }
+
+    private static Body c127;
+
+    private static void s127() {
+        c127 = body(
             instr(GLOBAL, 0),
             instr(PREP, 2),
             instr(ARG, 0),
@@ -9658,12 +9786,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s125(); }
+    static { s127(); }
 
-    private static Body c126;
+    private static Body c128;
 
-    private static void s126() {
-        c126 = body(
+    private static void s128() {
+        c128 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 2),
             instr(ARG, 0),
@@ -9674,12 +9802,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s126(); }
+    static { s128(); }
 
-    private static Body c127;
+    private static Body c129;
 
-    private static void s127() {
-        c127 = body(
+    private static void s129() {
+        c129 = body(
             instr(FVAR, 1),
             instr(PREP, 2),
             instr(ARG, 0),
@@ -9690,12 +9818,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s127(); }
+    static { s129(); }
 
-    private static Body c128;
+    private static Body c130;
 
-    private static void s128() {
-        c128 = body(
+    private static void s130() {
+        c130 = body(
             instr(GLOBAL, 0),
             instr(PREP, 4),
             instr(ARG, 0),
@@ -9710,13 +9838,57 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s128(); }
+    static { s130(); }
 
-    private static Body c129;
+    private static Body c131;
 
-    private static void s129() {
-        c129 = body(
+    private static void s131() {
+        c131 = body(
             instr(GLOBAL, 0),
+            instr(PREP, 3),
+            instr(GLOBAL, 1),
+            instr(PUTARG, 0),
+            instr(ARG, 0),
+            instr(PUTARG, 1),
+            instr(ARG, 1),
+            instr(ARG, 2),
+            instr(ARG, 3),
+            instr(NIL, 0),
+            instr(CONS, 0),
+            instr(CONS, 0),
+            instr(CONS, 0),
+            instr(PUTARG, 2),
+            instr(CALL, 3),
+            instr(RETURN, 0));
+    }
+
+    static { s131(); }
+
+    private static Body c132;
+
+    private static void s132() {
+        c132 = body(
+            instr(GLOBAL, 0),
+            instr(PREP, 2),
+            instr(GLOBAL, 1),
+            instr(PUTARG, 0),
+            instr(NIL, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(JFALSE, 18),
+            instr(GLOBAL, 2),
+            instr(PREP, 2),
+            instr(QUOTE, 1),
+            instr(PUTARG, 0),
+            instr(GLOBAL, 3),
+            instr(PREP, 0),
+            instr(CALL, 0),
+            instr(PUTARG, 1),
+            instr(CALL, 2),
+            instr(JUMP, 19),
+            instr(NIL, 0),
+            instr(POP, 0),
+            instr(GLOBAL, 4),
             instr(PREP, 0),
             instr(CALL, 0),
             instr(BIND, 0),
@@ -9726,12 +9898,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s129(); }
+    static { s132(); }
 
-    private static Body c130;
+    private static Body c133;
 
-    private static void s130() {
-        c130 = body(
+    private static void s133() {
+        c133 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9769,12 +9941,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s130(); }
+    static { s133(); }
 
-    private static Body c131;
+    private static Body c134;
 
-    private static void s131() {
-        c131 = body(
+    private static void s134() {
+        c134 = body(
             instr(ARG, 0),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9801,12 +9973,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s131(); }
+    static { s134(); }
 
-    private static Body c132;
+    private static Body c135;
 
-    private static void s132() {
-        c132 = body(
+    private static void s135() {
+        c135 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9844,12 +10016,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s132(); }
+    static { s135(); }
 
-    private static Body c133;
+    private static Body c136;
 
-    private static void s133() {
-        c133 = body(
+    private static void s136() {
+        c136 = body(
             instr(ARG, 2),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9874,12 +10046,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s133(); }
+    static { s136(); }
 
-    private static Body c134;
+    private static Body c137;
 
-    private static void s134() {
-        c134 = body(
+    private static void s137() {
+        c137 = body(
             instr(ARG, 2),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9910,12 +10082,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s134(); }
+    static { s137(); }
 
-    private static Body c135;
+    private static Body c138;
 
-    private static void s135() {
-        c135 = body(
+    private static void s138() {
+        c138 = body(
             instr(ARG, 0),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9942,12 +10114,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s135(); }
+    static { s138(); }
 
-    private static Body c136;
+    private static Body c139;
 
-    private static void s136() {
-        c136 = body(
+    private static void s139() {
+        c139 = body(
             instr(ARG, 1),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -9980,12 +10152,12 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s136(); }
+    static { s139(); }
 
-    private static Body c137;
+    private static Body c140;
 
-    private static void s137() {
-        c137 = body(
+    private static void s140() {
+        c140 = body(
             instr(ARG, 0),
             instr(JFALSE, 4),
             instr(GLOBAL, 0),
@@ -9994,12 +10166,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s137(); }
+    static { s140(); }
 
-    private static Body c138;
+    private static Body c141;
 
-    private static void s138() {
-        c138 = body(
+    private static void s141() {
+        c141 = body(
             instr(QUOTE, 0),
             instr(CLOPREP, 0),
             instr(CLOSURE, 0),
@@ -10014,12 +10186,12 @@ public class GeomBoot extends Bootstrap {
             instr(RETURN, 0));
     }
 
-    static { s138(); }
+    static { s141(); }
 
-    private static Body c139;
+    private static Body c142;
 
-    private static void s139() {
-        c139 = body(
+    private static void s142() {
+        c142 = body(
             instr(ARG, 0),
             instr(TRAP, 5),
             instr(MNIL, 0),
@@ -10043,7 +10215,7 @@ public class GeomBoot extends Bootstrap {
             instr(FAIL, 0));
     }
 
-    static { s139(); }
+    static { s142(); }
 
     public static void main(String args[]) {
         GeomBoot boot = new GeomBoot();

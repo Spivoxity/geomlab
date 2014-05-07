@@ -63,17 +63,8 @@ public final class Name extends Value implements Comparable<Name> {
     /** True for names that are system-defined and may not be changed */
     private boolean frozen = false;
     
-    /** True if the global definition was inherited from bootstrap */
-    private boolean cursed = false;
-
-    /** Token returned for this word by the scanner */
-    public Name token;
-
-    /** Priority when used as a binary operator */
-    public int prio = 0;
-
-    /** Priority for right operands */
-    public int rprio = 0;
+    /** True if the global definition was loaded with the session */
+    private transient boolean inherited = false;
 
     private Name(String tag) {
 	this.tag = tag;
@@ -81,18 +72,13 @@ public final class Name extends Value implements Comparable<Name> {
     }
     
     /** Set the global definition and defining text */
-    public void setGlodef(Value v, String text, boolean cursed) { 
-	if (glodef != null && cursed) return;
+    public void setGlodef(Value v, String text) { 
 	glodef = v;
 	deftext = text;
+        inherited = false;
 	if (freezer) frozen = true; 
-	this.cursed = cursed;
     }
     
-    public void setGlodef(Value v, String text) {
-	setGlodef(v, text, false);
-    }
-
     /** Get the global definition of a name */
     public Value getGlodef() { return glodef; }
     
@@ -132,27 +118,18 @@ public final class Name extends Value implements Comparable<Name> {
     /** A global mapping of strings to Name objects */
     private static Map<String, Name> nameTable = new HashMap<String, Name>(200);
     
-    public static Name IDENT = new Name("ident");
-
-    static {
-	IDENT.token = IDENT;
-    }
-	
     /** Find or create the unique Name with a given spelling */
     public static Name find(String tag) {
 	Name name = nameTable.get(tag);
-	if (name == null) {
+	if (name == null)
 	    name = new Name(tag);
-	    name.token = IDENT;
-	}
 	return name;
     }
 
     /** Discard all names */
     public static void clearNameTable() {
 	nameTable.clear();
-	IDENT = new Name("ident");
-	IDENT.token = IDENT;
+        freezer = true;
     }
 
     /** Read global definitions from a serialized stream */
@@ -163,6 +140,7 @@ public final class Name extends Value implements Comparable<Name> {
 	    Name x = (Name) in.readObject();
 	    if (x == null) break;
 	    x.glodef = (Value) in.readObject();
+            x.inherited = true;
 	}
     }
 
@@ -171,7 +149,7 @@ public final class Name extends Value implements Comparable<Name> {
     		throws IOException {
         out.writeObject(freezer);
 	for (Name x : nameTable.values()) {
-	    if (x.glodef != null || x.token != IDENT) {
+	    if (x.glodef != null) {
 		out.writeObject(x); 
 		out.writeObject(x.glodef);
 	    }
@@ -188,9 +166,6 @@ public final class Name extends Value implements Comparable<Name> {
 	   not to its temporary proxy. */
 
 	Name x = find(this.tag);
-	x.token = (this.token == this ? x : this.token);
-	x.prio = this.prio;
-	x.rprio = this.rprio;
 	x.deftext = this.deftext;
 	x.frozen = this.frozen;
 	return x;
@@ -199,11 +174,6 @@ public final class Name extends Value implements Comparable<Name> {
     /** Initial definitions become frozen once this is set to false */
     public static boolean freezer = true;
 
-    /** Freeze all global definitions made so far */
-    public static void freezeGlobals() {
-	freezer = false;
-    }
-    
     /** Get alphabetical list of globally defined names */
     public static List<String> getGlobalNames() {
         ArrayList<String> names = new ArrayList<String>(100);
@@ -229,8 +199,10 @@ public final class Name extends Value implements Comparable<Name> {
         out.printf("    @Override\n");
         out.printf("    public void boot() {\n");
 	for (String k : names) {
+            if (k.equals("_syntax")) continue;
+
 	    Name x = find(k);
-	    if (x.glodef != null && !x.cursed 
+	    if (x.glodef != null && !x.inherited 
                 && !(x.glodef.subr instanceof Primitive)) {
 		out.printf("        define(\"%s\", ", x.tag);
 		x.glodef.dump(5, out);
@@ -259,7 +231,7 @@ public final class Name extends Value implements Comparable<Name> {
 
     @PRIMITIVE
     public static Value _freeze(Primitive prim) {
-	Name.freezeGlobals();
+	freezer = false;
 	return Value.nil;
     }
 
@@ -281,7 +253,7 @@ public final class Name extends Value implements Comparable<Name> {
 
     @PRIMITIVE
     public static Value _gensym(Primitive prim) {
-	return Name.find(String.format("$g%d", ++g));
+	return find(String.format("$g%d", ++g));
     }
 
     @PRIMITIVE
@@ -290,7 +262,7 @@ public final class Name extends Value implements Comparable<Name> {
 	    String fname = prim.string(x);
 	    PrintWriter out = 
 		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-	    Name.dumpNames(out);
+	    dumpNames(out);
 	    return Value.nil;
 	} catch (IOException e) {
 	    throw new Error(e);

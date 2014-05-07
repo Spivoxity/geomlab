@@ -205,21 +205,4 @@ public class BasicPrims {
 	    return null;
 	}
     }
-
-    /* A few system-oriented primitives */
-
-    @PRIMITIVE
-    public static Value _token(Primitive prim, Value tag, Value tok, 
-			       Value p, Value rp) {
-	Scanner.makeToken(prim.name(tag), prim.name(tok), 
-			  (int) prim.number(p), (int) prim.number(rp));
-	return Value.nil;
-    }
-
-    @PRIMITIVE
-    public static Value _priority(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	return Value.makeList(NumValue.getInstance(n.prio),
-			      NumValue.getInstance(n.rprio));
-    }
 }

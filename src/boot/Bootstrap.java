@@ -44,7 +44,7 @@ import java.io.PrintWriter;
 public abstract class Bootstrap {
     public static void define(String name, Value val) {
         Name x = Name.find(name);
-        x.setGlodef(val, null, true);
+        x.setGlodef(val, null);
     }
 
     public static class Instr { 
@@ -125,9 +125,5 @@ public abstract class Bootstrap {
         catch (geomlab.Command.CommandException e) {
             throw new Error(e);
         }
-    }
-
-    public void bootstrap() {
-        bootstrap("boot.gls");
     }
 }

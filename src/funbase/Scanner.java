@@ -105,19 +105,8 @@ public class Scanner {
 	virgin = true;
     }
     
-    public static void makeToken(Name tag, Name tok, int p, int rp) {
-	tag.token = tok;
-	tag.prio = p;
-	tag.rprio = rp;
-    }
-    
-    private static void makeToken(String tag) {
-	Name name = Name.find(tag);
-	name.token = name;
-    }
-
     private static Name ATOM, BRA, COMMA, EOF, EOL, KET, LPAR, RPAR,
-    	NUMBER, SEMI, STRING, VBAR;
+    	NUMBER, SEMI, STRING, VBAR, OP, IDENT;
     
     /** Initialize names used for scanning */
     public static void initSyntax() {
@@ -127,10 +116,7 @@ public class Scanner {
 	LPAR = Name.find("lpar"); NUMBER = Name.find("number"); 
 	RPAR = Name.find("rpar"); SEMI = Name.find("semi"); 
 	STRING = Name.find("string"); VBAR = Name.find("vbar");
-	
-	makeToken("define");
-	makeToken("=");
-	makeToken("-"); // Needed for boot
+        OP = Name.find("op"); IDENT = Name.find("ident");
     }
     
     private boolean isOpChar(char ch) {
@@ -243,7 +229,7 @@ public class Scanner {
 			}
 			pushBack(ch);
 			Name x = Name.find(buf.toString());
-			tok = x.token; sym = x;
+			tok = IDENT; sym = x;
 		    } else if (Character.isDigit(ch)) {
 			// A numeric constant
 			StringBuilder buf = new StringBuilder(10);
@@ -283,8 +269,7 @@ public class Scanner {
 			}
 			pushBack(ch);
 			Name x = Name.find(buf.toString());
-			tok = x.token; sym = x;
-			if (tok == Name.IDENT) badToken();
+			tok = OP; sym = x;
 		    } else {
 			badToken();
 		    }

@@ -16,7 +16,7 @@ all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES) $(ICONS:%=obj/%)
 prep: force
 	@mkdir -p obj
 
-JFILES = src/*/*.java
+JFILES = $(PACKAGES:%=src/%/*.java)
 .compiled: $(wildcard $(JFILES))
 	$(JAVAC) -d obj $(JFILES)
 	echo timestamp >$@
@@ -36,12 +36,15 @@ obj/icon%.png: obj/icon128.png
 RUNJAVA = java -cp obj -ea
 RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
-boot.gls: .compiled
+obj/boot/GeomBoot.class: .compiled $(wildcard src/boot/*)
+	$(JAVAC) -cp obj -d obj src/boot/*
+
+boot.gls: .compiled obj/boot/GeomBoot.class
 	$(RUNJAVA) boot.GeomBoot boot.gls
 
 obj/geomlab.gls: boot.gls src/compiler.txt src/prelude.txt
-	$(RUNSCRIPT) -s boot.gls src/compiler.txt src/compiler.txt \
-		src/prelude.txt -e '_save("$@")'
+	$(RUNSCRIPT) -s boot.gls src/compiler.txt \
+		src/compiler.txt src/prelude.txt -e '_save("$@")'
 
 examples.gls: obj/geomlab.gls progs/examples.txt
 	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'

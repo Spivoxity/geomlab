@@ -30,6 +30,8 @@
 
 package geomlab;
 
+import funbase.Name;
+import funbase.Value;
 import funbase.Scanner;
 import geomlab.Command.CommandException;
 import plugins.Native;
@@ -94,7 +96,6 @@ public class RunScript extends GeomBase {
 	System.setProperty("java.awt.headless", "true");
 	GeomBase.loadProperties();
         funbase.Evaluator.setLimits(0, 0, 0);
-	Scanner.initSyntax();
 	Native.register(new AWTFactory());
 	final RunScript app = new RunScript();
 	GeomBase.registerApp(app);
@@ -129,6 +130,10 @@ public class RunScript extends GeomBase {
 	catch (CommandException e) {
 	    throw new Error(e);
 	}
+
+        Name _syntax = Name.find("_syntax");
+        if (_syntax.getGlodef() == null)
+            _syntax.setGlodef(Value.nil, null);
 
 	for (; i < args.length; i++) {
 	    if (args[i].equals("-e") && i+1 < args.length)

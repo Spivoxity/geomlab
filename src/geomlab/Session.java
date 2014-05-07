@@ -35,12 +35,15 @@ import funbase.Primitive;
 import funbase.Scanner;
 import funbase.Primitive.PRIMITIVE;
 import funbase.FunCode;
+import funbase.Value.FunValue;
+
 import geomlab.Command.CommandException;
 
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.ArrayList;
 
 /** This class provides static methods for serializing the GeomLab session
  *  state into a file, and reloading a saved session state.   The saved state
@@ -69,6 +72,7 @@ public class Session {
         loadPlugin(plugins.BasicPrims.class);
         loadPlugin(plugins.StringPrims.class);
         loadPlugin(plugins.Cell.class);
+        loadPlugin(plugins.Hash.class);
     }
 
     /** Load a class containing primitives */
@@ -101,8 +105,7 @@ public class Session {
 	    }
 	}
 	catch (Exception e) {
-            throw new Error(e);
-	    // throw new CommandException(e.toString(), "#nohelp"); 
+	    throw new CommandException(e.toString(), "#nohelp"); 
 	}
     }
 
@@ -149,20 +152,17 @@ public class Session {
 		    + "was saved by a different version of GeomLab",
 		    "#badversion");
 	
+	    // Install the same plugins
 	    plugins.clear();
 	    Primitive.clearPrimitives();
-	
-	    // Install the same plugins
+            Name.clearNameTable();
 	    Set<String> sessionPlugins = (Set<String>) in.readObject();
-	    for (String x : sessionPlugins) {
-		Class<?> plugin = Class.forName(x);
-		loadPlugin(plugin);
-	    }
+	    for (String x : sessionPlugins)
+                loadPlugin(Class.forName(x));
 	
 	    // Read definitions for global names
-	    Name.clearNameTable();
-	    Scanner.initSyntax();
 	    Name.readNameTable(in);
+	    Scanner.initSyntax();
 	    
 	    // Read contents of edit buffer
 	    GeomBase.theApp.setEditText((String) in.readObject());
