@@ -193,9 +193,9 @@ public final class Name extends Value implements Comparable<Name> {
 	names.addAll(nameTable.keySet());
 	Collections.sort(names);
 
-        out.printf("package boot;\n\n");
         out.printf("import static funbase.FunCode.Opcode.*;\n\n");
-        out.printf("public class GeomBoot extends Bootstrap {\n");
+        out.printf("public class GeomBoot"
+                   + " extends geomlab.Session.Bootstrap {\n");
         out.printf("    @Override\n");
         out.printf("    public void boot() {\n");
 	for (String k : names) {
@@ -209,16 +209,16 @@ public final class Name extends Value implements Comparable<Name> {
                 out.printf(");\n");
 	    }
 	}
-	out.printf("    }\n\n");
-        
+	out.printf("    }\n");
         FunCode.postDump(out);
-
-        out.printf("    public static void main(String args[]) {\n");
-        out.printf("        GeomBoot boot = new GeomBoot();\n");
-        out.printf("        boot.bootstrap(args[0]);\n");
-        out.printf("    }\n");
 	out.printf("}\n");
 	out.close();
+    }
+
+    @PRIMITIVE
+    public static Value _defined(Primitive prim, Value x) {
+        Name n = prim.name(x);
+        return Value.BoolValue.getInstance(n.getGlodef() != null);
     }
 
     @PRIMITIVE

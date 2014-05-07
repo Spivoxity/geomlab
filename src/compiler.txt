@@ -924,7 +924,7 @@ define __top() =
   read_eval_print;
 
 define _top() = 
-  if _syntax = [] then _topdef(#_syntax, _hash()) else [] >>
+  if not _defined(#_syntax) then _topdef(#_syntax, _hash()) else [] >>
   (let t = __top() in t());
   
 { After bootstrapping, redefine _top = __top() for efficiency }

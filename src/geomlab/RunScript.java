@@ -103,11 +103,14 @@ public class RunScript extends GeomBase {
 	
 	int i = 0;
 	funbase.FunCode.Jit translator = null;
+        String bootfile = null;
 	File sessfile = null;
 
 	for (; i < args.length; i++) {
 	    if (args[i].equals("-i"))
 		translator = new funbase.Interp();
+	    else if (i+1 < args.length && args[i].equals("-b"))
+		bootfile = args[++i];
 	    else if (i+1 < args.length && args[i].equals("-s"))
 		sessfile = new File(args[++i]);
 	    else if (i+1 < args.length && args[i].equals("-d"))
@@ -122,7 +125,9 @@ public class RunScript extends GeomBase {
 	funbase.FunCode.install(translator);
 
 	try {
-            if (sessfile != null)
+            if (bootfile != null)
+                Session.bootStrap(bootfile);
+            else if (sessfile != null)
                 Session.loadSession(sessfile);
             else
                 Session.loadResource("geomlab.gls");
@@ -130,10 +135,6 @@ public class RunScript extends GeomBase {
 	catch (CommandException e) {
 	    throw new Error(e);
 	}
-
-        Name _syntax = Name.find("_syntax");
-        if (_syntax.getGlodef() == null)
-            _syntax.setGlodef(Value.nil, null);
 
 	for (; i < args.length; i++) {
 	    if (args[i].equals("-e") && i+1 < args.length)

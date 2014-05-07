@@ -36,11 +36,11 @@ obj/icon%.png: obj/icon128.png
 RUNJAVA = java -cp obj -ea
 RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
-obj/boot/GeomBoot.class: .compiled $(wildcard src/boot/*)
-	$(JAVAC) -cp obj -d obj src/boot/*
+obj/GeomBoot.class: src/GeomBoot.java .compiled
+	$(JAVAC) -cp obj -d obj $<
 
-boot.gls: .compiled obj/boot/GeomBoot.class
-	$(RUNJAVA) boot.GeomBoot boot.gls
+boot.gls: obj/GeomBoot.class .compiled 
+	$(RUNSCRIPT) -b GeomBoot -e '_save("$@")'
 
 obj/geomlab.gls: boot.gls src/compiler.txt src/prelude.txt
 	$(RUNSCRIPT) -s boot.gls src/compiler.txt \
@@ -59,8 +59,8 @@ bootstrap: boot.gls force
 	cmp stage2.boot stage3.boot
 
 bootup: stage2.boot force
-	(sed -e 's/Bootstrap/GeomBoot/' -e '/^ *$$/q' src/boot/Bootstrap.java; \
-		cat stage2.boot) >src/boot/GeomBoot.java
+	(sed '/^ *$$/q' src/GeomBoot.java; cat stage2.boot) >boot.tmp
+	mv boot.tmp src/GeomBoot.java
 
 
 # Web resources

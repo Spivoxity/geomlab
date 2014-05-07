@@ -108,8 +108,8 @@ public class Scanner {
     private static Name ATOM, BRA, COMMA, EOF, EOL, KET, LPAR, RPAR,
     	NUMBER, SEMI, STRING, VBAR, OP, IDENT;
     
-    /** Initialize names used for scanning */
-    public static void initSyntax() {
+    /** Initialize atoms used as tokens */
+    private static void initTokens() {
 	ATOM = Name.find("atom"); BRA = Name.find("bra");
 	COMMA = Name.find("comma"); EOF = Name.find("eof");
 	EOL = Name.find("eol"); KET = Name.find("ket");
@@ -125,6 +125,9 @@ public class Scanner {
     }
     
     public void scan() {
+        if (Name.find("atom") != ATOM) 
+            initTokens();
+
 	start_char = char_num;
 	char ch = getChar();
 	tok = null; sym = Value.nil;

@@ -100,6 +100,9 @@ public class FunCode extends Value {
     /** Constant pool */
     public final Value consts[];
 
+    /** Value for rand if no operand */
+    public static final int NO_RAND = 0x8000000;
+
     public transient Function.Factory jitcode;
     
     private static Jit translator;
@@ -167,20 +170,25 @@ public class FunCode extends Value {
         for (int j = 0; j < bodies.size(); j++) {
             FunCode f = bodies.get(j);
 
+            out.printf("\n");
             out.printf("    private static Body c%d;\n\n", j);
 
             out.printf("    private static void s%d() {\n", j);
             out.printf("        c%d = body(\n", j);
             for (int i = 0; ; ) {
-                out.printf("            instr(%s, %d)", 
-                           f.instrs[i].name(), f.rands[i]);
+                if (f.rands[i] == NO_RAND)
+                    out.printf("            instr(%s)", 
+                               f.instrs[i].name());
+                else
+                    out.printf("            instr(%s, %d)", 
+                               f.instrs[i].name(), f.rands[i]);
                 if (++i >= f.instrs.length) break;
                 out.printf(",\n");
             }
             out.printf(");\n");
             out.printf("    }\n\n");
 
-            out.printf("    static { s%d(); }\n\n", j);
+            out.printf("    static { s%d(); }\n", j);
         }
 
         bodies.clear();
@@ -227,7 +235,7 @@ public class FunCode extends Value {
 
             if (! prim.isCons(args))
                 /* No argument */
-                rand = 0;
+                rand = NO_RAND;
             else {
                 Value v = prim.head(args);
                 switch (op) {
