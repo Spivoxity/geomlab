@@ -312,7 +312,7 @@ public class GeomLab extends GeomBase {
 		    image = properties.getProperty("session", "geomlab.gls");
 		Session.loadResource(image);
 	    }
-	    Session.loadPlugin(Command.class, true);
+	    Session.loadPlugin(Command.class);
 	}
 	catch (CommandException e) {
 	    app.errorMessage(e.getMessage(), e.getErrtag());

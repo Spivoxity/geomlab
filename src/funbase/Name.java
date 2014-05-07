@@ -30,10 +30,14 @@
 
 package funbase;
 
+import funbase.Primitive.PRIMITIVE;
+
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -243,5 +247,53 @@ public final class Name extends Value implements Comparable<Name> {
         out.printf("    }\n");
 	out.printf("}\n");
 	out.close();
+    }
+
+    @PRIMITIVE
+    public static Value _glodef(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	Value v = n.getGlodef();
+	if (v == null) Evaluator.err_notdef(n);
+	return v;
+    }
+
+    @PRIMITIVE
+    public static Value _freeze(Primitive prim) {
+	Name.freezeGlobals();
+	return Value.nil;
+    }
+
+    @PRIMITIVE
+    public static Value _redefine(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	if (n.isFrozen())
+	    Evaluator.error("#redef", x);
+	return Value.nil;
+    }
+
+    @PRIMITIVE
+    public static Value _spelling(Primitive prim, Value x) {
+	Name n = prim.name(x);
+	return StringValue.getInstance(n.toString());
+    }
+
+    private static int g = 0;
+
+    @PRIMITIVE
+    public static Value _gensym(Primitive prim) {
+	return Name.find(String.format("$g%d", ++g));
+    }
+
+    @PRIMITIVE
+    public static Value _dump(Primitive prim, Value x) {
+	try {
+	    String fname = prim.string(x);
+	    PrintWriter out = 
+		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
+	    Name.dumpNames(out);
+	    return Value.nil;
+	} catch (IOException e) {
+	    throw new Error(e);
+	}
     }
 }

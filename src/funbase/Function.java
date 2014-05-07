@@ -31,6 +31,7 @@
 package funbase;
 
 import funbase.Value.FunValue;
+import funbase.Primitive.PRIMITIVE;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -209,4 +210,23 @@ public abstract class Function implements Serializable {
 	    return nullFunction;
 	}
     };
+
+    @PRIMITIVE
+    public static Value _apply(Primitive prim, Value x, Value y) {
+	try {
+	    Value.FunValue fun = (Value.FunValue) x;
+	    Value args[] = prim.toArray(y);
+	    return fun.apply(args);
+	}
+	catch (ClassCastException _) {
+	    Evaluator.err_apply();
+	    return null;
+	}
+    }
+
+    @PRIMITIVE
+    public static Value _closure(Primitive prim, Value x) {
+	FunCode body = prim.cast(FunCode.class, x, "a funcode");
+	return body.makeClosure(new Value[1]);
+    }
 }

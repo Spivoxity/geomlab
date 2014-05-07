@@ -30,11 +30,6 @@
 
 package plugins;
 
-import java.io.PrintWriter;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import funbase.Primitive;
 import funbase.Value;
 import funbase.Value.*;
@@ -210,68 +205,8 @@ public class BasicPrims {
 	    return null;
 	}
     }
-	
+
     /* A few system-oriented primitives */
-
-    @PRIMITIVE
-    public static Value _glodef(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	Value v = n.getGlodef();
-	if (v == null) Evaluator.err_notdef(n);
-	return v;
-    }
-
-    @PRIMITIVE
-    public static Value _apply(Primitive prim, Value x, Value y) {
-	try {
-	    Value.FunValue fun = (Value.FunValue) x;
-	    Value args[] = prim.toArray(y);
-	    return fun.apply(args);
-	}
-	catch (ClassCastException _) {
-	    Evaluator.err_apply();
-	    return null;
-	}
-    }
-
-    @PRIMITIVE
-    public static Value _closure(Primitive prim, Value x) {
-	FunCode body = prim.cast(FunCode.class, x, "a funcode");
-	return body.makeClosure(new Value[1]);
-    }
-
-    @PRIMITIVE
-    public static Value _freeze(Primitive prim) {
-	Name.freezeGlobals();
-	return Value.nil;
-    }
-
-    @PRIMITIVE
-    public static Value _redefine(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	if (n.isFrozen())
-	    Evaluator.error("#redef", x);
-	return Value.nil;
-    }
-
-    @PRIMITIVE
-    public static Value _spelling(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	return StringValue.getInstance(n.toString());
-    }
-
-    private static int g = 0;
-
-    @PRIMITIVE
-    public static Value _gensym(Primitive prim) {
-	return Name.find(String.format("$g%d", ++g));
-    }
-
-    @PRIMITIVE
-    public static Value _error(Primitive prim, Value tag, Value args) {
-	Evaluator.error(prim.string(tag), (Object []) prim.toArray(args));
-	return null;
-    }
 
     @PRIMITIVE
     public static Value _token(Primitive prim, Value tag, Value tok, 
@@ -286,40 +221,5 @@ public class BasicPrims {
 	Name n = prim.name(x);
 	return Value.makeList(NumValue.getInstance(n.prio),
 			      NumValue.getInstance(n.rprio));
-    }
-
-    @PRIMITIVE
-    public static Value _limit(Primitive prim, Value time, 
-			       Value steps, Value conses) {
-	Evaluator.setLimits((int) prim.number(time),
-			    (int) prim.number(steps), 
-			    (int) prim.number(conses));
-	return Value.nil;
-    }
-
-    @PRIMITIVE
-    public static Value _dump(Primitive prim, Value x) {
-	try {
-	    String fname = prim.string(x);
-	    PrintWriter out = 
-		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-	    Name.dumpNames(out);
-	    return Value.nil;
-	} catch (IOException e) {
-	    throw new Error(e);
-	}
-    }
-
-    @PRIMITIVE
-    public static Value _newdump(Primitive prim, Value x) {
-	try {
-	    String fname = prim.string(x);
-	    PrintWriter out = 
-		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-	    Name.dumpNames(out);
-	    return Value.nil;
-	} catch (IOException e) {
-	    throw new Error(e);
-	}
     }
 }

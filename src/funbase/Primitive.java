@@ -320,12 +320,10 @@ public abstract class Primitive extends Function {
 	new HashMap<String, Primitive>(100);
     
     /** Register a new primitive */
-    public static void register(Primitive p, boolean install) {
+    public static void register(Primitive p) {
 	primitives.put(p.name, p);
-	if (install) {
-	    Name n = Name.find(p.name);
-	    n.setGlodef(FunValue.getInstance(p), null);
-	}
+        Name n = Name.find(p.name);
+        n.setGlodef(FunValue.getInstance(p), null);
     }
     
     /** Find a registered primitive */

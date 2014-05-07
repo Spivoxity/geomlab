@@ -31,6 +31,7 @@
 package funbase;
 
 import java.io.PrintWriter;
+import funbase.Primitive.PRIMITIVE;
 
 /** This class provides the context for evaluating paragraphs: it imposes
  *  resource limits, and deals with errors that occur during evaluation. */
@@ -265,4 +266,19 @@ public class Evaluator {
 	error(msg, (xs instanceof Value.NilValue 
 		    ? "the empty list" : "a non-list"));
     }    
+
+    @PRIMITIVE
+    public static Value _error(Primitive prim, Value tag, Value args) {
+	Evaluator.error(prim.string(tag), (Object []) prim.toArray(args));
+	return null;
+    }
+
+    @PRIMITIVE
+    public static Value _limit(Primitive prim, Value time, 
+			       Value steps, Value conses) {
+	Evaluator.setLimits((int) prim.number(time),
+			    (int) prim.number(steps), 
+			    (int) prim.number(conses));
+	return Value.nil;
+    }
 }

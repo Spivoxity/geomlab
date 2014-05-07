@@ -324,7 +324,7 @@ public class GeomBase {
     public static Value _install(Primitive prim, Value name) {
 	String clname = prim.string(name);
 	try {
-	    Session.loadPlugin(Class.forName("plugins." + clname), true);
+	    Session.loadPlugin(Class.forName("plugins." + clname));
 	}
 	catch (Exception e) {
 	    throw new Error(e);

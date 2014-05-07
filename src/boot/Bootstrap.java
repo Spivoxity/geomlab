@@ -118,11 +118,7 @@ public abstract class Bootstrap {
             funbase.Scanner.initSyntax();
             funbase.FunCode.install(new funbase.Interp());
             GeomBase.registerApp(new GeomBase());
-            Session.loadPlugin(geomlab.GeomBase.class, true);
-            Session.loadPlugin(funbase.FunCode.class, true);
-            Session.loadPlugin(plugins.BasicPrims.class, true);
-            Session.loadPlugin(plugins.Cell.class, true);
-            Session.loadPlugin(plugins.StringPrims.class, true);
+            Session.loadBasics();
             this.boot();
             Session.saveSession(new File(fname));
         }

@@ -59,9 +59,20 @@ public class Session {
     /** Table of loaded plugins */
     private static Set<String> plugins = new LinkedHashSet<String>(10);
     
+    /** Load the basic classes for bootstrapping */
+    public static void loadBasics() throws CommandException {
+        loadPlugin(geomlab.GeomBase.class);
+        loadPlugin(funbase.FunCode.class);
+        loadPlugin(funbase.Name.class);
+        loadPlugin(funbase.Evaluator.class);
+        loadPlugin(funbase.Function.class);
+        loadPlugin(plugins.BasicPrims.class);
+        loadPlugin(plugins.StringPrims.class);
+        loadPlugin(plugins.Cell.class);
+    }
+
     /** Load a class containing primitives */
-    public static void loadPlugin(Class<?> plugin, boolean install) 
-						throws CommandException {
+    public static void loadPlugin(Class<?> plugin) throws CommandException {
 	if (plugins.contains(plugin.getName())) return;
 	plugins.add(plugin.getName());
 
@@ -76,7 +87,7 @@ public class Session {
 		    // Cross your fingers
 		    int arity = params.length-1;
 		    Primitive p = FunCode.primitive(name, arity, m);
-		    Primitive.register(p, install);
+		    Primitive.register(p);
 		}
 	    }
 
@@ -85,7 +96,7 @@ public class Session {
 		PRIMITIVE spec = f.getAnnotation(PRIMITIVE.class);
 		if (spec != null) {
 		    Primitive p = (Primitive) f.get(null);
-		    Primitive.register(p, install);
+		    Primitive.register(p);
 		}
 	    }
 	}
@@ -145,7 +156,7 @@ public class Session {
 	    Set<String> sessionPlugins = (Set<String>) in.readObject();
 	    for (String x : sessionPlugins) {
 		Class<?> plugin = Class.forName(x);
-		loadPlugin(plugin, false);
+		loadPlugin(plugin);
 	    }
 	
 	    // Read definitions for global names

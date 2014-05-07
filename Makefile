@@ -48,11 +48,11 @@ examples.gls: obj/geomlab.gls progs/examples.txt
 
 bootstrap: boot.gls force 
 	$(RUNSCRIPT) -s boot.gls src/compiler.txt \
-		-e '_newdump("stage1.boot")' -e '_save("boot1.gls")'
+		-e '_dump("stage1.boot")' -e '_save("boot1.gls")'
 	$(RUNSCRIPT) -s boot1.gls src/compiler.txt \
-		-e '_newdump("stage2.boot")' -e '_save("boot2.gls")'
+		-e '_dump("stage2.boot")' -e '_save("boot2.gls")'
 	$(RUNSCRIPT) -s boot2.gls src/compiler.txt \
-		-e '_newdump("stage3.boot")'
+		-e '_dump("stage3.boot")'
 	cmp stage2.boot stage3.boot
 
 bootup: stage2.boot force
