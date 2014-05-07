@@ -43,8 +43,7 @@ import geomlab.Command.CommandException;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.ArrayList;
 
 /** This class provides static methods for serializing the GeomLab session
@@ -62,7 +61,7 @@ public class Session {
     private static final int VERSION = 10000; 
     
     /** Table of loaded plugins */
-    private static Set<String> plugins = new LinkedHashSet<String>(10);
+    private static List<String> plugins = new ArrayList<String>(10);
     
     /** Load the basic classes for bootstrapping */
     public static void loadBasics() throws CommandException {
@@ -148,7 +147,7 @@ public class Session {
 	    // Install the same plugins
 	    plugins.clear();
             Name.clearNameTable();
-	    Set<String> sessionPlugins = (Set<String>) in.readObject();
+	    List<String> sessionPlugins = (List<String>) in.readObject();
 	    for (String x : sessionPlugins)
                 loadPlugin(Class.forName(x));
 	
