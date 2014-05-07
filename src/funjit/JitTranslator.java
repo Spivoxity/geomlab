@@ -217,7 +217,7 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     /** Translate a PUTARG instruction. */
-    private void genPutarg(int i) {
+    protected void genPutarg(int i) {
 	int n = nstack.peek();
 	if (n < MANY) return;
 
@@ -462,11 +462,12 @@ public class JitTranslator implements FunCode.Jit {
 	/** The opcode sequence that the rule matches */
 	private final Opcode pattern[];
 
-	public CodeHook(Opcode... pattern) { this.pattern = pattern; }
+	public CodeHook(Opcode... pattern) { 
+            this.pattern = pattern; 
+        }
 
-	/** Compile code for the sequence and return how many
-	    opcodes were handled, or return zero. */
-	public abstract int compile(int ip);
+	/** Compile code for the sequence and return true if successful */
+	public abstract boolean compile(int rands[], int ip);
 
 	/** Check if the pattern matches and if so invoke compile. */
 	private int fire(int ip) {
@@ -479,33 +480,10 @@ public class JitTranslator implements FunCode.Jit {
 		    return 0;
 	    }
 
-	    return compile(ip);
-	}
-    }
+            if (compile(funcode.rands, ip)) 
+                return pattern.length;
 
-    /** A code hook for one opcode */
-    public abstract class CodeHook1 extends CodeHook {
-	public CodeHook1(Opcode op) { super(new Opcode[] { op }); }
-
-	public abstract int compile1(int rand);
-
-	@Override 
-	public int compile(int ip) { 
-	    return compile1(funcode.rands[ip]); 
-	}
-    }
-
-    /** A code hook for two opcodes */
-    public abstract class CodeHook2 extends CodeHook {
-	public CodeHook2(Opcode op1, Opcode op2) { 
-	    super(new Opcode[] { op1, op2 }); 
-	}
-
-	public abstract int compile2(int rand1, int rand2);
-
-	@Override 
-	public int compile(int ip) { 
-	    return compile2(funcode.rands[ip], funcode.rands[ip+1]); 
+            return 0;
 	}
     }
 
@@ -524,13 +502,15 @@ public class JitTranslator implements FunCode.Jit {
 
     public JitTranslator() {
 	/* Treat FVAR 0 / PREP nargs specially */
-	addHook(new CodeHook2(Opcode.FVAR, Opcode.PREP) {
+	addHook(new CodeHook(Opcode.FVAR, Opcode.PREP) {
 	    @Override
-	    public int compile2(int n, int nargs) {
-		if (n != 0) return 0;
-		code.gen(ALOAD, _this);
-		prepArgs(nargs);
-		return 2;
+            public boolean compile(int rands[], int ip) {
+		if (rands[ip] == 0) {
+                    code.gen(ALOAD, _this);
+                    prepArgs(rands[ip+1]);
+                    return true;
+                }
+                return false;
 	    }
 	});
 
@@ -539,18 +519,18 @@ public class JitTranslator implements FunCode.Jit {
 	/* MCONS that throws away the head */
 	addHook(new CodeHook(Opcode.MCONS, Opcode.POP) {
 	    @Override
-	    public int compile(int ip) {
+            public boolean compile(int rands[], int ip) {
 		trapCast(consval_cl);
-		return 2;
+		return true;
 	    }
 	});
 
 	/* GETTAIL that throws away the tail */
 	addHook(new CodeHook(Opcode.GETTAIL, Opcode.POP) {
 	    @Override
-	    public int compile(int ip) {
+	    public boolean compile(int rands[], int ip) {
 		code.gen(POP);
-		return 2;
+		return true;
 	    }
 	});
     }

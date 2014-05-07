@@ -68,111 +68,115 @@ public class InlineTranslator extends JitTranslator {
 	// general ones before specific ones
 
 	/* Hook to watch for other PUTARG instructions */
-	addHook(new CodeHook1(Opcode.PUTARG) {
+	addHook(new CodeHook(Opcode.PUTARG) {
 	    @Override
-	    public int compile1(int i) {
-		return convertArg(i, Kind.VALUE);
+	    public boolean compile(int rands[], int ip) {
+		return convertArg(rands[ip], Kind.VALUE);
 	    }
 	});
 
 	/* Hook for other CALL instructions */
-	addHook(new CodeHook1(Opcode.CALL) {
+	addHook(new CodeHook(Opcode.CALL) {
 	    @Override
-	    public int compile1(int nargs) {
+            public boolean compile(int rands[], int ip) {
 		Inliner gen = funstack.pop(); // Pop anyway
 		Kind k = gen.call();
-		if (k == Kind.NONE) return 0;
-		convValue(k);
-		return 1;
+		if (k != Kind.NONE) {
+                    convValue(k);
+                    return true;
+                }
+                return false;
 	    }
 	});
 
 	/** Hook to watch for GLOBAL / PREP pairs */
-	addHook(new CodeHook2(Opcode.GLOBAL, Opcode.PREP) {
+	addHook(new CodeHook(Opcode.GLOBAL, Opcode.PREP) {
 	    @Override
-	    public int compile2(int glob, int nargs) {
-		Name f = (Name) funcode.consts[glob];
+            public boolean compile(int rands[], int ip) {
+		Name f = (Name) funcode.consts[rands[ip]];
 
 		if (f.isFrozen() && f.glodef != null 
 		    && f.glodef instanceof Value.FunValue) {
 		    Function fun = ((Value.FunValue) f.glodef).subr;
-		    if ((fun instanceof Primitive) && fun.arity == nargs) {
+		    if ((fun instanceof Primitive) 
+                        && fun.arity == rands[ip+1]) {
 			Primitive p = (Primitive) fun;
 			Inliner c = primdict.get(p.name);
 			if (c != null) {
-			    c.prepare();
 			    funstack.push(c);
-			    return 2;
+			    return true;
 			}
 		    }
 		}
 
-		return 0;
+		return false;
 	    }
 	});
 
-	addHook(new CodeHook2(Opcode.QUOTE, Opcode.PUTARG) {
+	addHook(new CodeHook(Opcode.QUOTE, Opcode.PUTARG) {
 	    @Override
-	    public int compile2(int n, int i) {
-		Inliner gen  = funstack.peek();
-		Kind k = gen.argkind(i);
-		Value v = funcode.consts[n];
+            public boolean compile(int rands[], int ip) {
+		Inliner gen = funstack.peek();
+		Value v = funcode.consts[rands[ip]];
+		Kind k = gen.argkind(rands[ip+1]);
 
 		// Put numeric constants in the JVM constant pool
 		if (k == Kind.NUMBER) {
 		    try {
 			code.gen(CONST, v.asNumber());
-			return 2;
+			return true;
 		    }
 		    catch (WrongKindException _) { /* PUNT */ }
 		}
 		
-		return 0;
+		return false;
 	    }
 	});
 
 	/* Hook to watch for CALL / PUTARG */
-	addHook(new CodeHook2(Opcode.CALL, Opcode.PUTARG) {
+	addHook(new CodeHook(Opcode.CALL, Opcode.PUTARG) {
 	    @Override
-	    public int compile2(int nargs, int i) {
+            public boolean compile(int rands[], int ip) {
 		Inliner gen = funstack.peek();
+                int i = rands[ip+1];
 		Kind k = gen.call();
 		if (k != Kind.NONE) {
 		    funstack.pop();
-		    return 1 + convertArg(i, k);
+                    if (!convertArg(i, k)) genPutarg(i);
+                    return true;
 		}
-		return 0;
+		return false;
 	    }
 	});
 
-	addHook(new CodeHook2(Opcode.CALL, Opcode.JFALSE) {
+	addHook(new CodeHook(Opcode.CALL, Opcode.JFALSE) {
 	    @Override
-	    public int compile2(int nargs, int addr) {
+            public boolean compile(int rands[], int ip) {
 		Inliner gen = funstack.peek();
-		if (gen.jcall(addr)) {
+		if (gen.jcall(rands[ip+1])) {
 		    funstack.pop();
-		    return 2;
+		    return true;
 		}
-		return 0;
+		return false;
 	    }
 	});
 	
 	/* Notice FVAR 0 / PREP, but leave it to the existing rule to
 	   translate it */
-	addHook(new CodeHook2(Opcode.FVAR, Opcode.PREP) {
+	addHook(new CodeHook(Opcode.FVAR, Opcode.PREP) {
 	    @Override
-	    public int compile2(int n, int nargs) {
-		if (n == 0) funstack.push(nullInliner);
-		return 0;
+            public boolean compile(int rands[], int ip) {
+		if (rands[ip] == 0) funstack.push(nullInliner);
+		return false;
 	    }
 	});
 
 	/* Also notice other PREP instructions */
-	addHook(new CodeHook1(Opcode.PREP) {
+	addHook(new CodeHook(Opcode.PREP) {
 	    @Override
-	    public int compile1(int nargs) {
+	    public boolean compile(int rands[], int nargs) {
 		funstack.push(nullInliner);
-		return 0;
+		return false;
 	    }
 	});
 
@@ -196,7 +200,7 @@ public class InlineTranslator extends JitTranslator {
 	register(new SimpleInliner(":") {
 	    @Override 
 	    public Kind call() {
-		code.gen(INVOKESTATIC, value_cl, "cons", fun_VV_V_t);
+		code.gen(INVOKESTATIC, consval_cl, "getInstance", fun_VV_V_t);
 		return Kind.VALUE;
 	    }
 	});
@@ -221,11 +225,11 @@ public class InlineTranslator extends JitTranslator {
 
 	register(new SimpleInliner("_set") {
 	    @Override 
-	    public int putArg(int i, Kind k) {
+	    public boolean putArg(int i, Kind k) {
 		convValue(k);
 		if (i == 0)
 		    cast(cell_cl, new Expect("_set", "cell"));
-		return 1;
+		return true;
 	    }
 
 	    @Override 
@@ -282,7 +286,7 @@ public class InlineTranslator extends JitTranslator {
     }
 
     /** Convert i'th argument to suit function being called. */
-    private int convertArg(int i, Kind k) {
+    private boolean convertArg(int i, Kind k) {
 	Inliner gen = funstack.peek();
 	return gen.putArg(i, k);
     }
@@ -302,16 +306,13 @@ public class InlineTranslator extends JitTranslator {
 	    this.name = name;
 	}
 
-	/** Prepare the call */
-	public void prepare() { }
-
 	/** Return the preferred kind for an argument */
 	public Kind argkind(int i) {
 	    return Kind.VALUE;
 	}
 
-	/** Compile code for an argument, return 1 if done */
-	public abstract int putArg(int i, Kind k);
+	/** Compile code for an argument, return true if done */
+	public abstract boolean putArg(int i, Kind k);
 
 	/** Compile code for a call */
 	public abstract Kind call();
@@ -353,19 +354,19 @@ public class InlineTranslator extends JitTranslator {
 
 	/** Compile code for an argument */
 	@Override
-	public int putArg(int i, Kind k) {
+	public boolean putArg(int i, Kind k) {
 	    convert(name, k, argkind);
-	    return 1;
+	    return true;
 	}
     }
 
     /** An inliner that represents an ordinary, non-inlinable function */
     private Inliner nullInliner = new SimpleInliner("*null*") {
 	@Override 
-	public int putArg(int i, Kind k) {
+	public boolean putArg(int i, Kind k) {
 	    // Convert argument to Value and punt
 	    convValue(k);
-	    return 0;
+	    return false;
 	}
 
 	@Override
