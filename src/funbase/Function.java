@@ -196,7 +196,7 @@ public abstract class Function implements Serializable {
     }
 
     public interface Factory {
-	public Function newClosure(Value.FunValue func, Value fvars[]);
+	public Function newClosure(Value func, Value fvars[]);
     }
 
     public static final Function nullFunction = new Function(-1) {
@@ -213,15 +213,8 @@ public abstract class Function implements Serializable {
 
     @PRIMITIVE
     public static Value _apply(Primitive prim, Value x, Value y) {
-	try {
-	    Value.FunValue fun = (Value.FunValue) x;
-	    Value args[] = prim.toArray(y);
-	    return fun.apply(args);
-	}
-	catch (ClassCastException _) {
-	    Evaluator.err_apply();
-	    return null;
-	}
+        Value args[] = prim.toArray(y);
+        return x.apply(args);
     }
 
     @PRIMITIVE

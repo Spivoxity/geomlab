@@ -188,14 +188,14 @@ public class FunCode extends Value {
 
     /** Construct a wrapped closure and tie the knot for local recursion */
     public Value makeClosure(Value fvars[]) {
-	Value.FunValue result = FunValue.getInstance(null);
+	Value result = FunValue.getInstance(null);
 	result.subr = buildClosure(result, fvars);
 	fvars[0] = result;
 	return result;
     }
 
     /** Build a closure */
-    public Function buildClosure(Value.FunValue func, Value fvars[]) {
+    public Function buildClosure(Value func, Value fvars[]) {
 	if (jitcode == null)
 	    jitcode = translator.translate(this);
 

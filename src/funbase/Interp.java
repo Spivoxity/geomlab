@@ -45,7 +45,7 @@ public class Interp implements FunCode.Jit {
     public Function.Factory translate(final FunCode funcode) {
 	return new Function.Factory() {
 	    @Override
-	    public Function newClosure(Value.FunValue func, Value fvars[]) {
+	    public Function newClosure(Value func, Value fvars[]) {
 		return new InterpFunction(funcode.arity, funcode, fvars);
 	    }
 	};

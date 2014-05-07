@@ -155,9 +155,7 @@ public abstract class Primitive extends Function {
 
     /* Primitives are replaced by Memento objects when making a serialized 
      * stream. This provides independence of the stream from the particular 
-     * classes that are used to implement primitives.  Since these are mostly
-     * anonymous inner classes scattered throughout the code, this is a
-     * very good thing. */
+     * classes that are used to implement the primitives. */
     
     protected Object writeReplace() {
 	return new Memento(this);

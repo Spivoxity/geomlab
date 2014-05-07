@@ -72,11 +72,10 @@ public abstract class Value implements Serializable {
 
     // Factory methods
     
-    public static final Value nil = new NilValue();
+    public static final Value nil = NilValue.instance;
 
     public static Value cons(Value hd, Value tl) {
-	Evaluator.countCons();
-	return new ConsValue(hd, tl);
+        return ConsValue.getInstance(hd, tl);
     }
     
     /** Make a list from a sequence of values */
@@ -139,7 +138,7 @@ public abstract class Value implements Serializable {
 	/** The value */
 	private final double val;
 	
-	public NumValue(double val) {
+	private NumValue(double val) {
 	    this.val = val;
 	}
 	
@@ -172,6 +171,12 @@ public abstract class Value implements Serializable {
 	    return (a instanceof NumValue && val == ((NumValue) a).val);
 	}
 	
+        @Override
+        public int hashCode() {
+            long x = Double.doubleToLongBits(val);
+            return (int) (x ^ (x >> 32));
+        }
+
 	public Value matchPlus(Value iv) {
 	    double inc = ((NumValue) iv).val;
 	    double x = val - inc;
@@ -237,11 +242,6 @@ public abstract class Value implements Serializable {
     public static class FunValue extends Value {
 	private static final long serialVersionUID = 1L;
 	
-	@Override
-	public void dump(int indent, PrintWriter out) {
-	    subr.dump(indent, out);
-	}
-
 	private FunValue(Function subr) {
 	    super(subr);
 	}
@@ -249,6 +249,11 @@ public abstract class Value implements Serializable {
 	@Override
 	public void printOn(PrintWriter out) {
 	    out.printf("<function(%d)>", subr.arity);
+	}
+
+	@Override
+	public void dump(int indent, PrintWriter out) {
+	    subr.dump(indent, out);
 	}
 
 	protected Object writeReplace() {
@@ -261,7 +266,7 @@ public abstract class Value implements Serializable {
 	    return this;
         }
 
-        public static FunValue getInstance(Function subr) {
+        public static Value getInstance(Function subr) {
             return new FunValue(subr);
         }
     }
@@ -273,7 +278,6 @@ public abstract class Value implements Serializable {
 	public final String text;
 	
 	private StringValue(String text) {
-	    Evaluator.countCons();
 	    this.text = text;
 	}
 	
@@ -291,6 +295,9 @@ public abstract class Value implements Serializable {
 		    && text.equals(((StringValue) a).text));
 	}
 
+        @Override 
+        public int hashCode() { return text.hashCode(); }
+
 	/** The empty string as a value */
 	private static Value emptyString = new StringValue("");
 
@@ -307,8 +314,10 @@ public abstract class Value implements Serializable {
 	public static Value getInstance(char ch) {
 	    if (ch < 256)
 		return charStrings[ch];
-
-	    return new StringValue(String.valueOf(ch));
+            else {
+                Evaluator.countCons();
+                return new StringValue(String.valueOf(ch));
+            }
 	}
 
 	public static Value getInstance(String text) {
@@ -341,8 +350,10 @@ public abstract class Value implements Serializable {
     public static class NilValue extends Value {
 	private static final long serialVersionUID = 1L;
 
-	protected NilValue() { super(); }
+	private NilValue() { super(); }
 	
+        public static NilValue instance = new NilValue();
+
 	@Override
 	public void printOn(PrintWriter out) {
 	    out.print("[]");
@@ -353,7 +364,7 @@ public abstract class Value implements Serializable {
 	    return (a instanceof NilValue);
 	}
 	
-	public Object readResolve() { return Value.nil; }
+	public Object readResolve() { return instance; }
 	
 	@Override
 	public void dump(int indent, PrintWriter out) {
@@ -367,12 +378,17 @@ public abstract class Value implements Serializable {
 
 	public final Value head, tail;
 	
-	protected ConsValue(Value head, Value tail) {
+	private ConsValue(Value head, Value tail) {
 	    Evaluator.countCons();
 	    this.head = head;
 	    this.tail = tail;
 	}
 	
+        public static Value getInstance(Value head, Value tail) {
+            Evaluator.countCons();
+            return new ConsValue(head, tail);
+        }
+
 	@Override
 	public void printOn(PrintWriter out) {
 	    out.print("[");

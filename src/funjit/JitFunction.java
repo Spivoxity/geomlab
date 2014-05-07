@@ -55,7 +55,7 @@ public abstract class JitFunction extends Function.Closure
     }
 
     @Override
-    public Function newClosure(Value.FunValue func, Value fvars[]) {
+    public Function newClosure(Value func, Value fvars[]) {
 	try {
 	    JitFunction body = (JitFunction) clone();
 	    body.fvars = fvars;
