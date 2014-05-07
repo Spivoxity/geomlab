@@ -73,7 +73,7 @@ public class Picture extends Value implements Stylus.Drawable {
     @PRIMITIVE
     public static Value aspect(Primitive prim, Value x) {
 	Picture pic = prim.cast(Picture.class, x, "a picture");
-	return makeNumValue(pic.aspect);
+	return NumValue.getInstance(pic.aspect);
     }
 
     @Override

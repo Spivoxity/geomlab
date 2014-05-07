@@ -33,12 +33,13 @@ package plugins;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.Value.*;
 
 public class StringPrims {
     /** Concatenate two strings */
     @PRIMITIVE("^")
     public static Value concat(Primitive prim, Value s1, Value s2) {
-	return Value.makeStringValue(prim.string(s1) + prim.string(s2));
+	return StringValue.getInstance(prim.string(s1) + prim.string(s2));
     }
 
     /** Split a string into a list of single-character strings */
@@ -47,7 +48,7 @@ public class StringPrims {
 	String s = prim.string(x);
 	Value result = Value.nil;
 	for (int i = s.length()-1; i >= 0; i--)
-	    result = Value.cons(Value.makeStringValue(s.charAt(i)), result);
+	    result = Value.cons(StringValue.getInstance(s.charAt(i)), result);
 	return result;
     }
 
@@ -58,19 +59,19 @@ public class StringPrims {
 	for (Value xs = ys; ! (xs instanceof Value.NilValue); 
 	     xs = prim.tail(xs))
 	    result.append(prim.string(prim.head(xs)));
-	return Value.makeStringValue(result.toString());
+	return StringValue.getInstance(result.toString());
     }
 
     /** Make character with specified ASCII code */
     @PRIMITIVE
     public static Value chr(Primitive prim, Value x) {
-	return Value.makeStringValue((char) prim.number(x));
+	return StringValue.getInstance((char) prim.number(x));
     }
 
     /** Return ASCII code of first character */
     @PRIMITIVE
     public static Value ord(Primitive prim, Value x) {
 	String s = prim.string(x);
-	return Value.makeNumValue(s.length() == 0 ? 0 : s.charAt(0));
+	return NumValue.getInstance(s.length() == 0 ? 0 : s.charAt(0));
     }
 }

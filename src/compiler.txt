@@ -487,7 +487,6 @@ define __top() =
       | visit(d, [#POP]) = d-1
       | visit(d, [#QUOTE, _]) = d+1
       | visit(d, [#NIL]) = d+1
-      | visit(d, [#PRECONS]) = d
       | visit(d, [#CONS]) = d-1
       | visit(d, [#TRAP, lab]) = setlab(lab, d-1) >> d
       | visit(d, [#FAIL]) = d
@@ -835,7 +834,7 @@ define __top() =
 	yield(c_closure("<function>", n, rules, env), tl)
 
     | c_exp([#cons, e1, e2], env, tl) =
-        yield([#seq, [#PRECONS], c_exp(e1, env, false), 
+        yield([#seq, c_exp(e1, env, false), 
 			c_exp(e2, env, false), [#CONS]], tl)
 
     | c_exp([#nil], env, tl) = yield([#NIL], tl)

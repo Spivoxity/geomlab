@@ -36,6 +36,7 @@ import java.lang.reflect.*;
 import java.lang.annotation.*;
 
 import funbase.Evaluator.*;
+import funbase.Value.FunValue;
 import funbase.Value.WrongKindException;
 
 /** A value that represents a primitive function like 'sqrt' or '+'. */
@@ -323,7 +324,7 @@ public abstract class Primitive extends Function {
 	primitives.put(p.name, p);
 	if (install) {
 	    Name n = Name.find(p.name);
-	    n.setGlodef(Value.makeFunValue(p), null);
+	    n.setGlodef(FunValue.getInstance(p), null);
 	}
     }
     

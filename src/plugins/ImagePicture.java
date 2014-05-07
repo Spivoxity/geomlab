@@ -203,9 +203,9 @@ public class ImagePicture extends Picture {
 	Value args[] = new Value[2];
 		
 	for (int x = 0; x < width; x++) {
-	    args[0] = Value.makeNumValue(x);
+	    args[0] = NumValue.getInstance(x);
 	    for (int y = 0; y < height; y++) {
-		args[1] = Value.makeNumValue(y);
+		args[1] = NumValue.getInstance(y);
 		Value v = fun.apply(args);
 		ColorValue col = prim.cast(ColorValue.class, v, "a colour");
 		image.setRGB(x, height-y-1, col.rgb);
@@ -247,13 +247,13 @@ public class ImagePicture extends Picture {
     @PRIMITIVE
     public static Value width(Primitive prim, Value v) {
 	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
-	return Value.makeNumValue(p.image.getWidth());
+	return NumValue.getInstance(p.image.getWidth());
     }
 	
     @PRIMITIVE
     public static Value height(Primitive prim, Value v) {
 	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
-	return Value.makeNumValue(p.image.getHeight());
+	return NumValue.getInstance(p.image.getHeight());
     }
 
     /** Save image as a file */

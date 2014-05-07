@@ -185,12 +185,12 @@ public class Tran2D extends Value {
 	    if (! (obj instanceof Tran2D)) return null;
 
 	    Tran2D v = (Tran2D) obj;
-	    args[0] = Value.makeNumValue(v.m_xx); 
-	    args[1] = Value.makeNumValue(v.m_yx);
-	    args[2] = Value.makeNumValue(v.m_xy); 
-	    args[3] = Value.makeNumValue(v.m_yy);
-	    args[4] = Value.makeNumValue(v.m_x); 
-	    args[5] = Value.makeNumValue(v.m_y);
+	    args[0] = NumValue.getInstance(v.m_xx); 
+	    args[1] = NumValue.getInstance(v.m_yx);
+	    args[2] = NumValue.getInstance(v.m_xy); 
+	    args[3] = NumValue.getInstance(v.m_yy);
+	    args[4] = NumValue.getInstance(v.m_x); 
+	    args[5] = NumValue.getInstance(v.m_y);
 	    return args;
 	}
     };

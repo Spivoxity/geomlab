@@ -113,8 +113,8 @@ public class Vec2D extends Value {
 	    if (! (obj instanceof Vec2D)) return null;
 
 	    Vec2D v = (Vec2D) obj;
-	    args[0] = Value.makeNumValue(v.x);
-	    args[1] = Value.makeNumValue(v.y);
+	    args[0] = NumValue.getInstance(v.x);
+	    args[1] = NumValue.getInstance(v.y);
 	    return args;
 	}
     };

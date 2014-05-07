@@ -52,7 +52,6 @@ public class FunCode extends Value {
 	QUOTE,       /* [#quote, x] becomes QUOTE i where consts[i] = x:
 		        push the constant x */
 	NIL,	     /* [#nil]: push the empty list */
-	PRECONS,     /* [#precons]: prepare for CONS */
 	CONS,        /* [#cons]: pop a tail then a head, push a cons */
 	TRAP,        /* [#trap, lab] becomes TRAP i: set trap register */
 	FAIL,        /* [#fail]: die with "no clause matched" */
@@ -152,7 +151,7 @@ public class FunCode extends Value {
 
     /** Construct a wrapped closure and tie the knot for local recursion */
     public Value makeClosure(Value fvars[]) {
-	Value.FunValue result = makeFunValue(null);
+	Value.FunValue result = FunValue.getInstance(null);
 	result.subr = buildClosure(result, fvars);
 	fvars[0] = result;
 	return result;

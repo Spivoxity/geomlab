@@ -196,13 +196,8 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(AALOAD);
     }
 
-    private void genPrecons() {
-	code.gen(NEW, consval_cl);
-	code.gen(DUP);
-    }
-
     private void genCons() {
-	code.gen(INVOKESPECIAL, consval_cl, "<init>", fun_VV_t);
+	code.gen(INVOKESTATIC, value_cl, "cons", fun_VV_V_t);
     }
 
     /** Translate a PREP instruction. */
@@ -425,7 +420,6 @@ public class JitTranslator implements FunCode.Jit {
 	    case POP:     code.gen(POP); break;
 	    case RETURN:  code.gen(ARETURN); break;
 	    case NIL:     code.gen(GETSTATIC, value_cl, "nil", value_t); break;
-	    case PRECONS: genPrecons(); break;
 	    case CONS:    genCons(); break;
 	    case CLOSURE: genClosure(rand); break;
 	    case TRAP:    nextcache = cache; trap = makeLabel(rand); break;

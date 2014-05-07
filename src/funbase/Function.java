@@ -30,6 +30,8 @@
 
 package funbase;
 
+import funbase.Value.FunValue;
+
 import java.io.PrintWriter;
 import java.io.Serializable;
 
@@ -170,7 +172,7 @@ public abstract class Function implements Serializable {
             Value fvars1[] = new Value[fvars.length];
             System.arraycopy(fvars, 1, fvars1, 1, fvars.length-1);
             Value result = 
-        	Value.makeFunValue(new Function.Closure(arity, code, fvars1));
+        	FunValue.getInstance(new Function.Closure(arity, code, fvars1));
             fvars1[0] = result;
             return result;
         }

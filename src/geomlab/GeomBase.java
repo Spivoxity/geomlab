@@ -48,6 +48,7 @@ import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Scanner;
 import funbase.Value;
+import funbase.Value.NumValue;
 import funbase.FunCode;
 
 /** Common superclass for classes that provide a read-eval-print loop */
@@ -315,7 +316,7 @@ public class GeomBase {
 
     @PRIMITIVE
     public static Value _debug(Primitive prim) {
-	return Value.makeNumValue(funbase.Evaluator.debug);
+	return NumValue.getInstance(funbase.Evaluator.debug);
     }
 
     /** Install a plug-in class with primitives. */

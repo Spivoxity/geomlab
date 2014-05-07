@@ -144,6 +144,7 @@ class Type {
 	fun_V_t = func_t(value_t, void_t),
 	fun_VV_t = func_t(value_t, value_t, void_t),
 	fun_VVV_t = func_t(value_t, value_t, value_t, void_t),
+        fun_VV_V_t = func_t(value_t, value_t, value_t),
 	fun_VI_A_t = func_t(value_t, int_t, valarray_t),
 	fun_VS_t = func_t(value_t, string_t, void_t);
 

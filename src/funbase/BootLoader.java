@@ -30,6 +30,9 @@
 
 package funbase;
 
+import funbase.Value.BoolValue;
+import funbase.Value.NumValue;
+import funbase.Value.FunValue;
 import funbase.Value.WrongKindException;
 
 import java.io.BufferedReader;
@@ -77,15 +80,15 @@ public class BootLoader {
     private Value value() {
 	Value t = get("ident");
 	if (t.equals("boolean"))
-	    return Value.makeBoolValue(getInt() != 0);
+	    return BoolValue.getInstance(getInt() != 0);
 	else if (t.equals("name"))
 	    return get("atom");
 	else if (t.equals("string"))
 	    return get("string");
 	else if (t.equals("integer"))
-	    return Value.makeNumValue(getInt());
+	    return NumValue.getInstance(getInt());
 	else if (t.equals("primitive"))
-	    return Value.makeFunValue(Primitive.find(getString()));
+	    return FunValue.getInstance(Primitive.find(getString()));
 	else if (t.equals("nil"))
 	    return Value.nil;
 	else if (t.equals("funcode")) {

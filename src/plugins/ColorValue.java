@@ -166,9 +166,9 @@ public class ColorValue extends Picture {
 	    if (! (obj instanceof ColorValue)) return null;
 
 	    ColorValue v = (ColorValue) obj;
-	    args[0] = Value.makeNumValue(v.rpart);
-	    args[1] = Value.makeNumValue(v.gpart);
-	    args[2] = Value.makeNumValue(v.bpart);
+	    args[0] = NumValue.getInstance(v.rpart);
+	    args[1] = NumValue.getInstance(v.gpart);
+	    args[2] = NumValue.getInstance(v.bpart);
 	    return args;
 	}
     };
@@ -176,19 +176,19 @@ public class ColorValue extends Picture {
     @PRIMITIVE
     public static Value rpart(Primitive prim, Value obj) {
 	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
-	return Value.makeNumValue(v.rpart);
+	return NumValue.getInstance(v.rpart);
     }
 	
     @PRIMITIVE
     public static Value gpart(Primitive prim, Value obj) {
 	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
-	return Value.makeNumValue(v.gpart);
+	return NumValue.getInstance(v.gpart);
     }
 	
     @PRIMITIVE
     public static Value bpart(Primitive prim, Value obj) {
 	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
-	return Value.makeNumValue(v.bpart);
+	return NumValue.getInstance(v.bpart);
     }
 	
     /* Create a colour from HSV values in the range [0, 1] */

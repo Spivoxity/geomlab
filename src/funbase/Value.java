@@ -72,26 +72,6 @@ public abstract class Value implements Serializable {
 
     // Factory methods
     
-    public static Value makeNumValue(double val) { 
-	return NumValue.getInstance(val);
-    }
-
-    public static Value makeBoolValue(boolean val) {
-	return BoolValue.getInstance(val);
-    }
-    
-    public static FunValue makeFunValue(Function subr) {
-	return new FunValue(subr);
-    }
-
-    public static Value makeStringValue(char ch) {
-	return StringValue.getInstance(ch);
-    }
-    
-    public static Value makeStringValue(String text) {
-	return StringValue.getInstance(text);
-    }
-    
     public static final Value nil = new NilValue();
 
     public static Value cons(Value hd, Value tl) {
@@ -196,7 +176,7 @@ public abstract class Value implements Serializable {
 	    double inc = ((NumValue) iv).val;
 	    double x = val - inc;
 	    if (inc > 0 && x >= 0 && x == (int) x)
-		return makeNumValue(x);
+		return NumValue.getInstance(x);
 	    else
 		return null;
 	}
@@ -237,12 +217,12 @@ public abstract class Value implements Serializable {
 	
 	/* After input from a serialized stream, readResolve lets us replace
 	 * the constructed instance with one of the standard instances. */
-	public Object readResolve() { return makeBoolValue(val); }
+	public Object readResolve() { return getInstance(val); }
 	
-	@Override
+ 	@Override
 	public void dump(PrintWriter out) {
 	    out.printf("boolean %d\n", (val ? 1 : 0));
-	}
+        }
 
 	public static final BoolValue 
 	    truth = new BoolValue(true), 
@@ -262,7 +242,7 @@ public abstract class Value implements Serializable {
 	    subr.dump(out);
 	}
 
-	public FunValue(Function subr) {
+	private FunValue(Function subr) {
 	    super(subr);
 	}
 
@@ -280,10 +260,14 @@ public abstract class Value implements Serializable {
             subr = subr.resolveProxy(this);
 	    return this;
         }
+
+        public static FunValue getInstance(Function subr) {
+            return new FunValue(subr);
+        }
     }
 
     /** A string value */
-    protected static class StringValue extends Value {
+    public static class StringValue extends Value {
 	private static final long serialVersionUID = 1L;
 
 	public final String text;
@@ -383,7 +367,7 @@ public abstract class Value implements Serializable {
 
 	public final Value head, tail;
 	
-	public ConsValue(Value head, Value tail) {
+	protected ConsValue(Value head, Value tail) {
 	    Evaluator.countCons();
 	    this.head = head;
 	    this.tail = tail;

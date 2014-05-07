@@ -246,7 +246,7 @@ public class TurtlePicture extends Picture {
 	    try {
 		Command c = (Command) obj;
 		if (c.kind != kind) return null;
-		args[0] = Value.makeNumValue(c.arg);
+		args[0] = NumValue.getInstance(c.arg);
 		return args;
 	    }
 	    catch (ClassCastException _) {
