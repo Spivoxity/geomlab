@@ -30,6 +30,8 @@
 
 package plugins;
 
+import funbase.Value;
+
 /** An abstract drawing tablet on which a picture can be drawn */
 public abstract class Stylus {
     protected final ColorValue palette[];
@@ -119,9 +121,23 @@ public abstract class Stylus {
 	/** Test whether the picture supports slider interaction. */
 	public boolean isInteractive();
 
-	/** Draw the image in the rectangle [0..w) x [0..h).
+	/** Draw the image in the unit square with specified transformation.
 	 * 
 	 *  The picture should be prerendered first. */
-	public void draw(Stylus g, int ww, int hh, ColorValue background);
+	public void draw(Stylus g, Tran2D t, ColorValue background);
+
+        /** Draw the image in a specified rectangle
+         *
+         *  The picture should be prerendered first. */
+        public void draw(Stylus g, int ww, int hh, ColorValue background);
+    }
+
+    public static abstract class AbstractDrawable 
+        				extends Value implements Drawable {
+        @Override
+        public void draw(Stylus g, int ww, int hh, ColorValue background) {
+            Tran2D t = Tran2D.scaling(ww, hh);
+            draw(g, t, background);
+        }
     }
 }

@@ -81,7 +81,7 @@ public class ImagePicture extends Picture {
 	g.drawImage(image);
     }
     
-    /** The draw method from class Drawable */
+    /** The draw method from Stylus.Drawable */
     @Override
     public void draw(Stylus g, int ww, int hh, ColorValue background) {
 	/* If the only thing being drawn is an image, then
@@ -90,9 +90,9 @@ public class ImagePicture extends Picture {
 	Tran2D t;
 
 	if (ww <= w || hh <= h)
-	    t = Tran2D.translation(0, hh).scale(ww, -hh);
+	    t = Tran2D.scaling(ww, hh);
 	else
-	    t = Tran2D.translation((ww-w)/2, (hh+h)/2).scale(w, -h);
+	    t = Tran2D.translation((ww-w)/2, (hh-h)/2);
 	
 	g.setTrans(t);
 	g.drawImage(image);
@@ -218,7 +218,8 @@ public class ImagePicture extends Picture {
     @PRIMITIVE
     public static Value _render(Primitive prim, Value a0, Value a1, 
 				Value a2, Value a3) {
-	Picture pic = prim.cast(Picture.class, a0, "a picture");
+	Stylus.Drawable pic = 
+            prim.cast(Stylus.Drawable.class, a0, "a picture");
 	int size = (int) Math.round(prim.number(a1));
 	float slider = (float) prim.number(a2);
 	float grey = (float) prim.number(a3);

@@ -71,10 +71,9 @@ public class GraphBox extends JPanel {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				    RenderingHints.VALUE_ANTIALIAS_ON);
 	    
-		g2.translate((w - ww)/2, (h - hh)/2);
-		plugins.Stylus t = new ScreenStylus(g2, sliderValue());
-
-		picture.draw(t, ww, hh, ColorValue.white);
+		g2.translate((w - ww)/2, (h + hh)/2); g2.scale(1, -1);
+                plugins.Stylus s = new ScreenStylus(g2, sliderValue());
+		picture.draw(s, ww, hh, ColorValue.white);
 	    }
 	    catch (Throwable e) {
 		GeomBase.theApp.evalError("Failure: ",
@@ -187,11 +186,12 @@ public class GraphBox extends JPanel {
         	else
         	    width = height * aspect;
         	
+                int ww = (int) width, hh = (int) height;
+
         	Graphics2D g2 = (Graphics2D) g;
-        	g2.translate(x, y);
-        	Stylus t = new ScreenStylus(g2, sliderValue());
-        	picture.draw(t, (int) width, (int) height, ColorValue.white);
-        	
+        	g2.translate(x, y+hh); g2.scale(1, -1);
+        	Stylus s = new ScreenStylus(g2, sliderValue());
+        	picture.draw(s, ww, hh, ColorValue.white);
         	return Printable.PAGE_EXISTS;
             }
         });

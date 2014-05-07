@@ -53,7 +53,7 @@ import funbase.FunCode;
  work neatly. */
 
 /** A rectangular graphical object of scalable size but fixed aspect ratio */
-public class Picture extends Value implements Stylus.Drawable {
+public class Picture extends Stylus.AbstractDrawable {
     private static final long serialVersionUID = 1L;
 
     public final float aspect;	       // = width / height
@@ -83,8 +83,7 @@ public class Picture extends Value implements Stylus.Drawable {
     public void prerender(float slider) { }
     
     @Override
-    public void draw(Stylus gc, int ww, int hh, ColorValue background) {
-	Tran2D t = Tran2D.translation(0, hh).scale(ww, -hh);
+    public void draw(Stylus gc, Tran2D t, ColorValue background) {
 	gc.setTrans(t);
 	gc.fillOutline(unitsquare, background);
 	paintPart(FILL, -1, gc, t);

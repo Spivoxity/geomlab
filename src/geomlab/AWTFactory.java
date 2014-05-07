@@ -103,8 +103,9 @@ public class AWTFactory extends Native {
     	Graphics2D g = (Graphics2D) image.getGraphics();
     	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 			   RenderingHints.VALUE_ANTIALIAS_ON);
-	Stylus t = new ScreenStylus(g, slider);
-    	pic.draw(t, width, height, background);
+	g.translate(0, height); g.scale(1, -1);
+        Stylus s = new ScreenStylus(g, slider);
+   	pic.draw(s, width, height, background);
 	return new AWTImage(image);
     }
 

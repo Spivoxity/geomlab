@@ -115,8 +115,8 @@ public abstract class Primitive extends Function {
         return n;
     }
 
-    /** Cast an argument to some specified Value subclass */
-    public <T extends Value> T cast(Class<T> cl, Value v, String expected) {
+    /** Cast an argument to some specified class */
+    public <T> T cast(Class<T> cl, Value v, String expected) {
         try {
             return cl.cast(v);
         }

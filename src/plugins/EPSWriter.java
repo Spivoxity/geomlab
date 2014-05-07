@@ -339,19 +339,23 @@ public class EPSWriter extends Stylus {
     }
     
     /** Save a picture as Encapsulated PostScript */
+    @PRIMITIVE
     public static Value epswrite(Primitive prim, Value a0, Value a1, 
 				 Value a2, Value a3, Value a4) {
-	Picture pic = prim.cast(Picture.class, a0, "a picture");
+	Stylus.Drawable pic = 
+            prim.cast(Stylus.Drawable.class, a0, "a picture");
 	String fname = prim.string(a1);
 	float meanSize = (float) prim.number(a2);
 	float slider = (float) prim.number(a3);
 	float grey = (float) prim.number(a4);
 	ColorValue background = ColorValue.getGrey(grey);
 
+        pic.prerender(slider);
+
 	/* The dimensions of the image are chosen to give
 	 * the right aspect ratio, and so that the
 	 * geometric mean of width and height is meanSize */
-	float sqrtAspect = (float) Math.sqrt(pic.aspect);
+	float sqrtAspect = (float) Math.sqrt(pic.getAspect());
 	float width = meanSize * sqrtAspect;
 	float height = meanSize / sqrtAspect;		
 		
@@ -360,12 +364,7 @@ public class EPSWriter extends Stylus {
 		new BufferedWriter(new FileWriter(fname));
 	    Stylus g = new EPSWriter(width, height, slider, out);
 	    Tran2D t = Tran2D.scaling(width, height);
-		    
-	    g.setTrans(t);
-	    g.fillOutline(Picture.unitsquare, background);
-	    pic.paintPart(Picture.FILL, -1, g, t);
-	    pic.paintPart(Picture.DRAW, -1, g, t);
-		    
+            pic.draw(g, t, background);
 	    g.close();
 	}
 	catch (IOException e) {
