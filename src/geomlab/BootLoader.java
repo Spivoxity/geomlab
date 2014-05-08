@@ -43,6 +43,8 @@ package geomlab;
 import funbase.Scanner;
 import funbase.Name;
 import funbase.Value;
+import funbase.Value.NumValue;
+import funbase.Value.BoolValue;
 import funbase.Value.WrongKindException;
 import funbase.FunCode;
 import funbase.FunCode.Opcode;
@@ -57,7 +59,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class BootLoader extends Session.Bootstrap {
+public class BootLoader {
     private Scanner scanner;
     
     public BootLoader(File file) {
@@ -88,9 +90,8 @@ public class BootLoader extends Session.Bootstrap {
 	scanner.scan();
 	while (true) {
 	    if (see(END)) break;
-	    Name x = (Name) get(ATOM);
-	    Value v = value();
-	    define(x, v);
+	    Name name = (Name) get(ATOM);
+	    name.bootDef(value());
 	}
     }
     
@@ -98,13 +99,13 @@ public class BootLoader extends Session.Bootstrap {
     private Value value() {
 	Value t = get(IDENT);
 	if (t == BOOLEAN)
-	    return (getInt() != 0 ? truth : falsity);
+	    return BoolValue.getInstance(getInt() != 0);
 	else if (t == NAME)
 	    return get(ATOM);
 	else if (t == STRING)
 	    return get(STRING);
 	else if (t == NUMBER)
-	    return number(getInt());
+	    return NumValue.getInstance(getInt());
 	else if (t == FUNCODE)
             return bytecode();
 	else if (t == CLOSURE)
@@ -113,6 +114,10 @@ public class BootLoader extends Session.Bootstrap {
 	    throw new Error("BootLoader.value " + t);
     }
     
+    private Value closure(FunCode body) {
+        return body.makeClosure(new Value[1]);
+    }
+
     private Value bytecode() {
         /* Bytecode for a function. */
         String name = getString();
@@ -120,18 +125,18 @@ public class BootLoader extends Session.Bootstrap {
         int fsize = getInt();
         int ssize = getInt();
 
-        List<Instr> instrs = new ArrayList<Instr>();
+        List<Opcode> ops = new ArrayList<Opcode>();
+        List<Integer> rands = new ArrayList<Integer>();
         while (true) {
             if (see(END)) break;
             Value op = get(IDENT);
-            Opcode opcode = FunCode.getOpcode(op.toString());
+            ops.add(FunCode.getOpcode(op.toString()));
             if (scanner.tok != NUMBER)
-                instrs.add(instr(opcode));
+                rands.add(FunCode.NO_RAND);
             else
-                instrs.add(instr(opcode, getInt()));
+                rands.add(getInt());
         }
         scanner.scan();
-        Body body = body(instrs.toArray(new Instr[instrs.size()]));
 
         List<Value> consts = new ArrayList<Value>();
         while (true) {
@@ -139,9 +144,18 @@ public class BootLoader extends Session.Bootstrap {
             consts.add(value());
         }
         scanner.scan();
-        Value pool[] = consts.toArray(new Value[consts.size()]);
 
-        return funcode(name, arity, fsize, ssize, body, pool);
+        return new FunCode(name, arity, fsize, ssize, 
+                           ops.toArray(new Opcode[ops.size()]), 
+                           makeIntArray(rands), 
+                           consts.toArray(new Value[consts.size()]));
+    }
+
+    private int[] makeIntArray(List<Integer> xs) {
+        int i = 0, n = xs.size();
+        int result[] = new int[n];
+        for (Integer a : xs) result[i++] = a;
+        return result;
     }
 
     private boolean see(Name t) {
@@ -186,5 +200,11 @@ public class BootLoader extends Session.Bootstrap {
         catch (WrongKindException _) {
             throw new Error("missing number");
         }
+    }
+
+    public static void bootstrap(File bootfile) {
+        BootLoader boot = new BootLoader(bootfile);
+        Session.initialize();
+        boot.boot();
     }
 }

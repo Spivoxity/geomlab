@@ -201,103 +201,20 @@ public class Session {
         }
     }
 
-    public static abstract class Bootstrap {
-        public static void define(Name name, Value val) {
-            name.bootDef(val);
-        }
-
-        public static class Instr { 
-            public Opcode op;
-            public int arg;
-
-            public Instr(Opcode op, int arg) {
-                this.op = op; this.arg = arg;
-            }
-        }
-
-        public static class Body {
-            public Instr instrs[];
-
-            public Body(Instr instrs[]) {
-                this.instrs = instrs;
-            }
-        }
-
-        public static Value number(double x) {
-            return Value.NumValue.getInstance(x);
-        }
-
-        public static Value truth = Value.BoolValue.truth,
-            falsity = Value.BoolValue.falsity;
-
-        public static Value string(String x) {
-            return Value.StringValue.getInstance(x);
-        }
-
-        public static Body body(Instr... instrs) {
-            return new Body(instrs);
-        }
-
-        public static Instr instr(Opcode op) {
-            return new Instr(op, FunCode.NO_RAND);
-        }
-
-        public static Instr instr(Opcode op, int arg) {
-            return new Instr(op, arg);
-        }
-
-        public static Value[] consts(Value... lits) {
-            return lits;
-        }
-
-        public static FunCode funcode(String name, int arity, int fsize, 
-                                      int ssize, Body body, Value consts[]) {
-            Instr code[] = body.instrs;
-            int nops = code.length;
-            Opcode ops[] = new Opcode[nops];
-            int rands[] = new int[nops];
-
-            for (int i = 0; i < nops; i++) {
-                ops[i] = code[i].op;
-                rands[i] = code[i].arg;
-            }
-
-            return new FunCode(name, arity, fsize, ssize, ops, rands, consts);
-        }
-
-        public static Value closure(FunCode body) {
-            return body.makeClosure(new Value[1]);
-        }
-
-        public static Name name(String s) {
-            return Name.find(s);
-        }
-
-        public abstract void boot();
-    }
-
-    public static void bootStrap(String bootname) {
+    public static void initialize() {
         try {
-            Class<?> cl = Class.forName(bootname);
-            Bootstrap boot = (Bootstrap) cl.newInstance();
-            bootStrap(boot);
+            loadPlugin(geomlab.GeomBase.class);
+            loadPlugin(funbase.FunCode.class);
+            loadPlugin(funbase.Name.class);
+            loadPlugin(funbase.Evaluator.class);
+            loadPlugin(funbase.Function.class);
+            loadPlugin(plugins.BasicPrims.class);
+            loadPlugin(plugins.StringPrims.class);
+            loadPlugin(plugins.Cell.class);
+            loadPlugin(plugins.Hash.class);
         }
-        catch (Exception e) {
+        catch (CommandException e) {
             throw new Error(e);
         }
-    }
-
-    public static void bootStrap(Bootstrap boot) throws CommandException {
-        loadPlugin(geomlab.GeomBase.class);
-        loadPlugin(funbase.FunCode.class);
-        loadPlugin(funbase.Name.class);
-        loadPlugin(funbase.Evaluator.class);
-        loadPlugin(funbase.Function.class);
-        loadPlugin(plugins.BasicPrims.class);
-        loadPlugin(plugins.StringPrims.class);
-        loadPlugin(plugins.Cell.class);
-        loadPlugin(plugins.Hash.class);
-
-        boot.boot();
     }
 }

@@ -103,7 +103,6 @@ public class RunScript extends GeomBase {
 	
 	int i = 0;
 	funbase.FunCode.Jit translator = null;
-        String bootclass = null;
         File bootfile = null;
 	File sessfile = null;
 
@@ -112,8 +111,6 @@ public class RunScript extends GeomBase {
 		translator = new funbase.Interp();
 	    else if (i+1 < args.length && args[i].equals("-b"))
 		bootfile = new File(args[++i]);
-	    else if (i+1 < args.length && args[i].equals("-bj"))
-		bootclass = args[++i];
 	    else if (i+1 < args.length && args[i].equals("-s"))
 		sessfile = new File(args[++i]);
 	    else if (i+1 < args.length && args[i].equals("-d"))
@@ -129,9 +126,7 @@ public class RunScript extends GeomBase {
 
 	try {
             if (bootfile != null)
-                Session.bootStrap(new BootLoader(bootfile));
-            else if (bootclass != null)
-                Session.bootStrap(bootclass);
+                BootLoader.bootstrap(bootfile);
             else if (sessfile != null)
                 Session.loadSession(sessfile);
             else

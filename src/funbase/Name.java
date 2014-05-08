@@ -122,11 +122,6 @@ public final class Name extends Value implements Comparable<Name> {
 	out.printf("name #%s\n", tag);
     }
 
-    @Override
-    public void jdump(int indent, PrintWriter out) {
-	out.printf("name(\"%s\")", tag);
-    }
-
     /** A global mapping of strings to Name objects */
     private static Map<String, Name> nameTable = new HashMap<String, Name>(200);
     
@@ -197,35 +192,6 @@ public final class Name extends Value implements Comparable<Name> {
         return names;
     }
     
-    /** Save globally defined names in Java format */
-    public static void jdumpNames(PrintWriter out) {
-	// Sort the entries to help us reach a fixpoint
-	ArrayList<String> names = new ArrayList<String>(nameTable.size());
-	names.addAll(nameTable.keySet());
-	Collections.sort(names);
-
-        out.printf("import static funbase.FunCode.Opcode.*;\n\n");
-        out.printf("public class GeomBoot"
-                   + " extends geomlab.Session.Bootstrap {\n");
-        out.printf("    @Override\n");
-        out.printf("    public void boot() {\n");
-	for (String k : names) {
-            if (k.equals("_syntax")) continue;
-
-	    Name x = find(k);
-	    if (x.glodef != null && !x.inherited 
-                && !(x.glodef.subr instanceof Primitive)) {
-		out.printf("        define(name(\"%s\"), ", x.tag);
-		x.glodef.jdump(5, out);
-                out.printf(");\n");
-	    }
-	}
-	out.printf("    }\n");
-        FunCode.postDump(out);
-	out.printf("}\n");
-	out.close();
-    }
-
     /** Save globally defined names in portable boot format */
     public static void dumpNames(PrintWriter out) {
 	// Sort the entries to help us reach a fixpoint
@@ -286,19 +252,6 @@ public final class Name extends Value implements Comparable<Name> {
     @PRIMITIVE
     public static Value _gensym(Primitive prim) {
 	return find(String.format("$g%d", ++g));
-    }
-
-    @PRIMITIVE
-    public static Value _jdump(Primitive prim, Value x) {
-	try {
-	    String fname = prim.string(x);
-	    PrintWriter out = 
-		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-	    jdumpNames(out);
-	    return Value.nil;
-	} catch (IOException e) {
-	    throw new Error(e);
-	}
     }
 
     @PRIMITIVE

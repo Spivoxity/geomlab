@@ -141,9 +141,6 @@ public class FunCode extends Value {
 	out.printf("<funcode>");
     }
     
-    public static java.util.List<FunCode> bodies = 
-        new java.util.ArrayList<FunCode>();
-
     @Override
     public void dump(PrintWriter out) {
 	out.printf("funcode \"%s\" %d %d %d\n", name, arity, fsize, ssize);
@@ -159,56 +156,6 @@ public class FunCode extends Value {
         for (int i = 0; i < consts.length; i++)
             consts[i].dump(out);
         out.printf("end\n");
-    }
-
-    @Override
-    public void jdump(int indent, PrintWriter out) {
-        int k = bodies.size();
-        bodies.add(this);
-
-	out.printf("funcode(\"%s\", %d, %d, %d, c%d,", 
-		   name, arity, fsize, ssize, k);
-        if (consts.length == 0)
-            out.printf(" null)");
-        else {
-            indent++;
-            out.printf("\n%"+2*indent+"sconsts(", "");
-            indent++;
-            for (int j = 0;;) {
-                consts[j++].jdump(indent, out); 
-                if (j >= consts.length) break;
-                out.printf(",\n%"+2*indent+"s", "");
-            }
-            out.printf("))");
-        }
-    }
-
-    public static void postDump(PrintWriter out) {
-        for (int j = 0; j < bodies.size(); j++) {
-            FunCode f = bodies.get(j);
-
-            out.printf("\n");
-            out.printf("    private static Body c%d;\n\n", j);
-
-            out.printf("    private static void s%d() {\n", j);
-            out.printf("        c%d = body(\n", j);
-            for (int i = 0; ; ) {
-                if (f.rands[i] == NO_RAND)
-                    out.printf("            instr(%s)", 
-                               f.instrs[i].name());
-                else
-                    out.printf("            instr(%s, %d)", 
-                               f.instrs[i].name(), f.rands[i]);
-                if (++i >= f.instrs.length) break;
-                out.printf(",\n");
-            }
-            out.printf(");\n");
-            out.printf("    }\n\n");
-
-            out.printf("    static { s%d(); }\n", j);
-        }
-
-        bodies.clear();
     }
 
     /** Construct a wrapped closure and tie the knot for local recursion */
