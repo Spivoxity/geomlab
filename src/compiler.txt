@@ -812,11 +812,10 @@ define __top() =
         { A general function call -- PREP and PUTARG provide hooks
 	  for the back end to do inlining of primitives }
         let nargs = length(args) in
-      	yield([#seq, c_exp(f, env, false), 
-	  [#seq, [#PREP, nargs],
+      	yield([#seq, c_exp(f, env, false), [#PREP, nargs],
   	    #seq:[ [#seq, c_exp(e, env, false), [#PUTARG, i]]
 	    	     | [i, e] <- number(0, args) ],
-	    [#CALL, nargs]]], tl)
+	    [#CALL, nargs]], tl)
 
     | c_exp([#if, e1, e2, e3], env, tl) =
         let l1 = label() in let l2 = label() in
