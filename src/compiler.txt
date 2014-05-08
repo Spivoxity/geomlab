@@ -512,8 +512,6 @@ define __top() =
       | visit(d, [#FAIL]) = d
       | visit(d, [#JFALSE, lab]) = setlab(lab, d-1) >> d-1
       | visit(d, [#JUMP, lab]) = setlab(lab, d) >> d
-      | visit(d, [#PREP, _]) = d
-      | visit(d, [#CLOPREP, _]) = d
       | visit(d, [#RETURN]) = d-1
       | visit(d, [#MPLUS, _]) = d
       | visit(d, [#MEQ]) = d-2
@@ -521,8 +519,6 @@ define __top() =
       | visit(d, [#MCONS]) = d+1
       | visit(d, [#GETTAIL]) = d
       | visit(d, [#TCALL, _]) = d
-      | visit(d, [#PUTARG, _]) = d
-      | visit(d, [#PUTFVAR, _]) = d
       | visit(d, [#CALL, n]) = d-n
       | visit(d, [#CLOSURE, n]) = d-n
       | visit(d, [#MPRIM, n]) = d+n-2 in
@@ -789,9 +785,8 @@ define __top() =
     let fvs = e_fvars(env1) in
     let nfvs = length(fvs) in
     debug(1, code) >>
-    [#seq, [#QUOTE, assemble(f, n, code)], [#CLOPREP, nfvs],
-      #seq:[ [#seq, c_ref(x, env), [#PUTFVAR, i]] | [i, x] <- number(1, fvs) ],
-      [#CLOSURE, nfvs]] in
+    [#seq, [#QUOTE, assemble(f, n, code)],
+      #seq:[ c_ref(x, env) | x <- fvs ], [#CLOSURE, nfvs]] in
 
   { yield -- append RETURN instuction if needed }
   let yield(code, tl) =
@@ -809,14 +804,10 @@ define __top() =
       when tl and selfrec(f, env) and length(args) = e_arity(env)
 
     | c_exp(#apply:f:args, env, tl) = 
-        { A general function call -- PREP and PUTARG provide hooks
-	  for the back end to do inlining of primitives }
         let nargs = length(args) in
       	yield([#seq, c_exp(f, env, false), 
-	  [#seq, [#PREP, nargs],
-  	    #seq:[ [#seq, c_exp(e, env, false), [#PUTARG, i]]
-	    	     | [i, e] <- number(0, args) ],
-	    [#CALL, nargs]]], tl)
+  	    #seq:[ c_exp(e, env, false) | e <- args ],
+	    [#CALL, nargs]], tl)
 
     | c_exp([#if, e1, e2, e3], env, tl) =
         let l1 = label() in let l2 = label() in

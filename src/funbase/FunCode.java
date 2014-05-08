@@ -59,8 +59,6 @@ public class FunCode extends Value {
 		     	pop a boolean and jump if false */
 	JUMP,        /* [#jump, lab] becomes JUMP n:
 		     	jump to instruction at offset n */
-	PREP,        /* [#prep, n]: prepare for a call with n arguments */
-	CLOPREP,     /* [#cloprep, n]: prepare a closure with n fvars */
 	RETURN,      /* [#return]: return from function */
 	MPLUS,       /* [#mplus, k]: match an n+k pattern by popping integer
 		     	x with x >= k and pushing x-k; otherwise trap */
@@ -69,8 +67,6 @@ public class FunCode extends Value {
 	MCONS,       /* [#mcons]: pop a cons cell and push its tail and head */
 	GETTAIL,     /* [#gettail]: fetch tail following MCONS */
 	TCALL,       /* [#tcall, n]: tail recursive call */
-	PUTARG,      /* [#putarg, i]: mark i'th argument of a call */
-	PUTFVAR,     /* [#putfvar, i]: mark i'th free var of a closure */
         CALL,        /* [#call, n]: call a function with n arguments */
         CLOSURE,     /* [#closure, n]: form a closure with n free variables */
         MPRIM;       /* [#mprim, n]: pattern match a constructor with n args */

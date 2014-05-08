@@ -1,1 +1,0 @@
-<includeonly><table class="twin"><td class="input"><code>{{{2}}}</code></td><td class="output">{{#if:{{{3|}}}|{{#ifeq:{{#sub:{{{3}}}|0|1}}|!|[[Image:{{{1}}}.jpg|link=]]|[[Image:{{{1}}}.png|link=]]}}|[[Image:blank.png|link=]]}}</td></table></includeonly><noinclude>{{Documentation}}</noinclude>

@@ -2,14 +2,12 @@
 
 JAVAC = /usr/lib/jvm/java-6-openjdk-i386/bin/javac
 
-PACKAGES = funbase funjit geomlab plugins
+PACKAGES = funbase geomlab plugins
 JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
 SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
-RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
-	$(HELP:%=%.html) properties
-ICONS = icon16.png icon32.png icon64.png icon128.png
-IMAGES = obj/geomlab.gls examples.gls
+RESOURCES = VeraMono.ttf properties
+IMAGES = obj/geomlab.gls
 
 all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES) $(ICONS:%=obj/%)
 

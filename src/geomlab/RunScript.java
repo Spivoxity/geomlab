@@ -34,7 +34,6 @@ import funbase.Name;
 import funbase.Value;
 import funbase.Scanner;
 import geomlab.Command.CommandException;
-import plugins.Native;
 
 import java.io.*;
 
@@ -96,20 +95,16 @@ public class RunScript extends GeomBase {
 	System.setProperty("java.awt.headless", "true");
 	GeomBase.loadProperties();
         funbase.Evaluator.setLimits(0, 0, 0);
-	Native.register(new AWTFactory());
 	final RunScript app = new RunScript();
 	GeomBase.registerApp(app);
 	app.setLog(new PrintWriter(System.out));
 	
 	int i = 0;
-	funbase.FunCode.Jit translator = null;
         File bootfile = null;
 	File sessfile = null;
 
 	for (; i < args.length; i++) {
-	    if (args[i].equals("-i"))
-		translator = new funbase.Interp();
-	    else if (i+1 < args.length && args[i].equals("-b"))
+	    if (i+1 < args.length && args[i].equals("-b"))
 		bootfile = new File(args[++i]);
 	    else if (i+1 < args.length && args[i].equals("-s"))
 		sessfile = new File(args[++i]);
@@ -119,10 +114,7 @@ public class RunScript extends GeomBase {
 		break;
 	}
 	    
-	if (translator == null) 
-	    translator = 
-		new funjit.TofuTranslator(new funjit.InlineTranslator());
-	funbase.FunCode.install(translator);
+	funbase.FunCode.install(new funbase.Interp());
 
 	try {
             if (bootfile != null)

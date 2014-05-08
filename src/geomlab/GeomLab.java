@@ -34,8 +34,6 @@ import funbase.Name;
 import funbase.Value;
 import funbase.Evaluator;
 import geomlab.Command.CommandException;
-import plugins.Stylus.Drawable;
-import plugins.Native;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -90,10 +88,6 @@ public class GeomLab extends GeomBase {
     
     /** Update the picture display */
     protected void displayUpdate(Value val) {
-	if (val != null && (val instanceof Drawable))
-	    frame.setPicture((Drawable) val);
-	else
-	    frame.setPicture(null);
     }
     
     public void loadFileCommand(File file) {
@@ -294,14 +288,12 @@ public class GeomLab extends GeomBase {
 	    }
 	}
 	
-	Native.register(new AWTFactory());
 	GeomLab app = new GeomLab();
 	GeomBase.registerApp(app);
 	app.activate();
 	app.logWrite(properties.getProperty("welcome", "Welcome to GeomLab"));
 	
-	funbase.FunCode.install
-	    (new funjit.TofuTranslator(new funjit.InlineTranslator()));
+	funbase.FunCode.install(new funbase.Interp());
 
 	try {
 	    if (sessfile != null)

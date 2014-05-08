@@ -133,34 +133,6 @@ public abstract class Command extends AbstractAction {
             }
         }); 
         menu.addSeparator();
-        menu.add(new Command("Print image ...", KeyEvent.VK_P, app) { 
-            @Override
-            public void perform() throws CommandException {
-        	app.frame.arena.print();
-            }
-        });	
-        menu.add(new Command("Save image ...", KeyEvent.VK_V, app) { 
-            @Override
-            public void perform() throws CommandException {
-        	if (! app.frame.arena.isPicture())
-		    throw new CommandException("No picture", "#nopicture");
-		
-		JFileChooser saveDialog = new MyFileChooser(".png");
-		if (saveDialog.showSaveDialog(app.frame) 
-			== JFileChooser.APPROVE_OPTION) {
-		    File file = saveDialog.getSelectedFile();
-		    try {
-			app.frame.arena.writePicture(file);
-		    }
-		    catch (IOException e) {
-			throw new CommandException(
-				"I/O failed while writing " + file.getName(),
-				"#picio");
-		    }
-		}
-            }
-        }); 
-        menu.addSeparator();
         menu.add(new Command("Exit", KeyEvent.VK_X, app) {
             @Override
             public void perform() { app.exit(); }

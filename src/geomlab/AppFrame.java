@@ -38,13 +38,10 @@ import javax.swing.border.*;
 import java.util.*;
 import javax.imageio.*;
 
-import plugins.Stylus;
-
 /** The main GUI frame for the GeomLab application */
 public class AppFrame extends JFrame {
     protected final CodeInput input = new CodeInput(20, 50);
     protected final JTextArea results = new JTextArea(20, 50);
-    protected final GraphBox arena = new GraphBox();
     protected final Spinner spinner = new Spinner();
     protected JTabbedPane output = new JTabbedPane();
 
@@ -65,27 +62,11 @@ public class AppFrame extends JFrame {
 
     private static final int b = 5;
 
-    private static String icons[] = {
-	"icon16", "icon32", "icon64", "icon128"
-    };
-
     public AppFrame() {
 	super("GeomLab");
 	setLocation(50, 50);
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setGlassPane(spinner);
-
-	try {
-	    ClassLoader loader = AppFrame.class.getClassLoader();
-	    java.util.List<Image> images = new ArrayList<Image>();
-	    for (int i = 0; i < icons.length; i++) {
-		InputStream in = loader.getResourceAsStream(icons[i] + ".png");
-		images.add(ImageIO.read(in));
-		in.close();
-	    }
-	    setIconImages(images);
-	}
-	catch (IOException _) { }
 
 	Border bevel = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 	Border spacer = BorderFactory.createEmptyBorder(b, b, b, b);
@@ -116,7 +97,6 @@ public class AppFrame extends JFrame {
 	scroller.setBorder(bevel);
 
 	output.addTab("Results", scroller);
-	output.addTab("Picture", arena);
 
 	JSplitPane split = 
 	    new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
@@ -166,14 +146,6 @@ public class AppFrame extends JFrame {
 	input.setSelectionEnd(end);
     }
     
-    public void setPicture(Stylus.Drawable pic) {
-	arena.setPicture(pic);
-	if (pic != null)
-	    output.setSelectedIndex(1);
-	else
-	    output.setSelectedIndex(0);
-    }
-
     public PrintWriter getLogWriter() { 
 	Writer writer = new Writer() {
 		@Override

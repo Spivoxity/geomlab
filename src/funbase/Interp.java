@@ -258,13 +258,6 @@ public class Interp implements FunCode.Jit {
 			break;
 		    }
 
-		    case PREP:
-		    case PUTARG:
-		    case CLOPREP:
-		    case PUTFVAR:
-			// Used only by JIT
-			break;
-
 		    default:
 			throw new Error("bad opcode " + op);
 		}
