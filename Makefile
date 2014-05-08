@@ -36,31 +36,22 @@ obj/icon%.png: obj/icon128.png
 RUNJAVA = java -cp obj -ea
 RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
-obj/GeomBoot.class: src/GeomBoot.java .compiled
-	$(JAVAC) -cp obj -d obj $<
+stage1.boot: .compiled src/boot.txt src/compiler.txt
+	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("$@")'
 
-boot.gls: obj/GeomBoot.class .compiled 
-	$(RUNSCRIPT) -b GeomBoot -e '_save("$@")'
-
-obj/geomlab.gls: boot.gls src/compiler.txt src/prelude.txt
-	$(RUNSCRIPT) -s boot.gls src/compiler.txt \
-		src/compiler.txt src/prelude.txt -e '_save("$@")'
+obj/geomlab.gls: .compiled stage1.boot src/prelude.txt
+	$(RUNSCRIPT) -b stage1.boot src/compiler.txt \
+		src/prelude.txt -e '_save("$@")'
 
 examples.gls: obj/geomlab.gls progs/examples.txt
 	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'
 
-bootstrap: boot.gls force 
-	$(RUNSCRIPT) -s boot.gls src/compiler.txt \
-		-e '_dump("stage1.boot")' -e '_save("boot1.gls")'
-	$(RUNSCRIPT) -s boot1.gls src/compiler.txt \
-		-e '_dump("stage2.boot")' -e '_save("boot2.gls")'
-	$(RUNSCRIPT) -s boot2.gls src/compiler.txt \
-		-e '_dump("stage3.boot")'
+bootstrap: stage1.boot force
+	$(RUNSCRIPT) -b stage1.boot src/compiler.txt -e '_dump("stage2.boot")'
+	$(RUNSCRIPT) -b stage2.boot src/compiler.txt -e '_dump("stage3.boot")'
 	cmp stage2.boot stage3.boot
-
-bootup: stage2.boot force
-	(sed '/^ *$$/q' src/GeomBoot.java; cat stage2.boot) >boot.tmp
-	mv boot.tmp src/GeomBoot.java
+	(sed '/^ *$$/q' src/boot.txt; cat stage2.boot) >boot.tmp
+	mv boot.tmp src/boot.txt
 
 
 # Web resources

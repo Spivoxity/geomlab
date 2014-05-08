@@ -41,7 +41,7 @@ public class Scanner {
     
     private Reader reader;
     private StringBuilder push_back = new StringBuilder();
-    private int line_num = 1;
+    public int line_num = 1;
     private int char_num = 0, start_char, root_char;
     
     /* The scanner keeps track of the text that has been scanned, so that

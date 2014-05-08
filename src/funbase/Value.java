@@ -64,8 +64,13 @@ public abstract class Value implements Serializable {
     /** Print the value on a stream */
     public abstract void printOn(PrintWriter out);
     
-    /** Dump the value to standard output in boot format */
-    public void dump(int indent, PrintWriter out) {
+    /** Dump the value in portable format */
+    public void dump(PrintWriter out) {
+	throw new Error(String.format("can't dump %s", this.getClass()));
+    }
+    
+    /** Dump the value in Java format */
+    public void jdump(int indent, PrintWriter out) {
 	throw new Error(String.format("can't dump %s", this.getClass()));
     }
     
@@ -187,7 +192,15 @@ public abstract class Value implements Serializable {
 	}
 
 	@Override
-        public void dump(int indent, PrintWriter out) {
+        public void dump(PrintWriter out) {
+	    if (val == (int) val)
+		out.printf("number %d\n", (int) val);
+	    else
+		out.printf("number %.12g\n", val);
+	}
+
+	@Override
+        public void jdump(int indent, PrintWriter out) {
 	    if (val == (int) val)
 		out.printf("number(%d)", (int) val);
 	    else
@@ -225,7 +238,12 @@ public abstract class Value implements Serializable {
 	public Object readResolve() { return getInstance(val); }
 	
 	@Override
-	public void dump(int indent, PrintWriter out) {
+	public void dump(PrintWriter out) {
+	    out.printf("boolean %d\n", (val ? 1 : 0));
+	}
+
+	@Override
+	public void jdump(int indent, PrintWriter out) {
 	    out.printf("%s", (val ? "truth" : "falsity"));
 	}
 
@@ -252,8 +270,13 @@ public abstract class Value implements Serializable {
 	}
 
 	@Override
-	public void dump(int indent, PrintWriter out) {
-	    subr.dump(indent, out);
+	public void dump(PrintWriter out) {
+	    subr.dump(out);
+	}
+
+	@Override
+	public void jdump(int indent, PrintWriter out) {
+	    subr.jdump(indent, out);
 	}
 
 	protected Object writeReplace() {
@@ -341,7 +364,12 @@ public abstract class Value implements Serializable {
 	}
 	
 	@Override
-	public void dump(int indent, PrintWriter out) {
+	public void dump(PrintWriter out) {
+	    out.printf("string \"%s\"\n", text);
+	}
+
+	@Override
+	public void jdump(int indent, PrintWriter out) {
 	    out.printf("string(\"%s\")", text);
 	}
     }
@@ -365,11 +393,6 @@ public abstract class Value implements Serializable {
 	}
 	
 	public Object readResolve() { return instance; }
-	
-	@Override
-	public void dump(int indent, PrintWriter out) {
-	    out.printf("nil");
-	}
     }
     
     /** A value representing a non-empty list */

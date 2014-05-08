@@ -202,9 +202,8 @@ public class Session {
     }
 
     public static abstract class Bootstrap {
-        public static void define(String name, Value val) {
-            Name x = Name.find(name);
-            x.setGlodef(val, null);
+        public static void define(Name name, Value val) {
+            name.bootDef(val);
         }
 
         public static class Instr { 
@@ -281,21 +280,24 @@ public class Session {
         try {
             Class<?> cl = Class.forName(bootname);
             Bootstrap boot = (Bootstrap) cl.newInstance();
-
-            loadPlugin(geomlab.GeomBase.class);
-            loadPlugin(funbase.FunCode.class);
-            loadPlugin(funbase.Name.class);
-            loadPlugin(funbase.Evaluator.class);
-            loadPlugin(funbase.Function.class);
-            loadPlugin(plugins.BasicPrims.class);
-            loadPlugin(plugins.StringPrims.class);
-            loadPlugin(plugins.Cell.class);
-            loadPlugin(plugins.Hash.class);
-
-            boot.boot();
+            bootStrap(boot);
         }
         catch (Exception e) {
             throw new Error(e);
         }
+    }
+
+    public static void bootStrap(Bootstrap boot) throws CommandException {
+        loadPlugin(geomlab.GeomBase.class);
+        loadPlugin(funbase.FunCode.class);
+        loadPlugin(funbase.Name.class);
+        loadPlugin(funbase.Evaluator.class);
+        loadPlugin(funbase.Function.class);
+        loadPlugin(plugins.BasicPrims.class);
+        loadPlugin(plugins.StringPrims.class);
+        loadPlugin(plugins.Cell.class);
+        loadPlugin(plugins.Hash.class);
+
+        boot.boot();
     }
 }

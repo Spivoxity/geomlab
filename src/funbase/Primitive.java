@@ -148,11 +148,6 @@ public abstract class Primitive extends Function {
 	return elems.toArray(result);
     }
 
-    @Override
-    public void dump(int indent, PrintWriter out) {
-	out.printf("primitive(\"%s\")\n", name);
-    }
-
     /* Primitives are replaced by Memento objects when making a serialized 
      * stream. This provides independence of the stream from the particular 
      * classes that are used to implement the primitives. */

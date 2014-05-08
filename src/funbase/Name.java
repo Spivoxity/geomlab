@@ -63,7 +63,7 @@ public final class Name extends Value implements Comparable<Name> {
     /** True for names that are system-defined and may not be changed */
     private boolean frozen = false;
     
-    /** True if the global definition was loaded with the session */
+    /** True if the global definition was loaded from bootstrap */
     private transient boolean inherited = false;
 
     private Name(String tag) {
@@ -79,6 +79,13 @@ public final class Name extends Value implements Comparable<Name> {
 	if (freezer) frozen = true; 
     }
     
+    /** Set global definition from bootstrap */
+    public void bootDef(Value v) {
+        glodef = v;
+        inherited = true;
+        frozen = true;
+    }
+
     /** Get the global definition of a name */
     public Value getGlodef() { return glodef; }
     
@@ -111,7 +118,12 @@ public final class Name extends Value implements Comparable<Name> {
     }
     
     @Override
-    public void dump(int indent, PrintWriter out) {
+    public void dump(PrintWriter out) {
+	out.printf("name #%s\n", tag);
+    }
+
+    @Override
+    public void jdump(int indent, PrintWriter out) {
 	out.printf("name(\"%s\")", tag);
     }
 
@@ -140,7 +152,6 @@ public final class Name extends Value implements Comparable<Name> {
 	    Name x = (Name) in.readObject();
 	    if (x == null) break;
 	    x.glodef = (Value) in.readObject();
-            x.inherited = true;
 	}
     }
 
@@ -186,8 +197,8 @@ public final class Name extends Value implements Comparable<Name> {
         return names;
     }
     
-    /** Save globally defined names in bootstrap format */
-    public static void dumpNames(PrintWriter out) {
+    /** Save globally defined names in Java format */
+    public static void jdumpNames(PrintWriter out) {
 	// Sort the entries to help us reach a fixpoint
 	ArrayList<String> names = new ArrayList<String>(nameTable.size());
 	names.addAll(nameTable.keySet());
@@ -204,14 +215,35 @@ public final class Name extends Value implements Comparable<Name> {
 	    Name x = find(k);
 	    if (x.glodef != null && !x.inherited 
                 && !(x.glodef.subr instanceof Primitive)) {
-		out.printf("        define(\"%s\", ", x.tag);
-		x.glodef.dump(5, out);
+		out.printf("        define(name(\"%s\"), ", x.tag);
+		x.glodef.jdump(5, out);
                 out.printf(");\n");
 	    }
 	}
 	out.printf("    }\n");
         FunCode.postDump(out);
 	out.printf("}\n");
+	out.close();
+    }
+
+    /** Save globally defined names in portable boot format */
+    public static void dumpNames(PrintWriter out) {
+	// Sort the entries to help us reach a fixpoint
+	ArrayList<String> names = new ArrayList<String>(nameTable.size());
+	names.addAll(nameTable.keySet());
+	Collections.sort(names);
+
+	for (String k : names) {
+            if (k.equals("_syntax")) continue;
+
+	    Name x = find(k);
+	    if (x.glodef != null && !x.inherited 
+                && !(x.glodef.subr instanceof Primitive)) {
+		out.printf("#%s ", x.tag);
+		x.glodef.dump(out);
+	    }
+	}
+	out.printf("end\n");
 	out.close();
     }
 
@@ -254,6 +286,19 @@ public final class Name extends Value implements Comparable<Name> {
     @PRIMITIVE
     public static Value _gensym(Primitive prim) {
 	return find(String.format("$g%d", ++g));
+    }
+
+    @PRIMITIVE
+    public static Value _jdump(Primitive prim, Value x) {
+	try {
+	    String fname = prim.string(x);
+	    PrintWriter out = 
+		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
+	    jdumpNames(out);
+	    return Value.nil;
+	} catch (IOException e) {
+	    throw new Error(e);
+	}
     }
 
     @PRIMITIVE

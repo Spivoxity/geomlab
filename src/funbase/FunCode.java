@@ -145,7 +145,24 @@ public class FunCode extends Value {
         new java.util.ArrayList<FunCode>();
 
     @Override
-    public void dump(int indent, PrintWriter out) {
+    public void dump(PrintWriter out) {
+	out.printf("funcode \"%s\" %d %d %d\n", name, arity, fsize, ssize);
+
+        for (int i = 0; i < instrs.length; i++) {
+            if (rands[i] == NO_RAND)
+                out.printf("%s\n", instrs[i].name());
+            else
+                out.printf("%s %d\n", instrs[i].name(), rands[i]);
+        }
+        out.printf("end\n");
+        
+        for (int i = 0; i < consts.length; i++)
+            consts[i].dump(out);
+        out.printf("end\n");
+    }
+
+    @Override
+    public void jdump(int indent, PrintWriter out) {
         int k = bodies.size();
         bodies.add(this);
 
@@ -158,7 +175,7 @@ public class FunCode extends Value {
             out.printf("\n%"+2*indent+"sconsts(", "");
             indent++;
             for (int j = 0;;) {
-                consts[j++].dump(indent, out); 
+                consts[j++].jdump(indent, out); 
                 if (j >= consts.length) break;
                 out.printf(",\n%"+2*indent+"s", "");
             }

@@ -30,35 +30,33 @@
  
 { LEXICAL TOKENS }
 
-_update(_syntax, #define, [#define, 0, 0]);
+_topdef(#_syntax, _hash());
+
+_update(_syntax, #let, [#let, 0, 0]); 
 _update(_syntax, #=, [#=, 3, 4]);
+_update(_syntax, #in, [#in, 0, 0]); 
+_update(_syntax, #>>, [#>>, 0, 0]); 
 
-define _token(tag, tok, p, rp) = _update(_syntax, tag, [tok, p, rp]);
+let kwd(tok) = _update(_syntax, tok, [tok, 0, 0]) in
+  kwd(#define) >> kwd(#else) >> kwd(#function) >> kwd(#if) >>
+  kwd(#then) >> kwd(#when) >> kwd(#_) >> kwd(#..) >> kwd(#<-);
 
-define _tok(tag) = _token(tag, tag, 0, 0);
+_update(_syntax, #+, [#+, 5, 6]);
+_update(_syntax, #-, [#-, 5, 6]);
+_update(_syntax, #:, [#:, 7, 7]);
 
-_tok(#if); _tok(#then); _tok(#else); _tok(#let); _tok(#in); 
-_tok(#function); _tok(#when); _tok(#_); _tok(#>>); _tok(#..); _tok(#<-);
-
-_token(#+, #+, 5, 6);
-_token(#-, #-, 5, 6);
-_token(#:, #:, 7, 7);
-
-define _infixl(tag, p) = _token(tag, #binop, p, p+1);
-define _infixr(tag, p) = _token(tag, #binop, p, p);
+define _infixl(tag, p) = _update(_syntax, tag, [#binop, p, p+1]);
+define _infixr(tag, p) = _update(_syntax, tag, [#binop, p, p]);
 
 _infixl(#or, 1);
 _infixl(#and, 2);
-_infixl(#<, 3); _infixl(#<=, 3); _infixl(#<>, 3); 
-_infixl(#>, 3); _infixl(#>=, 3);
+_infixl(#<, 3); _infixl(#<=, 3); _infixl(#<>, 3);
+_infixl(#>, 3); _infixl(#>=, 3); 
 _infixr(#++, 4);
 _infixl(#^, 5);
 _infixl(#*, 6); _infixl(#/, 6);
-_token(#not, #monop, 0, 0);
 
-define _priority(op) =
-  let tk = _lookup(_syntax, op) in
-  if tk <> [] then tail(tk) else [0, 0];
+_update(_syntax, #not, [#monop, 0, 0]);
 
 
 { BASIC DEFINITIONS }
@@ -160,6 +158,10 @@ define __top() =
     | describe(#eof) = "end of input" 
     | describe(x) = "'" ^ _spelling(x) ^ "'" in
 
+  { syntax -- syntax table (empty during bootstrap) }
+  let syntax =
+    if _defined(#_syntax) then _syntax else _hash() in
+
   { tok -- latest lexer token }
   let tok = _new(0) in
 
@@ -170,14 +172,19 @@ define __top() =
   let scan() =
     let t = _scan() in
     let case(#ident) =
-          let tk = _lookup(_syntax, snd(t)) in
+          let tk = _lookup(syntax, snd(t)) in
           _set(tok, if tk <> [] then fst(tk) else #ident)
       | case(#op) =
-          let tk = _lookup(_syntax, snd(t)) in
+          let tk = _lookup(syntax, snd(t)) in
           if tk <> [] then _set(tok, fst(tk)) else synerror("#badtok")
       | case(x) =
           _set(tok, x) in
     case(fst(t)) >> _set(val, snd(t)) in
+
+  { priority -- find priority pair for operator }
+  let _priority(op) =
+    let tk = _lookup(syntax, op) in
+    if tk <> [] then tail(tk) else [0, 0] in
 
   let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
 
@@ -642,13 +649,13 @@ define __top() =
 	  [#GLOBAL, x] in
     case(lookup(x, env)) in
 
-  { trapsort -- sort trap list by increasing depth }
-  let trapsort(traps) =
-    let insert([f, d], []) = [[f, d]]
-      | insert([f, d], [f1, d1]:ys) =
-          if d <= d1 then [f, d]:[f1, d1]:ys
-	  else [f1, d1]:insert([f, d], ys) in
-    foldr(insert, [], traps) in
+  { sortby -- sort a list by some measure }
+  let sortby(f, xs) =
+    let insert(x, []) = [x]
+      | insert(x, y:ys) =
+          if f(x) <= f(y) then x:y:ys
+	  else y:insert(x, ys) in
+    foldr(insert, [], xs) in
 
   { The pattern matching compiler c_patt returns a pair [code, traps] where
     code is code to match the pattern, and traps is a list of pairs
@@ -771,7 +778,7 @@ define __top() =
     | c_body(r:rs, env) =
 	let rcode = c_rule(r, env) in
 	let flabs = map(fst, snd(rcode)) in
-	let traps = trapsort(snd(rcode)) in
+	let traps = sortby(snd, snd(rcode)) in
         [#seq, fst(rcode), if traps = [] then [] else 
 	    [#seq, c_traps(traps), c_body(rs, env)]] in
 
@@ -914,17 +921,14 @@ define __top() =
 	_topval(interp(exp, empty())) in
 
   { The read-eval-print routine }
-  let read_eval_print() =
+  function ()
     let p = parser() in
     if p = #eof then false else 
       (_toptext() >> debug(0, p) >> 
         _set(labcount, 0) >> _setroot(interp) >>
-	exec(p) >> true) in
-
-  read_eval_print;
+	exec(p) >> true);
 
 define _top() = 
-  if not _defined(#_syntax) then _topdef(#_syntax, _hash()) else [] >>
-  (let t = __top() in t());
+  let t = __top() in t();
   
 { After bootstrapping, redefine _top = __top() for efficiency }
