@@ -56,6 +56,7 @@ _infixr(#++, 4);
 _infixl(#^, 5);
 _infixl(#*, 6); _infixl(#/, 6);
 
+_update(_syntax, #~, [#monop, 0, 0]);
 _update(_syntax, #not, [#monop, 0, 0]);
 
 
@@ -340,7 +341,7 @@ define __top() =
 
   { p_parenexp -- parse expression after left paren }
   let p_parenexp() =
-    if not isbinop(_get(tok)) then
+    if _get(tok) = #- or not isbinop(_get(tok)) then
       p_expr0(true)
     else
       (let w = p_sym(_get(tok)) in
@@ -366,15 +367,22 @@ define __top() =
       | case(_) = synerror("#badexp") in
     whichever(case) in
 
-  let p_factor() =
+  let p_factor(secok) =
     let case(#monop) =
-	  let w = [#var, p_sym(#monop)] in [#apply, w, p_factor()]
+	  let w = p_sym(#monop) in 
+          if secok and see(#rpar) then 
+            [#var, w] 
+          else 
+            [#apply, [#var, w], p_factor(false)]
       | case(#-) =
 	  eat(#-) >>
 	  if see(#number) then
 	    [#const, - p_sym(#number)]
-	  else
-	    [#apply, [#var, #_uminus], p_factor()]
+	  else if secok and see(#rpar) then 
+            { (-) is the binary minus }
+            [#var, #-] 
+          else
+	    [#apply, [#var, #~], p_factor(false)]
       | case(_) = p_primary() in
     whichever(case) in
 
@@ -386,7 +394,7 @@ define __top() =
     case(w) in
 
   { p_term -- parse a term containing operators with priority >= min.
-      If secok is true, allow a left section (1+) }
+      If secok is true, allow a left section (1+) or (-) }
   let p_term_body(min, secok) = 
     { p_termcont -- loop to parse a sequence of operators and operands }
     let p_termcont(e1, min) =
@@ -404,7 +412,7 @@ define __top() =
 	        (let e2 = p_term(snd(prio), false) in
 		  { Continue by looking for the next operator }
 		  p_termcont(makebin(w, e1, e2), min)))) in
-    p_termcont(p_factor(), min) in
+    p_termcont(p_factor(secok), min) in
 
   { p_cond -- parse a conditional, maybe also allowing a left section }
   let p_cond(secok) =

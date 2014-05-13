@@ -73,15 +73,9 @@ public class BasicPrims {
 	return NumValue.getInstance(prim.number(x) / yy);
     }
 	
-    @PRIMITIVE
-    public static final Primitive uminus = new Primitive.Prim1("_uminus") {
-	@Override 
-	public Value apply1(Value x) {
-	    return NumValue.getInstance(- number(x));
-	}
-
-	@Override 
-	public String getPName() { return "unary -"; }
+    @PRIMITIVE("~")
+    public static Value uminus(Primitive prim, Value x) {
+        return NumValue.getInstance(- prim.number(x));
     };
 
     @PRIMITIVE("<")

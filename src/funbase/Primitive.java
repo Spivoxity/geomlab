@@ -53,13 +53,9 @@ public abstract class Primitive extends Function {
     // in any primitive.  Errors are reported with a message that names
     // the primitive concerned.
 
-    public String getPName() {
-	return name;
-    }
-
     /** Report error when argument is not what we expected */
     public void expect(String expected) {
-	Evaluator.expect(getPName(), expected);
+	Evaluator.expect(name, expected);
     }
 
     /** Fetch value of a NumValue object, or throw EvalException */
@@ -317,8 +313,9 @@ public abstract class Primitive extends Function {
     /** Find a registered primitive */
     public static Primitive find(String name) {
         Name n = Name.find(name);
+        Value v = n.getGlodef();
         try {
-            return (Primitive) n.glodef.subr;
+            return (Primitive) v.subr;
         }
         catch (ClassCastException e) {
 	    throw new Error(String.format("Primitive %s is not defined", name));

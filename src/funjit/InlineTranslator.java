@@ -523,7 +523,7 @@ public class InlineTranslator extends JitTranslator {
 	public void compile() {
 	    // ErrContext.expect(prim, failure);
 	    Primitive p = Primitive.find(prim);
-	    code.gen(CONST, p.getPName());
+	    code.gen(CONST, p.name);
 	    code.gen(CONST, failure);
 	    code.gen(INVOKESTATIC, evaluator_cl, "expect", fun_SS_t);
 	}
