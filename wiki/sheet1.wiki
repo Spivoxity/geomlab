@@ -1,100 +1,74 @@
 {{GeomLab}}
-GeomLab uses the constants @man@ and @woman@
-to represent stick-figure pictures of a man and a woman:
+<!--Worksheet 1: Above and beside-->
+Among other things, GeomLab is a language for describing pictures.  The GeomLab program lets you write a description in the left-hand part of the window, and will then show you the corresponding picture in the right-hand part.
+
+To get you started, we have provided several pre-drawn pictures and given them names.
+For example, the name @man@ stands for a stick-figure picture of a man:
 {{GeomPic|1005|man|*}}
+(whenever we show an expression and a picture like this, we mean that GeomLab associates the picture on the right with the description on the left.)
+Similarly, @woman@ stands for a stick-figure woman:
 {{GeomPic|1006|woman|*}}
-Whenever an expression and a picture are shown like this, we mean
-that GeomLab will show the picture as the value of the expression. You
-should try to work out ''why'' the expression creates the picture
-that is shown, and (if you like) check that it does so by typing the
-expression into GeomLab.
+There are also pictures named @tree@ and @star@ that you should try out for yourself.
 
-Two operators that can be used to combine these images
-are @$@ and @&@. As illustrated in the two
-examples below, @$@ means "beside", and @&@ means "above":
+If we have two pictures, then GeomLab lets us put one beside the other using the ''operator'' @$@. So the expression @man $ woman@ stands for the stick-figure man next the the stick-figure woman:
 {{GeomPic|1016|man $ woman|*}}
-{{GeomPic|1017|man & man|*}}
-What would @woman $ man@ look like? Sketch the picture
-in the space below:
+We can also put one copy of the man picture next to another:
+{{GeomPic|1017|man $ man|*}}
+You shouldn't find it hard to guess what result will come from writing @woman $ man@, but (if you have this worksheet on paper) you might like to sketch it in the space below before trying it with the GeomLab program:
 {{GeomPic|1020|woman $ man}}
-Try typing @woman $ man@ into GeomLab and see if you
-were right.
 
-Geomlab has a number of other constant pictures, including
-@tree@, so typing the expression @(man $ woman) $ tree@ produces the following image:
+There's another operator, written @&@, that puts one picture above another:
+{{GeomPic|1022|woman & man|*}}
+Just as the order of the pictures matters with @$@, so it matters with @&@ also, as we can see here:
+{{GeomPic|1024|man & woman|*}}
+I hope you can see for yourself how to get this next picture:
+{{GeomPic|1026||woman & woman}}
+
+So far, we have used the operators @$@ and @&@ to combine pictures given by their names, but it is also possible to combine pictures in more than one stage, using the result of one operation as an input to another.
+For example, we can put a man, a woman and a tree all in a row like this:
 {{GeomPic|1027|(man $ woman) $ tree|*}}
-What happens when you type @man $ (woman $ tree)@ into
-GeomLab? Sketch here the image that is produced:
-{{GeomPic|1030|man $ (woman $ tree)}}
-You should find that both pictures are the same!
+I have used brackets in this expression, just the same way that they are used in an algebraic expression like @(x + y) + z@, to ensure that the man and the woman are combined first, and then the tree is put to their right.
+As it happens, in this case it doesn't matter, because putting in the brackets the other way gives the same result:
+{{GeomPic|1030|man $ (woman $ tree)|*}}
+This is similar to ordinary algebra, where the equation
+:@(x + y) + z = x + (y + z)@
+is always true.
+Use GeomLab to check that you really do get the same picture from both the expressions shown above.  Then do an experiment with two expressions that put a man, a tree and a star into a vertical column.
 
-In the first example above, @(man $ woman)@ is worked
-out (or ''evaluated'') first, producing a picture of a man standing
-beside a woman. Then the @$ tree@ part of the expression
-puts a tree to the right of this picture.
+Like addition and multiplication in algebra, the operations @$@ and @&@ are ''associative'', in that the equations
+:@(p $ q) $ r = p $ (q $ r)@
+and
+:@(p & q) & r = p & (q & r)@
+are always true.  As we saw earlier, though, these operations are not ''commutative'', because @man $ woman@ and @woman $ man$ are different pictures.
 
-Similarly, in the second example @(woman $ tree)@ is
-evaluated first, producing a picture of a woman and a tree standing
-next to each other.  Then the @man $@ part of the
-expression is evaluated, placing a man to the left of this
-picture.
-
-We can see that the same picture was produced in the two examples
-above, so the two expressions we used are the same (or
-''equivalent'').  Since it's true for all pictures
-@p@, @q@ and @r@ that
-:@(p $ q) $ r = p $ (q $ r)@,
-we say that @$@ is ''associative''.  
-Since @p $ q@ is not always the same as
-@q $ p@, we say that @$@ is not ''commutative''.
-
-You can try for yourself in GeomLab similar examples to those
-above, but replacing @$@ with&nbsp;@&@. You should
-see that @&@ is also associative but not commutative.
-
-Try typing @man $ (woman & tree)@ into GeomLab. You
-should get an image that looks like this:
+Now let's try using both @$@ and @&@ in the same expression. Try this:
 {{GeomPic|1063|man $ (woman & tree)|*}}
-Something new is happening here. When GeomLab combines two pictures
+Something new is happening here. 
+When GeomLab combines two pictures
 using @$@, their sizes are adjusted so that the pictures
 have the same height, without changing the shape of either
-picture.
+picture.  Since @woman & tree@ is naturally twice the height of the single picture @man@, that picture is shrunk to half size before joining it with the man.  (Whatever the size of the resulting picture, GeomLab draws it as large as possible on the computer screen.)
 
-In @man $ woman@, they have the same height already, so
-no adjustment is needed. However, in @man $ (woman & tree)@, 
-the picture @woman & tree@ is rather tall and
-thin, so it must be reduced in size so that its height is equal to the
-height of the other @man@.
+Although this rule seems new, in fact it is consistent with what we have seen already, because the heights of @man@ and @woman@ already match, and when we form @man $ woman@ so do their natural widths.
+If you look at the pictures @man $ star@ and @man & star@, however, you will see that the relative sizes of man and star are different in the two cases, so that the heights match when they are put side-by-side, but it is the widths that are made to match when one is put atop the other.
 
-You will see that the picture produced above is different from the
-one given by the expression @(man $ woman) & tree@:
+The next thing to notice is that the brackets do matter in the expression @man $ (woman & tree)@, because @(man $ woman) & tree@ is a different picture:
 {{GeomPic|1077|(man $ woman) & tree|*}}
-What happens if you put no brackets in? Try typing 
-@man $ woman & tree@ into GeomLab and sketch the image that results:
-{{GeomPic|1080|man $ woman & tree}}
-You should see that the expression @man $ woman & tree@
-produces the same image as the expression
-@(man $ woman) & tree@. This happens because a @$@ operation in an 
-expression is evaluated before an @&@ operation, just as
-multiplication is evaluated before addition in an ordinary,
-mathematical expression. For example, if you were asked to work out
-the answer to 3 &times; 4 + 5, you would first work
-out 3 &times; 4 and then add 5 to the
-result, giving an answer of 17. We say that &times; 
-''binds more tightly than''&nbsp;+, and similarly that @$@ binds more
-tightly than @&@.  When GeomLab works out what picture to
-draw for @man $ woman & tree@, it evaluates @man $ woman@ first, 
-and evaluates the @& tree@ part afterwards.
+Thinking of algebra again, this fact becomes less surprising.  We know that 3 &times; (4 + 5) is different from (3 &times; 4) + 5; in fact one of them evaluates to 27 and the other to 17.
 
-Remember that although @$@ binds more tightly than
-@&@, ''brackets will still be evaluated first'':
-{{GeomPic|1098|man $ ((man $ tree) & woman)|*}}
+In algebra, there are conventions about which of these expressions is meant if we write 3 &times; 4 + 5 without brackets.  The &times; operation is said to ''bind more tightly'' or have a ''higher priority'' than the +, and that obliges us to read the expression as if it were (3 &times; 4) + 5 = 17.
+Similarly, there is a rule in GeomLab that @$@ binds more tightly than @&@, and that allows us to predict the result when we leave out the brackets:
+{{GeomPic|1080|man $ woman & tree|*}}
+Try it!
+
+Although this rule allows us to predict what will happen when brackets are left out, we are still free to put them in when we want to force another interpretation, like this:
+{{GeomPic|1098|man $ (man $ tree & woman)|*}}
 Can you work out what expression gives this picture?
 {{GeomPic|1100||(man & man & man) $ (woman & woman) $ tree}}
 
 Now look at this picture:
 {{GeomPic|1103|(man $ tree) & (woman $ man)<br/>(man & woman) $ (tree & man)|(man $ tree) & (woman $ man)}}
-Both expressions give the same picture (try it!), so the
+Both expressions give the same picture (try it!), so these two
 expressions are equivalent.
 
 If the pictures @p@, @q@, @r@ and @s@ all have the same
@@ -106,12 +80,11 @@ produce the same picture.
 
 But if the component pictures have different shapes, this is not
 always true. For example, applying the rule to 
-@((man & woman) $ man) & (woman $ tree)@ we get the following pictures:
-{{GeomPic|1118|((man & woman) $ man) & (woman $ tree)|*}}
-{{GeomPic|1119|((man & woman) & woman) $ (man & tree)|*}}
-We can see that the two pictures are not the same, since some of
-the figures have been changed in size (or ''scaled'')
-differently. If you are good at algebra, you might like to try to work
+@((man $ man) & (woman $ star)@ we get two different pictures:
+{{GeomPic|1118|(man $ man) & (woman $ star)|*}}
+{{GeomPic|1119|(man & woman) $ (man & star)|*}}
+We can see that the two pictures are not the same, since the sizes of some of the figures have come out differently.
+If you are good at algebra, you might like to try to work
 out exactly when the equation
 :@(p $ q) & (r $ s) = (p & r) $ (q & s)@
 is true for four pictures @p@, @q@, @r@ and @s@.  
