@@ -42,7 +42,7 @@ public class Scanner {
     private Reader reader;
     private StringBuilder push_back = new StringBuilder();
     public int line_num = 1;
-    private int char_num = 0, start_char, root_char;
+    private int char_num = 0, start_char, root_char, last_char;
     
     /* The scanner keeps track of the text that has been scanned, so that
      * the defining text can be saved with each name in the global env.
@@ -70,8 +70,6 @@ public class Scanner {
     private char getChar() {
 	char ch;
 	
-	char_num++;
-	
 	if (push_back.length() == 0)
 	    ch = readChar();
 	else {
@@ -80,23 +78,25 @@ public class Scanner {
 	    push_back.setLength(i);
 	}
 
-	if (ch != '\0') text.append(ch);
+	if (ch != '\0') {
+            char_num++;
+            text.append(ch);
+        }
+
 	return ch;
     }
     
     /** Push back one character onto the input */
     private void pushBack(char ch) {
-	/* We could wrap the input in a PushbackReader, but that's overkill,
-	 * as we only need to push back one character -- and anyway, we need
-	 * to deal with the saved text. */
 	if (ch != '\0') {
 	    char_num--;
 	    push_back.append(ch);
-	    text.deleteCharAt(text.length()-1);
+	    text.setLength(text.length()-1);
 	}
     }
     
     public String getText() {
+        text.setLength(last_char - root_char);
 	return text.toString();
     }
     
@@ -280,9 +280,12 @@ public class Scanner {
 	}
 	
 	if (virgin) {
-	    root_char = start_char;
+	    root_char = last_char = start_char;
 	    virgin = false;
 	}
+
+        if (tok != EOF)
+            last_char = char_num;
     }
 
     public Value nextToken() {
