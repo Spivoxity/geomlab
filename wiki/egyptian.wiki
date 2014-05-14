@@ -1,0 +1,34 @@
+{{GeomLab}}
+Some fractions can be expressed as a ''sum of distinct reciprocals''; for example, 5/6 = 1/2 + 1/3 and 3/5 = 1/3 + 1/5 + 1/15.  Some ancient documents suggest that in ancient Egypt, the convention was to express all fractions in this form, hence the title of this chapter.
+
+If some fractions can be written this way, then the question arises whether all can.  Let's assume, for simplicity, that we have a fraction @@p/q@@ where @@0 <= p < q@@, and ask whether there is a sequence of integer denominators @@r1 < r2 < ... < @@''r<sub>n</sub>'' such that
+:@@p/q = 1/r1 + 1/r2 + ... + @@1/''r<sub>n</sub>''.
+
+One way of finding such a sequence of denominators might be to choose @@r1@@ to be as large as possible, then to work out the remainder,
+:@@p'/q' = p/q - 1/r1@@,
+and try to find a representation of @@p'/q''@@ by the same process.  We can express this idea in the GeomLab language as follows: we want to choose for @@r1@@ the smallest integer @r@ that is not less than @@q/p@@.  GeomLab provides an operation @q div p@ that computes @@q/p@@ and rounds it down, but we can adapt it to round up like this:
+:@let r = (q + p - 1) div p in ...@
+Now let's calculate the remainder when we reduce @@p/q@@ by @@1/r1@@ using the rules of arithmetic on fractions: it's
+:@@p'/q' = (p * r - q) / q * r@@.
+
+In our program, we can represent the fraction @@p/q@@ by a list 
+@[p, q]@.  The final detail is that we can stop the process if the fraction @p/q@ is zero, and that happens exactly when @@p = 0@@.
+ define egyptian([p, q]) =
+   if p = 0 then [] else
+    (let r = (q + p - 1) div p in
+      [1, r] : egyptian([p*r - q, q * r]));
+We can test our definition like this:
+ egyptian([5, 6])
+ --> [[1, 2], [1, 3]]
+ egyptian([3, 5])
+ --> [[1, 3], [1, 5], [1, 15]]
+ egyptian([16, 17])
+ --> [[1, 2], [1, 3], [1, 10], [1, 128], [1, 32640]]
+So far, so good: but what if there are fractions that can't be represented in Egyptian form?  For them, the @egyptian@ function we have defined will never give an answer, because the numerator @p@ will never reach zero; instead, the unwinding of the recursive definition will go on forever, calculating fractions @[p, q]@ that get smaller and smaller, with denominators @q@ that get larger and larger.
+
+Fortunately, we can argue that this cannot happen, if we choose the reciprocal @@1/r@@ to be as large as possible at each stage.  We arranged for @@r@@ to be the smallest integer that is not less than @@q/p@@, so that
+:@@q/p <= r < q/p + 1@@.
+From this we can immediately derive (multiplying by @@p@@) that 
+@@q <= p * r < q + p@@ and therefore @@p' = p * r - q@@ satisifies @@0 <= p' < p@@.  A call @egyptian([p, q])@ can only lead to a recursive call @@egyptian([p', q'])@@ where @@0 <= p' < p@@, and because @@p@@ is an integer, this ''cannot'' go on for ever.
+
+We may conclude that any proper fraction @p/q@ has a representation as a sum of distinct reciprocals.  What's more, that conclusion is reached by studying a computer program that calculates the representation, and proving that it always works.

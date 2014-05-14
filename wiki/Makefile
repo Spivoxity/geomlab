@@ -4,7 +4,7 @@ PAGES =	build.wiki commands.wiki download.wiki errors.wiki \
 	nojava.wiki sheet1.wiki sheet2.wiki sheet3.wiki sheet4.wiki \
 	sheet5.wiki sheet6.wiki sheet7.wiki sheet8.wiki sheet9.wiki \
 	start.wiki teachers.wiki tiles.wiki tips.wiki using.wiki \
-	worksheets.wiki
+	worksheets.wiki egyptian.wiki
 
 all: $(PAGES)
 

@@ -3,9 +3,9 @@ Remember that @rot@ can be applied twice to a picture to
 turn it upside down:
 {{GeomPic|3004|rot(rot(man))|*}}
 {{GeomPic|3005|rot(rot(woman))|*}}
-It would be convenient to make (or ''define'') a function that could
-be used when we want two rotations to be applied  
-to an expression, as in the examples above.
+It would be convenient to make a new function that could
+be used when we want two successive rotations to be applied  
+to a picture, as in the examples above.
 We can do this using an expression with @define@, like this:
 :@define rot2(p) = rot(rot(p))@
 The command @define@ sets the expression that follows
@@ -26,6 +26,14 @@ produced when @rot2@ is applied to an argument picture.
 Now that we have defined the function @rot2@, we can use
 it in the same way as any other function:
 {{GeomPic|3028|rot2(man)|*}}
+In order to use a defined function in an expression, we just type both
+the definition and the expression in the input window, like this:
+
+[[Image:geomlab-define.png]]
+
+Each definition ends with a semicolon, and that helps GeomLab to keep it separate from the following definition or expression.
+
+Replacing @man@ by @tree@ gives another upside down picture:
 {{GeomPic|3029|rot2(tree)|*}}
 Note that the variable @p@ used in the expression
 defining @rot2@ is a ''placeholder''. This means that

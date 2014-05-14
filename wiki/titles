@@ -35,3 +35,5 @@ set title(markup) "Template:Markup"
 set title(message) "Template:Message"
 set title(geomlab) "Template:GeomLab"
 set title(geombox) "Template:GeomBox"
+
+set title(egyptian) "Egyptian fractions"
