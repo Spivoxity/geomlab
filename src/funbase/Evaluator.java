@@ -90,10 +90,16 @@ public class Evaluator {
 	}
     }
 
+    public static void reset() {
+        quantum = QUANTUM;
+        steps = conses = 0;
+    }
+
     public static Value execute(Function fun, Value... args) {
 	runFlag = true; steps = conses = 0; timer = null;
 	FunCode.initStack();
 	ExecThread exec = new ExecThread(fun, args);
+
 	startTimer();
 
 	try { 
@@ -111,7 +117,7 @@ public class Evaluator {
 	return exec.result;
     }
 
-    public static void startTimer() {
+    private static void startTimer() {
 	if (timeLimit > 0) {
 	    timer = new Thread() {
 		@Override 

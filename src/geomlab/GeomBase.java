@@ -266,6 +266,7 @@ public class GeomBase {
     @PRIMITIVE
     public static Value _setroot(Primitive prim, Value v) {
 	FunCode.setRoot(v);
+        Evaluator.reset();
 	return Value.nil;
     }
 
