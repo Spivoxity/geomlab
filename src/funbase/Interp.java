@@ -260,8 +260,7 @@ public class Interp implements FunCode.Jit {
 
 		    case PREP:
 		    case PUTARG:
-		    case CLOPREP:
-		    case PUTFVAR:
+                    case FRAME:
 			// Used only by JIT
 			break;
 

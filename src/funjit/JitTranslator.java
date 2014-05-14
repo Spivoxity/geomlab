@@ -77,7 +77,7 @@ public class JitTranslator implements FunCode.Jit {
     private int cache, nextcache;
 
     /** Stack of function arities to help with assembling arguments */
-    private Stack<Integer> nstack = new Stack<Integer>();
+    protected Stack<Integer> nstack = new Stack<Integer>();
 
     private Label loop;
     private Label trap;
@@ -211,21 +211,20 @@ public class JitTranslator implements FunCode.Jit {
 	if (n >= MANY) {
 	    code.gen(CONST, n);
 	    code.gen(ANEWARRAY, value_cl);
-	    code.gen(DUP);
-	    code.gen(CONST, 0);
 	}
     }
 
     /** Translate a PUTARG instruction. */
     protected void genPutarg(int i) {
 	int n = nstack.peek();
-	if (n < MANY) return;
+	if (n >= 0 && n < MANY) return;
 
-	code.gen(AASTORE);
-	if (i+1 < n) {
-	    code.gen(DUP);
-	    code.gen(CONST, i+1);
-	}
+        code.gen(SWAP);         // array, v, ...
+        code.gen(DUP_X1);       // array, v, array, ...
+        code.gen(SWAP);         // v, array, array, ...
+        code.gen(CONST, i);     // i, v, array, array, ...
+        code.gen(SWAP);         // v, i, array, array, ...
+	code.gen(AASTORE);      // array, ...
     }
 
     /** Translate a CALL instruction. */
@@ -327,14 +326,11 @@ public class JitTranslator implements FunCode.Jit {
 	}
     }
 
-    private void genPutfvar(int i) {
-	int n = nstack.peek();
-
-	code.gen(AASTORE);
-	if (i < n) {
-	    code.gen(DUP);
-	    code.gen(CONST, i+1);
-	}
+    private void genFrame(int n) {
+        nstack.push(-n);
+	code.gen(CHECKCAST, funcode_cl);
+	code.gen(CONST, n);
+	code.gen(ANEWARRAY, value_cl);
     }
 
     private void genClosure(int n) {
@@ -430,8 +426,7 @@ public class JitTranslator implements FunCode.Jit {
 	    case JUMP:    code.gen(GOTO, makeLabel(rand)); break;
 	    case PREP:    genPrep(rand); break;
 	    case PUTARG:  genPutarg(rand); break;
-	    case CLOPREP: genCloprep(rand); break;
-	    case PUTFVAR: genPutfvar(rand); break;
+            case FRAME:	  genFrame(rand); break;
 	    case CALL:    genCall(rand); break;
 	    case TCALL:   genTCall(rand); break;
 	    case MEQ:     genMEq(); break;
@@ -472,7 +467,7 @@ public class JitTranslator implements FunCode.Jit {
 	public abstract boolean compile(int rands[], int ip);
 
 	/** Check if the pattern matches and if so invoke compile. */
-	private int fire(int ip) {
+	public int fire(int ip) {
 	    if (funcode.instrs[ip] != pattern[0])
 		return 0;
 
@@ -487,6 +482,28 @@ public class JitTranslator implements FunCode.Jit {
 
             return 0;
 	}
+    }
+
+    private class FVarHook extends CodeHook {
+        Opcode op;
+
+        public FVarHook(Opcode op) {
+            super(op, Opcode.PUTARG);
+            this.op = op;
+        }
+
+        @Override
+        public boolean compile(int rands[], int ip) {
+            int n = nstack.peek();
+            if (n >= 0 && n < MANY) return false;
+
+            code.gen(DUP);
+            code.gen(CONST, rands[ip+1]);
+            translate(op, rands[ip]);
+            code.gen(AASTORE);
+            nextcache = -1;
+            return true;
+        }
     }
 
     /** A table giving for each opcode the rules that start with it */
@@ -515,6 +532,12 @@ public class JitTranslator implements FunCode.Jit {
                 return false;
 	    }
 	});
+
+        /* Special for FVAR i / PUTARG j */
+        addHook(new FVarHook(Opcode.FVAR));
+        addHook(new FVarHook(Opcode.ARG));
+        addHook(new FVarHook(Opcode.LOCAL));
+
 
 	// Minor optimisation of pattern matching code
 

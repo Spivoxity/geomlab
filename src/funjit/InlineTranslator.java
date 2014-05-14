@@ -83,6 +83,7 @@ public class InlineTranslator extends JitTranslator {
 		Kind k = gen.call();
 		if (k != Kind.NONE) {
                     convValue(k);
+                    nstack.pop();
                     return true;
                 }
                 return false;
@@ -104,6 +105,7 @@ public class InlineTranslator extends JitTranslator {
 			Inliner c = primdict.get(p.name);
 			if (c != null) {
 			    funstack.push(c);
+                            nstack.push(0);
 			    return true;
 			}
 		    }
@@ -142,6 +144,7 @@ public class InlineTranslator extends JitTranslator {
 		Kind k = gen.call();
 		if (k != Kind.NONE) {
 		    funstack.pop();
+                    nstack.pop();
                     if (!convertArg(i, k)) genPutarg(i);
                     return true;
 		}
@@ -155,6 +158,7 @@ public class InlineTranslator extends JitTranslator {
 		Inliner gen = funstack.peek();
 		if (gen.jcall(rands[ip+1])) {
 		    funstack.pop();
+                    nstack.pop();
 		    return true;
 		}
 		return false;
@@ -176,6 +180,24 @@ public class InlineTranslator extends JitTranslator {
 	    @Override
 	    public boolean compile(int rands[], int nargs) {
 		funstack.push(nullInliner);
+		return false;
+	    }
+	});
+
+        /* And also FRAME instructions */
+	addHook(new CodeHook(Opcode.FRAME) {
+	    @Override
+	    public boolean compile(int rands[], int nargs) {
+		funstack.push(nullInliner);
+		return false;
+	    }
+	});
+
+        /* And then again CLOSURE instructions */
+	addHook(new CodeHook(Opcode.CLOSURE) {
+	    @Override
+	    public boolean compile(int rands[], int nargs) {
+		funstack.pop();
 		return false;
 	    }
 	});
