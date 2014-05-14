@@ -93,45 +93,47 @@ public abstract class Command extends AbstractAction {
 	return menuBar;
     }
     
+    private static void saveAsDialog(GeomLab app) throws CommandException {
+        JFileChooser saveDialog = new MyFileChooser();
+        if (saveDialog.showSaveDialog(app.frame) 
+                == JFileChooser.APPROVE_OPTION) {
+            File file = saveDialog.getSelectedFile();
+            app.saveInput(file);
+        }
+    }
+
     private static JMenu makeFileMenu(final GeomLab app) {
 	JMenu menu = new JMenu("File");
         menu.setMnemonic(KeyEvent.VK_F);
-        menu.add(new Command("Load...", KeyEvent.VK_L, app) { 
+
+        menu.add(new Command("Load...", KeyEvent.VK_L, app) {
             @Override
 	    public void perform() throws CommandException {
         	JFileChooser loadDialog = new MyFileChooser();
 		if (loadDialog.showOpenDialog(app.frame) 
 			== JFileChooser.APPROVE_OPTION) {
 		    File file = loadDialog.getSelectedFile();
-		    app.loadFileCommand(file);
+		    app.loadInput(file);
 		}
             }
         });
-        menu.addSeparator();
-        menu.add(new Command("Load session ...", KeyEvent.VK_O, app) { 
+            
+        menu.add(new Command("Save", KeyEvent.VK_S, app) {
             @Override
-	    public void perform() throws CommandException {
-        	JFileChooser loadDialog = new MyFileChooser(".gls");
-		if (loadDialog.showOpenDialog(app.frame)
-			== JFileChooser.APPROVE_OPTION) {
-		    File file = loadDialog.getSelectedFile();
-		    Session.loadSession(file);
-		    app.logMessage("Loaded session from " + file.getName());
-		}
+            public void perform() throws CommandException {
+                if (app.getCurrentFile() != null)
+                    app.saveInput(app.getCurrentFile());
+                else
+                    saveAsDialog(app);
             }
         });
-        menu.add(new Command("Save session ...", KeyEvent.VK_S, app) { 
-            @Override
-	    public void perform() throws CommandException {
-        	JFileChooser saveDialog = new MyFileChooser(".gls");
-		if (saveDialog.showSaveDialog(app.frame)
-			== JFileChooser.APPROVE_OPTION) {
-		    File file = saveDialog.getSelectedFile();
-		    Session.saveSession(file);
-		    app.logMessage("Saved session as " + file.getName());
-		}
+
+        menu.add(new Command("Save as...", KeyEvent.VK_A, app) {
+            @Override public void perform() throws CommandException {
+                saveAsDialog(app);
             }
-        }); 
+        });
+
         menu.addSeparator();
         menu.add(new Command("Print image ...", KeyEvent.VK_P, app) { 
             @Override
@@ -204,10 +206,6 @@ public abstract class Command extends AbstractAction {
         menu.add(new Command("List defined names", KeyEvent.VK_L,  app) {
             @Override
             public void perform() { app.listNames(); }
-        });
-        menu.add(new Command("Find definition", KeyEvent.VK_F,  app) {
-            @Override
-            public void perform() { app.findDefinition(); }
         });
 	return menu;
     }

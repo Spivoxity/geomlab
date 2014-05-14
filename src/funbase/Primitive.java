@@ -307,7 +307,7 @@ public abstract class Primitive extends Function {
     /** Register a new primitive */
     public static void register(Primitive p) {
         Name n = Name.find(p.name);
-        n.setGlodef(FunValue.getInstance(p), null);
+        n.setGlodef(FunValue.getInstance(p));
     }
     
     /** Find a registered primitive */

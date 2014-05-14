@@ -60,11 +60,13 @@ import javax.swing.UIManager.*;
 public class GeomLab extends GeomBase {
     public AppFrame frame;
     
+    private File currentFile = null;
+
     public void activate() {
 	try {
 	    SwingUtilities.invokeAndWait(new Runnable() {
 		public void run() {
-		    frame = new AppFrame();
+		    frame = new AppFrame(properties.getProperty("appname"));
 		    loadFontResource();
 		    setLog(frame.getLogWriter());
 
@@ -96,9 +98,39 @@ public class GeomLab extends GeomBase {
 	    frame.setPicture(null);
     }
     
-    public void loadFileCommand(File file) {
-	log.println();
-	loadFromFile(file, true);
+    public void setCurrentFile(File file) {
+        currentFile = file;
+        frame.setFilename(file.getName());
+    }
+
+    public File getCurrentFile() { return currentFile; }
+
+    /** Load file into the input area */
+    public void loadInput(File file) throws CommandException {
+        try {
+            Reader in = new FileReader(file);
+            frame.loadInput(in);
+            in.close();
+
+            setCurrentFile(file);
+        }
+        catch (IOException _) {
+            throw new CommandException("Couldn't read " + file, "#ioerr");
+        }
+    }
+
+    /** Save input area to file */
+    public void saveInput(File file) throws CommandException {
+        try {
+            Writer out = new FileWriter(file);
+            frame.saveInput(out);
+            out.close();
+
+            setCurrentFile(file);
+        }
+        catch (IOException _) {
+            throw new CommandException("Couldn't write " + file, "#ioerr");
+        }
     }
 
     /** Display location of syntax error. */
@@ -123,6 +155,7 @@ public class GeomLab extends GeomBase {
 	Thread evalThread = new Thread() {
 	    @Override
 	    public void run() {
+                funbase.Name.reset();
 		eval_loop(reader, true);
 		EventQueue.invokeLater(new Runnable() {
 		    @Override
@@ -166,21 +199,6 @@ public class GeomLab extends GeomBase {
 	log.flush();
     }
 
-    /** Command -- paste the defining text for a name into the input area */
-    public void findDefinition() {
-	String x = frame.input.getText();
-	if (x.equals("")) return;
-	
-	Name name = Name.find(x);
-	String def = name.getDeftext();
-	if (def == null) {
-	    frame.input.setText("\"No definition found\"");
-	    return;
-	}
-	
-	frame.input.setText(def);
-    }
-    
     /** Command -- show the about box */
     public void aboutBox() {
         String version = properties.getProperty("version");
@@ -258,7 +276,7 @@ public class GeomLab extends GeomBase {
     public static void main(String args[]) {
 	int j = 0;
 	File sessfile = null;
-	if (j+1 < args.length && args[j].equals("-b")) {
+	if (j+1 < args.length && args[j].equals("-s")) {
 	    sessfile = new File(args[j+1]);
 	    j += 2;
 	}
@@ -318,12 +336,20 @@ public class GeomLab extends GeomBase {
 	    app.errorMessage(e.getMessage(), e.getErrtag());
 	}
 	
-	for (; j < args.length; j++)
-	    app.loadFromFile(new File(args[j++]), false);
+        if (j < args.length) {
+            try {
+                app.loadInput(new File(args[j]));
+            }
+            catch (CommandException _) {
+                JOptionPane.showMessageDialog(app.frame,
+                    "Couldn't load " + args[j],
+                    "Oops!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
 
 	Name init = Name.find("_init");
-	if (init.glodef != null) {
-	    Value.FunValue fun = (Value.FunValue) init.glodef;
+	if (init.getGlodef() != null) {
+	    Value.FunValue fun = (Value.FunValue) init.getGlodef();
 	    Evaluator.execute(fun.subr, new Value[0]);
 	}
 

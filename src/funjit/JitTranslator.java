@@ -270,13 +270,15 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(CHECKCAST, name_cl);
 
 	// We assume that a global name defined now will not become undefined
-	if (x.glodef != null)
+	if (x.getGlodef() != null) 
 	    // Value v = x.glodef;
-	    code.gen(GETFIELD, name_cl, "glodef", value_t);
+            // code.gen(INVOKEVIRTUAL, name_cl, "getGlodef", fun__V_t);
+            code.gen(GETFIELD, name_cl, "glodef", value_t);
 	else {
 	    code.gen(DUP);
 	    code.gen(ASTORE, _temp);
 	    // Value v = x.glodef;
+            // code.gen(INVOKEVIRTUAL, name_cl, "getGlodef", fun__V_t);
 	    code.gen(GETFIELD, name_cl, "glodef", value_t);
     	    code.gen(DUP);		
     	    // if (v == null) ErrContext.err_notdef(x);

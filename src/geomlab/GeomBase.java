@@ -56,7 +56,6 @@ public class GeomBase {
     protected boolean statsFlag = false;
     protected String errtag = "";
     protected int status = 0;
-    private File currentFile = null;
     protected boolean echo;
     protected boolean display;
     protected PrintWriter log;
@@ -131,7 +130,7 @@ public class GeomBase {
     /** Called when elaboration of a top-level definition is complete */
     protected void defnValue(Name n, Value v) {
 	last_val = v;
-	n.setGlodef(v, scanner.getText());
+	n.setGlodef(v);
 	if (display) {
 	    log.format("--- %s = ", n);
 	    v.printOn(log);
@@ -175,17 +174,17 @@ public class GeomBase {
 
     protected boolean eval_loop(Reader reader, boolean echo, boolean display) {
 	Name top = Name.find("_top");
-	Value.FunValue toplev = (Value.FunValue) top.glodef;
+	Value.FunValue toplev = (Value.FunValue) top.getGlodef();
 	Scanner scanner = new Scanner(reader);
 	errtag = "";
 	last_val = null;
 
 	while (true) {
 	    try {
-		scanner.resetText();
 		this.scanner = scanner;
 		this.echo = echo;
 		this.display = display;
+                scanner.resetText();
 		if (Evaluator.execute(toplev.subr) != Value.BoolValue.truth)
 		    return true;
 
@@ -211,10 +210,8 @@ public class GeomBase {
 
     /** Load from a file */
     protected void loadFromFile(File file, boolean display) {
-        File save_currentFile = currentFile;
         try {
             Reader reader = new BufferedReader(new FileReader(file));
-            currentFile = file;
             eval_loop(reader, display);
             logMessage("Loaded " + file.getName());
             try { reader.close(); } catch (IOException e) { /* Ignore */ }
@@ -222,17 +219,12 @@ public class GeomBase {
         catch (FileNotFoundException e) {
             errorMessage("Can't read " + file.getName(), "#nofile");
         }
-        finally {
-            currentFile = save_currentFile;
-        }
     }
 
     protected void loadFromStream(InputStream in) {
 	Reader reader = new InputStreamReader(in);
 	eval_loop(reader, false);
     }
-
-    public File getCurrentFile() { return currentFile; }
 
     public void exit() {
 	System.exit(0);
@@ -274,7 +266,6 @@ public class GeomBase {
     @PRIMITIVE
     public static Value _setroot(Primitive prim, Value v) {
 	FunCode.setRoot(v);
-	Evaluator.startTimer();
 	return Value.nil;
     }
 
@@ -294,16 +285,6 @@ public class GeomBase {
     @PRIMITIVE
     public static Value _toptext(Primitive prim) {
 	theApp.showPhrase();
-	return Value.nil;
-    }
-
-    @PRIMITIVE
-    public static Value _load(Primitive prim, Value fname0) {
-	String fname = prim.string(fname0);
-	File current = theApp.getCurrentFile();
-	File file = (current == null ? new File(fname)
-		     : new File(current.getParentFile(), fname));
-	theApp.loadFromFile(file, false);
 	return Value.nil;
     }
 
@@ -342,21 +323,4 @@ public class GeomBase {
 	    return null;
 	}
     }
-        
-    @PRIMITIVE
-    public static Value _restore(Primitive prim, Value fname) {
-	try {
-	    Session.loadSession(new File(prim.string(fname)));
-	    return Value.nil;
-	} catch (Command.CommandException e) {
-	    Evaluator.error("#restore", e);
-	    return null;
-	}
-    }
-
-    @PRIMITIVE
-    public static Value quit(Primitive prim) {
-	theApp.exit();
-	return Value.nil;
-    }
-}
+}        

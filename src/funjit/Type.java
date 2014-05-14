@@ -128,6 +128,7 @@ class Type {
 	fun_t = func_t(void_t),
 	fun__B_t = func_t(bool_t),
 	fun__D_t = func_t(double_t),
+        fun__V_t = func_t(value_t),
 	fun_A_V_t = func_t(valarray_t, value_t),
 	fun_AII_t = func_t(valarray_t, int_t, int_t, void_t),
 	fun_D_V_t = func_t(double_t, value_t),

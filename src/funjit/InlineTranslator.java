@@ -94,10 +94,10 @@ public class InlineTranslator extends JitTranslator {
 	    @Override
             public boolean compile(int rands[], int ip) {
 		Name f = (Name) funcode.consts[rands[ip]];
+                Value v = f.getGlodef();
 
-		if (f.isFrozen() && f.glodef != null 
-		    && f.glodef instanceof Value.FunValue) {
-		    Function fun = ((Value.FunValue) f.glodef).subr;
+		if (f.isFrozen() && v != null && v instanceof Value.FunValue) {
+		    Function fun = ((Value.FunValue) v).subr;
 		    if ((fun instanceof Primitive) 
                         && fun.arity == rands[ip+1]) {
 			Primitive p = (Primitive) fun;

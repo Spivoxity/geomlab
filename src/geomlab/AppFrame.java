@@ -42,6 +42,8 @@ import plugins.Stylus;
 
 /** The main GUI frame for the GeomLab application */
 public class AppFrame extends JFrame {
+    private String appname;
+
     protected final CodeInput input = new CodeInput(20, 50);
     protected final JTextArea results = new JTextArea(20, 50);
     protected final GraphBox arena = new GraphBox();
@@ -69,8 +71,11 @@ public class AppFrame extends JFrame {
 	"icon16", "icon32", "icon64", "icon128"
     };
 
-    public AppFrame() {
-	super("GeomLab");
+    public AppFrame(String appname) {
+	super(appname);
+
+        this.appname = appname;
+
 	setLocation(50, 50);
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setGlassPane(spinner);
@@ -97,10 +102,14 @@ public class AppFrame extends JFrame {
 
 	input.setLineWrap(true);
 	input.setBorder(myborder);
-	input.setMinimumSize(new Dimension(100, 100));
+        JScrollPane scroller1 =
+            new JScrollPane(input,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	scroller1.setMinimumSize(new Dimension(100, 100));
 
 	JPanel controls = new JPanel(new BorderLayout());
-	controls.add(input, "Center");
+	controls.add(scroller1, "Center");
 	controls.add(buttons, "South");
 
 	JTabbedPane left = new JTabbedPane();
@@ -109,13 +118,13 @@ public class AppFrame extends JFrame {
 	results.setEditable(false);
 	results.setLineWrap(true);
 	results.setBorder(spacer);
-	JScrollPane scroller = 	
+	JScrollPane scroller2 = 	
 	    new JScrollPane(results,
 		ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 	        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-	scroller.setBorder(bevel);
+	scroller2.setBorder(bevel);
 
-	output.addTab("Results", scroller);
+	output.addTab("Results", scroller2);
 	output.addTab("Picture", arena);
 
 	JSplitPane split = 
@@ -198,5 +207,27 @@ public class AppFrame extends JFrame {
 	    };
 	
 	return new PrintWriter(new BufferedWriter(writer)); 
+    }
+
+    public void setFilename(String name) {
+        setTitle(name + " - " + appname);
+    }
+
+    public void loadInput(Reader in) throws IOException {
+        input.read(in, null);
+    }
+
+    public void saveInput(Writer out) throws IOException {
+        try {
+            javax.swing.text.Document doc = input.getDocument();
+            int len = doc.getLength();
+            if (len > 0) {
+                String last = doc.getText(len-1, 1);
+                if (last.charAt(0) != '\n')
+                    input.append("\n");
+            }
+        }
+        catch (javax.swing.text.BadLocationException _) { }
+        input.write(out);
     }
 }

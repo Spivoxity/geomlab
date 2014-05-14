@@ -57,14 +57,13 @@ public final class Name extends Value implements Comparable<Name> {
     /** The definition in the global environment, or null */
     public transient Value glodef = null;
     
-    /** For user-defined names, the text of the definition */
-    private String deftext = null;
-    
     /** True for names that are system-defined and may not be changed */
     private boolean frozen = false;
     
     /** True if the global definition was loaded from bootstrap */
     private transient boolean inherited = false;
+
+    private static List<Reset> resets = null;
 
     private Name(String tag) {
 	this.tag = tag;
@@ -72,9 +71,11 @@ public final class Name extends Value implements Comparable<Name> {
     }
     
     /** Set the global definition and defining text */
-    public void setGlodef(Value v, String text) { 
+    public void setGlodef(Value v) { 
+        if (resets != null)
+            resets.add(new Reset(this));
+
 	glodef = v;
-	deftext = text;
         inherited = false;
 	if (freezer) frozen = true; 
     }
@@ -88,9 +89,6 @@ public final class Name extends Value implements Comparable<Name> {
 
     /** Get the global definition of a name */
     public Value getGlodef() { return glodef; }
-    
-    /** Get the defining text */
-    public String getDeftext() { return deftext; }
     
     /** Test if the global definition is unmodifiable */
     public boolean isFrozen() { return frozen && !freezer; }
@@ -172,7 +170,6 @@ public final class Name extends Value implements Comparable<Name> {
 	   not to its temporary proxy. */
 
 	Name x = find(this.tag);
-	x.deftext = this.deftext;
 	x.frozen = this.frozen;
 	return x;
     }
@@ -212,6 +209,36 @@ public final class Name extends Value implements Comparable<Name> {
 	out.printf("end\n");
 	out.close();
     }
+
+
+    // Mark and reset
+
+    private static class Reset {
+        Name n;
+        Value v;
+
+        public Reset(Name n) {
+            this.n = n;
+            this.v = n.glodef;
+        }
+
+        public void reset() {
+            n.glodef = v;
+        }
+    }
+
+    /** Mark or return to the standard global environment */
+    public static void reset() {
+        if (resets == null)
+            resets = new ArrayList<Reset>();
+        else {
+            for (Reset r : resets) r.reset();
+            resets.clear();
+        }
+    }
+
+
+    // Primitives
 
     @PRIMITIVE
     public static Value _defined(Primitive prim, Value x) {
