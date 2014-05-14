@@ -92,8 +92,7 @@ public class ImagePicture extends Picture {
 	if (ww <= w || hh <= h)
 	    t = Tran2D.scaling(ww, hh);
 	else
-	    t = Tran2D.translation((ww-w)/2, (hh-h)/2);
-	
+	    t = Tran2D.translation((ww-w)/2, (hh-h)/2).scale(w, h);
 	g.setTrans(t);
 	g.drawImage(image);
     }

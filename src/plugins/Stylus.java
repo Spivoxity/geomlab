@@ -128,16 +128,11 @@ public abstract class Stylus {
 
         /** Draw the image in a specified rectangle
          *
-         *  The picture should be prerendered first. */
+         *  The default implementation of drawing in a screen rectangle is
+         *  to scale the picture to fit.  But pixmap pictures like
+         *  ImagePictures look bad if they are scaled up too much,
+         *  so they override this method to add a blank border when
+         *  necessary. */
         public void draw(Stylus g, int ww, int hh, ColorValue background);
-    }
-
-    public static abstract class AbstractDrawable 
-        				extends Value implements Drawable {
-        @Override
-        public void draw(Stylus g, int ww, int hh, ColorValue background) {
-            Tran2D t = Tran2D.scaling(ww, hh);
-            draw(g, t, background);
-        }
     }
 }

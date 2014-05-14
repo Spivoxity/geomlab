@@ -38,7 +38,7 @@ import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 
 /** A picture given as a program dependent on the slider */
-public class SlidePicture extends Stylus.AbstractDrawable {
+public class SlidePicture extends Value implements Stylus.Drawable {
     private static final long serialVersionUID = 1L;
 
     /** Function value that is invoked to compute the image */
@@ -62,6 +62,11 @@ public class SlidePicture extends Stylus.AbstractDrawable {
     @Override
     public void draw(Stylus g, Tran2D t, ColorValue background) {
 	cache.draw(g, t, background);
+    }
+
+    @Override
+    public void draw(Stylus g, int ww, int hh, ColorValue background) {
+        cache.draw(g, ww, hh, background);
     }
 
     @Override
