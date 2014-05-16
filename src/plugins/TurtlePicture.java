@@ -36,7 +36,7 @@ import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
-
+import funbase.NumValue;
 
 /** A picture drawn with a sequence of left, ahead, right commands. */
 public class TurtlePicture extends Picture {
@@ -210,7 +210,7 @@ public class TurtlePicture extends Picture {
 	public void printOn(PrintWriter pr) {
 	    pr.print(name);
 	    pr.print("(");
-	    Value.printNumber(pr, arg);
+	    NumValue.printNumber(pr, arg);
 	    pr.print(")");
 	}
 
@@ -235,7 +235,7 @@ public class TurtlePicture extends Picture {
 	
 	@Override
 	public Value apply1(Value arg) {
-	    return new Command(kind, (float) number(arg), name);
+	    return new Command(kind, toFloat(arg), name);
 	}
 	
 	private Value args[] = new Value[1];

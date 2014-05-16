@@ -43,7 +43,7 @@ package geomlab;
 import funbase.Scanner;
 import funbase.Name;
 import funbase.Value;
-import funbase.Value.NumValue;
+import funbase.NumValue;
 import funbase.Value.BoolValue;
 import funbase.Value.WrongKindException;
 import funbase.FunCode;
@@ -188,18 +188,15 @@ public class BootLoader {
     /** Scan and return an integer */
     private int getInt() {
         boolean neg = false;
+
         if (see(MINUS)) {
             scanner.scan();
             neg = true;
         }
-        try {
-            Value x = get(NUMBER);
-            int n = (int) x.asNumber();
-            return (neg ? -n : n);
-        }
-        catch (WrongKindException _) {
-            throw new Error("missing number");
-        }
+
+        NumValue x = (NumValue) get(NUMBER);
+        int n = x.asInteger();
+        return (neg ? -n : n);
     }
 
     public static void bootstrap(File bootfile) {

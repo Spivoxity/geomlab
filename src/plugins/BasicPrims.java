@@ -33,6 +33,7 @@ package plugins;
 import funbase.Primitive;
 import funbase.Value;
 import funbase.Value.*;
+import funbase.NumValue;
 import funbase.Name;
 import funbase.FunCode;
 import funbase.Evaluator;
@@ -53,92 +54,103 @@ public class BasicPrims {
 	
     @PRIMITIVE("+")
     public static Value plus(Primitive prim, Value x, Value y) {
-	return NumValue.getInstance(prim.number(x) + prim.number(y));
+	return prim.number(x).add(prim.number(y));
     }
 
     @PRIMITIVE("-")
     public static Value minus(Primitive prim, Value x, Value y) {
-	return NumValue.getInstance(prim.number(x) - prim.number(y));
+	return prim.number(x).sub(prim.number(y));
     }
 
     @PRIMITIVE("*")
     public static Value times(Primitive prim, Value x, Value y) {
-	return NumValue.getInstance(prim.number(x) * prim.number(y));
+	return prim.number(x).mul(prim.number(y));
     }
 
     @PRIMITIVE("/")
     public static Value divide(Primitive prim, Value x, Value y) {
-	double yy = prim.number(y);
-	if (yy == 0.0) Evaluator.error("#divzero");
-	return NumValue.getInstance(prim.number(x) / yy);
+	NumValue yy = prim.number(y);
+	if (yy.asDouble() == 0.0) Evaluator.error("#divzero");
+	return prim.number(x).div(yy);
     }
 	
+    @PRIMITIVE("div")
+    public static Value intdiv(Primitive prim, Value x, Value y) {
+        NumValue yy = prim.number(y);
+        if (yy.equals(NumValue.getInstance(0))) Evaluator.error("#divzero");
+        return prim.number(x).intdiv(yy);
+    }
+
     @PRIMITIVE("~")
     public static Value uminus(Primitive prim, Value x) {
-        return NumValue.getInstance(- prim.number(x));
+        return prim.number(x).neg();
     };
 
     @PRIMITIVE("<")
     public static Value less(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) < prim.number(y));
+	return BoolValue.getInstance
+            (prim.number(x).compareTo(prim.number(y)) < 0);
     }
 
     @PRIMITIVE("<=")
     public static Value lesseq(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) <= prim.number(y));
+	return BoolValue.getInstance
+            (prim.number(x).compareTo(prim.number(y)) <= 0);
     }
 
     @PRIMITIVE(">")
     public static Value greater(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) > prim.number(y));
+	return BoolValue.getInstance
+            (prim.number(x).compareTo(prim.number(y)) > 0);
     }
 
     @PRIMITIVE(">=")
     public static Value greatereq(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) >= prim.number(y));
+	return BoolValue.getInstance
+            (prim.number(x).compareTo(prim.number(y)) >= 0);
     }
 
     @PRIMITIVE
     public static Value numeric(Primitive prim, Value x) {
-	return BoolValue.getInstance(x instanceof Value.NumValue);
+	return BoolValue.getInstance(x instanceof NumValue);
     }
 	
     @PRIMITIVE("int")
     public static Value intpart(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.floor(prim.number(x)));
+	return NumValue.getInstance(Math.floor(prim.toDouble(x)));
     }
 
     @PRIMITIVE
     public static Value sqrt(Primitive prim, Value x) {
-	double arg = prim.number(x);
+	double arg = prim.toDouble(x);
 	if (arg < 0.0) Evaluator.error("#sqrt");
 	return NumValue.getInstance(Math.sqrt(arg));
     }
 
     @PRIMITIVE
     public static Value exp(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.exp(prim.number(x)));
+	return NumValue.getInstance(Math.exp(prim.toDouble(x)));
     }
 
     @PRIMITIVE
     public static Value sin(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.sin(prim.number(x) * Math.PI / 180));
+	return NumValue.getInstance(Math.sin(prim.toDouble(x) * Math.PI / 180));
     }
 	
     @PRIMITIVE
     public static Value cos(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.cos(prim.number(x) * Math.PI / 180));
+	return NumValue.getInstance(Math.cos(prim.toDouble(x) * Math.PI / 180));
     }
 	
     @PRIMITIVE
     public static Value tan(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.sin(prim.number(x) * Math.PI / 180));
+	return NumValue.getInstance(Math.sin(prim.toDouble(x) * Math.PI / 180));
     }
 	
     @PRIMITIVE
     public static Value atan2(Primitive prim, Value y, Value x) {
-	return NumValue.getInstance(Math.atan2(prim.number(y), prim.number(x)) 
-				  * 180 / Math.PI);
+	return NumValue.getInstance
+            (Math.atan2(prim.toDouble(y), prim.toDouble(x)) * 180 / Math.PI);
     }
 
     @PRIMITIVE

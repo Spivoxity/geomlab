@@ -30,11 +30,11 @@
 
 package funbase;
 
-import funbase.Value.NumValue;
+import funbase.NumValue;
 import funbase.Value.StringValue;
 
 import java.io.*;
-
+import java.math.BigInteger;
 public class Scanner {
     public Name tok;
     public Value sym;
@@ -236,20 +236,27 @@ public class Scanner {
 		    } else if (Character.isDigit(ch)) {
 			// A numeric constant
 			StringBuilder buf = new StringBuilder(10);
+                        boolean real = false;
+
 			while (Character.isDigit(ch)) {
 			    buf.append(ch); ch = getChar();
 			}
+
 			if (ch == '.') {
-			    buf.append(ch); ch = getChar();
+			    ch = getChar();
 			    if (! Character.isDigit(ch)) {
 				pushBack(ch); ch = '.';
 			    } else {
+                                real = true;
+                                buf.append('.');
 				while (Character.isDigit(ch)) {
 				    buf.append(ch); ch = getChar();
 				}
 			    }
 			}
+
 			if (ch == 'E') {
+                            real = true;
 			    buf.append(ch); ch = getChar();
 			    if (ch == '+' || ch == '-') {
 				buf.append(ch); ch = getChar();
@@ -260,10 +267,14 @@ public class Scanner {
 				buf.append(ch); ch = getChar();
 			    } while (Character.isDigit(ch));
 			}
+
 			pushBack(ch);
 			tok = NUMBER; 
-			double val = Double.parseDouble(buf.toString());
-			sym = NumValue.getInstance(val);
+
+                        if (real)
+                            sym = NumValue.makeReal(buf.toString());
+                        else
+                            sym = NumValue.makeInteger(buf.toString());
 		    } else if (isOpChar(ch)) {
 			// A symbolic operator
 			StringBuilder buf = new StringBuilder(10);

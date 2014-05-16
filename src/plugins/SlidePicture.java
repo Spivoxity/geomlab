@@ -33,6 +33,7 @@ package plugins;
 import java.io.PrintWriter;
 
 import funbase.Value;
+import funbase.NumValue;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;

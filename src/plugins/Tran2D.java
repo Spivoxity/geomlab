@@ -33,6 +33,7 @@ package plugins;
 import java.io.PrintWriter;
 
 import funbase.Value;
+import funbase.NumValue;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Evaluator;
@@ -156,12 +157,12 @@ public class Tran2D extends Value {
     @Override
     public void printOn(PrintWriter out) {
 	out.print("_transform(");
-	Value.printNumber(out, m_xx); out.print(", ");
-	Value.printNumber(out, m_yx); out.print(", ");
-	Value.printNumber(out, m_xy); out.print(", ");
-	Value.printNumber(out, m_yy); out.print(", ");
-	Value.printNumber(out, m_x); out.print(", ");
-	Value.printNumber(out, m_y); out.print(")");
+	NumValue.printNumber(out, m_xx); out.print(", ");
+	NumValue.printNumber(out, m_yx); out.print(", ");
+	NumValue.printNumber(out, m_xy); out.print(", ");
+	NumValue.printNumber(out, m_yy); out.print(", ");
+	NumValue.printNumber(out, m_x); out.print(", ");
+	NumValue.printNumber(out, m_y); out.print(")");
     }
 
     @PRIMITIVE
@@ -170,9 +171,9 @@ public class Tran2D extends Value {
 	public Value apply6(Value m_xx, Value m_yx, Value m_xy, 
 			    Value m_yy, Value m_x, Value m_y) {
 	    Evaluator.countCons();
-	    return new Tran2D((float) number(m_xx), (float) number(m_yx), 
-			      (float) number(m_xy), (float) number(m_yy), 
-			      (float) number(m_x), (float) number(m_y));
+	    return new Tran2D(toFloat(m_xx), toFloat(m_yx), 
+			      toFloat(m_xy), toFloat(m_yy), 
+			      toFloat(m_x), toFloat(m_y));
 	}
 
 	private Value args[] = new Value[6];

@@ -44,6 +44,7 @@ import java.lang.ref.*;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.NumValue;
 import funbase.Evaluator;
 
 /** A picture defined by a bitmap. */
@@ -194,8 +195,8 @@ public class ImagePicture extends Picture {
     @PRIMITIVE
     public static Value _image(Primitive prim, Value width0, 
 			       Value height0, Value fun0) {
-	int width = (int) prim.number(width0);
-	int height = (int) prim.number(height0);
+	int width = prim.toInteger(width0);
+	int height = prim.toInteger(height0);
 	FunValue fun = prim.cast(FunValue.class, fun0, "a function");
 	Native factory = Native.instance();
 	Native.Image image = factory.image(width, height);
@@ -219,9 +220,9 @@ public class ImagePicture extends Picture {
 				Value a2, Value a3) {
 	Stylus.Drawable pic = 
             prim.cast(Stylus.Drawable.class, a0, "a picture");
-	int size = (int) Math.round(prim.number(a1));
-	float slider = (float) prim.number(a2);
-	float grey = (float) prim.number(a3);
+	int size = (int) Math.round(prim.toDouble(a1));
+	float slider = prim.toFloat(a2);
+	float grey = prim.toFloat(a3);
 	ColorValue bg = ColorValue.getGrey(grey);
 	pic.prerender(slider);
 	Native factory = Native.instance();
@@ -234,8 +235,8 @@ public class ImagePicture extends Picture {
 			       Value x0, Value y0) {
 	ImagePicture p = prim.cast(ImagePicture.class, p0, "an image");
 	int w = p.image.getWidth(), h = p.image.getHeight();
-	int x = (int) Math.round(prim.number(x0));
-	int y = (int) Math.round(prim.number(y0));
+	int x = (int) Math.round(prim.toDouble(x0));
+	int y = (int) Math.round(prim.toDouble(y0));
 	if (0 <= x && x < w && 0 <= y && y < h) {
 	    int rgb = p.image.getRGB(x, h-y-1);
 	    return ColorValue.getInstance(rgb);

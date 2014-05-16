@@ -214,7 +214,7 @@ public class FunCode extends Value {
                         break;
                     default:
                         /* An integer argument */
-                        rand = (int) prim.number(v);
+                        rand = prim.toInteger(v);
                         break;
                 }
             }
@@ -224,9 +224,9 @@ public class FunCode extends Value {
 	}
 	
 	return new FunCode(name.toString(), // Could be name or string
-                           (int) prim.number(arity), 
-                           (int) prim.number(fsize), 
-                           (int) prim.number(ssize), 
+                           prim.toInteger(arity), 
+                           prim.toInteger(fsize), 
+                           prim.toInteger(ssize), 
                            instrs, rands,
 			   consts.toArray(new Value[consts.size()]));
     }

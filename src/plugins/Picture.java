@@ -36,6 +36,7 @@ import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.NumValue;
 import funbase.FunCode;
 
 /* The pictures that GeomLab works with do not have a fixed size, but
@@ -171,7 +172,7 @@ public class Picture extends Value implements Stylus.Drawable {
 
     @PRIMITIVE
     public static Value _combine(Primitive prim, Value x, Value y, Value z) {
-	return new BinaryPicture((float) prim.number(x), 
+	return new BinaryPicture(prim.toFloat(x), 
 				 prim.cast(Picture.class, y, "a picture"),
 				 prim.cast(Picture.class, z, "a picture"));
     }
@@ -214,10 +215,10 @@ public class Picture extends Value implements Stylus.Drawable {
     @PRIMITIVE
     public static Value _transpic(Primitive prim, Value aspect, 
 				  Value base, Value trans, Value inc) {
-	return new TransPicture((float) prim.number(aspect),
+	return new TransPicture(prim.toFloat(aspect),
 				prim.cast(Picture.class, base, "a picture"),
 				prim.cast(Tran2D.class, trans, "a transform"),
-				(int) prim.number(inc));
+				prim.toInteger(inc));
     }
 
     @PRIMITIVE

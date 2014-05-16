@@ -81,9 +81,8 @@ define and (x, y) = x and y;
 define or (x, y) = x or y;
 
 _infixl(#div, 6);
-define div (x, y) = int(x/y);
 _infixl(#mod, 6);
-define mod (x, y) = x - y * int(x/y);
+define mod (x, y) = x - y * (x div y);
 
 define abs(x) = if x >= 0 then x else -x;
 

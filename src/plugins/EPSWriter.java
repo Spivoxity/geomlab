@@ -345,9 +345,9 @@ public class EPSWriter extends Stylus {
 	Stylus.Drawable pic = 
             prim.cast(Stylus.Drawable.class, a0, "a picture");
 	String fname = prim.string(a1);
-	float meanSize = (float) prim.number(a2);
-	float slider = (float) prim.number(a3);
-	float grey = (float) prim.number(a4);
+	float meanSize = prim.toFloat(a2);
+	float slider = prim.toFloat(a3);
+	float grey = prim.toFloat(a4);
 	ColorValue background = ColorValue.getGrey(grey);
 
         pic.prerender(slider);

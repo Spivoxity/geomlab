@@ -34,6 +34,7 @@ import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
 import funbase.Value.*;
+import funbase.NumValue;
 
 public class StringPrims {
     /** Concatenate two strings */
@@ -65,7 +66,7 @@ public class StringPrims {
     /** Make character with specified ASCII code */
     @PRIMITIVE
     public static Value chr(Primitive prim, Value x) {
-	return StringValue.getInstance((char) prim.number(x));
+	return StringValue.getInstance((char) prim.toInteger(x));
     }
 
     /** Return ASCII code of first character */

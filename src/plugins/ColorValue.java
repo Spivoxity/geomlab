@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.NumValue;
 import funbase.Evaluator;
 
 /** A colour wrapped as a value */
@@ -76,6 +77,10 @@ public class ColorValue extends Picture {
 
     public static ColorValue getGrey(float g) {
 	return new ColorValue(g, g, g);
+    }
+
+    public static Value getInstance(NumValue rf, NumValue gf, NumValue bf) {
+        return new ColorValue(rf.asDouble(), gf.asDouble(), bf.asDouble());
     }
 
     public static Value getInstance(double rf, double gf, double bf) {
@@ -129,9 +134,10 @@ public class ColorValue extends Picture {
     
     @Override
     public void printOn(PrintWriter out) {
-	out.print("rgb("); Value.printNumber(out, rpart); out.print(", ");
-	Value.printNumber(out, gpart); out.print(", ");
-	Value.printNumber(out, bpart); out.print(")");
+	out.print("rgb("); NumValue.printNumber(out, rpart); 
+        out.print(", "); NumValue.printNumber(out, gpart); 
+        out.print(", "); NumValue.printNumber(out, bpart); 
+        out.print(")");
     }
     
     /** Paint the colour as a circular swatch. */
@@ -157,7 +163,8 @@ public class ColorValue extends Picture {
 	@Override
 	public Value apply3(Value rpart, Value gpart, Value bpart) {
 	    Evaluator.countCons();
-	    return new ColorValue(number(rpart), number(gpart), number(bpart));
+	    return new ColorValue(toDouble(rpart), toDouble(gpart), 
+                                  toDouble(bpart));
 	}
 	    
 	private Value args[] = new Value[3];
@@ -197,8 +204,8 @@ public class ColorValue extends Picture {
     /* Create a colour from HSV values in the range [0, 1] */
     @PRIMITIVE
     public static Value hsv(Primitive prim, Value h, Value s, Value v) {
-	return getHSB((float) prim.number(h),
-		      (float) cutoff(prim.number(s)),
-		      (float) cutoff(prim.number(v)));
+	return getHSB(prim.toFloat(h),
+		      (float) cutoff(prim.toDouble(s)),
+		      (float) cutoff(prim.toDouble(v)));
     }
 }

@@ -33,6 +33,7 @@ package plugins;
 import java.io.PrintWriter;
 
 import funbase.Value;
+import funbase.NumValue;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Evaluator;
@@ -83,9 +84,9 @@ public class Vec2D extends Value {
     
     @Override
     public void printOn(PrintWriter out) {
-	out.print("_vector("); 
-	Value.printNumber(out, x); out.print(", ");
-	Value.printNumber(out, y); out.print(")");
+	out.print("_vector("); NumValue.printNumber(out, x); 
+        out.print(", "); NumValue.printNumber(out, y); 
+        out.print(")");
     }
 
     public static float cosd(float arg) {
@@ -101,7 +102,7 @@ public class Vec2D extends Value {
 	@Override
 	public Value apply2(Value x, Value y) {
 	    Evaluator.countCons();
-	    return new Vec2D((float) number(x), (float) number(y));
+	    return new Vec2D(toFloat(x), toFloat(y));
 	}
 
 	private Value args[] = new Value[2];

@@ -48,7 +48,7 @@ import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Scanner;
 import funbase.Value;
-import funbase.Value.NumValue;
+import funbase.NumValue;
 import funbase.FunCode;
 
 /** Common superclass for classes that provide a read-eval-print loop */
@@ -124,6 +124,7 @@ public class GeomBase {
 	    log.print("--> ");
 	    v.printOn(log);
 	    log.println();
+	    log.println();
 	}
     }
 
@@ -134,6 +135,7 @@ public class GeomBase {
 	if (display) {
 	    log.format("--- %s = ", n);
 	    v.printOn(log);
+	    log.println();
 	    log.println();
 	}
     }

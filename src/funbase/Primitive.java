@@ -59,14 +59,26 @@ public abstract class Primitive extends Function {
     }
 
     /** Fetch value of a NumValue object, or throw EvalException */
-    public double number(Value a) {
-	try {
-	    return a.asNumber();
-	}
-	catch (WrongKindException _) {
-	    expect("a numeric");
-	    return 0.0;
-	}
+    public NumValue number(Value a) {
+        return cast(NumValue.class, a, "a numeric");
+    }
+
+    /** Fetch numeric value as a double */
+    public double toDouble(Value a) {
+        NumValue n = number(a);
+        return n.asDouble();
+    }
+
+    /** Fetch numeric value as a float */
+    public float toFloat(Value a) {
+        NumValue n = number(a);
+        return n.asFloat();
+    }
+
+    /** Fetch numeric value as an integer */
+    public int toInteger(Value a) {
+        NumValue n = number(a);
+        return n.asInteger();
     }
 
     /** Fetch value of a StringValue object, or throw EvalException */ 

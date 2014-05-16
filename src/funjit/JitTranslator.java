@@ -283,7 +283,7 @@ public class JitTranslator implements FunCode.Jit {
     	    // if (v == null) ErrContext.err_notdef(x);
     	    code.gen(IFNONNULL, lab1);
     	    code.gen(ALOAD, _temp);
-    	    code.gen(INVOKESTATIC, evaluator_cl, "err_notdef", fun_N_t);
+    	    code.gen(INVOKESTATIC, evaluator_cl, "err_notdef", fun_X_t);
     	    code.label(lab1);
     	}
     }

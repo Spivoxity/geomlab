@@ -33,6 +33,7 @@ package plugins;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.NumValue;
 
 /** A picture with fills and strokes specified by lists of coordinates */
 public class TilePicture extends Picture {
@@ -89,7 +90,7 @@ public class TilePicture extends Picture {
 
     @PRIMITIVE
     public static Value _tile(Primitive prim, Value a, Value ss, Value fs) {
-	float aspect = (float) prim.number(a);
+	float aspect = prim.toFloat(a);
 	int nStrokes = prim.listLength(ss);
 	int nOutlines = prim.listLength(fs);
 	Vec2D strokes[][] = new Vec2D[nStrokes][], 
@@ -109,8 +110,8 @@ public class TilePicture extends Picture {
 	    Value xs = prim.head(xss);
 	    Value spec = prim.head(xs);
 
-	    if (spec instanceof Value.NumValue)
-		colours[i] = (int) prim.number(spec);
+	    if (spec instanceof NumValue)
+		colours[i] = prim.toInteger(spec);
 	    else if (spec instanceof ColorValue)
 		colours[i] = spec;
 	    else
@@ -128,10 +129,10 @@ public class TilePicture extends Picture {
     @PRIMITIVE
     public static Value _palette(Primitive prim, Value base, 
 				 Value step, Value sval, Value bval) {
-	hbase = (float) prim.number(base);
-	hstep = (float) prim.number(step);
-	svalue = (float) prim.number(sval);
-	bvalue = (float) prim.number(bval);
+	hbase = prim.toFloat(base);
+	hstep = prim.toFloat(step);
+	svalue = prim.toFloat(sval);
+	bvalue = prim.toFloat(bval);
 	return Value.nil;
     }
 }

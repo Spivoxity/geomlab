@@ -282,9 +282,9 @@ public class Evaluator {
     @PRIMITIVE
     public static Value _limit(Primitive prim, Value time, 
 			       Value steps, Value conses) {
-	Evaluator.setLimits((int) prim.number(time),
-			    (int) prim.number(steps), 
-			    (int) prim.number(conses));
+	Evaluator.setLimits(prim.toInteger(time),
+                            prim.toInteger(steps), 
+                            prim.toInteger(conses));
 	return Value.nil;
     }
 }

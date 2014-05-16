@@ -115,26 +115,6 @@ public class InlineTranslator extends JitTranslator {
 	    }
 	});
 
-	addHook(new CodeHook(Opcode.QUOTE, Opcode.PUTARG) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		Inliner gen = funstack.peek();
-		Value v = funcode.consts[rands[ip]];
-		Kind k = gen.argkind(rands[ip+1]);
-
-		// Put numeric constants in the JVM constant pool
-		if (k == Kind.NUMBER) {
-		    try {
-			code.gen(CONST, v.asNumber());
-			return true;
-		    }
-		    catch (WrongKindException _) { /* PUNT */ }
-		}
-		
-		return false;
-	    }
-	});
-
 	/* Hook to watch for CALL / PUTARG */
 	addHook(new CodeHook(Opcode.CALL, Opcode.PUTARG) {
 	    @Override
@@ -205,14 +185,14 @@ public class InlineTranslator extends JitTranslator {
 	// Inliners for various common primitives
 	register(new Equality("=", true));
 	register(new Equality("<>", false));
-	register(new Operator("+", DADD));
-	register(new Operator("-", DSUB));
-	register(new Operator("*", DMUL));
-	register(new Operator("_uminus", DNEG));
-	register(new Comparison("<", DCMPG, IFGE));
-	register(new Comparison("<=", DCMPG, IFGT));
-	register(new Comparison(">", DCMPL, IFLE));
-	register(new Comparison(">=", DCMPG, IFLT));
+	register(new Operator("+", "add", fun_N_N_t));
+	register(new Operator("-", "sub", fun_N_N_t));
+	register(new Operator("*", "mul", fun_N_N_t));
+	register(new Operator("_uminus", "neg", fun__N_t));
+	register(new Comparison("<", IFGE));
+	register(new Comparison("<=", IFGT));
+	register(new Comparison(">", IFLE));
+	register(new Comparison(">=", IFLT));
 	register(new ListSelect("head", "#head"));
 	register(new ListSelect("tail", "#tail"));
 	register(new Selector("rpart", color_cl, "colour", Kind.NUMBER));
@@ -230,7 +210,7 @@ public class InlineTranslator extends JitTranslator {
 	register(new SimpleInliner("rgb", Kind.NUMBER) {
 	    @Override 
 	    public Kind call() {
-		code.gen(INVOKESTATIC, color_cl, "getInstance",  fun_DDD_V_t);
+		code.gen(INVOKESTATIC, color_cl, "getInstance",  fun_NNN_V_t);
 		return Kind.VALUE;
 	    }
 	});
@@ -271,9 +251,8 @@ public class InlineTranslator extends JitTranslator {
     private void convValue(Kind k) {
 	switch (k) {
 	    case VALUE:
-		break;
 	    case NUMBER:
-		code.gen(INVOKESTATIC, numval_cl, "getInstance", fun_D_V_t);
+                // NumValue is just a Value subclass
 		break;
 	    case BOOL:
 		code.gen(INVOKESTATIC, boolval_cl, "getInstance", fun_B_V_t);
@@ -297,7 +276,7 @@ public class InlineTranslator extends JitTranslator {
 	    case VALUE: 
 		break;
 	    case NUMBER: 
-		access("asNumber", fun__D_t, new Expect(name, "numeric"));
+                cast(numval_cl, new Expect(name, "numeric"));
 		break;
 	    case BOOL: 	
 		access("asBoolean", fun__B_t, new Expect(name, "boolean"));
@@ -426,34 +405,34 @@ public class InlineTranslator extends JitTranslator {
 
     /** Inliner for numeric operations */
     public class Operator extends SimpleInliner {
-	private Op op;
+	private String op;
+        private Type ty;
 
-	public Operator(String name, Op op) {
+	public Operator(String name, String op, Type ty) {
 	    super(name, Kind.NUMBER);
-	    this.op = op;
+	    this.op = op; this.ty = ty;
 	}
 
 	@Override
 	public Kind call() {
-	    code.gen(op);
+	    code.gen(INVOKEVIRTUAL, numval_cl, op, ty);
 	    return Kind.NUMBER;
 	}
     }
 
     /** Inliner for numeric comparisons */
     public class Comparison extends SimpleInliner {
-	private Op cmp_op;	// Double comparison op DCMPL or DCMPG
 	private Op jump_op;	// Conditional branch if condition false
 
-	public Comparison(String name, Op cmp_op, Op jump_op) {
+	public Comparison(String name, Op jump_op) {
 	    super(name, Kind.NUMBER);
-	    this.cmp_op = cmp_op; this.jump_op = jump_op;
+	    this.jump_op = jump_op;
 	}
 
 	@Override 
 	public Kind call() {
 	    Label lab = new Label(), lab2 = new Label();    
-	    code.gen(cmp_op);
+	    code.gen(INVOKEVIRTUAL, numval_cl, "compareTo", fun_N_I_t);
 	    code.gen(jump_op, lab);
 	    code.gen(CONST, 1);
 	    code.gen(GOTO, lab2);
@@ -465,7 +444,7 @@ public class InlineTranslator extends JitTranslator {
 
 	@Override 
 	public boolean jcall(int addr) {
-	    code.gen(cmp_op);
+	    code.gen(INVOKEVIRTUAL, numval_cl, "compareTo", fun_N_I_t);
 	    code.gen(jump_op, makeLabel(addr));
 	    return true;
 	}
@@ -517,21 +496,22 @@ public class InlineTranslator extends JitTranslator {
 
 	@Override 
 	public Kind call() {
-	    Type ty;
-
+	    cast(cl, new Expect(name, cl_name));
 	    switch (kind) {
 		case VALUE: 
-		    ty = value_t; break;
+                    code.gen(GETFIELD, cl, field, value_t);
+		    break;
 		case NUMBER: 
-		    ty = double_t; break;
+                    code.gen(GETFIELD, cl, field, double_t);
+                    code.gen(INVOKESTATIC, numval_cl, "getInstance", fun_D_N_t);
+		    break;
 		case BOOL: 
-		    ty = bool_t; break;
+                    code.gen(GETFIELD, cl, field, bool_t);
+		    break;
 		default: 
 		    throw new Error("Selector.call");
 	    }
 
-	    cast(cl, new Expect(name, cl_name));
-	    code.gen(GETFIELD, cl, field, ty);
 	    return kind;
 	}
     }

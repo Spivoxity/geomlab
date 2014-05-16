@@ -106,7 +106,7 @@ proc upload {title contents} {
     set edittoken [dict get [lindex $pageinfo 1] edittoken]
 
     # Put the page
-    set dict [json-multipart action edit \
+    set dict [json-multipart action edit bot 1 \
 		  title $title  token $edittoken  text $contents]
 
     if {[dict get $dict edit result] ne "Success"} {

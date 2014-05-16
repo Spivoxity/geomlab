@@ -207,7 +207,7 @@ public class Interp implements FunCode.Jit {
 		    case MPLUS:
 			try {
 			    sp -= 1;
-			    Value.NumValue x = (Value.NumValue) frame[sp];
+			    NumValue x = (NumValue) frame[sp];
 			    Value v = x.matchPlus(code.consts[rand]);
 			    if (v != null)
 				frame[sp++] = v;

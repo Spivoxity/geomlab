@@ -193,11 +193,11 @@ public class BushPicture extends Picture {
     @PRIMITIVE
     public static Value _bushparams(Primitive prim, Value w, Value a, Value t,
 				    Value n, Value h, Value s, Value v) {
-	linewidth = (float) prim.number(w);
-	alpha = (float) prim.number(a);
-	theta = (float) prim.number(t);
-	setColours((int) prim.number(n), (float) prim.number(h), 
-		   (float) prim.number(s), (float) prim.number(v));
+	linewidth = prim.toFloat(w);
+	alpha = prim.toFloat(a);
+	theta = prim.toFloat(t);
+	setColours(prim.toInteger(n), prim.toFloat(h), 
+		   prim.toFloat(s), prim.toFloat(v));
 	return Value.nil;
     }
 }
