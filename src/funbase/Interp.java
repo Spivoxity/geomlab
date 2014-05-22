@@ -171,10 +171,10 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case CLOSURE: {
-			sp -= rand;
+			sp -= rand-1;
 			FunCode body = (FunCode) frame[sp-1];
-			Value fvars[] = new Value[rand+1];
-			System.arraycopy(frame, sp, fvars, 1, rand);
+			Value fvars[] = new Value[rand];
+			System.arraycopy(frame, sp, fvars, 1, rand-1);
 			frame[sp-1] = body.makeClosure(fvars);
 			break;
 		    }
@@ -202,6 +202,7 @@ public class Interp implements FunCode.Jit {
 
 		    case RETURN:
 			stack.pop();
+                        assert (sp == code.fsize+1);
 			return frame[--sp];
 
 		    case MPLUS:
@@ -236,6 +237,7 @@ public class Interp implements FunCode.Jit {
 				(Value.ConsValue) frame[sp-1];
 			    frame[sp++] = cell.head;
 			} catch (ClassCastException _) {
+                            sp--;
 			    pc = trap;
 			}
 			break;

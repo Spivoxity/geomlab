@@ -521,7 +521,6 @@ define __top() =
       | visit(d, [#JFALSE, lab]) = setlab(lab, d-1) >> d-1
       | visit(d, [#JUMP, lab]) = setlab(lab, d) >> d
       | visit(d, [#PREP, _]) = d
-      | visit(d, [#CLOPREP, _]) = d
       | visit(d, [#FRAME, _]) = d
       | visit(d, [#RETURN]) = d-1
       | visit(d, [#MPLUS, _]) = d
@@ -532,7 +531,7 @@ define __top() =
       | visit(d, [#TCALL, _]) = d
       | visit(d, [#PUTARG, _]) = d
       | visit(d, [#CALL, n]) = d-n
-      | visit(d, [#CLOSURE, n]) = d-n
+      | visit(d, [#CLOSURE, n]) = d-n+1
       | visit(d, [#MPRIM, n]) = d+n-2 in
     foldl((function (d, i) let d1 = visit(d, i) in 
 		_set(ssize, max(d1, _get(ssize))) >> d1), 0, code) >>
