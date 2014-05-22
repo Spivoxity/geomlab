@@ -338,24 +338,21 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(INVOKEVIRTUAL, funcode_cl, "makeClosure", fun_A_V_t);
     }
     
+    /** Cast value on stack and goto trap on failure */
+    protected final void trapCast(String ty) {
+        code.gen(DUP);
+	code.gen(INSTANCEOF, ty);
+	code.gen(IFEQ, trap);
+	code.gen(CHECKCAST, ty);
+    }
+
     private void genMNil() {
     	// v = stack[--sp];
     	// if (! v.isNilValue()) goto trap;
+        code.gen(DUP);
     	code.gen(INSTANCEOF, nilval_cl);
     	code.gen(IFEQ, trap);
-    }
-
-    /** Cast value on stack and goto trap on failure: uses top cache */
-    protected final void trapCast(String ty) {
-	if (cache < 0) {
-	    code.gen(DUP);
-	    code.gen(ASTORE, _temp);
-	    cache = _temp;
-	}
-	code.gen(INSTANCEOF, ty);
-	code.gen(IFEQ, trap);
-	code.gen(ALOAD, cache);
-	code.gen(CHECKCAST, ty);
+        code.gen(POP);
     }
 
     private void genMCons() {
@@ -364,25 +361,25 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(GETFIELD, consval_cl, "head", value_t);
     }
 
-    private void genGettail() {
-    	code.gen(GETFIELD, consval_cl, "tail", value_t);
-    }
-
     private void genMPlus(int n) {
 	trapCast(numval_cl);
+        code.gen(DUP);
 	genField("consts", n);
     	code.gen(INVOKEVIRTUAL, numval_cl, "matchPlus", fun_V_V_t);
     	code.gen(DUP);
     	code.gen(ASTORE, _temp);
     	code.gen(IFNULL, trap);
+        code.gen(POP);
     	pushLocal(_temp);
     }
 
     private void genMEq() {
     	// v = stack[--sp];
     	// if (! v.equals(stack[--sp])) goto trap;
+        code.gen(SWAP); code.gen(DUP_X1); code.gen(SWAP);
     	code.gen(INVOKEVIRTUAL, object_cl, "equals", fun_O_B_t);
     	code.gen(IFEQ, trap);
+        code.gen(POP);
     }
 
     /** Match a primitive as constructor */
@@ -390,20 +387,27 @@ public class JitTranslator implements FunCode.Jit {
     	// temp = ((Function) cons).subr.pattMatch(obj, n)
 	cast(funval_cl, new Crash("pattmatch"));
 	code.gen(GETFIELD, funval_cl, "subr", function_t);
-    	code.gen(SWAP);				// obj, subr
-    	code.gen(CONST, n);			// n, obj, subr
+    	code.gen(SWAP);				// obj, subr, ...
+        code.gen(DUP_X1);                       // obj, subr, obj, ...
+    	code.gen(CONST, n);			// n, obj, subr, obj, ...
     	code.gen(INVOKEVIRTUAL, function_cl, "pattMatch", fun_VI_A_t);
+                                		// args, obj, ...
     	code.gen(DUP);				
     	code.gen(ASTORE, _temp);
 
     	// if (temp == null) goto trap
     	code.gen(IFNULL, trap);
+        code.gen(POP);
     	
     	for (int i = 0; i < n; i++) {
 	    code.gen(ALOAD, _temp);
 	    code.gen(CONST, i);
 	    code.gen(AALOAD);
 	}
+    }
+
+    private void genGettail() {
+    	code.gen(GETFIELD, consval_cl, "tail", value_t);
     }
 
     /** Default translation of each opcode, if not overridden by rules */
@@ -432,9 +436,9 @@ public class JitTranslator implements FunCode.Jit {
 	    case MEQ:     genMEq(); break;
 	    case MPRIM:   genMPrim(rand); break;
 	    case MCONS:   genMCons(); break;
-	    case GETTAIL: genGettail(); break;
 	    case MNIL:    genMNil(); break;
 	    case MPLUS:   genMPlus(rand); break;
+	    case GETTAIL: genGettail(); break;
 	    default:
 		throw new Error("Bad opcode " + op);
 	}

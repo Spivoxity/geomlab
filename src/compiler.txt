@@ -516,7 +516,7 @@ define __top() =
       | visit(d, [#QUOTE, _]) = d+1
       | visit(d, [#NIL]) = d+1
       | visit(d, [#CONS]) = d-1
-      | visit(d, [#TRAP, lab]) = setlab(lab, d-1) >> d
+      | visit(d, [#TRAP, lab]) = setlab(lab, d) >> d
       | visit(d, [#FAIL]) = d
       | visit(d, [#JFALSE, lab]) = setlab(lab, d-1) >> d-1
       | visit(d, [#JUMP, lab]) = setlab(lab, d) >> d
@@ -527,12 +527,12 @@ define __top() =
       | visit(d, [#MEQ]) = d-2
       | visit(d, [#MNIL]) = d-1
       | visit(d, [#MCONS]) = d+1
+      | visit(d, [#MPRIM, n]) = d+n-2
       | visit(d, [#GETTAIL]) = d
       | visit(d, [#TCALL, _]) = d
       | visit(d, [#PUTARG, _]) = d
       | visit(d, [#CALL, n]) = d-n
-      | visit(d, [#CLOSURE, n]) = d-n+1
-      | visit(d, [#MPRIM, n]) = d+n-2 in
+      | visit(d, [#CLOSURE, n]) = d-n+1 in
     foldl((function (d, i) let d1 = visit(d, i) in 
 		_set(ssize, max(d1, _get(ssize))) >> d1), 0, code) >>
 
@@ -677,12 +677,12 @@ define __top() =
   { c_patt -- compile a pattern, assuming d+1 things on the stack }
   let c_patt([#const, v], d, env) = 
         let f = label() in 
-	pgen([#seq, [#TRAP, f], [#QUOTE, v], [#MEQ]], [], [[f, d]])
+	pgen([#seq, [#TRAP, f], [#QUOTE, v], [#MEQ]], [], [[f, d+1]])
 
     | c_patt([#var, x], d, env) =
         let f = label() in
         if islocal(x, env) then
-	  pgen([#seq, [#TRAP, f], c_ref(x, env), [#MEQ]], [], [[f, d]])
+	  pgen([#seq, [#TRAP, f], c_ref(x, env), [#MEQ]], [], [[f, d+1]])
         else
           pgen([#seq, [#BIND, alloc(x, env)]], [], [])
 
@@ -694,26 +694,26 @@ define __top() =
 	let n = length(args) in
 	pgen([#seq, [#TRAP, f], c_ref(cn, env), [#MPRIM, n]],
 	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ]),
-             [[f, d]])
+             [[f, d+1]])
 
     | c_patt([#cons, h, [#anon]], d, env) =
         { A cons pattern h : _ }
         let f = label() in
 	pgen([#seq, [#TRAP, f], [#MCONS]], 
              [c_patt(h, d+1, env), [[#POP], []]],
-	     [[f, d]])
+	     [[f, d+1]])
 
     | c_patt([#cons, h, t], d, env) =
         { A cons pattern h : t }
         let f = label() in
 	pgen([#seq, [#TRAP, f], [#MCONS]], 
              [c_patt(h, d+1, env), [[#GETTAIL], []], c_patt(t, d, env)], 
-	     [[f, d]])
+	     [[f, d+1]])
 
     | c_patt([#nil], d, env) = 
         { A nil pattern [] }
         let f = label() in 
-	pgen([#seq, [#TRAP, f], [#MNIL]], [], [[f, d]])
+	pgen([#seq, [#TRAP, f], [#MNIL]], [], [[f, d+1]])
 
     | c_patt(#list:es, d, env) =
         c_patt(listify(es), d, env)
@@ -722,7 +722,7 @@ define __top() =
         { A plus pattern p + n }
         let f = label() in
 	pgen([#seq, [#TRAP, f], [#MPLUS, n]], 
-	        [c_patt(p1, d, env)], [[f, d]]) in
+	        [c_patt(p1, d, env)], [[f, d+1]]) in
 
   { c_arg -- compile code to match an argument }
   let c_arg(i, [#var, x], env) =

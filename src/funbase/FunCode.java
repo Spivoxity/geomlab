@@ -60,9 +60,10 @@ public class FunCode extends Value {
 	JUMP,        // [#jump, lab] becomes JUMP n:
 		     //   jump to instruction at offset n
 	RETURN,      // [#return]: return from function
-	MPLUS,       // [#mplus, k]: match an n+k pattern by popping integer
+        MPLUS,       // [#mplus, k]: match an n+k pattern by popping integer
 		     //   x with x >= k and pushing x-k; otherwise trap
 	MEQ,         // [#meq]: pop two values and trap if not equal
+        MPRIM,       // [#mprim, n]: pattern match a constructor with n args
 	MNIL,        // [#mnil]: pop the empty list; otherwise trap
 	MCONS,       // [#mcons]: pop a cons cell and push its tail and head
 	GETTAIL,     // [#gettail]: fetch tail following MCONS
@@ -72,7 +73,6 @@ public class FunCode extends Value {
 	PUTARG,      // [#putarg, i]: mark i'th argument of a call
         CALL,        // [#call, n]: call a function with n arguments
         CLOSURE,     // [#closure, n]: form a closure with n free variables
-        MPRIM;       // [#mprim, n]: pattern match a constructor with n args
     }
     
     /** Name of the function (used for error messages) */

@@ -207,11 +207,10 @@ public class Interp implements FunCode.Jit {
 
 		    case MPLUS:
 			try {
-			    sp -= 1;
-			    Value.NumValue x = (Value.NumValue) frame[sp];
+			    Value.NumValue x = (Value.NumValue) frame[sp-1];
 			    Value v = x.matchPlus(code.consts[rand]);
 			    if (v != null)
-				frame[sp++] = v;
+				frame[sp-1] = v;
 			    else
 				pc = trap;
 			}
@@ -221,13 +220,17 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case MEQ:
-			sp -= 2;
-			if (! frame[sp].equals(frame[sp+1]))
+			sp--;
+			if (frame[sp-1].equals(frame[sp]))
+                            sp--;
+                        else
 			    pc = trap;
 			break;
 
 		    case MNIL:
-			if (! (frame[--sp] instanceof Value.NilValue))
+			if (frame[sp-1] instanceof Value.NilValue)
+                            sp--;
+                        else
 			    pc = trap;
 			break;
 
@@ -237,28 +240,28 @@ public class Interp implements FunCode.Jit {
 				(Value.ConsValue) frame[sp-1];
 			    frame[sp++] = cell.head;
 			} catch (ClassCastException _) {
-                            sp--;
 			    pc = trap;
 			}
+			break;
+		    }
+
+		    case MPRIM: {
+			Value cons = frame[--sp];
+			Value obj = frame[sp-1];
+			Value vs[] = cons.subr.pattMatch(obj, rand);
+			if (vs != null) {
+                            System.arraycopy(vs, 0, frame, sp-1, rand);
+                            sp += rand-1;
+                        }
+                        else {
+			    pc = trap;
+                        }
 			break;
 		    }
 
 		    case GETTAIL:
 			frame[sp-1] = ((Value.ConsValue) frame[sp-1]).tail;
 			break;
-
-		    case MPRIM: {
-			Value cons = frame[--sp];
-			Value obj = frame[--sp];
-			Value vs[] = cons.subr.pattMatch(obj, rand);
-			if (vs == null)
-			    pc = trap;
-			else {
-			    System.arraycopy(vs, 0, frame, sp, rand);
-			    sp += rand;
-			}
-			break;
-		    }
 
 		    case PREP:
 		    case PUTARG:
