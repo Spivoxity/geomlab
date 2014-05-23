@@ -81,12 +81,6 @@ public class FunCode extends Value {
     /** Number of arguments */
     public final int arity;
     
-    /** Size of local variable frame */
-    protected final int fsize;
-    
-    /** Max size of evaluation stack */
-    protected final int ssize;
-
     /** Whether to freeze the error context on entry */
     public final boolean frozen = Name.freezer;
 
@@ -106,10 +100,9 @@ public class FunCode extends Value {
     
     private static Jit translator;
     
-    public FunCode(String name, int arity, int fsize, int ssize,
-		   Opcode instrs[], int rands[], Value consts[]) {
+    public FunCode(String name, int arity, 
+                   Opcode instrs[], int rands[], Value consts[]) {
 	this.name = name; this.arity = arity;
-	this.fsize = fsize; this.ssize = ssize;
 	this.instrs = instrs; this.rands = rands; 
 	this.consts = consts;
     }
@@ -142,7 +135,7 @@ public class FunCode extends Value {
     
     @Override
     public void dump(PrintWriter out) {
-	out.printf("funcode \"%s\" %d %d %d\n", name, arity, fsize, ssize);
+	out.printf("bytecode \"%s\" %d\n", name, arity);
 
         for (int i = 0; i < instrs.length; i++) {
             if (rands[i] == NO_RAND)
@@ -181,8 +174,7 @@ public class FunCode extends Value {
     /** Assemble a list of instructions into a function body */
     @PRIMITIVE
     public static Value _assemble(Primitive prim, Value name, 
-                                  Value arity, Value fsize,
-                                  Value ssize, Value code) {
+                                  Value arity, Value code) {
 	int size = prim.listLength(code);
 	Opcode instrs[] = new Opcode[size];
 	int rands[] = new int[size];
@@ -225,8 +217,6 @@ public class FunCode extends Value {
 	
 	return new FunCode(name.toString(), // Could be name or string
                            (int) prim.number(arity), 
-                           (int) prim.number(fsize), 
-                           (int) prim.number(ssize), 
                            instrs, rands,
 			   consts.toArray(new Value[consts.size()]));
     }

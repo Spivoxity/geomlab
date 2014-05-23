@@ -499,43 +499,6 @@ define __top() =
     flat(c, []) in
 
   let assemble(f, n, code) = 
-    { Determine stack and frame sizes }
-    let ssize = _new(0) in 
-    let fsize = _new(0) in
-    let labdepth = _hash() in
-    let setlab(lab, d) = _update(labdepth, lab, d) in
-    let visit(d, n) =
-          let d1 = _lookup(labdepth, n) in if d1 <> [] then d1 else d
-          when numeric(n)
-      | visit(d, [#GLOBAL, _]) = d+1
-      | visit(d, [#LOCAL, _]) = d+1
-      | visit(d, [#ARG, _]) = d+1
-      | visit(d, [#FVAR, _]) = d+1
-      | visit(d, [#BIND, n]) = _set(fsize, max(n+1, _get(fsize))) >> d-1
-      | visit(d, [#POP]) = d-1
-      | visit(d, [#QUOTE, _]) = d+1
-      | visit(d, [#NIL]) = d+1
-      | visit(d, [#CONS]) = d-1
-      | visit(d, [#TRAP, lab]) = setlab(lab, d-1) >> d
-      | visit(d, [#FAIL]) = d
-      | visit(d, [#JFALSE, lab]) = setlab(lab, d-1) >> d-1
-      | visit(d, [#JUMP, lab]) = setlab(lab, d) >> d
-      | visit(d, [#PREP, _]) = d
-      | visit(d, [#FRAME, _]) = d
-      | visit(d, [#RETURN]) = d-1
-      | visit(d, [#MPLUS, _]) = d
-      | visit(d, [#MEQ]) = d-2
-      | visit(d, [#MNIL]) = d-1
-      | visit(d, [#MCONS]) = d+1
-      | visit(d, [#GETTAIL]) = d
-      | visit(d, [#TCALL, _]) = d
-      | visit(d, [#PUTARG, _]) = d
-      | visit(d, [#CALL, n]) = d-n
-      | visit(d, [#CLOSURE, n]) = d-n+1
-      | visit(d, [#MPRIM, n]) = d+n-2 in
-    foldl((function (d, i) let d1 = visit(d, i) in 
-		_set(ssize, max(d1, _get(ssize))) >> d1), 0, code) >>
-
     { Fix up labels }
     let ltab = _hash() in
     let fixlab(lab) = _lookup(ltab, lab) in
@@ -549,22 +512,20 @@ define __top() =
       | fixup(inst) = inst in
     let pass2(code) = 
       foldl((function (a, inst) fixup(inst):a), [], code) in
-    _assemble(f, n, _get(fsize), _get(ssize), pass2(pass1(0, code, []))) in
+    _assemble(f, n, pass2(pass1(0, code, []))) in
 
 
   { ENVIRONMENTS -- An environment is a 5-list [lev, arity, dict, fvs, size], 
     where
-
-      lev is the integer level.
-      arity is the number of arguments of the current function.
-      dict is a cell containing an a-list of variables,
+      * lev is the integer level.
+      * arity is the number of arguments of the current function.
+      * dict is a cell containing an a-list of variables,
         each mapped to information needed to load it.  The triple
 	[n, i, a] represents a definition at level n that requires
 	the instruction [i, a] to load it.
-      fvs is a cell containing a list of free variables that will be 
+      * fvs is a cell containing a list of free variables that will be 
         present in the closure
-      size is a cell containing the current frame size
-
+      * size is a cell containing the current frame size
     For an inner function, fvs includes the name of the function as its
     first element.  Each closure has itself as the first free variable
     as a way of implementing local recursion. }

@@ -28,7 +28,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *}
 
-#++ closure funcode "++" 2 2 5
+#++ closure bytecode "++" 2
 ARG 0
 TRAP 5
 MNIL
@@ -58,7 +58,7 @@ FAIL
 end
 name #:
 end
-#__top closure funcode "__top" 0 93 1
+#__top closure bytecode "__top" 0
 QUOTE 0
 FRAME 1
 CLOSURE 1
@@ -606,10 +606,8 @@ FRAME 1
 CLOSURE 1
 BIND 57
 QUOTE 57
-FRAME 2
-LOCAL 5
-PUTARG 1
-CLOSURE 2
+FRAME 1
+CLOSURE 1
 BIND 58
 QUOTE 58
 FRAME 1
@@ -920,7 +918,7 @@ PUTARG 5
 CLOSURE 6
 RETURN
 end
-funcode "debug" 2 0 3
+bytecode "debug" 2
 GLOBAL 0
 PREP 2
 GLOBAL 1
@@ -944,7 +942,7 @@ name #>
 name #_debug
 name #_print
 end
-funcode "member" 2 2 3
+bytecode "member" 2
 ARG 1
 TRAP 5
 MNIL
@@ -975,7 +973,7 @@ name #false
 name #=
 boolean 1
 end
-funcode "number" 2 2 6
+bytecode "number" 2
 ARG 1
 TRAP 5
 MNIL
@@ -1017,7 +1015,7 @@ name #:
 name #+
 number 1
 end
-funcode "fst" 1 1 2
+bytecode "fst" 1
 ARG 0
 TRAP 7
 MCONS
@@ -1028,7 +1026,7 @@ RETURN
 FAIL
 end
 end
-funcode "snd" 1 1 2
+bytecode "snd" 1
 ARG 0
 TRAP 11
 MCONS
@@ -1043,7 +1041,7 @@ RETURN
 FAIL
 end
 end
-funcode "max" 2 0 3
+bytecode "max" 2
 GLOBAL 0
 PREP 2
 ARG 0
@@ -1059,7 +1057,7 @@ RETURN
 end
 name #>
 end
-funcode "synerror" 1 0 3
+bytecode "synerror" 1
 GLOBAL 0
 PREP 2
 ARG 0
@@ -1071,7 +1069,7 @@ RETURN
 end
 name #_synerror
 end
-funcode "describe" 1 0 5
+bytecode "describe" 1
 ARG 0
 TRAP 6
 QUOTE 0
@@ -1252,7 +1250,7 @@ name #_syntax
 name #_hash
 name #_new
 number 0
-funcode "scan" 0 2 7
+bytecode "scan" 0
 GLOBAL 0
 PREP 0
 CALL 0
@@ -1297,7 +1295,7 @@ CALL 2
 RETURN
 end
 name #_scan
-funcode "case" 1 1 5
+bytecode "case" 1
 ARG 0
 TRAP 38
 QUOTE 0
@@ -1396,7 +1394,7 @@ string "#badtok"
 end
 name #_set
 end
-funcode "_priority" 1 1 3
+bytecode "_priority" 1
 GLOBAL 0
 PREP 2
 FVAR 1
@@ -1431,7 +1429,7 @@ name #<>
 name #tail
 number 0
 end
-funcode "isbinop" 1 0 8
+bytecode "isbinop" 1
 FVAR 1
 PREP 2
 ARG 0
@@ -1457,7 +1455,7 @@ name #-
 name #+
 name #:
 end
-funcode "see" 1 0 3
+bytecode "see" 1
 GLOBAL 0
 PREP 2
 GLOBAL 1
@@ -1474,7 +1472,7 @@ end
 name #=
 name #_get
 end
-funcode "eat" 1 0 4
+bytecode "eat" 1
 FVAR 1
 PREP 1
 ARG 0
@@ -1503,7 +1501,7 @@ end
 name #_synerror
 string "#eat"
 end
-funcode "can_eat" 1 0 2
+bytecode "can_eat" 1
 FVAR 1
 PREP 1
 ARG 0
@@ -1522,7 +1520,7 @@ end
 name #true
 name #false
 end
-funcode "whichever" 1 0 3
+bytecode "whichever" 1
 ARG 0
 PREP 1
 GLOBAL 0
@@ -1536,7 +1534,7 @@ RETURN
 end
 name #_get
 end
-funcode "p_sym" 1 1 2
+bytecode "p_sym" 1
 GLOBAL 0
 PREP 1
 FVAR 1
@@ -1554,7 +1552,7 @@ RETURN
 end
 name #_get
 end
-funcode "brack" 3 1 2
+bytecode "brack" 3
 FVAR 1
 PREP 1
 ARG 0
@@ -1575,7 +1573,7 @@ LOCAL 0
 RETURN
 end
 end
-funcode "brack1" 3 1 2
+bytecode "brack1" 3
 FVAR 1
 PREP 1
 ARG 0
@@ -1598,7 +1596,7 @@ LOCAL 0
 RETURN
 end
 end
-funcode "p_tail" 2 1 5
+bytecode "p_tail" 2
 FVAR 1
 PREP 1
 ARG 1
@@ -1628,7 +1626,7 @@ RETURN
 end
 name #:
 end
-funcode "p_list1" 1 1 5
+bytecode "p_list1" 1
 ARG 0
 PREP 0
 CALL 0
@@ -1651,7 +1649,7 @@ end
 name #:
 name #comma
 end
-funcode "p_list" 2 0 2
+bytecode "p_list" 2
 FVAR 1
 PREP 1
 ARG 1
@@ -1678,7 +1676,7 @@ end
 boolean 1
 name #eof
 end
-funcode "p_expr0" 1 1 2
+bytecode "p_expr0" 1
 GLOBAL 0
 PREP 1
 FVAR 1
@@ -1694,7 +1692,7 @@ RETURN
 end
 name #_get
 end
-funcode "p_expr" 0 0 2
+bytecode "p_expr" 0
 FVAR 1
 PREP 1
 GLOBAL 0
@@ -1704,7 +1702,7 @@ RETURN
 end
 name #false
 end
-funcode "p_term" 2 1 3
+bytecode "p_term" 2
 GLOBAL 0
 PREP 1
 FVAR 1
@@ -1722,7 +1720,7 @@ RETURN
 end
 name #_get
 end
-funcode "p_pattern" 0 1 2
+bytecode "p_pattern" 0
 GLOBAL 0
 PREP 1
 FVAR 1
@@ -1736,7 +1734,7 @@ RETURN
 end
 name #_get
 end
-funcode "p_defn" 0 1 2
+bytecode "p_defn" 0
 GLOBAL 0
 PREP 1
 FVAR 1
@@ -1750,7 +1748,7 @@ RETURN
 end
 name #_get
 end
-funcode "listify" 1 0 3
+bytecode "listify" 1
 GLOBAL 0
 PREP 3
 QUOTE 1
@@ -1767,7 +1765,7 @@ CALL 3
 RETURN
 end
 name #foldr
-funcode "<function>" 2 0 4
+bytecode "<function>" 2
 QUOTE 0
 ARG 0
 ARG 1
@@ -1781,7 +1779,7 @@ name #cons
 end
 name #nil
 end
-funcode "p_patterns" 1 0 3
+bytecode "p_patterns" 1
 FVAR 1
 PREP 2
 FVAR 2
@@ -1792,7 +1790,7 @@ CALL 2
 RETURN
 end
 end
-funcode "p_patprim" 0 1 9
+bytecode "p_patprim" 0
 QUOTE 0
 FRAME 9
 FVAR 8
@@ -1820,7 +1818,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 1 8
+bytecode "case" 1
 ARG 0
 TRAP 48
 QUOTE 0
@@ -2011,7 +2009,7 @@ name #ket
 string "#pattern"
 end
 end
-funcode "p_patfactor" 0 1 4
+bytecode "p_patfactor" 0
 FVAR 1
 PREP 0
 CALL 0
@@ -2038,7 +2036,7 @@ end
 name #:
 name #cons
 end
-funcode "p_pattern_body" 0 1 3
+bytecode "p_pattern_body" 0
 QUOTE 0
 FRAME 3
 FVAR 2
@@ -2056,7 +2054,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "chain" 1 0 4
+bytecode "chain" 1
 FVAR 1
 PREP 1
 QUOTE 0
@@ -2083,7 +2081,7 @@ name #plus
 name #number
 end
 end
-funcode "p_formals" 0 0 4
+bytecode "p_formals" 0
 FVAR 1
 PREP 3
 QUOTE 0
@@ -2098,7 +2096,7 @@ end
 name #lpar
 name #rpar
 end
-funcode "p_exprs" 1 0 3
+bytecode "p_exprs" 1
 FVAR 1
 PREP 2
 FVAR 2
@@ -2109,7 +2107,7 @@ CALL 2
 RETURN
 end
 end
-funcode "expand" 3 4 9
+bytecode "expand" 3
 ARG 1
 TRAP 11
 MNIL
@@ -2342,7 +2340,7 @@ name #anon
 name #when
 name #if
 end
-funcode "p_gen" 0 1 4
+bytecode "p_gen" 0
 FVAR 1
 PREP 0
 CALL 0
@@ -2367,7 +2365,7 @@ end
 name #<-
 name #gen
 end
-funcode "p_gens" 0 2 5
+bytecode "p_gens" 0
 QUOTE 0
 FRAME 5
 FVAR 4
@@ -2395,7 +2393,7 @@ PUTARG 1
 CALL 2
 RETURN
 end
-funcode "p_tail" 0 1 5
+bytecode "p_tail" 0
 QUOTE 0
 FRAME 5
 FVAR 3
@@ -2415,7 +2413,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 1 4
+bytecode "case" 1
 ARG 0
 TRAP 28
 QUOTE 0
@@ -2478,7 +2476,7 @@ end
 end
 name #:
 end
-funcode "p_listexp" 0 2 7
+bytecode "p_listexp" 0
 FVAR 1
 PREP 1
 QUOTE 0
@@ -2518,7 +2516,7 @@ RETURN
 end
 name #ket
 name #nil
-funcode "case" 1 0 7
+bytecode "case" 1
 ARG 0
 TRAP 24
 QUOTE 0
@@ -2611,7 +2609,7 @@ name #vbar
 name #nil
 end
 end
-funcode "p_parenexp" 0 2 6
+bytecode "p_parenexp" 0
 GLOBAL 0
 PREP 2
 GLOBAL 1
@@ -2715,7 +2713,7 @@ name #apply
 name #_rsect
 name #false
 end
-funcode "p_primary" 0 1 9
+bytecode "p_primary" 0
 QUOTE 0
 FRAME 9
 FVAR 8
@@ -2743,7 +2741,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 1 8
+bytecode "case" 1
 ARG 0
 TRAP 14
 QUOTE 0
@@ -2901,7 +2899,7 @@ string "#exp"
 string "#badexp"
 end
 end
-funcode "p_factor" 1 1 7
+bytecode "p_factor" 1
 QUOTE 0
 FRAME 7
 FVAR 4
@@ -2925,7 +2923,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 1 4
+bytecode "case" 1
 ARG 0
 TRAP 42
 QUOTE 0
@@ -3047,7 +3045,7 @@ name #const
 name #~
 end
 end
-funcode "makebin" 3 1 4
+bytecode "makebin" 3
 QUOTE 0
 FRAME 4
 ARG 1
@@ -3065,7 +3063,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 0 6
+bytecode "case" 1
 ARG 0
 TRAP 18
 QUOTE 0
@@ -3127,7 +3125,7 @@ name #apply
 name #var
 end
 end
-funcode "p_term_body" 2 1 12
+bytecode "p_term_body" 2
 QUOTE 0
 FRAME 12
 FVAR 10
@@ -3167,7 +3165,7 @@ PUTARG 1
 CALL 2
 RETURN
 end
-funcode "p_termcont" 2 4 5
+bytecode "p_termcont" 2
 GLOBAL 0
 PREP 1
 FVAR 1
@@ -3281,7 +3279,7 @@ name #_lsect
 name #false
 end
 end
-funcode "p_cond" 1 3 5
+bytecode "p_cond" 1
 FVAR 1
 PREP 1
 QUOTE 0
@@ -3343,7 +3341,7 @@ name #then
 name #else
 number 1
 end
-funcode "p_expr_body" 1 1 8
+bytecode "p_expr_body" 1
 QUOTE 0
 FRAME 8
 FVAR 6
@@ -3369,7 +3367,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 1 5
+bytecode "case" 1
 ARG 0
 TRAP 30
 QUOTE 0
@@ -3467,7 +3465,7 @@ name #>>
 name #seq
 end
 end
-funcode "p_name" 0 0 3
+bytecode "p_name" 0
 FVAR 1
 PREP 1
 GLOBAL 0
@@ -3508,7 +3506,7 @@ boolean 1
 name #monop
 name #ident
 end
-funcode "p_rhs" 1 1 4
+bytecode "p_rhs" 1
 FVAR 1
 PREP 1
 QUOTE 0
@@ -3545,7 +3543,7 @@ end
 name #=
 name #when
 end
-funcode "p_rule" 2 2 3
+bytecode "p_rule" 2
 FVAR 1
 PREP 0
 CALL 0
@@ -3602,7 +3600,7 @@ string "#names"
 name #length
 string "#arity"
 end
-funcode "p_defn_body" 0 4 10
+bytecode "p_defn_body" 0
 FVAR 1
 PREP 0
 CALL 0
@@ -3687,7 +3685,7 @@ name #val
 name #length
 name #fun
 name #:
-funcode "<function>" 0 0 3
+bytecode "<function>" 0
 FVAR 1
 PREP 2
 FVAR 3
@@ -3700,7 +3698,7 @@ end
 end
 name #vbar
 end
-funcode "p_para" 0 1 3
+bytecode "p_para" 0
 FVAR 1
 PREP 1
 QUOTE 0
@@ -3792,7 +3790,7 @@ boolean 0
 string "#junk"
 end
 name #_set
-funcode "parser" 0 0 1
+bytecode "parser" 0
 FVAR 1
 PREP 0
 CALL 0
@@ -3803,7 +3801,7 @@ CALL 0
 RETURN
 end
 end
-funcode "flatten" 1 1 2
+bytecode "flatten" 1
 QUOTE 0
 FRAME 1
 CLOSURE 1
@@ -3817,7 +3815,7 @@ PUTARG 1
 CALL 2
 RETURN
 end
-funcode "flat" 2 1 4
+bytecode "flat" 2
 ARG 0
 TRAP 5
 MNIL
@@ -3856,804 +3854,60 @@ name #foldr
 name #:
 end
 end
-funcode "assemble" 3 10 4
+bytecode "assemble" 3
 GLOBAL 0
-PREP 1
-QUOTE 1
-PUTARG 0
-CALL 1
-BIND 0
-GLOBAL 0
-PREP 1
-QUOTE 1
-PUTARG 0
-CALL 1
-BIND 1
-GLOBAL 2
 PREP 0
 CALL 0
+BIND 0
+QUOTE 1
+FRAME 2
+LOCAL 0
+PUTARG 1
+CLOSURE 2
+BIND 1
+QUOTE 2
+FRAME 2
+LOCAL 0
+PUTARG 1
+CLOSURE 2
 BIND 2
 QUOTE 3
 FRAME 2
-LOCAL 2
+LOCAL 1
 PUTARG 1
 CLOSURE 2
 BIND 3
 QUOTE 4
-FRAME 5
-LOCAL 2
-PUTARG 1
-FVAR 1
-PUTARG 2
-LOCAL 1
-PUTARG 3
+FRAME 2
 LOCAL 3
-PUTARG 4
-CLOSURE 5
+PUTARG 1
+CLOSURE 2
 BIND 4
 GLOBAL 5
 PREP 3
-QUOTE 6
-FRAME 4
+ARG 0
+PUTARG 0
+ARG 1
+PUTARG 1
 LOCAL 4
-PUTARG 1
-FVAR 1
-PUTARG 2
-LOCAL 0
-PUTARG 3
-CLOSURE 4
-PUTARG 0
-QUOTE 1
-PUTARG 1
-ARG 2
-PUTARG 2
-CALL 3
-POP
-GLOBAL 2
-PREP 0
-CALL 0
-BIND 5
-QUOTE 7
-FRAME 2
-LOCAL 5
-PUTARG 1
-CLOSURE 2
-BIND 6
-QUOTE 8
-FRAME 2
-LOCAL 5
-PUTARG 1
-CLOSURE 2
-BIND 7
-QUOTE 9
-FRAME 2
-LOCAL 6
-PUTARG 1
-CLOSURE 2
-BIND 8
-QUOTE 10
-FRAME 2
-LOCAL 8
-PUTARG 1
-CLOSURE 2
-BIND 9
-GLOBAL 11
-PREP 5
-ARG 0
-PUTARG 0
-ARG 1
-PUTARG 1
-GLOBAL 12
 PREP 1
-LOCAL 1
-PUTARG 0
-CALL 1
-PUTARG 2
-GLOBAL 12
-PREP 1
-LOCAL 0
-PUTARG 0
-CALL 1
-PUTARG 3
-LOCAL 9
-PREP 1
-LOCAL 7
+LOCAL 2
 PREP 3
-QUOTE 1
-PUTARG 0
-ARG 2
-PUTARG 1
-NIL
-PUTARG 2
-CALL 3
-PUTARG 0
-CALL 1
-PUTARG 4
-CALL 5
-RETURN
-end
-name #_new
-number 0
-name #_hash
-funcode "setlab" 2 0 4
-GLOBAL 0
-PREP 3
-FVAR 1
-PUTARG 0
-ARG 0
-PUTARG 1
-ARG 1
-PUTARG 2
-CALL 3
-RETURN
-end
-name #_update
-end
-funcode "visit" 2 1 6
-GLOBAL 0
-PREP 1
-ARG 1
-PUTARG 0
-CALL 1
-JFALSE 26
-GLOBAL 1
-PREP 2
-FVAR 1
-PUTARG 0
-ARG 1
-PUTARG 1
-CALL 2
-BIND 0
-GLOBAL 2
-PREP 2
-LOCAL 0
-PUTARG 0
-NIL
-PUTARG 1
-CALL 2
-JFALSE 24
-LOCAL 0
-RETURN
-ARG 0
-RETURN
-ARG 1
-TRAP 48
-MCONS
-TRAP 47
-QUOTE 3
-MEQ
-GETTAIL
-TRAP 48
-MCONS
-POP
-GETTAIL
-TRAP 48
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 70
-MCONS
-TRAP 69
 QUOTE 6
-MEQ
-GETTAIL
-TRAP 70
-MCONS
-POP
-GETTAIL
-TRAP 70
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
 PUTARG 0
-QUOTE 5
+ARG 2
 PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 92
-MCONS
-TRAP 91
-QUOTE 7
-MEQ
-GETTAIL
-TRAP 92
-MCONS
-POP
-GETTAIL
-TRAP 92
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 114
-MCONS
-TRAP 113
-QUOTE 8
-MEQ
-GETTAIL
-TRAP 114
-MCONS
-POP
-GETTAIL
-TRAP 114
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 160
-MCONS
-TRAP 159
-QUOTE 9
-MEQ
-GETTAIL
-TRAP 160
-MCONS
-BIND 0
-GETTAIL
-TRAP 160
-MNIL
-GLOBAL 10
-PREP 2
-FVAR 3
-PUTARG 0
-FVAR 2
-PREP 2
-GLOBAL 4
-PREP 2
-LOCAL 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-PUTARG 0
-GLOBAL 11
-PREP 1
-FVAR 3
+NIL
+PUTARG 2
+CALL 3
 PUTARG 0
 CALL 1
-PUTARG 1
-CALL 2
-PUTARG 1
-CALL 2
-POP
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 178
-MCONS
-TRAP 177
-QUOTE 13
-MEQ
-GETTAIL
-TRAP 178
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 200
-MCONS
-TRAP 199
-QUOTE 14
-MEQ
-GETTAIL
-TRAP 200
-MCONS
-POP
-GETTAIL
-TRAP 200
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 218
-MCONS
-TRAP 217
-QUOTE 15
-MEQ
-GETTAIL
-TRAP 218
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 236
-MCONS
-TRAP 235
-QUOTE 16
-MEQ
-GETTAIL
-TRAP 236
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 266
-MCONS
-TRAP 265
-QUOTE 17
-MEQ
-GETTAIL
-TRAP 266
-MCONS
-BIND 0
-GETTAIL
-TRAP 266
-MNIL
-FVAR 4
-PREP 2
-LOCAL 0
-PUTARG 0
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-PUTARG 1
-CALL 2
-POP
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 278
-MCONS
-TRAP 277
-QUOTE 18
-MEQ
-GETTAIL
-TRAP 278
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 314
-MCONS
-TRAP 313
-QUOTE 19
-MEQ
-GETTAIL
-TRAP 314
-MCONS
-BIND 0
-GETTAIL
-TRAP 314
-MNIL
-FVAR 4
-PREP 2
-LOCAL 0
-PUTARG 0
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-PUTARG 1
-CALL 2
-POP
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 338
-MCONS
-TRAP 337
-QUOTE 20
-MEQ
-GETTAIL
-TRAP 338
-MCONS
-BIND 0
-GETTAIL
-TRAP 338
-MNIL
-FVAR 4
-PREP 2
-LOCAL 0
-PUTARG 0
-ARG 0
-PUTARG 1
-CALL 2
-POP
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 354
-MCONS
-TRAP 353
-QUOTE 21
-MEQ
-GETTAIL
-TRAP 354
-MCONS
-POP
-GETTAIL
-TRAP 354
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 370
-MCONS
-TRAP 369
-QUOTE 22
-MEQ
-GETTAIL
-TRAP 370
-MCONS
-POP
-GETTAIL
-TRAP 370
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 386
-MCONS
-TRAP 385
-QUOTE 23
-MEQ
-GETTAIL
-TRAP 386
-MCONS
-POP
-GETTAIL
-TRAP 386
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 404
-MCONS
-TRAP 403
-QUOTE 24
-MEQ
-GETTAIL
-TRAP 404
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 420
-MCONS
-TRAP 419
-QUOTE 25
-MEQ
-GETTAIL
-TRAP 420
-MCONS
-POP
-GETTAIL
-TRAP 420
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 438
-MCONS
-TRAP 437
-QUOTE 26
-MEQ
-GETTAIL
-TRAP 438
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 27
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 456
-MCONS
-TRAP 455
-QUOTE 28
-MEQ
-GETTAIL
-TRAP 456
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 474
-MCONS
-TRAP 473
-QUOTE 29
-MEQ
-GETTAIL
-TRAP 474
-MNIL
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-QUOTE 5
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 486
-MCONS
-TRAP 485
-QUOTE 30
-MEQ
-GETTAIL
-TRAP 486
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 502
-MCONS
-TRAP 501
-QUOTE 31
-MEQ
-GETTAIL
-TRAP 502
-MCONS
-POP
-GETTAIL
-TRAP 502
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 518
-MCONS
-TRAP 517
-QUOTE 32
-MEQ
-GETTAIL
-TRAP 518
-MCONS
-POP
-GETTAIL
-TRAP 518
-MNIL
-ARG 0
-RETURN
-POP
-ARG 1
-TRAP 540
-MCONS
-TRAP 539
-QUOTE 33
-MEQ
-GETTAIL
-TRAP 540
-MCONS
-BIND 0
-GETTAIL
-TRAP 540
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-LOCAL 0
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 562
-MCONS
-TRAP 561
-QUOTE 34
-MEQ
-GETTAIL
-TRAP 562
-MCONS
-BIND 0
-GETTAIL
-TRAP 562
-MNIL
-GLOBAL 12
-PREP 2
-ARG 0
-PUTARG 0
-LOCAL 0
-PUTARG 1
-CALL 2
-RETURN
-POP
-ARG 1
-TRAP 590
-MCONS
-TRAP 589
-QUOTE 35
-MEQ
-GETTAIL
-TRAP 590
-MCONS
-BIND 0
-GETTAIL
-TRAP 590
-MNIL
-GLOBAL 12
-PREP 2
-GLOBAL 4
-PREP 2
-ARG 0
-PUTARG 0
-LOCAL 0
-PUTARG 1
-CALL 2
-PUTARG 0
-QUOTE 27
-PUTARG 1
-CALL 2
-RETURN
-POP
-FAIL
-end
-name #numeric
-name #_lookup
-name #<>
-name #GLOBAL
-name #+
-number 1
-name #LOCAL
-name #ARG
-name #FVAR
-name #BIND
-name #_set
-name #_get
-name #-
-name #POP
-name #QUOTE
-name #NIL
-name #CONS
-name #TRAP
-name #FAIL
-name #JFALSE
-name #JUMP
-name #PREP
-name #CLOPREP
-name #FRAME
-name #RETURN
-name #MPLUS
-name #MEQ
-number 2
-name #MNIL
-name #MCONS
-name #GETTAIL
-name #TCALL
-name #PUTARG
-name #CALL
-name #CLOSURE
-name #MPRIM
-end
-name #foldl
-funcode "<function>" 2 1 6
-FVAR 1
-PREP 2
-ARG 0
-PUTARG 0
-ARG 1
-PUTARG 1
-CALL 2
-BIND 0
-GLOBAL 0
-PREP 2
-FVAR 3
-PUTARG 0
-FVAR 2
-PREP 2
-LOCAL 0
-PUTARG 0
-GLOBAL 1
-PREP 1
-FVAR 3
-PUTARG 0
-CALL 1
-PUTARG 1
-CALL 2
-PUTARG 1
-CALL 2
-POP
-LOCAL 0
+PUTARG 2
+CALL 3
 RETURN
 end
-name #_set
-name #_get
-end
-funcode "fixlab" 1 0 3
+name #_hash
+bytecode "fixlab" 1
 GLOBAL 0
 PREP 2
 FVAR 1
@@ -4665,7 +3919,7 @@ RETURN
 end
 name #_lookup
 end
-funcode "pass1" 3 2 5
+bytecode "pass1" 3
 ARG 1
 TRAP 5
 MNIL
@@ -4727,7 +3981,7 @@ name #+
 number 1
 name #:
 end
-funcode "fixup" 1 1 3
+bytecode "fixup" 1
 ARG 0
 TRAP 24
 MCONS
@@ -4807,7 +4061,7 @@ name #JUMP
 name #JFALSE
 name #TRAP
 end
-funcode "pass2" 1 0 3
+bytecode "pass2" 1
 GLOBAL 0
 PREP 3
 QUOTE 1
@@ -4824,7 +4078,7 @@ CALL 3
 RETURN
 end
 name #foldl
-funcode "<function>" 2 0 3
+bytecode "<function>" 2
 GLOBAL 0
 PREP 2
 FVAR 1
@@ -4842,9 +4096,9 @@ name #:
 end
 end
 name #_assemble
-name #_get
+number 0
 end
-funcode "lookup" 2 1 4
+bytecode "lookup" 2
 ARG 1
 TRAP 35
 MCONS
@@ -4885,7 +4139,7 @@ end
 name #assoc
 name #_get
 end
-funcode "empty" 0 0 6
+bytecode "empty" 0
 QUOTE 0
 QUOTE 0
 GLOBAL 1
@@ -4914,7 +4168,7 @@ end
 number 0
 name #_new
 end
-funcode "newblock" 3 3 7
+bytecode "newblock" 3
 ARG 2
 TRAP 93
 MCONS
@@ -5020,7 +4274,7 @@ name #_new
 name #++
 name #_get
 end
-funcode "e_level" 1 1 2
+bytecode "e_level" 1
 ARG 0
 TRAP 25
 MCONS
@@ -5049,7 +4303,7 @@ RETURN
 FAIL
 end
 end
-funcode "e_arity" 1 1 2
+bytecode "e_arity" 1
 ARG 0
 TRAP 25
 MCONS
@@ -5078,7 +4332,7 @@ RETURN
 FAIL
 end
 end
-funcode "e_fvars" 1 1 2
+bytecode "e_fvars" 1
 ARG 0
 TRAP 29
 MCONS
@@ -5099,40 +4353,6 @@ GETTAIL
 TRAP 29
 MCONS
 POP
-GETTAIL
-TRAP 29
-MNIL
-GLOBAL 0
-PREP 1
-LOCAL 0
-PUTARG 0
-CALL 1
-RETURN
-FAIL
-end
-name #_get
-end
-funcode "e_size" 1 1 2
-ARG 0
-TRAP 29
-MCONS
-POP
-GETTAIL
-TRAP 29
-MCONS
-POP
-GETTAIL
-TRAP 29
-MCONS
-POP
-GETTAIL
-TRAP 29
-MCONS
-POP
-GETTAIL
-TRAP 29
-MCONS
-BIND 0
 GETTAIL
 TRAP 29
 MNIL
@@ -5146,7 +4366,41 @@ FAIL
 end
 name #_get
 end
-funcode "inc_size" 2 1 5
+bytecode "e_size" 1
+ARG 0
+TRAP 29
+MCONS
+POP
+GETTAIL
+TRAP 29
+MCONS
+POP
+GETTAIL
+TRAP 29
+MCONS
+POP
+GETTAIL
+TRAP 29
+MCONS
+POP
+GETTAIL
+TRAP 29
+MCONS
+BIND 0
+GETTAIL
+TRAP 29
+MNIL
+GLOBAL 0
+PREP 1
+LOCAL 0
+PUTARG 0
+CALL 1
+RETURN
+FAIL
+end
+name #_get
+end
+bytecode "inc_size" 2
 ARG 0
 TRAP 41
 MCONS
@@ -5194,7 +4448,7 @@ name #_set
 name #+
 name #_get
 end
-funcode "bind" 4 2 8
+bytecode "bind" 4
 ARG 3
 TRAP 51
 MCONS
@@ -5252,7 +4506,7 @@ name #_set
 name #:
 name #_get
 end
-funcode "unbind" 2 2 4
+bytecode "unbind" 2
 ARG 1
 TRAP 45
 MCONS
@@ -5300,7 +4554,7 @@ CALL 2
 RETURN
 FAIL
 end
-funcode "h" 1 2 4
+bytecode "h" 1
 ARG 0
 TRAP 26
 MCONS
@@ -5358,7 +4612,7 @@ end
 name #_set
 name #_get
 end
-funcode "alloc" 2 1 5
+bytecode "alloc" 2
 FVAR 1
 PREP 1
 ARG 1
@@ -5391,7 +4645,7 @@ end
 name #LOCAL
 number 1
 end
-funcode "dealloc" 2 0 3
+bytecode "dealloc" 2
 FVAR 1
 PREP 2
 ARG 0
@@ -5411,7 +4665,7 @@ RETURN
 end
 number -1
 end
-funcode "alloc_fv" 2 2 6
+bytecode "alloc_fv" 2
 ARG 1
 TRAP 61
 MCONS
@@ -5482,7 +4736,7 @@ number 1
 name #_set
 name #++
 end
-funcode "islocal" 2 1 3
+bytecode "islocal" 2
 QUOTE 0
 FRAME 3
 FVAR 1
@@ -5504,7 +4758,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 2 4
+bytecode "case" 1
 ARG 0
 TRAP 45
 MCONS
@@ -5560,7 +4814,7 @@ name #ARG
 name #false
 end
 end
-funcode "selfrec" 2 0 6
+bytecode "selfrec" 2
 GLOBAL 0
 PREP 2
 FVAR 2
@@ -5590,7 +4844,7 @@ name #=
 name #FVAR
 number 0
 end
-funcode "reset" 1 4 5
+bytecode "reset" 1
 ARG 0
 TRAP 55
 MCONS
@@ -5648,7 +4902,7 @@ CALL 2
 RETURN
 FAIL
 end
-funcode "h" 1 2 3
+bytecode "h" 1
 ARG 0
 TRAP 51
 MCONS
@@ -5715,7 +4969,7 @@ name #filter
 name #_get
 number 0
 end
-funcode "label" 0 0 5
+bytecode "label" 0
 GLOBAL 0
 PREP 2
 FVAR 1
@@ -5740,7 +4994,7 @@ name #+
 name #_get
 number 1
 end
-funcode "c_ref" 2 1 6
+bytecode "c_ref" 2
 QUOTE 0
 FRAME 6
 FVAR 3
@@ -5768,7 +5022,7 @@ PUTARG 0
 CALL 1
 RETURN
 end
-funcode "case" 1 3 5
+bytecode "case" 1
 ARG 0
 TRAP 43
 MCONS
@@ -5871,7 +5125,7 @@ name #FVAR
 name #GLOBAL
 end
 end
-funcode "sortby" 2 1 3
+bytecode "sortby" 2
 QUOTE 0
 FRAME 2
 ARG 0
@@ -5889,7 +5143,7 @@ PUTARG 2
 CALL 3
 RETURN
 end
-funcode "insert" 2 2 5
+bytecode "insert" 2
 ARG 1
 TRAP 7
 MNIL
@@ -5954,7 +5208,7 @@ name #:
 end
 name #foldr
 end
-funcode "pgen" 3 0 7
+bytecode "pgen" 3
 QUOTE 0
 ARG 0
 GLOBAL 1
@@ -6002,7 +5256,7 @@ name #map
 name #++
 name #concat
 end
-funcode "c_patt" 3 4 8
+bytecode "c_patt" 3
 ARG 0
 TRAP 52
 MCONS
@@ -6551,7 +5805,7 @@ name #length
 name #MPRIM
 name #reverse
 name #_mapa
-funcode "<function>" 2 2 4
+bytecode "<function>" 2
 ARG 0
 TRAP 23
 MCONS
@@ -6590,7 +5844,7 @@ name #list
 name #plus
 name #MPLUS
 end
-funcode "c_arg" 3 1 6
+bytecode "c_arg" 3
 ARG 1
 TRAP 48
 MCONS
@@ -6695,7 +5949,7 @@ name #anon
 name #seq
 number 0
 end
-funcode "c_match" 2 2 4
+bytecode "c_match" 2
 QUOTE 0
 FRAME 3
 FVAR 1
@@ -6741,7 +5995,7 @@ CONS
 CONS
 RETURN
 end
-funcode "compile" 2 3 6
+bytecode "compile" 2
 ARG 1
 TRAP 5
 MNIL
@@ -6795,7 +6049,7 @@ name #seq
 name #map
 name #concat
 end
-funcode "c_rule" 2 8 6
+bytecode "c_rule" 2
 ARG 0
 TRAP 61
 MCONS
@@ -6964,7 +6218,7 @@ name #JFALSE
 name #:
 number 0
 end
-funcode "c_traps" 1 1 5
+bytecode "c_traps" 1
 QUOTE 0
 FRAME 1
 CLOSURE 1
@@ -6986,7 +6240,7 @@ PUTARG 1
 CALL 2
 RETURN
 end
-funcode "h" 3 3 5
+bytecode "h" 3
 ARG 1
 TRAP 5
 MNIL
@@ -7066,7 +6320,7 @@ name #:
 name #seq
 number 0
 end
-funcode "c_body" 2 5 7
+bytecode "c_body" 2
 ARG 0
 TRAP 7
 MNIL
@@ -7157,7 +6411,7 @@ name #map
 name #seq
 name #=
 end
-funcode "c_closure" 4 4 9
+bytecode "c_closure" 4
 FVAR 1
 PREP 3
 ARG 0
@@ -7279,7 +6533,7 @@ name #FRAME
 name #+
 name #:
 name #_mapa
-funcode "<function>" 2 2 5
+bytecode "<function>" 2
 ARG 0
 TRAP 31
 MCONS
@@ -7319,7 +6573,7 @@ name #PUTARG
 end
 name #CLOSURE
 end
-funcode "yield" 2 0 4
+bytecode "yield" 2
 ARG 1
 JFALSE 12
 QUOTE 0
@@ -7338,7 +6592,7 @@ end
 name #seq
 name #RETURN
 end
-funcode "c_exp" 3 7 10
+bytecode "c_exp" 3
 ARG 0
 TRAP 26
 MCONS
@@ -8122,7 +7376,7 @@ name #length
 name #seq
 name #:
 name #_mapa
-funcode "<function>" 2 0 4
+bytecode "<function>" 2
 FVAR 1
 PREP 3
 ARG 0
@@ -8141,7 +7395,7 @@ end
 name #TCALL
 name #false
 name #PREP
-funcode "<function>" 2 2 5
+bytecode "<function>" 2
 ARG 0
 TRAP 33
 MCONS
@@ -8201,7 +7455,7 @@ name #NIL
 name #list
 name #POP
 end
-funcode "i_func" 4 1 7
+bytecode "i_func" 4
 FVAR 1
 PREP 1
 FVAR 2
@@ -8248,7 +7502,7 @@ end
 number 1
 name #_closure
 end
-funcode "interp" 2 5 8
+bytecode "interp" 2
 ARG 0
 TRAP 16
 MCONS
@@ -8660,7 +7914,7 @@ FAIL
 end
 name #const
 name #var
-funcode "case" 1 1 3
+bytecode "case" 1
 ARG 0
 TRAP 20
 MCONS
@@ -8698,7 +7952,7 @@ end
 name #apply
 name #_apply
 name #_mapa
-funcode "<function>" 2 0 3
+bytecode "<function>" 2
 FVAR 1
 PREP 2
 ARG 0
@@ -8722,7 +7976,7 @@ name #cons
 name #:
 name #nil
 name #list
-funcode "<function>" 2 0 3
+bytecode "<function>" 2
 FVAR 1
 PREP 2
 ARG 0
@@ -8737,7 +7991,7 @@ end
 end
 name #seq
 end
-funcode "exec" 1 3 7
+bytecode "exec" 1
 ARG 0
 TRAP 40
 MCONS
@@ -8847,7 +8101,7 @@ name #_topdef
 name #fun
 name #_topval
 end
-funcode "<function>" 0 1 3
+bytecode "<function>" 0
 FVAR 1
 PREP 0
 CALL 0
@@ -8907,7 +8161,7 @@ name #_setroot
 name #true
 end
 end
-#_infixl closure funcode "_infixl" 2 0 8
+#_infixl closure bytecode "_infixl" 2
 GLOBAL 0
 PREP 3
 GLOBAL 1
@@ -8937,7 +8191,7 @@ name #binop
 name #+
 number 1
 end
-#_infixr closure funcode "_infixr" 2 0 7
+#_infixr closure bytecode "_infixr" 2
 GLOBAL 0
 PREP 3
 GLOBAL 1
@@ -8959,7 +8213,7 @@ name #_update
 name #_syntax
 name #binop
 end
-#_lsect closure funcode "_lsect" 2 0 3
+#_lsect closure bytecode "_lsect" 2
 QUOTE 0
 FRAME 3
 ARG 0
@@ -8969,7 +8223,7 @@ PUTARG 2
 CLOSURE 3
 RETURN
 end
-funcode "<function>" 1 0 3
+bytecode "<function>" 1
 FVAR 1
 PREP 2
 FVAR 2
@@ -8981,7 +8235,7 @@ RETURN
 end
 end
 end
-#_mapa closure funcode "_mapa" 3 2 6
+#_mapa closure bytecode "_mapa" 3
 ARG 1
 TRAP 5
 MNIL
@@ -9012,7 +8266,7 @@ RETURN
 FAIL
 end
 end
-#_range closure funcode "_range" 2 0 6
+#_range closure bytecode "_range" 2
 GLOBAL 0
 PREP 2
 ARG 0
@@ -9049,7 +8303,7 @@ name #:
 name #+
 number 1
 end
-#_rsect closure funcode "_rsect" 2 0 3
+#_rsect closure bytecode "_rsect" 2
 QUOTE 0
 FRAME 3
 ARG 0
@@ -9059,7 +8313,7 @@ PUTARG 2
 CLOSURE 3
 RETURN
 end
-funcode "<function>" 1 0 3
+bytecode "<function>" 1
 FVAR 1
 PREP 2
 ARG 0
@@ -9071,7 +8325,7 @@ RETURN
 end
 end
 end
-#_top closure funcode "_top" 0 1 1
+#_top closure bytecode "_top" 0
 GLOBAL 0
 PREP 0
 CALL 0
@@ -9083,7 +8337,7 @@ RETURN
 end
 name #__top
 end
-#assoc closure funcode "assoc" 2 3 3
+#assoc closure bytecode "assoc" 2
 ARG 1
 TRAP 5
 MNIL
@@ -9122,7 +8376,7 @@ FAIL
 end
 name #=
 end
-#concat closure funcode "concat" 1 2 4
+#concat closure bytecode "concat" 1
 ARG 0
 TRAP 5
 MNIL
@@ -9151,7 +8405,7 @@ end
 name #++
 end
 #false boolean 0
-#filter closure funcode "filter" 2 2 5
+#filter closure bytecode "filter" 2
 ARG 1
 TRAP 5
 MNIL
@@ -9190,7 +8444,7 @@ FAIL
 end
 name #:
 end
-#foldl closure funcode "foldl" 3 2 4
+#foldl closure bytecode "foldl" 3
 ARG 2
 TRAP 5
 MNIL
@@ -9215,7 +8469,7 @@ TCALL 3
 FAIL
 end
 end
-#foldr closure funcode "foldr" 3 2 6
+#foldr closure bytecode "foldr" 3
 ARG 2
 TRAP 5
 MNIL
@@ -9246,7 +8500,7 @@ RETURN
 FAIL
 end
 end
-#length closure funcode "length" 1 2 3
+#length closure bytecode "length" 1
 ARG 0
 TRAP 5
 MNIL
@@ -9276,7 +8530,7 @@ number 0
 name #+
 number 1
 end
-#map closure funcode "map" 2 2 5
+#map closure bytecode "map" 2
 ARG 1
 TRAP 5
 MNIL
@@ -9310,7 +8564,7 @@ FAIL
 end
 name #:
 end
-#not closure funcode "not" 1 0 1
+#not closure bytecode "not" 1
 ARG 0
 JFALSE 4
 GLOBAL 0
@@ -9321,7 +8575,7 @@ end
 name #false
 name #true
 end
-#reverse closure funcode "reverse" 1 1 2
+#reverse closure bytecode "reverse" 1
 QUOTE 0
 FRAME 1
 CLOSURE 1
@@ -9335,7 +8589,7 @@ PUTARG 1
 CALL 2
 RETURN
 end
-funcode "reva" 2 2 4
+bytecode "reva" 2
 ARG 0
 TRAP 5
 MNIL

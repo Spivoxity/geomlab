@@ -80,6 +80,7 @@ public class BootLoader {
         STRING = Name.find("string"),
         NUMBER = Name.find("number"),
         FUNCODE = Name.find("funcode"),
+        BYTECODE = Name.find("bytecode"),
         CLOSURE = Name.find("closure"),
         END = Name.find("end"),
         OP = Name.find("op"),
@@ -106,7 +107,7 @@ public class BootLoader {
 	    return get(STRING);
 	else if (t == NUMBER)
 	    return NumValue.getInstance(getInt());
-	else if (t == FUNCODE)
+	else if (t == BYTECODE)
             return bytecode();
 	else if (t == CLOSURE)
             return closure((FunCode) value());
@@ -122,11 +123,10 @@ public class BootLoader {
         /* Bytecode for a function. */
         String name = getString();
         int arity = getInt();
-        int fsize = getInt();
-        int ssize = getInt();
-
         List<Opcode> ops = new ArrayList<Opcode>();
         List<Integer> rands = new ArrayList<Integer>();
+        List<Value> consts = new ArrayList<Value>();
+
         while (true) {
             if (see(END)) break;
             Value op = get(IDENT);
@@ -137,15 +137,13 @@ public class BootLoader {
                 rands.add(getInt());
         }
         scanner.scan();
-
-        List<Value> consts = new ArrayList<Value>();
         while (true) {
             if (see(END)) break;
             consts.add(value());
         }
         scanner.scan();
 
-        return new FunCode(name, arity, fsize, ssize, 
+        return new FunCode(name, arity,
                            ops.toArray(new Opcode[ops.size()]), 
                            makeIntArray(rands), 
                            consts.toArray(new Value[consts.size()]));

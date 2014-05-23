@@ -37,7 +37,7 @@ import funbase.Value.WrongKindException;
 
 /** A trivial runtime translator that interprets the funcode */
 public class Interp implements FunCode.Jit {
-    private static Stack<FunCode> stack = new Stack<FunCode>();
+    private static Stack<FunCode> backtrace = new Stack<FunCode>();
     private FunCode root = null;
 
     /** Create a function factory that builds interpreted closures */
@@ -58,7 +58,7 @@ public class Interp implements FunCode.Jit {
 
     @Override
     public void initStack() {
-	stack.clear();
+	backtrace.clear();
 	this.root = null;
     }
 
@@ -73,8 +73,8 @@ public class Interp implements FunCode.Jit {
     public String[] getContext(String me) {
 	String caller = null, callee = me;
 
-	for (int i = stack.size()-1; i >= 0; i--) {
-	    FunCode f = stack.get(i);
+	for (int i = backtrace.size()-1; i >= 0; i--) {
+	    FunCode f = backtrace.get(i);
 	    if (f == root) break;
 
 	    if (f.frozen) 
@@ -94,9 +94,20 @@ public class Interp implements FunCode.Jit {
 	    super(arity, code, fvars);
 	}
 
+        private static final int FRAME = 16;
+
+        private Value[] expand(Value frame[], int sp, int fsize) {
+            System.out.println("Expand");
+            int n = frame.length;
+            Value newframe[] = new Value[2*n];
+            System.arraycopy(frame, 0, newframe, 0, sp);
+            System.arraycopy(frame, n-fsize, newframe, 2*n-fsize, fsize);
+            return newframe;
+        }
+
 	@Override
 	public Value apply(Value args[], int base, int nargs) {
-	    stack.push(code);
+	    backtrace.push(code);
 
 	    if (nargs != arity) 
 		Evaluator.err_nargs(code.name, nargs, arity);
@@ -105,10 +116,13 @@ public class Interp implements FunCode.Jit {
 
 	    FunCode.Opcode instrs[] = code.instrs;
 	    int rands[] = code.rands;
-	    Value frame[] = new Value[code.fsize + code.ssize];
-	    int pc = 0, trap = -1, sp = code.fsize;
+            Value frame[] = new Value[FRAME];
+	    int pc = 0, trap = -1, sp = 0, fsize = 0;
 
 	    for (;;) {
+                if (sp + 1 > frame.length - fsize)
+                    frame = expand(frame, sp, fsize);
+
 		FunCode.Opcode op = instrs[pc];
 		int rand = rands[pc];
 		pc++;
@@ -123,7 +137,7 @@ public class Interp implements FunCode.Jit {
 		    }
 
 		    case LOCAL:
-			frame[sp++] = frame[rand];
+			frame[sp++] = frame[frame.length-rand-1];
 			break;
 
 		    case ARG:
@@ -135,7 +149,8 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case BIND:
-			frame[rand] = frame[--sp];
+                        if (rand >= fsize) fsize = rand+1;
+			frame[frame.length-rand-1] = frame[--sp];
 			break;
 
 		    case POP:
@@ -166,7 +181,7 @@ public class Interp implements FunCode.Jit {
 			    Evaluator.err_nargs(code.name, rand, nargs);
 			sp -= rand;
 			System.arraycopy(frame, sp, args, base, nargs);
-			pc = 0; trap = -1; sp = code.fsize;
+			pc = 0; trap = -1; sp = 0;
 			if (--Evaluator.quantum <= 0) Evaluator.checkpoint();
 			break;
 
@@ -201,8 +216,8 @@ public class Interp implements FunCode.Jit {
 			break;
 
 		    case RETURN:
-			stack.pop();
-                        assert (sp == code.fsize+1);
+			backtrace.pop();
+                        assert (sp == 1);
 			return frame[--sp];
 
 		    case MPLUS:
@@ -254,6 +269,8 @@ public class Interp implements FunCode.Jit {
 			if (vs == null)
 			    pc = trap;
 			else {
+                            while (sp + rand > frame.length - fsize)
+                                frame = expand(frame, sp, fsize);
 			    System.arraycopy(vs, 0, frame, sp, rand);
 			    sp += rand;
 			}
