@@ -1,4 +1,3 @@
-{{GeomLab}}
 ==Hilbert curve==
 
 By now, I hope you will relish the challenge of working out how to

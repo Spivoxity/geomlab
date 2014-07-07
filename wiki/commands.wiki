@@ -1,4 +1,3 @@
-{{GeomLab}}
 ==File Menu== 
 
 {{Markup|dl}}

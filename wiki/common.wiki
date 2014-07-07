@@ -1,0 +1,89 @@
+/* CSS placed here will be applied to all skins */
+
+/* Style the Big Green Arrow */
+a.bga2 {
+    display: block;
+    background-image: url(/wiki/files/gl/arrow.png);
+    background-repeat: no-repeat;
+    background-position: 0 10px;
+    text-decoration: none; 
+    width: 214px; height: 97px;
+    color: #309;
+    padding-top: 75px;
+    padding-left: 20px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+
+/* Show document icon for internal PDF links */
+#bodyContent a.internal[href$=".pdf"] {
+	background: url("/wiki/skins/common/images/document.png") center right no-repeat;
+	padding-right: 12px;
+}
+
+/* Hack monospace font size for Firefox and Safari */
+tt, code, kbd, samp, xmp, pre, plaintext {
+    font-family: monospace, monospace;
+}
+
+div.navbox {
+    padding: 0.5em 0 0.5em 1em;
+    background: white;
+    float: right;
+    clear: right;
+}
+
+div.navbox table {
+    border: 1px solid #aaa;
+    background: url("/wiki/skins/winkel/images/blue-wove.png") repeat;
+    color: black;
+    padding: 0.2em;
+}
+
+/* Control size of autosuggest in search */
+table.os-suggest-results {
+    font-size: 75%;
+}
+
+/* Rendering of Haskell code uses unicode characters.  To
+   enable rendering in IE, we need to choose a suitable font.
+   Firefox manages fine on its own. */
+span.at_symbol {
+    font-family: Lucida Sans Unicode, sans-serif;
+}
+
+/* Junk the fancy dotted boxes around preformatted text */
+pre {
+    border: none;
+    padding: 0;
+    margin-left: 2em;
+    background: none;
+    line-height: 1.2em;
+}
+
+/* No fancy background for code either */
+code {
+    background: none;
+}
+
+/* Examples for GeomLab */
+table.twin {
+    width: 80%;			/* 100% breaks IE6 */
+}
+
+td.input {
+    padding-left: 24px;
+}
+
+td.output {
+    text-align: right;
+    padding-right: 24px;
+}
+
+div.sourceList {
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    column-count: 2;
+    margin-left: 2em;
+}

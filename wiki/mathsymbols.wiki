@@ -1,0 +1,17 @@
+This table gives Unicode substitutes for various symbols.  Though you would type @->@ for an arrow (and expect to get @@->@@), the input has been transformed to @-&amp;gt;@ by the time the substitution process is reached, so that's what must appear in the table.
+
+<pre>
+|-&gt;|&rarr;|
+|&lt;-|&larr;|
+|=&gt;|&rArr;|
+|@&gt;|&#9655;|
+|$&gt;|&#9655;|
+|\ |&lambda;|
+|*|&lowast;|
+|==|&equiv;|
+|&gt;=|&ge;|
+|&lt;=|&le;|
+|/=|&ne;|
+</pre>
+
+The GeomGrind extension for MediaWiki uses this table, and arranges that the symbols are taken from Lucida Sans Unicode if that font is installed.  This helps on Windows clients with IE7, where otherwise everything turns into the little squares that signify missing glyphs.

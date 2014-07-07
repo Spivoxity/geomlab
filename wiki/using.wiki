@@ -1,4 +1,3 @@
-{{GeomLab}}
 These pages contain more detailed information about the GeomLab language and
 programming environment.
 *[[Hints and tips for GeomLab|Hints and tips]]

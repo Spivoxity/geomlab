@@ -1,4 +1,3 @@
-{{GeomLab}}
 <!--Worksheet 1: Above and beside-->
 Among other things, GeomLab is a language for describing pictures.  The GeomLab program lets you write a description in the left-hand part of the window, and will then show you the corresponding picture in the right-hand part.
 
@@ -109,7 +108,7 @@ we put for the variables they contain: for example, the equation
 is associative.  Similarly, we can look for equations that always hold
 between formulas in our new kind of algebra.
 
-Looking beyond our little world of pictures, there are many places
+Looking beyond this little world of pictures, there are many places
 in programming and computer science where the algebraic idea of having
 a set of values with operations on them is relevant.  For example,
 tables of information in databases can be combined with algebraic

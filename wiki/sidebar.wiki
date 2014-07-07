@@ -1,0 +1,11 @@
+*navigation
+**Introduction to GeomLab|Introduction
+**Getting started with GeomLab|Getting started
+**Worksheets for GeomLab|Worksheets
+**Using GeomLab|Using Geomlab
+**Mainly for teachers|Mainly for teachers
+**Downloading GeomLab|Downloads
+**Contact us|Contact us
+*SEARCH
+*TOOLBOX
+*LANGUAGES

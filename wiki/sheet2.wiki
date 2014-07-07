@@ -1,4 +1,3 @@
-{{GeomLab}}
 Another two functions that can be used on (or ''applied to'')
 pictures are @rot@ and @flip@. 
 The function @rot@ stands for ''rotate'', and twists a

@@ -1,4 +1,3 @@
-{{GeomLab}}
 These worksheets contain a progressive sequence of exercises using the
 GeomLab programming environment. The first few worksheets introduce
 the idea of building up complex pictures by transforming and putting

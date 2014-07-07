@@ -1,4 +1,3 @@
-{{GeomLab}}
 This worksheet uses two constants @straight@ and
 @bend@ that look like square tiles:
 {{GeomPic|5010|straight|*}}

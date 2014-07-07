@@ -1,4 +1,3 @@
-{{GeomLab}}
 The GeomLab system consists of the programming environment, implemented as a Java Swing application (geomlab), an abstract machine for running programs in the GeomLab language that is
 implemented by an interpreter written in Java (funbase), a
 collection of plug-in features for the language (plugins), and a

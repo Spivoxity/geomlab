@@ -1,4 +1,3 @@
-{{GeomLab}}
 When you start GeomLab (by clicking on the [[GeomLab|Big Green
 Arrow]]), you may be asked for permission to run a signed application.
 After you give permission, a window appears that looks like this:

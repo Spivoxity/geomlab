@@ -1,4 +1,3 @@
-{{GeomLab}}
 GeomLab comes with a number of pre-defined tiles that can be put
 together into pictures.  But there is also a way to make your own
 tiles, using a 'secret' built-in function called @_tile@.

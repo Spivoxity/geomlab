@@ -1,4 +1,3 @@
-{{GeomLab}}
 This worksheet introduces a different way of drawing pictures that
 will allow us to escape from the world where every non-trivial picture
 consists of two other pictures put either one <i>beside</i> the other

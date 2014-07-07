@@ -1,4 +1,3 @@
-{{GeomLab}}
 Suppose we want to draw rows of men of different lengths. It would
 be useful to have a function @manrow(n)@ that, for any
 value of @n@, would give a row of @n@ men. How

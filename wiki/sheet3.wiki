@@ -1,4 +1,3 @@
-{{GeomLab}}
 Remember that @rot@ can be applied twice to a picture to
 turn it upside down:
 {{GeomPic|3004|rot(rot(man))|*}}
