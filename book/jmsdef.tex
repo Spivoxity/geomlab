@@ -1,0 +1,431 @@
+% jmsdef.tex 
+% $Id: jmsdef.tex 2 2006-06-12 09:26:54Z mike $
+
+% Basic definitions for JMS format (also used in MetaPost)
+
+\catcode`@=11
+
+\let\protect=\relax
+
+%
+% Font loading
+%
+
+% Six font schemes:
+%
+%   Scheme	Body font	\iflucida	CM fonts
+%   0 (default)	lbr		true
+%   1		lsr		true
+%   2		cmr		false		sauter
+%   3		cmss		false		sauter
+%   4		cmr		false		basic
+%   5		cmss		false		basic
+%
+% Schemes 4 and 5 are like 2 and 3, but use just the basic set of CM fonts.
+
+\newif\iflucida
+\newif\ifbasiccm
+\newcount\fontscheme
+
+% Say `\def\fonts{2}\input book' to get CMR
+\ifx\fonts\undefined\else\fontscheme=\fonts\fi
+
+\ifnum\fontscheme<2 \lucidatrue\else\lucidafalse\fi
+\ifnum\fontscheme>3 \basiccmtrue \advance\fontscheme by-2 \else\basiccmfalse\fi
+
+% To deal with the Sans font scheme (\fontscheme=1), we distinguish
+% between the body font \tenrm (lbr or lsr as appropriate) and the
+% math font \tenmrm (always lbr).  Same (and more important) for \tenit
+% vs \tenmti and \tenbf vs \tenmbf.
+%
+% So there are three potentially different italic fonts: the italic
+% used for running text (\tenit), the text italic font that is used for
+% maths (\tenmti), and the math italic font (\teni).  There are two
+% font-changing commands: 
+%
+%     Command	Horiz mode	Math mode
+%
+%     \it	\tenit		\tenmti
+%     \mti	\tenmti		(no effect)
+% 
+% In math mode, you get \teni by default with no font-changing command.
+
+% Font substitution for basic CM
+
+\def\fontsubst#1#2{\expandafter\def\csname subst@#1\endcsname{#2}}
+
+\ifbasiccm
+  \fontsubst{cmcsc8}{cmcsc10 at8pt}
+  \fontsubst{cmcsci8}{cmcsc10 at8pt}
+  \fontsubst{cmssbx8}{cmssbx10 at8pt}
+  \fontsubst{cmitt8}{cmitt10 at8pt}
+
+  \fontsubst{cmcsc9}{cmcsc10 at9pt}
+  \fontsubst{cmcsci9}{cmcsc10 at9pt}
+  \fontsubst{cmssbx9}{cmssbx10 at9pt}
+  \fontsubst{cmitt9}{cmitt10 at9pt}
+
+  \fontsubst{cmcsci10}{cmcsc10}
+
+  \fontsubst{cmcsci12}{cmcsc10 scaled\magstep1}
+  \fontsubst{cmitt12}{cmitt10 scaled\magstep1}
+  \fontsubst{cmsy12}{cmsy10 scaled\magstep1}
+  \fontsubst{cmcsc12}{cmcsc10 scaled\magstep1}
+  \fontsubst{cmex12}{cmex10 scaled\magstep1}
+  \fontsubst{cmssbx12}{cmssbx10 scaled\magstep1}
+
+  \fontsubst{cmr14}{cmr10 scaled\magstep2}
+  \fontsubst{cmss14}{cmss10 scaled\magstep2}
+
+  \fontsubst{cmr20}{cmr10 scaled\magstep4}
+  \fontsubst{cmss20}{cmss10 scaled\magstep4}
+  \fontsubst{cmssi20}{cmssi10 scaled\magstep4}
+  \fontsubst{cmssbx20}{cmssbx10 scaled\magstep4}
+
+  \fontsubst{cmss24}{cmss10 scaled\magstep5}
+  \fontsubst{cmssbx24}{cmssbx10 scaled\magstep5}
+\fi
+
+% Use e.g. \@font\twelverm{cmcsci10 scaled\magstep1} to load a font,
+% but with a possible substitution cmcsci10 --> cmcsc10, giving the
+% effect of \font\twelverm=cmcsc10 scaled\magstep1
+\def\@font#1#2{
+  \expandafter\let\expandafter\next
+    \csname subst@\expandafter\killscale#2 scaled\killscale\endcsname
+  \ifx\next\relax \font#1=#2 
+  \else \expandafter\getscale#2scaledscaled\getscale 
+    \font#1=\next\scale \fi}
+
+\def\killscale#1 scaled#2\killscale{#1}
+\def\getscale#1scaled#2scaled#3\getscale{\def\scale{#2}%
+  \ifx\scale\empty\else \def\scale{ scaled #2}\fi}
+
+
+%
+% Size selection
+%
+
+\newdimen\fontquad 
+\newdimen\fontbody
+\newdimen\blockindent
+
+\newfam\sffam
+\newfam\arfam % used for arrow font in Lucida
+
+\newif\ifleaded
+\iflucida\leadedtrue\fi
+
+\newtoks\sizetoks
+
+% Can set running text in 8, 9, 10, 11 or 12 point
+
+\def\setsize#1#2#3#4#5#6{%
+% #1 = text size
+% #2 = script size
+% #3 = scriptscript size
+% #4 = quad and body size (CM)
+% #5 = body size (Lucida)
+% #6 = jot
+  \ifleaded \fontbody=#5 \else \fontbody=#4 \fi
+  \fontquad=#4 \jot=#6
+  \parindent=\fontquad
+  \blockindent=2\fontquad
+  \def\@textsize{#1}\def\@scriptsize{#2}\def\@scriptscriptsize{#3}%
+  	% NB: these sizes are used by the math quotes "..."
+  \setfamily0{mrm} \setmface0{rm} \setface{mrm}
+  \setfamily1{i}
+  \setfamily2{sy}
+  \setexfamily
+  % The remaining families are not to be used in subscripts
+  \smallfamily\itfam{mti} \setmface\itfam{it} \setface{mti} 
+  \smallfamily\bffam{mbf} \setmface\bffam{bf} \setface{mbf} 
+  \smallfamily\sffam{sf}  \setmface\sffam{sf} 
+  \iflucida\smallfamily\arfam{ar}\fi
+  \the\sizetoks
+  \normalbaselines\rm}
+
+\def\setface#1{\expandafter\edef\csname p#1\endcsname{%
+  \expandafter\noexpand\csname\@textsize#1\endcsname}\ignorespaces}
+\def\setmface#1#2{\expandafter\edef\csname p#2\endcsname{%
+  \fam#1\expandafter\noexpand\csname\@textsize#2\endcsname}\ignorespaces}
+\def\setfamily#1#2{%
+  \textfont#1=\csname\@textsize#2\endcsname
+  \scriptfont#1=\csname\@scriptsize#2\endcsname
+  \scriptscriptfont#1=\csname\@scriptscriptsize#2\endcsname\ignorespaces}
+\def\smallfamily#1#2{%
+  \textfont#1=\csname\@textsize#2\endcsname\ignorespaces}
+\def\setexfamily{%
+  \textfont3=\csname\@textsize ex\endcsname
+  \scriptfont3=\csname\@textsize ex\endcsname
+  \scriptscriptfont3=\csname\@textsize ex\endcsname}
+
+\def\eightpoint{\setsize{eight}{six}{five}{10pt}{11pt}{2pt}}
+\def\ninepoint{\setsize{nine}{six}{five}{11pt}{12pt}{2.5pt}}
+\def\tenpoint{\setsize{ten}{seven}{five}{12pt}{13pt}{3pt}}
+\def\elevenpoint{\setsize{eleven}{eight}{six}{13pt}{14pt}{3.5pt}}
+\def\twelvepoint{\setsize{twelve}{eight}{six}{14pt}{15pt}{3.5pt}}
+
+\def\deffont#1{%
+  % Add definition of face to \sizetoks
+  \expandafter\sizetoks\expandafter{\the\sizetoks\setface{#1}}
+  % Define the font-changing command
+  \expandafter\edef\csname #1\endcsname{\protect\expandafter
+    \noexpand\csname p#1\endcsname}}
+
+\def\rm{\protect\prm} \def\mrm{\protect\pmrm} \def\it{\protect\pit}
+\def\mti{\protect\pmti} \def\bf{\protect\pbf} \def\mbf{\protect\pmbf}
+\def\sf{\protect\psf}
+
+\deffont{sl} \deffont{sc} \deffont{sci} \deffont{sfb} \deffont{vsf}
+\deffont{vsfi} \deffont{tt} \deffont{tti} \deffont{kr} \deffont{ki}
+
+\def\normalbaselines{%
+  \lineskip=\normallineskip
+  \baselineskip=\fontbody
+  \lineskiplimit=\normallineskiplimit
+  \bigskipamount=\fontbody plus5pt minus3pt
+  \medskipamount=0.5\fontbody plus4pt minus2pt
+  \abovedisplayskip=\medskipamount
+  \belowdisplayskip=\medskipamount
+  \abovedisplayshortskip=\abovedisplayskip
+  \belowdisplayshortskip=\belowdisplayskip
+  \setbox\strutbox=\hbox{\vrule height0.7\fontbody depth0.3\fontbody width0pt}}
+
+% We do not have oldstyle digits.
+\let\oldstyle=\undefined
+
+% \sl is not used for math setting
+\textfont\slfam=\nullfont \scriptfont\slfam=\nullfont
+  \scriptscriptfont\slfam=\nullfont
+
+
+%
+% Loading of fonts
+%
+
+\def\smallsizes{
+  \do{five}{5.2}{5}{5}
+  \do{six}{6.1}{6}{6}
+  \do{seven}{6.9}{7}{7}}
+
+\def\bigsizes{
+  \do{eight}{7.8}{8}{8}
+  \do{nine}{8.6}{9}{9}
+  \do{ten}{9.5}{10}{10}
+  \do{eleven}{10.4}{11}{10 scaled\magstephalf}
+  \do{twelve}{11.2}{12}{12}}
+
+\def\allsizes{\smallsizes\bigsizes}
+
+\def\loadfont#1#2#3#4#5{
+  \def\do##1##2##3##4{% name lusize cmsize basiccmsize
+    \edef\f@nt{\ifcase\fontscheme #2 at##2pt\or #3 at##2pt\or
+      \ifbasiccm #4##4\else #4##3\fi\or \ifbasiccm #5##4\else #5##3\fi\fi}
+    \expandafter\@font\csname ##1#1\endcsname\f@nt}}
+
+\def\specialfont#1#2#3{%
+  \ifcase\fontscheme \@font#1{#2} \or\@font#1{#2} 
+    \or\@font#1{#3} \or\@font#1{#3}\fi}
+
+% Extra sizes for Lucida
+\def\lfourteen{13pt}
+\def\ltwenty{18pt}
+\def\ltwentyfour{22pt}
+
+\loadfont{mrm}  {lbr}    {lbr}    {cmr}    {cmr}    \allsizes
+\loadfont{i}    {lbmi}   {lbmi}   {cmmi}   {cmmi}   \allsizes
+\loadfont{sy}   {lbms}   {lbms}   {cmsy}   {cmsy}   \allsizes
+\iflucida
+  \loadfont{ar} {lbma}   {lbma}   {***}    {***}    \allsizes
+\fi
+
+\loadfont{rm}   {lbr}    {lsr}    {cmr}    {cmss}   \bigsizes
+\loadfont{it}   {lbi}	 {lsi}    {cmti}   {cmssi}  \bigsizes
+\loadfont{ex}   {lbme}   {lbme}   {cmex}   {cmex}   \bigsizes
+\loadfont{bf}   {lbd}    {lsd}    {cmbx}   {cmssbx} \bigsizes
+\loadfont{sf}   {lsr}    {lsr}    {cmss}   {cmss}   \bigsizes
+\loadfont{sfi}	{lsi}	 {lsi}	  {cmssi}  {cmssi}  \bigsizes
+\loadfont{mti}	{lbi}    {lbi}    {cmti}   {cmti}   \bigsizes
+\loadfont{mbf}	{lbd}    {lbd}    {cmbx}   {cmbx}   \bigsizes
+\loadfont{sl}	{lbsl}   {lso}    {cmsl}   {cmssi}  \bigsizes
+\loadfont{sc}	{lbrsc}  {lbrsc}  {cmcsc}  {cmcsc}  \bigsizes
+\loadfont{sci}	{lbosc}  {lbosc}  {cmcsci} {cmcsci} \bigsizes
+\loadfont{sfb}	{lsd}    {lsd}    {cmssbx} {cmssbx} \bigsizes
+\loadfont{vsf}	{vlsr}   {lbtn}   {cmtt}   {cmtt}   \bigsizes
+\loadfont{vsfi}	{vlsi}   {lbtno}  {cmitt}  {cmitt}  \bigsizes
+\loadfont{tt}	{lbtn}   {lbtn}   {cmtt}   {cmtt}   \bigsizes
+\loadfont{tti}	{lbtno}  {lbtno}  {cmitt}  {cmitt}  \bigsizes
+\loadfont{kr}   {lbkr}   {lbkr}   {cmss}   {cmss}   \bigsizes
+\loadfont{ki}   {lbki}   {lbki}   {cmssi}  {cmssi}  \bigsizes
+
+% Set the skewchars
+\def\do#1#2#3#4{
+  \expandafter\skewchar\csname #1i\endcsname='177
+  \expandafter\skewchar\csname #1sy\endcsname='60
+}
+\allsizes
+
+% Special fonts
+
+% Fourteen point
+\specialfont\fourteenrm{lbr at\lfourteen}{cmr14}
+\specialfont\fourteensf{lsr at\lfourteen}{cmss14}
+
+% Twenty point
+\specialfont\twentyrm{lbr at\ltwenty}{cmr20}
+\specialfont\twentysf{lsr at\ltwenty}{cmss20}
+\specialfont\twentysfb{lsb at\ltwenty}{cmssbx20}
+\specialfont\twentysfi{lsi at\ltwenty}{cmssi20}
+
+% Twenty-four point
+\specialfont\twentyfoursf{lsr at\ltwentyfour}{cmss24}
+\specialfont\twentyfoursfb{lsd at\ltwentyfour}{cmssbx24}
+\specialfont\twentyfourfunky{lbki at\ltwentyfour}{cmssbx24}
+
+% Typeface loads a single face in multiple sizes.  The Lucida-adjusted
+% size is used in each case, even if the font scheme is CM.
+% Best used to load funky variants of Lucida
+\def\typeface#1#2{\choosefont{#1}{#2}\bigsizes \deffont{#1}}
+
+\def\choosefont#1#2{
+  \def\do##1##2##3##4{% name lusize cmsize basiccmsize
+    \expandafter\@font\csname ##1#1\endcsname{#2 at##2pt}}}
+
+%
+% Adjustments for Lucida
+%
+
+\iflucida
+
+\def\neq{\mathrel{\fam\arfam\mathchar"7094}}
+
+% Adjusted for LucidaNewMath-Extension at 9.5pt and math axis at 3.13pt
+% Note: delimiter increments are 5.5pt (as opposed to 6pt in CM)
+% These work in \tenpoint size only.
+
+\def\big#1{{\hbox{$\left#1\vbox to8.20\p@{}\right.\n@space$}}}
+\def\Big#1{{\hbox{$\left#1\vbox to10.80\p@{}\right.\n@space$}}}
+\def\bigg#1{{\hbox{$\left#1\vbox to13.42\p@{}\right.\n@space$}}}
+\def\Bigg#1{{\hbox{$\left#1\vbox to16.03\p@{}\right.\n@space$}}}
+\def\biggg#1{{\hbox{$\left#1\vbox to17.72\p@{}\right.\n@space$}}}
+\def\Biggg#1{{\hbox{$\left#1\vbox to21.25\p@{}\right.\n@space$}}}
+\def\n@space{\nulldelimiterspace\z@ \m@th}
+
+% define some extra large sizes - always done using extensible parts
+
+\def\bigggl{\mathopen\biggg}
+\def\bigggr{\mathclose\biggg}
+\def\Bigggl{\mathopen\Biggg}
+\def\Bigggr{\mathclose\Biggg}
+
+%% %  Following is needed if the roman text font is NOT just LucidaBright
+%% 
+%% %  Draw the small sizes of `[' and `]' from LBMO instead of LBR
+%% 
+%% \mathcode`\[="4186 \delcode`\[="186302
+%% \mathcode`\]="5187 \delcode`\]="187303
+%% 
+%% %  Draw the small sizes of `(' and `)' from LBMO instead of LBR
+%% 
+%% \mathcode`\(="4184 \delcode`\(="184300
+%% \mathcode`\)="5185 \delcode`\)="185301
+%% 
+%% %  The small sizes of `{' and `}' are already drawn from LBMS instead of LBR
+%% 
+%% %  Draw small `/' from LBMO instead of LBR
+%% 
+%% \mathcode`\/="013D \delcode`\/="13D30E
+%% 
+%% %  Draw  `=' and `+' from LBMS instead of LBR
+%% 
+%% \mathcode`\=="3283 \mathcode`\+="2282
+%% 
+%% % May want to comment out this last one if text font IS known to be LBR
+
+% plain.tex draws upper case upright Greek from roman text font ---
+% --- need to draw instead from LucidaNewMath-Extension
+
+\mathchardef\Gamma="03D0
+\mathchardef\Delta="03D1
+\mathchardef\Theta="03D2
+\mathchardef\Lambda="03D3
+\mathchardef\Xi="03D4
+\mathchardef\Pi="03D5
+\mathchardef\Sigma="03D6
+\mathchardef\Upsilon="03D7
+\mathchardef\Phi="03D8
+\mathchardef\Psi="03D9
+\mathchardef\Omega="03DA
+
+% The dot accent has moved
+\def\dot{\mathaccent"7005 }
+
+\def\TeX{T\kern-.18em\lower.4ex\hbox{E}\kern-.1emX}
+
+\def\copyright{{\rm\char"A9}}
+
+\def\matrix#1{\null\,\vcenter{\normalbaselines\m@th
+    \ialign{\hfil$##$\hfil&&\quad\hfil$##$\hfil\crcr
+      \mathstrut\crcr\noalign{\kern-0.9\baselineskip}
+      #1\crcr\mathstrut\crcr\noalign{\kern-0.9\baselineskip}}}\,}
+
+% \p@renwd is used in \bordermatrix as the width of big extensible left paren
+% i.e. where rows and columns are labelled outside parenthesized matrix
+% \newdimen\p@renwd
+\setbox\z@=\hbox{\tenex B} \p@renwd=\wd\z@ % width of the big left (
+
+% following changed because `(' is not large enough for strut in LBMO
+\def\mathstrut{\vphantom{f}}
+
+% In n-th root, don't want the `n' to come too close to the radical
+\def\r@@t#1#2{\setbox\z@\hbox{$\m@th#1\sqrt{#2}$}
+  \dimen@\ht\z@ \advance\dimen@-\dp\z@
+  \mkern5mu\raise.6\dimen@\copy\rootbox \mkern-7.5mu \box\z@}
+
+\fi
+
+
+%
+% Math stuff
+%
+
+\def~{\relax\ifmmode\,\else\penalty10000\ \fi}
+\def\{{\relax\ifmmode\lbrace\else\iflucida\char`\{\else$\lbrace$\fi\fi}
+\def\}{\relax\ifmmode\rbrace\else\iflucida\char`\}\else$\rbrace$\fi\fi}
+
+% ! is an Ord, not a Close as in plain TeX
+\mathcode`\!="0021
+
+% Math spacing is a bit more chunky that in plain TeX
+\thinmuskip=4mu plus2mu minus1mu
+\medmuskip=5mu plus2mu minus2mu
+\thickmuskip=6mu plus3mu
+
+% In cmr10 and plain TeX, an ordinary space is 12/36 plus 6/36 minus 4/36 em,
+% 1 mu is 2/36 em, and the three mu skips are
+%	thin  3 mu 			= 6/36 em
+%	med   4 plus 2 minus 4 mu	= 8/36 plus 4/36 minus 8/36 em
+%	thick 5 plus 5 mu		= 10/36 plus 10/36 em
+
+% @ is a binary operator
+\mathcode`\@="2040
+
+% "stuff" sets stuff with math text italic.  We use an \hbox to deal
+% with \_ nicely, and use \mathselect to get the appropriate size:
+\def\kwote#1"{\mathselect\kw@te{#1}}
+\def\kw@te#1#2{\hbox{\csname #1mti\endcsname #2\/}}
+\mathcode`\"="8000
+{\catcode`\"=\active \global\let"=\kwote}
+
+% Like mathpalette, but the argument is a font size
+\def\mathselect#1#2{\mathchoice{#1\@textsize{#2}}{#1\@textsize{#2}}%
+  {#1\@scriptsize{#2}}{#1\@scriptscriptsize{#2}}}
+
+\def\isc#1{\hbox{\sci \@cap#1\@cap\/}} % constant in caps and small caps
+\def\@cap#1#2\@cap{#1\lowercase{#2}}
+
+%\def\star{\mathord{*}}
+
+\catcode`@=12
+
+\tenpoint

@@ -1,439 +1,16 @@
 % jmsmac.tex 
+% $Id: jmsmac.tex 3 2006-12-31 20:35:33Z mike $
+
 % Macros for Mike's book format
 
-% Basic definitions for JMS format (also used in MetaPost)
+\input jmsdef
 
 \catcode`@=11
 
-\let\protect=\relax
-
-%
-% Font loading
-%
-
-% Six font schemes:
-%
-%   Scheme	Body font	\iflucida	CM fonts
-%   0 (default)	lbr		true
-%   1		lsr		true
-%   2		cmr		false		sauter
-%   3		cmss		false		sauter
-%   4		cmr		false		basic
-%   5		cmss		false		basic
-%
-% Schemes 4 and 5 are like 2 and 3, but use just the basic set of CM fonts.
-
-\newif\iflucida
-\newif\ifbasiccm
-\newcount\fontscheme
-
-% Say `\def\fonts{2}\input book' to get CMR
-\ifx\fonts\undefined\else\fontscheme=\fonts\fi
-
-\ifnum\fontscheme<2 \lucidatrue\else\lucidafalse\fi
-\ifnum\fontscheme>3 \basiccmtrue \advance\fontscheme by-2 \else\basiccmfalse\fi
-
-% To deal with the Sans font scheme (\fontscheme=1), we distinguish
-% between the body font \tenrm (lbr or lsr as appropriate) and the
-% math font \tenmrm (always lbr).  Same (and more important) for \tenit
-% vs \tenmti and \tenbf vs \tenmbf.
-%
-% So there are three potentially different italic fonts: the italic
-% used for running text (\tenit), the text italic font that is used for
-% maths (\tenmti), and the math italic font (\teni).  There are two
-% font-changing commands: 
-%
-%     Command	Horiz mode	Math mode
-%
-%     \it	\tenit		\tenmti
-%     \mti	\tenmti		(no effect)
-% 
-% In math mode, you get \teni by default with no font-changing command.
-
-% Font substitution for basic CM
-
-\def\fontsubst#1#2{\expandafter\def\csname subst@#1\endcsname{#2}}
-
-\ifbasiccm
-  \fontsubst{cmcsc8}{cmcsc10 at8pt}
-  \fontsubst{cmcsci8}{cmcsc10 at8pt}
-  \fontsubst{cmssbx8}{cmssbx10 at8pt}
-  \fontsubst{cmitt8}{cmitt10 at8pt}
-
-  \fontsubst{cmcsc9}{cmcsc10 at9pt}
-  \fontsubst{cmcsci9}{cmcsc10 at9pt}
-  \fontsubst{cmssbx9}{cmssbx10 at9pt}
-  \fontsubst{cmitt9}{cmitt10 at9pt}
-
-  \fontsubst{cmcsci10}{cmcsc10}
-
-  \fontsubst{cmcsci12}{cmcsc10 scaled\magstep1}
-  \fontsubst{cmitt12}{cmitt10 scaled\magstep1}
-  \fontsubst{cmsy12}{cmsy10 scaled\magstep1}
-  \fontsubst{cmcsc12}{cmcsc10 scaled\magstep1}
-  \fontsubst{cmex12}{cmex10 scaled\magstep1}
-  \fontsubst{cmssbx12}{cmssbx10 scaled\magstep1}
-
-  \fontsubst{cmr14}{cmr10 scaled\magstep2}
-  \fontsubst{cmss14}{cmss10 scaled\magstep2}
-
-  \fontsubst{cmr20}{cmr10 scaled\magstep4}
-  \fontsubst{cmss20}{cmss10 scaled\magstep4}
-  \fontsubst{cmssi20}{cmssi10 scaled\magstep4}
-  \fontsubst{cmssbx20}{cmssbx10 scaled\magstep4}
-
-  \fontsubst{cmss24}{cmss10 scaled\magstep5}
-  \fontsubst{cmssbx24}{cmssbx10 scaled\magstep5}
+\newif\ifpdf \pdffalse
+\ifx\pdfoutput\undefined \else
+  \ifnum\pdfoutput>0 \pdftrue \fi
 \fi
-
-% Use e.g. \@font\twelverm{cmcsci10 scaled\magstep1} to load a font,
-% but with a possible substitution cmcsci10 --> cmcsc10, giving the
-% effect of \font\twelverm=cmcsc10 scaled\magstep1
-\def\@font#1#2{
-  \expandafter\let\expandafter\next
-    \csname subst@\expandafter\killscale#2 scaled\killscale\endcsname
-  \ifx\next\relax \font#1=#2 
-  \else \expandafter\getscale#2scaledscaled\getscale 
-    \font#1=\next\scale \fi}
-
-\def\killscale#1 scaled#2\killscale{#1}
-\def\getscale#1scaled#2scaled#3\getscale{\def\scale{#2}%
-  \ifx\scale\empty\else \def\scale{ scaled #2}\fi}
-
-
-%
-% Size selection
-%
-
-\newdimen\fontquad 
-\newdimen\fontbody
-\newdimen\blockindent
-
-\newfam\sffam
-\newfam\arfam % used for arrow font in Lucida
-
-\newif\ifleaded
-\iflucida\leadedtrue\fi
-
-\newtoks\sizetoks
-
-% Can set running text in 8, 9, 10, 11 or 12 point
-
-\def\setsize#1#2#3#4#5#6{%
-% #1 = text size
-% #2 = script size
-% #3 = scriptscript size
-% #4 = quad and body size (CM)
-% #5 = body size (Lucida)
-% #6 = jot
-  \ifleaded \fontbody=#5 \else \fontbody=#4 \fi
-  \fontquad=#4 \jot=#6
-  \parindent=\fontquad
-  \blockindent=2\fontquad
-  \def\@textsize{#1}\def\@scriptsize{#2}\def\@scriptscriptsize{#3}%
-  	% NB: these sizes are used by the math quotes "..."
-  \setfamily0{mrm} \setmface0{rm} \setface{mrm}
-  \setfamily1{i}
-  \setfamily2{sy}
-  \setexfamily
-  % The remaining families are not to be used in subscripts
-  \smallfamily\itfam{mti} \setmface\itfam{it} \setface{mti} 
-  \smallfamily\bffam{mbf} \setmface\bffam{bf} \setface{mbf} 
-  \smallfamily\sffam{sf}  \setmface\sffam{sf} 
-  \iflucida\smallfamily\arfam{ar}\fi
-  \the\sizetoks
-  \normalbaselines\rm}
-
-\def\setface#1{\expandafter\edef\csname p#1\endcsname{%
-  \expandafter\noexpand\csname\@textsize#1\endcsname}\ignorespaces}
-\def\setmface#1#2{\expandafter\edef\csname p#2\endcsname{%
-  \fam#1\expandafter\noexpand\csname\@textsize#2\endcsname}\ignorespaces}
-\def\setfamily#1#2{%
-  \textfont#1=\csname\@textsize#2\endcsname
-  \scriptfont#1=\csname\@scriptsize#2\endcsname
-  \scriptscriptfont#1=\csname\@scriptscriptsize#2\endcsname\ignorespaces}
-\def\smallfamily#1#2{%
-  \textfont#1=\csname\@textsize#2\endcsname\ignorespaces}
-\def\setexfamily{%
-  \textfont3=\csname\@textsize ex\endcsname
-  \scriptfont3=\csname\@textsize ex\endcsname
-  \scriptscriptfont3=\csname\@textsize ex\endcsname}
-
-\def\eightpoint{\setsize{eight}{six}{five}{10pt}{11pt}{2pt}}
-\def\ninepoint{\setsize{nine}{six}{five}{11pt}{12pt}{2.5pt}}
-\def\tenpoint{\setsize{ten}{seven}{five}{12pt}{13pt}{3pt}}
-\def\elevenpoint{\setsize{eleven}{eight}{six}{13pt}{14pt}{3.5pt}}
-\def\twelvepoint{\setsize{twelve}{eight}{six}{14pt}{15pt}{3.5pt}}
-
-\def\deffont#1{%
-  % Add definition of face to \sizetoks
-  \expandafter\sizetoks\expandafter{\the\sizetoks\setface{#1}}
-  % Define the font-changing command
-  \expandafter\edef\csname #1\endcsname{\protect\expandafter
-    \noexpand\csname p#1\endcsname}}
-
-\def\rm{\protect\prm} \def\mrm{\protect\pmrm} \def\it{\protect\pit}
-\def\mti{\protect\pmti} \def\bf{\protect\pbf} \def\mbf{\protect\pmbf}
-\def\sf{\protect\psf}
-
-\deffont{sfi}
-\deffont{sl} \deffont{sc} \deffont{sci} \deffont{sfb} \deffont{vsf}
-\deffont{vsfi} \deffont{tt} \deffont{tti} \deffont{kr} \deffont{ki}
-
-\def\normalbaselines{%
-  \lineskip=\normallineskip
-  \baselineskip=\fontbody
-  \lineskiplimit=\normallineskiplimit
-  \bigskipamount=\fontbody plus5pt minus3pt
-  \medskipamount=0.5\fontbody plus4pt minus2pt
-  \abovedisplayskip=\medskipamount
-  \belowdisplayskip=\medskipamount
-  \abovedisplayshortskip=\abovedisplayskip
-  \belowdisplayshortskip=\belowdisplayskip
-  \setbox\strutbox=\hbox{\vrule height0.7\fontbody depth0.3\fontbody width0pt}}
-
-% We do not have oldstyle digits.
-\let\oldstyle=\undefined
-
-% \sl is not used for math setting
-\textfont\slfam=\nullfont \scriptfont\slfam=\nullfont
-  \scriptscriptfont\slfam=\nullfont
-
-
-%
-% Loading of fonts
-%
-
-\def\smallsizes{
-  \do{five}{5.2}{5}{5}
-  \do{six}{6.1}{6}{6}
-  \do{seven}{6.9}{7}{7}}
-
-\def\bigsizes{
-  \do{eight}{7.8}{8}{8}
-  \do{nine}{8.6}{9}{9}
-  \do{ten}{9.5}{10}{10}
-  \do{eleven}{10.4}{11}{10 scaled\magstephalf}
-  \do{twelve}{11.2}{12}{12}}
-
-\def\allsizes{\smallsizes\bigsizes}
-
-\def\loadfont#1#2#3#4#5{
-  \def\do##1##2##3##4{% name lusize cmsize basiccmsize
-    \edef\f@nt{\ifcase\fontscheme #2 at##2pt\or #3 at##2pt\or
-      \ifbasiccm #4##4\else #4##3\fi\or \ifbasiccm #5##4\else #5##3\fi\fi}
-    \expandafter\@font\csname ##1#1\endcsname\f@nt}}
-
-\def\specialfont#1#2#3{%
-  \ifcase\fontscheme \@font#1{#2} \or\@font#1{#2} 
-    \or\@font#1{#3} \or\@font#1{#3}\fi}
-
-% Extra sizes for Lucida
-\def\lfourteen{13pt}
-\def\ltwenty{18pt}
-\def\ltwentyfour{22pt}
-
-\loadfont{mrm}  {lbr}    {lbr}    {cmr}    {cmr}    \allsizes
-\loadfont{i}    {lbmi}   {lbmi}   {cmmi}   {cmmi}   \allsizes
-\loadfont{sy}   {lbms}   {lbms}   {cmsy}   {cmsy}   \allsizes
-\iflucida
-  \loadfont{ar} {lbma}   {lbma}   {***}    {***}    \allsizes
-\fi
-
-\loadfont{rm}   {lbr}    {lsr}    {cmr}    {cmss}   \bigsizes
-\loadfont{it}   {lbi}	 {lsi}    {cmti}   {cmssi}  \bigsizes
-\loadfont{ex}   {lbme}   {lbme}   {cmex}   {cmex}   \bigsizes
-\loadfont{bf}   {lbd}    {lsd}    {cmbx}   {cmssbx} \bigsizes
-\loadfont{sf}   {lsr}    {lsr}    {cmss}   {cmss}   \bigsizes
-\loadfont{sfi}	{lsi}	 {lsi}	  {cmssi}  {cmssi}  \bigsizes
-\loadfont{mti}	{lbi}    {lbi}    {cmti}   {cmti}   \bigsizes
-\loadfont{mbf}	{lbd}    {lbd}    {cmbx}   {cmbx}   \bigsizes
-\loadfont{sl}	{lbsl}   {lso}    {cmsl}   {cmssi}  \bigsizes
-\loadfont{sc}	{lbrsc}  {lbrsc}  {cmcsc}  {cmcsc}  \bigsizes
-\loadfont{sci}	{lbosc}  {lbosc}  {cmcsci} {cmcsci} \bigsizes
-\loadfont{sfb}	{lsd}    {lsd}    {cmssbx} {cmssbx} \bigsizes
-\loadfont{vsf}	{vlsr}   {lbtn}   {cmtt}   {cmtt}   \bigsizes
-\loadfont{vsfi}	{vlsi}   {lbtno}  {cmitt}  {cmitt}  \bigsizes
-\loadfont{tt}	{lbtn}   {lbtn}   {cmtt}   {cmtt}   \bigsizes
-\loadfont{tti}	{lbtno}  {lbtno}  {cmitt}  {cmitt}  \bigsizes
-\loadfont{kr}   {lbkr}   {lbkr}   {cmss}   {cmss}   \bigsizes
-\loadfont{ki}   {lbki}   {lbki}   {cmssi}  {cmssi}  \bigsizes
-
-% Set the skewchars
-\def\do#1#2#3#4{
-  \expandafter\skewchar\csname #1i\endcsname='177
-  \expandafter\skewchar\csname #1sy\endcsname='60
-}
-\allsizes
-
-% Special fonts
-
-% Fourteen point
-\specialfont\fourteenrm{lbr at\lfourteen}{cmr14}
-\specialfont\fourteensf{lsr at\lfourteen}{cmss14}
-
-% Twenty point
-\specialfont\twentyrm{lbr at\ltwenty}{cmr20}
-\specialfont\twentysf{lsr at\ltwenty}{cmss20}
-\specialfont\twentysfb{lsb at\ltwenty}{cmssbx20}
-\specialfont\twentysfi{lsi at\ltwenty}{cmssi20}
-
-% Twenty-four point
-\specialfont\twentyfoursf{lsr at\ltwentyfour}{cmss24}
-\specialfont\twentyfoursfb{lsd at\ltwentyfour}{cmssbx24}
-\specialfont\twentyfourfunky{lbki at\ltwentyfour}{cmssbx24}
-
-% Typeface loads a single face in multiple sizes.  The Lucida-adjusted
-% size is used in each case, even if the font scheme is CM.
-% Best used to load funky variants of Lucida
-\def\typeface#1#2{%
-  \def\do##1##2##3##4{% name lusize cmsize basiccmsize
-    \expandafter\@font\csname ##1#1\endcsname{#2 at##2pt}}%
-  \bigsizes
-  \deffont{#1}}
-
-
-%
-% Adjustments for Lucida
-%
-
-\iflucida
-
-\def\neq{\mathrel{\fam\arfam\mathchar"7094}}
-
-% Adjusted for LucidaNewMath-Extension at 9.5pt and math axis at 3.13pt
-% Note: delimiter increments are 5.5pt (as opposed to 6pt in CM)
-% These work in \tenpoint size only.
-
-\def\big#1{{\hbox{$\left#1\vbox to8.20\p@{}\right.\n@space$}}}
-\def\Big#1{{\hbox{$\left#1\vbox to10.80\p@{}\right.\n@space$}}}
-\def\bigg#1{{\hbox{$\left#1\vbox to13.42\p@{}\right.\n@space$}}}
-\def\Bigg#1{{\hbox{$\left#1\vbox to16.03\p@{}\right.\n@space$}}}
-\def\biggg#1{{\hbox{$\left#1\vbox to17.72\p@{}\right.\n@space$}}}
-\def\Biggg#1{{\hbox{$\left#1\vbox to21.25\p@{}\right.\n@space$}}}
-\def\n@space{\nulldelimiterspace\z@ \m@th}
-
-% define some extra large sizes - always done using extensible parts
-
-\def\bigggl{\mathopen\biggg}
-\def\bigggr{\mathclose\biggg}
-\def\Bigggl{\mathopen\Biggg}
-\def\Bigggr{\mathclose\Biggg}
-
-%% %  Following is needed if the roman text font is NOT just LucidaBright
-%% 
-%% %  Draw the small sizes of `[' and `]' from LBMO instead of LBR
-%% 
-%% \mathcode`\[="4186 \delcode`\[="186302
-%% \mathcode`\]="5187 \delcode`\]="187303
-%% 
-%% %  Draw the small sizes of `(' and `)' from LBMO instead of LBR
-%% 
-%% \mathcode`\(="4184 \delcode`\(="184300
-%% \mathcode`\)="5185 \delcode`\)="185301
-%% 
-%% %  The small sizes of `{' and `}' are already drawn from LBMS instead of LBR
-%% 
-%% %  Draw small `/' from LBMO instead of LBR
-%% 
-%% \mathcode`\/="013D \delcode`\/="13D30E
-%% 
-%% %  Draw  `=' and `+' from LBMS instead of LBR
-%% 
-%% \mathcode`\=="3283 \mathcode`\+="2282
-%% 
-%% % May want to comment out this last one if text font IS known to be LBR
-
-% plain.tex draws upper case upright Greek from roman text font ---
-% --- need to draw instead from LucidaNewMath-Extension
-
-\mathchardef\Gamma="03D0
-\mathchardef\Delta="03D1
-\mathchardef\Theta="03D2
-\mathchardef\Lambda="03D3
-\mathchardef\Xi="03D4
-\mathchardef\Pi="03D5
-\mathchardef\Sigma="03D6
-\mathchardef\Upsilon="03D7
-\mathchardef\Phi="03D8
-\mathchardef\Psi="03D9
-\mathchardef\Omega="03DA
-
-% The dot accent has moved
-\def\dot{\mathaccent"7005 }
-
-\def\TeX{T\kern-.18em\lower.4ex\hbox{E}\kern-.1emX}
-
-\def\copyright{{\rm\char"A9}}
-
-\def\matrix#1{\null\,\vcenter{\normalbaselines\m@th
-    \ialign{\hfil$##$\hfil&&\quad\hfil$##$\hfil\crcr
-      \mathstrut\crcr\noalign{\kern-0.9\baselineskip}
-      #1\crcr\mathstrut\crcr\noalign{\kern-0.9\baselineskip}}}\,}
-
-% \p@renwd is used in \bordermatrix as the width of big extensible left paren
-% i.e. where rows and columns are labelled outside parenthesized matrix
-% \newdimen\p@renwd
-\setbox\z@=\hbox{\tenex B} \p@renwd=\wd\z@ % width of the big left (
-
-% following changed because `(' is not large enough for strut in LBMO
-\def\mathstrut{\vphantom{f}}
-
-% In n-th root, don't want the `n' to come too close to the radical
-\def\r@@t#1#2{\setbox\z@\hbox{$\m@th#1\sqrt{#2}$}
-  \dimen@\ht\z@ \advance\dimen@-\dp\z@
-  \mkern5mu\raise.6\dimen@\copy\rootbox \mkern-7.5mu \box\z@}
-
-\fi
-
-
-%
-% Math stuff
-%
-
-\def~{\relax\ifmmode\,\else\penalty10000\ \fi}
-\def\{{\relax\ifmmode\lbrace\else\iflucida\char`\{\else$\lbrace$\fi\fi}
-\def\}{\relax\ifmmode\rbrace\else\iflucida\char`\}\else$\rbrace$\fi\fi}
-
-% ! is an Ord, not a Close as in plain TeX
-\mathcode`\!="0021
-
-% Math spacing is a bit more chunky that in plain TeX
-\thinmuskip=4mu plus2mu minus1mu
-\medmuskip=5mu plus2mu minus2mu
-\thickmuskip=6mu plus3mu
-
-% In cmr10 and plain TeX, an ordinary space is 12/36 plus 6/36 minus 4/36 em,
-% 1 mu is 2/36 em, and the three mu skips are
-%	thin  3 mu 			= 6/36 em
-%	med   4 plus 2 minus 4 mu	= 8/36 plus 4/36 minus 8/36 em
-%	thick 5 plus 5 mu		= 10/36 plus 10/36 em
-
-% @ is a binary operator
-\mathcode`\@="2040
-
-% "stuff" sets stuff with math text italic.  We use an \hbox to deal
-% with \_ nicely, and use \mathselect to get the appropriate size:
-\def\kwote#1"{\mathselect\kw@te{#1}}
-\def\kw@te#1#2{\hbox{\csname #1mti\endcsname #2\/}}
-\mathcode`\"="8000
-{\catcode`\"=\active \global\let"=\kwote}
-
-% Like mathpalette, but the argument is a font size
-\def\mathselect#1#2{\mathchoice{#1\@textsize{#2}}{#1\@textsize{#2}}%
-  {#1\@scriptsize{#2}}{#1\@scriptscriptsize{#2}}}
-
-\def\isc#1{\hbox{\sci \@cap#1\@cap\/}} % constant in caps and small caps
-\def\@cap#1#2\@cap{#1\lowercase{#2}}
-
-%\def\star{\mathord{*}}
-
-\catcode`@=12
-
-\tenpoint
-% End of jmsdef
-
-\catcode`@=11
 
 %
 % Page layout
@@ -772,7 +349,7 @@
 \def\graphic#1{\placepic{\hss\image{#1}\hss}}
 \def\twingraphics#1#2{\placepic{\hfil\image{#1}\hfil\image{#2}\hfil}}
 
-\def\placepic#1{\medskip\hbox to\hsize{#1}\medskip}
+\def\placepic#1{\medskip\hbox to\pagewidth{#1}\medskip}
 
 \def\image#1{%
   \openin\testin=#1
@@ -844,7 +421,7 @@
 
 \def\chapbegin{\chapstart{\advance\chap by1}}
 
-\def\nonumchap#1#2{% title author
+\def\nonumchap#1#2{%
   \clearpage\resetpar
   \the\chapreset 
   \bookmark@1{nonumchap}{#1}
@@ -922,17 +499,17 @@
 
 % Chapter headings can have an ``author'' specified after a slash
 % Mostly used for single-chapter papers
-\def\slash#1/#2/#3\slash{{#1}{#2}}
+\def\sl@sh#1/#2/#3\sl@sh{{#1}{#2}}
 
 \outer\def\chapter{\ifstar{\chapstar@.}\chap@@@}
 \outer\def\chapstar#1.{\chapstar@@{#1}}
-\def\chap@@@#1.{\expandafter\chapbegin\slash#1//\slash}
+\def\chap@@@#1.{\expandafter\chapbegin\sl@sh#1//\sl@sh}
 \def\chapstar@. #1.{\chapstar@@{#1}}
-\def\chapstar@@#1{\expandafter\nonumchap\slash#1//\slash
+\def\chapstar@@#1{\expandafter\nonumchap\sl@sh#1//\sl@sh
   \addtoc\toclinei{}{#1}\thepageno\bmark}
 
 \outer\def\chapnum{\afterassignment\chapnum@\count255=}
-\def\chapnum@#1.{\expandafter\chapnum@@\slash#1//\slash}
+\def\chapnum@#1.{\expandafter\chapnum@@\sl@sh#1//\sl@sh}
 \def\chapnum@@{\chapstart{\chap=\count255}}
 
 \outer\def\section{\ifstar{\secstar@.}\sec@@@}
@@ -956,7 +533,7 @@
 
 \def\spellout#1{\ifcase #1\of zero\or one\or two\or three\or 
 	four\or five\or six\or seven\or eight\or nine\or 
-	ten\else \error{can't count beyond ten}\fi}
+	ten\else \error{I can't count beyond ten}\fi}
 
 
 %
@@ -975,10 +552,10 @@
 \def\verbifont{\vsfi}
 \def\progfont{\vsf}
 
+% The active characters are not needed if using a special virtual font
+% like vlsr, but they're included here for safety's sake
 \def\setupverb{\uncatcodespecials \verbfont
-% \catcode`\|=\active \verbvbar % not needed if using vfont
-% \catcode`\`=\active % not needed if using vfont
-  }
+  \catcode`\|=\active \verbvbar \catcode`\`=\active}
 
 \def\setupverbatim{\resetpar \parskip=0pt \setupverb
   % If setting in normal measure, use full page width instead
@@ -998,7 +575,8 @@
 
 {\catcode`\`=\active \gdef`{\relax\lq}}
 
-{\catcode`\|=\active \gdef\verbvbar{\def|{\hbox to0.5em{\hfil\vertbar\hfil}}}}
+{\catcode`\|=\active 
+  \gdef\verbvbar{\def|{\leavevmode\hbox to0.5em{\hfil\vertbar\hfil}}}}
 \chardef\vertbar=`\|
 
 \def\verbatim{\beforedisplay\begingroup\setupverbatim\doverbatim}
@@ -1021,15 +599,23 @@
 
 % Listing with line numbers
 \def\listing{\beforedisplay\begingroup
-  \blankstrue\setupverbatim\progfont\numlines\dolisting}
+  \setupverbatim\progfont\numlines\dolisting}
 \def\endlisting{\endgroup\afterdisplay\ignorespaces}
 
 \newcount\lineno
 \def\lnum{\global\advance\lineno by1 
   \llap{{\eightrm\number\lineno}\enspace}}
 
-\def\numlines{\lineno=0
+\def\numlines{\lineno=0 \blankstrue
   \everypar={\lnum \hskip\verbindent \verbindent=0pt }}
+
+% Include a file and list it verbatim
+\def\verbfile#1{\beforedisplay\begingroup
+  \setupverbatim\input#1 \endgroup\afterdisplay}
+
+% Ditto, but with line numbers
+\def\listfile#1{\beforedisplay\begingroup
+  \setupverbatim\numlines\input#1 \endgroup\afterdisplay}
 
 % Interaction -- enclose input in _underscores_
 \def\interact{\beforedisplay\begingroup
@@ -1170,7 +756,8 @@
 % \displaylines for multi-line displayed equations
 \def\displaylines{\display
   \halign to\hsize\bgroup
-    \hskip\leftskip\hskip\blockindent$\@lign##$\hfil\tabskip=0pt plus1fil\cr}
+    \hskip\leftskip\hskip\blockindent$\@lign##$\hfil\tabskip=0pt plus1fil
+      &$\@lign##$\tabskip=0pt\cr}
 \def\enddisplines{\crcr\egroup\enddisplay}
     
 % Here's \aligneqns to replace \eqalign(no)
@@ -1226,14 +813,21 @@
 
 \def\grey{0.9}
 
+\ifpdf
+  \def\pdf@colour{0 g 0 G} % Should be global variable
+
+  \def\@grey#1{%
+    \pdfliteral{\grey\space g \grey\space G}#1\pdfliteral{\pdf@colour}}
+\else
+  \def\@grey#1{%
+    \special{ps:gsave \grey\space setgray}#1\special{ps:grestore}}
+\fi
+
 % \hgrey -- \hbox with grey background
 \def\hgrey{\setbox0=\hbox\bgroup\aftergroup\hgreyi\let\next=}
 \def\hgreyi{%
   \setbox0=\hbox{\thinspace\unhbox0\thinspace}%
-  \setbox1=\hbox{\hbox to\wd0{\strut
-    \special{ps:gsave \grey\space setgray}%
-    \leaders\vrule\hfill
-    \special{ps:grestore}}}%
+  \setbox1=\hbox{\hbox to\wd0{\strut\@grey{\leaders\vrule\hfill}}}%
   \ht1=0pt \dp1=0pt \wd1=0pt 
   \leavevmode \hbox{\box1\box0}}
 
@@ -1241,10 +835,7 @@
 \def\vgrey{\setbox0=\vbox\bgroup\aftergroup\vgreyi\let\next=}
 \def\vgreyi{%
   \setbox1=\vbox to0pt{\hbox to\hsize{\negthinspace
-    \special{ps:gsave \grey\space setgray}%
-    \leaders\hrule height\ht0 depth\dp0\hfill
-    \special{ps:grestore}%
-    \negthinspace}
+    \@grey{\leaders\hrule height\ht0 depth\dp0\hfill}\negthinspace}
    \vss}
   \vbox{\box1\nointerlineskip\box0}}
 
@@ -1281,7 +872,7 @@
 \def\LI{\setbox0=\hbox\bgroup\strut\hskip\codemargin
   \ifnumlines\lnum\fi}
 \def\NL{\egroup\penalty100
-  \hbox to\hsize{\unhbox0\unskip\hfil}}
+  \hbox to\pagewidth{\unhbox0\unskip\hfil}}
 \def\RC{\quad\egroup
   \ifdim\wd0<\rcfrac\hsize \wd0=\rcfrac\hsize \fi
   \setbox0=\hbox\bgroup\box0\lcomment\ignorespaces}
@@ -1362,7 +953,7 @@
   \begingroup \listsetup}
 \def\listsetup{\advance\leftskip by\blockindent \newlisttrue}
 \def\listskip{\par \resetpar \ifnewlist\else\medskip\fi \newlistfalse}
-\def\listitem#1{\listskip {\parskip=0pt\noindent}\llap{#1}\ignorespaces}
+\def\listitem#1{\listskip {\parskip=0pt \noindent}\llap{#1}\ignorespaces}
 \def\endlist{\par\endgroup\ifinfloat\else\followpar\fi}
 \def\followpar{\global\parskip=\medskipamount
   \global\everypar={\resetpar\hskip-\parindent}}
@@ -1411,7 +1002,7 @@
   \listitem{$\bullet$\enspace}}
 \let\endspec=\endlist
 
-\def\quotation{\startlist\parindent=0pt\listitem{}}
+\def\quotation{\startlist\parindent=0pt\listskip{\parskip=0pt \noindent}}
 \let\endquote=\endlist
 
 \let\normallistitem=\listitem
@@ -1657,169 +1248,13 @@
 % Hooks for hypertext
 %
 
-% jmshyp.tex
-%
-% Hypertext bookmarks and links
-%
+\def\hyperlinks{\input jmshyp }
 
-\catcode`\@=11
-{\catcode`\^=7 \global\catcode`\^^I=10} % TAB characters are spaces
-
-  % Postcript code used for hypertext
-  \preamble{\special{! 
-    /hyperdict 30 dict def		% working storage
-    /DvipsToPDF { % Convert dvips units to PDF units
-      72 mul Resolution div } def
-    /TeXToDvips { % Convert TeX units to dvips units
-      72.27 div Resolution mul } def
-    /HTAnchor { % Anchor: name
-      hyperdict begin
-      cvn /anch exch def		% anch := name
-      % Find point 1/2in above currentpoint
-      currentpoint 			% [x y]
-      exch DvipsToPDF /hoff exch def	% [y], hoff := x'
-      DvipsToPDF % 36 sub 		% [y'-1/2in]
-      vsize 72 sub exch sub 		% transform to PDF axes
-      /voff exch def 			% voff := y''
-      % Make pdfmark, with PDF page coordinates
-      mark /View [ /XYZ hoff voff null ] /Dest anch /DEST pdfmark 
-      end } def
-    /HTOutline { % Bookmark: childcount, anchor, title
-      hyperdict begin
-      /title exch def			% title := title
-      cvn /anch exch def		% anch := anchor
-      /count exch def			% count := childcount
-      mark /Count count /Dest anch /Title title /OUT pdfmark 
-      end} def
-    /HTBegin { % Start of hyperlink
-      hyperdict begin 
-      currentpoint pop /llx exch def 	% llx := x
-      end } def	
-    /HTRect { % Calculate rectangle: height, depth
-      currentpoint 			% [ht dp x y]
-      exch /urx exch def		% [ht dp y], urx := x
-      exch 1 index			% [ht y dp y]
-      exch TeXToDvips add 		% [ht y y+dp']
-      /lly exch def 			% [ht y], lly := y+dp'
-      exch TeXToDvips sub 		% [y-ht']
-      /ury exch def 			% ury := y-ht'
-      /rect [ llx lly urx ury ] def } def
-    /HTLink { % Complete hyperlink: height, depth, anchor
-      hyperdict begin
-      cvn /anch exch def 		% anch := anchor
-      HTRect
-      % Make pdfmark, with user coordinates
-      mark /Subtype /Link /Dest anch 
-	/Border [0 0 1 TeXToDvips] /Color [1 0 0] /Rect rect /ANN pdfmark 
-      end } def
-    /HTLaunch { % Link to external object: height depth type dest
-      hyperdict begin
-      /dest exch def
-      /type exch def
-      HTRect
-      mark /Subtype /Link /Action /Launch type dest
-	/Border [0 0 1 TeXToDvips] /Color [0 1 0] /Rect rect /ANN pdfmark
-      end } def
-    systemdict /pdfmark known not 
-      { userdict /pdfmark systemdict /cleartomark get put } if }}
-
-  \def\pdfspecial#1{\special{ps:SDict begin #1 end}}
-
-  \def\hyperbox#1#2{% code text
-    \pdfspecial{HTBegin}#2\pdfspecial{\strip@pt{\ht\strutbox}\space 
-      \strip@pt{\dp\strutbox}\space #1}}
-
-  \def\hyperurl#1{% url text
-    \hyperbox{/File (#1) HTLaunch}}
-
-  \def\hyperlink#1{% anchor text
-    \hyperbox{(#1) HTLink}}
-
-  \def\hyperoutline#1#2#3{% childcount anchor title
-    \pdfspecial{#1 (#2) (#3) HTOutline}}
-
-  \def\hyperanchor#1{\pdfspecial{(#1) HTAnchor}}
-
-% This strips the 'pt' from a dimen or glue.
-% It removes trailing plus or minus <dimen> too:
-\def\strip@pt#1{\expandafter\@xyzzy\the#1!}
-{\catcode`p=12 \catcode`t=12 \gdef\@xyzzy#1pt#2!{#1}}
-
-\newcount\gensym
-
-\def\hyperanchor@#1#2{% cs tag
-  \global\advance\gensym by1 \xdef#1{#2.\the\gensym}%
-  \hyperanchor#1}
-
-
-% Bookmarks
-
-% Each bookmark has an anchor in the text, and a definition that's
-% output on the .bko file.  The definitions need to be post-processed
-% to escape special characters and remove formatting; the result
-% becomes the .bkm file that is input on the next run.
-
-% Output file for bookmarks
-\newwrite\bkmout
-\newif\ifbkmopen \bkmopenfalse
-\def\checkbkm{\ifbkmopen\else
-  \immediate\openout\bkmout=\jobname.bko
-  \immediate\write\bkmout{\relax}%
-  \global\bkmopentrue\fi}
-
-\def\bookmark#1#2#3{% level mark title
-  {\enableprotectii
-    \edef\next{\write\bkmout{\string\bookmarkdef{#1}{#2}{#3}}}%
-    \checkbkm \next}%
-  \hyperanchor{#2}%
-  \gdef\bmark{#2}}
-
-\def\bookmark@#1#2#3{% level mark title
-  \global\advance\gensym by1
-  \bookmark{#1}{#2.\the\gensym}{#3}}
-
-% We need to count the children of each bookmark, so we make two
-% passes over the bookmark file, saving the material in \bmarktoks temporarily
-\newtoks\bmarktoks
-\def\addtobmarks#1{\bmarktoks=\expandafter{\the\bmarktoks#1}}
-
-\newcount\parent
-
-% \C@i is the current bookmark for each level i
-% \B@m is the number of children of each bookmark m
-\def\bookmarkdef#1#2#3{% level mark title
-  \addtobmarks{\bookm@rkdef{#2}{#3}}           % Save for later
-  \expandafter\def\csname C@#1\endcsname{#2}   % current[level] = mark
-  \expandafter\def\csname B@#2\endcsname{0}    % children[mark] = 0
-  \ifnum#1>1 \parent=#1 \advance\parent by-1   % parent = level-1
-    \expandafter\let\expandafter\next          % next = current[parent]
-      \csname C@\the\parent\endcsname
-    \ifx\next\relax\else
-      \count@=\csname B@\next\endcsname        % childen[next]++
-      \advance\count@ by1
-      \expandafter\edef\csname B@\next\endcsname{\the\count@}
-  \fi\fi}
-
-\def\bookm@rkdef#1#2{%\def\next{\csname B@#1\endcsname}%
-  \count@=-\csname B@#1\endcsname \hyperoutline{\the\count@}{#1}{#2}}
-
-\ifreadable{\jobname.bkm}%
-  \expandafter\input \jobname.bkm % input the bookmarks
-  \the\bmarktoks \bmarktoks={}% second pass over the bookmarks
-\fi
-
-{\catcode`\^=7 \global\catcode`\^^I=15} % TAB characters are illegal
-\catcode`\@=12
-% End of jmshyp.tex
-
-\def\hyperlinks{}
-%\def\hyperlinks{\input jmshyp }
-
-%\def\hyperlink#1#2{#2}
-%\def\hyperanchor#1{}
-%\def\hyperanchor@#1#2{\def#1{}}
-%\def\bookmark#1#2#3{}
-%\def\bookmark@#1#2#3{}
+\def\hyperlink#1#2{#2}
+\def\hyperanchor#1{}
+\def\hyperanchor@#1#2{\def#1{}}
+\def\bookmark#1#2#3{}
+\def\bookmark@#1#2#3{}
 
 \def\bmark{}
 
