@@ -1,1 +1,1 @@
-<includeonly><span id="e-{{{1}}}">{{{2}}}<nowiki>:</nowiki> {{{3}}}</span></includeonly><noinclude>{{Documentation}}</noinclude>
+<includeonly><span id="e-{{{1}}}">{{{2}}}<nowiki>:</nowiki> {{{3}}}</span></includeonly>

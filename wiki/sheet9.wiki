@@ -1,3 +1,4 @@
+<!--Worksheet 9: Colours and images-->
 All the colours that can be shown on a computer screen are made up of a mixture of the three primary colours red, green and blue.
 GeomLab uses the notation @rgb(r, g, b)@ for a colour that contains an amount @r@ of red, an amount @g@ of green and an amount&nbsp;@b@ of blue, with the three numbers @r@, @g@ and @b@ varying between 0 and 1.
 For example, the colour @rgb(1, 0, 0)@ is pure, bright red:

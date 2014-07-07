@@ -1,5 +1,5 @@
+<!--Worksheet 7: Space-filling curves-->
 ==Hilbert curve==
-
 By now, I hope you will relish the challenge of working out how to
 draw pictures without much help from me.
 If so, here are two families of pictures that are made up from square

@@ -7,6 +7,13 @@ TRAN = intro.tex sheet1.tex sheet2.tex sheet3.tex sheet4.tex \
 
 workbook.dvi: $(TRAN)
 
+publish: .publish
+
+.publish: workbook.pdf
+	tclsh ../scripts/image-upload.tcl $?
+	echo timestamp >$@
+
+
 %.pdf: %.dvi
 	dvips -Ppdf $<
 	ps2pdf $*.ps
@@ -20,3 +27,5 @@ $(TRAN): %.tex: ../wiki/%.wiki ../scripts/textran.tcl
 .DELETE_ON_ERROR:
 
 export TEXINPUTS = .:../figs:
+
+force:

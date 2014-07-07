@@ -1,5 +1,5 @@
+<!--GeomLab commands-->
 ==File Menu== 
-
 {{Markup|dl}}
 ;Load ...
 :Displays a dialog that allows you to choose a text file containing expressions and definitions that is then loaded into GeomLab. 

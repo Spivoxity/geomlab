@@ -1,3 +1,4 @@
+<!--Worksheet 6: Escher pictures-->
 Let's see how to draw the Escher picture 
 "Square Limit"{{IfBook| that is on the front cover of this 
 workbook.|: 
@@ -126,7 +127,7 @@ Second: work out how to draw
 {{IfBook|the picture that is shown on the back cover of this
 workbook|this picture}}, in which the fish get smaller
 towards the centre.
-{{IfWeb|
+{{IfWiki|
 [[Image:invlimit-400.png]]
 }} 
 To do so, you will need two more tiles, @E@ and @F@:

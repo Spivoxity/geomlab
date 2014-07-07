@@ -1,1 +1,1 @@
-<noinclude>{{Documentation}}</noinclude>
+<nowiki/>

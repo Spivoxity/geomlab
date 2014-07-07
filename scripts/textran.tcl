@@ -1,5 +1,10 @@
 # texsheet.tcl
 
+set scriptdir [file dirname [info script]]
+
+source $scriptdir/common.tcl
+source $scriptdir/../wiki/titles
+
 proc lsplit {xs args} {
     set n [llength $args]
     for {set i 0} {$i < $n} {incr i} {
@@ -15,7 +20,7 @@ set cont_fd [open $name "r"]
 set content [read $cont_fd]
 close $cont_fd
 
-source ../wiki/titles
+set pagetitle [get-title $stem $content]
 
 # This is horrible.  Please use Python instead.
 proc regsub-eval {re string cmd} {
@@ -33,7 +38,6 @@ regsub -line -all {{{GeomPic\|(.*?)\|(.*?)\|(.*?)}}} $content \
     {\\example@\2@\\gives \1\\end} content
 regsub -line -all {{{GeomPic\|(.*?)\|(.*?)}}} $content \
     {\\example@\2@\\gives blank\\end} content
-regsub -line -all {{{GeomLab}}} $content {} content
 regsub -line -all {^:(.*)$} $content "\\\\quotation\n\\1\n\\\\endquote" content
 
 regsub -line -all {{{IfWiki\|.*?\|(.*?)}}} $content "\\1" content
@@ -50,5 +54,5 @@ regsub -line -all {&times;} $content {$\times$} content
 regsub -line -all {^:(.*)$} $content {\quotation \1\endquote} content
 regsub -line -all {@([^@]*)<br */>([^@]*)@} $content {@\1@\\\\@\2@} content
 
-puts "\\sheet{$title($stem)}"
+puts "\\sheet{$pagetitle}"
 puts $content

@@ -1,5 +1,5 @@
-This worksheet uses two constants @straight@ and
-@bend@ that look like square tiles:
+<!--Worksheet 5: Spirals and zig-zags-->
+This worksheet uses two constants @straight@ and @bend@ that look like square tiles:
 {{GeomPic|5010|straight|*}}
 {{GeomPic|5020|bend|*}}
 Let's introduce some short names for rotated versions of these

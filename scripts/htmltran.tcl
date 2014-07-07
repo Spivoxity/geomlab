@@ -1,5 +1,10 @@
 # htmltran.tcl
 
+set scriptdir [file dirname [info script]]
+
+source $scriptdir/common.tcl
+source $scriptdir/../wiki/titles
+
 proc readfile {fname} {
     set fd [open $fname "r"]
     set result [read $fd]
@@ -9,14 +14,12 @@ proc readfile {fname} {
 
 set body [lindex $argv 0]
 set stem [file rootname [file tail $body]]
+set filename "$stem.html"
 
 set content [readfile $body]
+set pagetitle [get-title $stem $content]
+
 set frame [readfile "wiki/htmlframe"]
-
-source wiki/titles
-
-set filename "$stem.html"
-set pagetitle $title($stem)
 
 regsub -line -all {===(.*)===} $content {<h3>\1</h3>} content
 regsub -line -all {==(.*)==} $content {<h2>\1</h2>} content

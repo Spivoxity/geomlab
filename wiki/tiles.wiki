@@ -68,5 +68,5 @@ is itself defined in the GeomLab language as follows:
  define _stick(w, h, x, y, col, outline) =
    _tile(w, h, x, y, [outline], [col:outline]);
 These and other definitions can be found in the file 
-{{GeomSource|prelude.txt}} that is part of the source code 
+@prelude.txt@ that is part of the source code 
 for GeomLab itself.

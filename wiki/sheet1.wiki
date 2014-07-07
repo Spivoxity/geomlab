@@ -38,7 +38,7 @@ Like addition and multiplication in algebra, the operations @$@ and @&@ are ''as
 :@(p $ q) $ r = p $ (q $ r)@
 and
 :@(p & q) & r = p & (q & r)@
-are always true.  As we saw earlier, though, these operations are not ''commutative'', because @man $ woman@ and @woman $ man$ are different pictures.
+are always true.  As we saw earlier, though, these operations are not ''commutative'', because @man $ woman@ and @woman $ man@ are different pictures.
 
 Now let's try using both @$@ and @&@ in the same expression. Try this:
 {{GeomPic|1063|man $ (woman & tree)|*}}

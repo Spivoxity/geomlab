@@ -20,8 +20,6 @@ proc get-hashes {images} {
 }
 
 proc upload {image} {
-    global wiki
-
     # Get an edit token
     set dict [json-request action query \
 		  prop info intoken edit titles [mk-title $image]]
@@ -33,7 +31,8 @@ proc upload {image} {
     set dict [json-multipart action upload filename [captialize $image] \
 		  token $edittoken ignorewarnings 1 \
 		  file:foo.png [file-data $image]]
-    if {[dict get $dict upload result] ne "Success"} {
+    if {! [dict exists $dict upload result] \
+            || [dict get $dict upload result] ne "Success"} {
 	puts $dict
 	error "Oops"
     }

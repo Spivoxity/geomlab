@@ -5,7 +5,8 @@ PAGES =	build.wiki commands.wiki download.wiki errors.wiki \
 	sheet5.wiki sheet6.wiki sheet7.wiki sheet8.wiki sheet9.wiki \
 	start.wiki teachers.wiki tiles.wiki tips.wiki using.wiki \
 	worksheets.wiki egyptian.wiki common.wiki GeomGrind.php \
-	mathsymbols.wiki
+	mathsymbols.wiki ifwiki.wiki ifbook.wiki equals.wiki \
+	bigspace.wiki resource.wiki
 
 all: $(PAGES)
 
