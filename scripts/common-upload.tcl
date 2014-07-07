@@ -106,10 +106,11 @@ proc upload {title contents} {
     set edittoken [dict get [lindex $pageinfo 1] edittoken]
 
     # Put the page
-    set dict [json-multipart action edit \
-		  title $title  token $edittoken  text $contents]
+    set dict [json-multipart action edit  bot 1 \
+		  title $title  text $contents  token $edittoken]
 
-    if {[dict get $dict edit result] ne "Success"} {
+    if {! [dict exists $dict edit] \
+            || [dict get $dict edit result] ne "Success"} {
 	puts $dict
 	error "Oops"
     }

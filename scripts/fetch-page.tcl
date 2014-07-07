@@ -18,4 +18,3 @@ set contents [::http::data $tok]
 set fid [open "$fname.wiki" w]
 puts -nonewline $fid $contents
 close $fid
-
