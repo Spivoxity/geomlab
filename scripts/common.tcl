@@ -1,12 +1,16 @@
 proc get-title {name text} {
     global title
 
+    set key [file rootname $name]
+    
+    if {[file extension $name] eq ".tmpl"} {
+        return "Template:$key"
+    }
+
     if {[regexp {^<!--(.*?)-->} $text _ ttl]} {
         return $ttl
     }
 
-    set key [file rootname $name]
-    
     if {[info exists title($key)]} {
         return $title($key)
     }
