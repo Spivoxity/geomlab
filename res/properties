@@ -63,6 +63,7 @@ err#match: no pattern matches arguments (%s)
 err#match1: no pattern matches argument %s
 err#memory: sorry, that took too much memory
 err#missingclass:
+err#multidef: multiple definitions of '%s'
 err#names: the same function name should appear in each clause
 err#nofile:
 err#nopicture:
@@ -81,7 +82,7 @@ err#redef: can't replace built-in definition of '%s'
 err#restore:
 err#save:
 err#sqrt: taking square root of a negative number
-err#stack: recusion went too deep
+err#stack: recursion went too deep
 err#steps: sorry, that took too many steps
 err#string: unterminated string constant
 err#tail: taking tail of %s
