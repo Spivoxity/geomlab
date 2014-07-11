@@ -82,7 +82,7 @@ public class FunCode extends Value {
     public final int arity;
     
     /** Whether to freeze the error context on entry */
-    public final boolean frozen = Name.freezer;
+    public final boolean frozen = Name.getFreezer();
 
     /** Opcodes for the instructions */
     public final Opcode instrs[];

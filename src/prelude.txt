@@ -391,7 +391,7 @@ define background(p, c) =
 
 
 { Freeze all definitions made so far }
-_freeze();
+_stage(1);
 
 
 { COMMON DEFINITIONS (to save typing them in each session) }
@@ -408,3 +408,5 @@ define frame(c, s, p) =
     (c      $ rot3(s) $ rot3(c))
   & (s      $ p       $ rot2(s))
   & (rot(c) $ rot(s)  $ rot2(c));
+
+_stage(2);

@@ -57,9 +57,10 @@ public final class Name extends Value implements Comparable<Name> {
     /** The definition in the global environment, or null */
     public transient Value glodef = null;
     
-    /** True for names that are system-defined and may not be changed */
-    private boolean frozen = false;
-    
+    /** Level at which the name is defined. Values 0 = fixed system, 
+        1 = preloaded but redefinable, 2 = undefined or user-defined */
+    private int level = 2;
+
     /** True if the global definition was loaded from bootstrap */
     private transient boolean inherited = false;
 
@@ -70,28 +71,28 @@ public final class Name extends Value implements Comparable<Name> {
 	nameTable.put(this.tag, this);
     }
     
-    /** Set the global definition and defining text */
+    /** Set the global definition */
     public void setGlodef(Value v) { 
         if (resets != null)
             resets.add(new Reset(this));
 
 	glodef = v;
         inherited = false;
-	if (freezer) frozen = true; 
+        level = stage;
     }
     
     /** Set global definition from bootstrap */
     public void bootDef(Value v) {
         glodef = v;
         inherited = true;
-        frozen = true;
+        level = 0;
     }
 
     /** Get the global definition of a name */
     public Value getGlodef() { return glodef; }
     
     /** Test if the global definition is unmodifiable */
-    public boolean isFrozen() { return frozen && !freezer; }
+    public boolean isFrozen() { return (level == 0 && stage > 0); }
     
     @Override
     public int compareTo(Name other) {
@@ -134,13 +135,13 @@ public final class Name extends Value implements Comparable<Name> {
     /** Discard all names */
     public static void clearNameTable() {
 	nameTable.clear();
-        freezer = true;
+        stage = 0;
     }
 
     /** Read global definitions from a serialized stream */
     public static void readNameTable(ObjectInputStream in) 
     		throws IOException, ClassNotFoundException {
-        freezer = (Boolean) in.readObject();
+        stage = (Integer) in.readObject();
 	for (;;) {
 	    Name x = (Name) in.readObject();
 	    if (x == null) break;
@@ -151,7 +152,7 @@ public final class Name extends Value implements Comparable<Name> {
     /** Write global definitions to a serialized stream */
     public static void writeNameTable(ObjectOutputStream out) 
     		throws IOException {
-        out.writeObject(freezer);
+        out.writeObject(stage);
 	for (Name x : nameTable.values()) {
 	    if (x.glodef != null) {
 		out.writeObject(x); 
@@ -170,19 +171,23 @@ public final class Name extends Value implements Comparable<Name> {
 	   not to its temporary proxy. */
 
 	Name x = find(this.tag);
-	x.frozen = this.frozen;
+        x.level = this.level;
 	return x;
     }
 
-    /** Initial definitions become frozen once this is set to false */
-    public static boolean freezer = true;
+    /** Initialization stage.  Global definitions made in stage 0 become
+        frozen once stage is non-zero. */
+    private static int stage = 0;
+
+    /** Whether functions created now should be ignored in tracebacks */
+    public static boolean getFreezer() { return (stage == 0); }
 
     /** Get alphabetical list of globally defined names */
     public static List<String> getGlobalNames() {
         ArrayList<String> names = new ArrayList<String>(100);
         for (Name x : nameTable.values()) {
             String xx = x.tag;
-            if (x.getGlodef() != null && ! xx.startsWith("_"))
+            if (x.glodef != null && ! xx.startsWith("_"))
         	names.add(xx);	    
         }
 	Collections.sort(names);
@@ -243,28 +248,30 @@ public final class Name extends Value implements Comparable<Name> {
     @PRIMITIVE
     public static Value _defined(Primitive prim, Value x) {
         Name n = prim.name(x);
-        return Value.BoolValue.getInstance(n.getGlodef() != null);
+        return Value.BoolValue.getInstance(n.glodef != null);
     }
 
     @PRIMITIVE
     public static Value _glodef(Primitive prim, Value x) {
 	Name n = prim.name(x);
-	Value v = n.getGlodef();
+	Value v = n.glodef;
 	if (v == null) Evaluator.err_notdef(n);
 	return v;
     }
 
     @PRIMITIVE
-    public static Value _freeze(Primitive prim) {
-	freezer = false;
+        public static Value _stage(Primitive prim, Value x) {
+        stage = (int) prim.number(x);
 	return Value.nil;
     }
 
     @PRIMITIVE
     public static Value _redefine(Primitive prim, Value x) {
 	Name n = prim.name(x);
-	if (n.isFrozen())
+	if (n.level == 0 && stage > 0)
 	    Evaluator.error("#redef", x);
+        else if (n.level == 2 && n.glodef != null)
+            Evaluator.error("#multidef", x);
 	return Value.nil;
     }
 
