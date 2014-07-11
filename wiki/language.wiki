@@ -83,9 +83,10 @@ and non-empty lists may be constructed with the operator
 "@:@". A list expression @[<i>x<sub>1</sub></i>, <i>x<sub>2</sub></i>, ..., <i>x<sub>n</sub></i>]@
 is an abbreviation for a list of length ''n'' constructed in
 this way.
-Because the GeomLab language is untyped, there is no guarantee that
-arbitrary lists are ''proper'', in the sense that they
-end properly with the value @[]@.
+If @x@ and @y@ are integers, then the expression @[x..y]@ stands for the list @[x, x+1, x+2, ..., y]@, equivalent to @_range(x, y)@, where @range@ is the function defined as follows.
+<pre>
+define _range(x, y) = if x > y then [] else x:_range(x+1, y);
+</pre>
 
 ===Functions===
 
@@ -266,7 +267,7 @@ conditional expression. The other sub-expression is not evaluated.
 
 ===Other forms of expression===
 
-Two additional forms of expression -- @let@
+Four additional forms of expression -- @let@
 expressions and @function@ expressions -- are allowed.
 They are described on Section&nbsp;8.
 
@@ -480,7 +481,39 @@ An operator symbol in parentheses, such as @(+)@, denotes the two-argument funct
 
 A binary operator symbol may also appear in parentheses together with one or other of its operands and denotes a function of one argument.  Thus @(+1)@ is the function that adds one to its argument, and @(12/)@ is the function that divides 12 by its argument.
 
-(Concrete syntax for operator sections is missing from the summary.)
+(Concrete syntax for operator sections is missing from this summary.)
+
+Operator sections are implemented in terms of two functions @_lsect@ and @_rsect@, so that @(12/)@ is equivalent to @_lsect((/), 12)@ and @(+1)@ is equivalent to @_rsect((+), 1)@, where @_lsect@ and @_rsect@ are defined as follows.
+<pre>
+define _lsect(f, x) = function (y) f(x, y);
+define _rsect(f, x) = function (x) f(x, y);
+</pre>
+
+===List comprehensions==
+
+List comprehensions provide compact notation for expressions that would otherwise involve higher-order functions such as @map@ and @filter@.
+<pre>
+Primary     = "[" Expression "|" 
+                  Generator { "," Generator | "when" Expression } "]"
+
+Generator   = Pattern "<-" Expression
+</pre>
+For example, the comprehension @[ f(x) | x <- xs ]@ is equivalent to @map(f, xs)@, the compreshension @[ x | x <- xs when p(x) ]@ is equivalent to @filter(p, xs)@, and the compreshension @[ x | xs <- xss, x <- xs ]@ is equivalent to @concat(xss)@.
+
+List comprehensions are implemented in terms of a single function @_mapa@, defined by
+ define _mapa(f, [], a) = a
+   | _mapa(f, x:xs, a) = f(, _mapa(f, xs, a))
+A list comprehension @[ E | G1, G2, ... ]@ is defined as equivalent to the expression @T(E, [G1, G2, ...], [])@, where the transformation @T@ is defined as informally as follows.
+<pre>
+T(E, [], a) = "E : a"
+
+T(E, ["x <- E1", ...], a) =
+  "_mapa(function (x, b) T(E, [...], b), E1, a)"
+
+T(E, ["when E2", ...], a) =
+  "if E2 then T(E1, [...], a) else a"
+</pre>
+(The names @x@ and @b@ introduced by this translation are replaced by other names that do not occur elsewhere in the program.)
 
 ==Syntax summary==
 
@@ -517,6 +550,7 @@ Primary     = Ident | Number | String
 	    | Ident { "(" [ Expression { "," Expression } ] ")" }
             | "(" Expression ")" 
             | "[" [ Expression { "," Expression } ] "]"
+            | "[" Expression ".." Expression "]"
  
 Formals     = "(" [ Pattern { "," Pattern } ] ")"
 

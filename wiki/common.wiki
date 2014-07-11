@@ -3,7 +3,7 @@
 /* Style the Big Green Arrow */
 a.bga2 {
     display: block;
-    background-image: url(/wiki/files/gl/arrow.png);
+    background-image: url(/gwiki/files/arrow.png);
     background-repeat: no-repeat;
     background-position: 0 10px;
     text-decoration: none; 
@@ -18,27 +18,14 @@ a.bga2 {
 
 /* Show document icon for internal PDF links */
 #bodyContent a.internal[href$=".pdf"] {
-	background: url("/wiki/skins/common/images/document.png") center right no-repeat;
+	background: url("/gwiki/skins/common/images/document.png")
+	        center right no-repeat;
 	padding-right: 12px;
 }
 
 /* Hack monospace font size for Firefox and Safari */
 tt, code, kbd, samp, xmp, pre, plaintext {
     font-family: monospace, monospace;
-}
-
-div.navbox {
-    padding: 0.5em 0 0.5em 1em;
-    background: white;
-    float: right;
-    clear: right;
-}
-
-div.navbox table {
-    border: 1px solid #aaa;
-    background: url("/wiki/skins/winkel/images/blue-wove.png") repeat;
-    color: black;
-    padding: 0.2em;
 }
 
 /* Control size of autosuggest in search */
