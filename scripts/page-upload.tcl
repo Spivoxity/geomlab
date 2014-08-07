@@ -15,6 +15,9 @@ proc page-upload {page} {
 
     set text [file-data $page]
     set title [get-title $name $text]
+
+    puts "$page --> $title"
+
     upload $title $text
 }
 

@@ -15,4 +15,4 @@ some rules.
 {{#html:BigGreenArrow}}
 Click on the Big Green Arrow to launch the GeomLab programming environment. You may have to accept a security certificate to allow the program to run on your computer; and it may be that the Java installation on your computer will be automatically upgraded before the program starts.
 * Once GeomLab is running, look at the [[Getting started with GeomLab|instructions]] to get started.
-* If GeomLab won't start, look on our [[Java is not installed|help page]] for suggestions.
+* If GeomLab won't start, look on our [[Help with starting GeomLab|help page]] for suggestions.

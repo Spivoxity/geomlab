@@ -1,5 +1,10 @@
 /* CSS placed here will be applied to all skins */
 
+/* Bigger text font */
+#bodyContent {
+    font-size: 1em;
+}
+
 /* Style the Big Green Arrow */
 a.bga2 {
     display: block;

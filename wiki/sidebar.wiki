@@ -1,5 +1,5 @@
 *navigation
-**Introduction to GeomLab|Introduction
+**GeomLab|Introduction
 **Getting started with GeomLab|Getting started
 **Worksheets for GeomLab|Worksheets
 **Using GeomLab|Using Geomlab

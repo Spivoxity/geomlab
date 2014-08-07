@@ -1,0 +1,6 @@
+<!--Thanks!-->
+Thank you for sending us a message. If you've included an
+e-mail address, we'll respond as soon as we can. Please use the
+links on the left to return to the website.
+
+<i>The GeomLab team</i>
