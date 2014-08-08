@@ -132,12 +132,6 @@ public final class Name extends Value implements Comparable<Name> {
 	return name;
     }
 
-    /** Discard all names */
-    public static void clearNameTable() {
-	nameTable.clear();
-        stage = 0;
-    }
-
     /** Read global definitions from a serialized stream */
     public static void readNameTable(ObjectInputStream in) 
     		throws IOException, ClassNotFoundException {

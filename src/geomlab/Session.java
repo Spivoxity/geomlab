@@ -145,8 +145,6 @@ public class Session {
 		    "#badversion");
 	
 	    // Install the same plugins
-	    plugins.clear();
-            Name.clearNameTable();
 	    List<String> sessionPlugins = (List<String>) in.readObject();
 	    for (String x : sessionPlugins)
                 loadPlugin(Class.forName(x));

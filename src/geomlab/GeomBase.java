@@ -173,17 +173,18 @@ public class GeomBase {
     }
 
     protected boolean eval_loop(Reader reader, boolean echo, boolean display) {
-	Name top = Name.find("_top");
-	Value.FunValue toplev = (Value.FunValue) top.getGlodef();
-	Scanner scanner = new Scanner(reader);
+	this.scanner = new Scanner(reader);
+        this.scanner = scanner;
+        this.echo = echo;
+        this.display = display;
+
 	errtag = "";
 	last_val = null;
 
 	while (true) {
 	    try {
-		this.scanner = scanner;
-		this.echo = echo;
-		this.display = display;
+                Name top = Name.find("_top");
+                Value.FunValue toplev = (Value.FunValue) top.getGlodef();
                 scanner.resetText();
 		if (Evaluator.execute(toplev.subr) != Value.BoolValue.truth)
 		    return true;

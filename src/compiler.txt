@@ -172,9 +172,10 @@ define __top() =
   { scan -- call the lexer and set tok and val }
   let scan() =
     let t = _scan() in
+    debug(2, t) >>
     let case(#ident) =
           let tk = _lookup(syntax, snd(t)) in
-          _set(tok, if tk <> [] then fst(tk) else #ident)
+          _set(tok, if tk <> [] then fst(tk) else #ident) >> debug(2, _get(tok))
       | case(#op) =
           let tk = _lookup(syntax, snd(t)) in
           if tk <> [] then _set(tok, fst(tk)) else synerror("#badtok")

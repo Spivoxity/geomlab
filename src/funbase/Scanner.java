@@ -105,19 +105,14 @@ public class Scanner {
 	virgin = true;
     }
     
-    private static Name ATOM, BRA, COMMA, EOF, EOL, KET, LPAR, RPAR,
-    	NUMBER, SEMI, STRING, VBAR, OP, IDENT;
-    
-    /** Initialize atoms used as tokens */
-    private static void initTokens() {
-	ATOM = Name.find("atom"); BRA = Name.find("bra");
-	COMMA = Name.find("comma"); EOF = Name.find("eof");
-	EOL = Name.find("eol"); KET = Name.find("ket");
-	LPAR = Name.find("lpar"); NUMBER = Name.find("number"); 
-	RPAR = Name.find("rpar"); SEMI = Name.find("semi"); 
-	STRING = Name.find("string"); VBAR = Name.find("vbar");
-        OP = Name.find("op"); IDENT = Name.find("ident");
-    }
+    private static Name 
+	ATOM = Name.find("atom"), BRA = Name.find("bra"),
+	COMMA = Name.find("comma"), EOF = Name.find("eof"),
+	EOL = Name.find("eol"), KET = Name.find("ket"),
+	LPAR = Name.find("lpar"), NUMBER = Name.find("number"), 
+	RPAR = Name.find("rpar"), SEMI = Name.find("semi"), 
+	STRING = Name.find("string"), VBAR = Name.find("vbar"),
+        OP = Name.find("op"), IDENT = Name.find("ident");
     
     private boolean isOpChar(char ch) {
 	final String opchars = ".!#$%&*+-/:<=>?@^~";
@@ -125,9 +120,6 @@ public class Scanner {
     }
     
     public void scan() {
-        if (Name.find("atom") != ATOM) 
-            initTokens();
-
 	start_char = char_num;
 	char ch = getChar();
 	tok = null; sym = Value.nil;
