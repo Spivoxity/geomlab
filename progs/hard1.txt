@@ -1,0 +1,5 @@
+{ Saving and restoring preserves sharing }
+
+define g(x) = x * f(x-1);
+
+_save("hard.gls");

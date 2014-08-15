@@ -1,0 +1,8 @@
+source scripts/test.tcl
+
+pngtest man {} {man} 243be1e349c8e154604641d01fa49587
+pngtest couple {} {man $ woman} 096cd4fd123d83f6e645cba7fac77a31
+pngtest flip {} {flip(man)} 3e9604ff44d008beb92cc24140b4f540
+pngtest rot {} {rot(man)} 173ea91f2dee7ea1516cebf65505395c
+pngtest stretch {} {stretch(1.5, man)} e72677290d5451a48160258f8b2af7e8
+

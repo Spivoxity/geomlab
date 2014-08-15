@@ -1,0 +1,25 @@
+source scripts/test.tcl
+
+test explode {} {explode("mike")} {["m", "i", "k", "e"]}
+
+test explode2 {} {explode("")} {[]}
+
+test implode {} {implode(["m", "i", "k", "e"])} {"mike"}
+
+test implode2 {} {implode([])} {""}
+
+test cmdeq {} {[left(10)=left(10), left(10)=right(10), left(10)=left(20)]} \
+    {[true, false, false]}
+
+test sqrt {} {sqrt(2)} 1.4142136
+test trig {} {[sin(30), cos(30), tan(30)]} {[0.5, 0.8660254, 0.57735027]}
+test int {} {[int(-1.5), int(3), int(4.01)]} {[-2, 3, 4]}
+
+test aspect {} {aspect(man)} {0.54545456}
+test aspect2 {} {aspect(man $ man)} {1.0909091}
+test aspect3 {} {aspect(rot(man))} {1.8333333}
+
+test pixel {} {mike([20, 20])} \
+    {rgb(0.039215686, 0.047058824, 0.094117647)}
+
+

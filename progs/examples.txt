@@ -19,6 +19,8 @@ define _init() =
     "hilbert(5)", "hilbslide", "turtle(dragon(12))", "bush(system(4))",
     "plot(600, -1, 0.285, 0.02, mfun)", "transmike"]);
   
+_stage(1); { These definitions are defaults }
+
 define f(p) = p $ (p & p);
 
 define row(1, p) = p
@@ -173,3 +175,5 @@ define search(k, n, avail) =
 	  s <- search(k+1, n1, delete(d, avail)) ];
 
 define digits() = search(0, 0, function (x) true);
+
+_stage(2);

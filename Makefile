@@ -53,23 +53,34 @@ bootstrap: stage1.boot force
 	(sed '/^ *$$/q' src/boot.txt; cat stage2.boot) >boot.tmp
 	mv boot.tmp src/boot.txt
 
+# Testing
+
+test: force
+	tclsh test/language
+	tclsh test/library
+	tclsh test/graphics
+	tclsh test/examples
+
 
 # Web resources
 
-PREFIX = https://spivey.oriel.ox.ac.uk/wiki/files/gl
+PREFIX = https://spivey.oriel.ox.ac.uk/gwiki/files
 
 web: web-dirs update .signed
 
 web-dirs: force
 	@mkdir -p web
 
-update: web/.htaccess web/geomlab.jar web/examples.jar \
-		web/geomlab.jnlp web/geomdemo.jnlp \
-		web/arrow.png web/icon32.png web/icon64.png
+#update: web/.htaccess web/geomlab.jar web/examples.jar \
+#		web/geomlab.jnlp web/geomdemo.jnlp \
+#		
+
+update: web/.htaccess web/geomlab.jar web/examples.jar web/geomlab.jnlp \
+	web/deployJava.js web/arrow.png web/icon32.png web/icon64.png
 
 web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 	cd obj; jar cfm ../$@ ../scripts/manifest \
-		$(PACKAGES) $(RESOURCES) geomlab.gls
+		$(PACKAGES) $(RESOURCES) $(ICONS) geomlab.gls
 
 web/examples.jar: examples.gls
 	jar cf $@ $<
@@ -81,12 +92,13 @@ web/examples.jar: examples.gls
 web/.htaccess: scripts/htaccess;		cp $< $@
 web/%: res/%;					cp $< $@
 web/%: obj/%;					cp $< $@
+web/deployJava.js: web/%: scripts/%;		cp $< $@
 
 web/%.jnlp: scripts/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
 
 publish: web force
-	rsync -rvt --delete web/ spivey:wiki/files/gl
+	rsync -rvt --delete web/ spivey:/var/www/gwiki/files
 
 clean: force
 	rm -rf obj examples.gls

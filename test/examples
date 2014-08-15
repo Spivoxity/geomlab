@@ -1,0 +1,16 @@
+source scripts/test.tcl
+
+pngtest spiral examples.txt {spiral(10)} 726ca0a80d8be7412541409dbc3eab2d
+pngtest zagzig examples.txt {zagzig(10)} 5a82c90eb85c673b8491bd31edf31f9d
+pngtest tile1 examples.txt {colour((T & blank) $ T)} 23e611be5645d84814c1f12ba5eab14c
+pngtest tile2 examples.txt {colour((T & rot(T)) $ T)} 67178baaff10a5c89164d3b9612c6d00
+pngtest tile3 examples.txt {colour(side(2) $ T)} 0699cfc297c9fdfb17b04cc6022cb3c6
+pngtest tile4 examples.txt {colour(frame(blank, side(2), U))} 840cd5b185b88b2e90ecec91511a47cd
+pngtest tile5 examples.txt {colour(frame(corner(2), side(2), U))} 6ae5d10b08b486f8abc65056c061ed57
+pngtest invlimit examples.txt {colour(invlimit(8))} 7546f836cddb68d1f1744bc1cd9c50f2
+pngtest hilbert examples.txt {hilbert(5)} 45ebb6c1950b6834f5551dcba2aee6e6
+pngtest hilbslide examples.txt {hilbslide} e7ab0140a61d6d365a37072fb3318963
+pngtest dragon examples.txt {turtle(dragon(10))} 06bf23cbe08f19b0df331ab8a8ecb881
+pngtest bush examples.txt {bush(system(3))} f6abf2421b3e43bec655c3751d6a28d0
+pngtest julia examples.txt {plot(600, -1, 0.285, 0.02, mfun)} 88c07b54d40edd8889cc956505d18637
+pngtest transmike examples.txt {transmike} 8a11ce5549c4bb2862b2f186d428ecfc

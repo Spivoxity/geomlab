@@ -1,0 +1,30 @@
+define fac(0) = 1 | fac(n) = n * fac(n-1) when n > 0;
+
+define flic(n, x) =
+  let flac(x) = [x+1, x+2] when numeric(x)
+    | flac(x) = map(function (x) flac(x), x) in
+  if n = 0 then x else flic(n-1, flac(x)); 
+
+define two3(x, [_, x, _]) = true | two3(_, _) = false;
+
+define oppx = 
+  let links = left in let f(links(x)) = right(x) in f;
+
+_update(_syntax, #!, [#monop, 0, 0]); 
+_update(_syntax, #:=, [#binop, 1, 1]);
+define ! = _get;
+define := = _set;
+
+{ Knuth's Man or Boy test }
+define mob(k) =
+  let a(k0, x1, x2, x3, x4, x5) =
+    if k0 <= 0 then
+      x4() + x5()
+    else (
+      let k = _new(k0) in
+      let b() =
+        k := !k-1 >>
+        a(!k, b, x1, x2, x3, x4) in
+      b() ) in
+  a(k, function () 1, function () -1, function () -1, 
+       		      	       	    	function () 1, function () 0);
