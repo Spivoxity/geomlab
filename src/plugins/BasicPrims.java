@@ -132,7 +132,7 @@ public class BasicPrims {
 	
     @PRIMITIVE
     public static Value tan(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.sin(prim.number(x) * Math.PI / 180));
+	return NumValue.getInstance(Math.tan(prim.number(x) * Math.PI / 180));
     }
 	
     @PRIMITIVE
