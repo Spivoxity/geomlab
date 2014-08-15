@@ -161,21 +161,33 @@ public class Evaluator {
 		   conses, (conses == 1 ? "cons" : "conses"));
     }
 
-    /** An exception raised because of a run-time error */
-    public static class EvalError extends Error {
+    /** An exception defined by an error tag */
+    public static abstract class MyError extends Error {
 	public final String errtag;
 	public final Object args[];
-	public final String context;
 
-	public EvalError(String errtag, Object args[], String context) {
+	public MyError(String errtag, Object args[]) {
 	    this.errtag = errtag;
 	    this.args = args;
-	    this.context = context;
 	}
 
-	public EvalError(String errtag) {
-	    this(errtag, null, null);
+	public MyError(String errtag) {
+	    this(errtag, null);
 	}
+    }
+
+    /** An exception raised because of a run-time error */
+    public static class EvalError extends MyError {
+	public final String context;
+
+        public EvalError(String errtag, Object args[], String context) {
+            super(errtag, args);
+	    this.context = context;
+        }            
+
+        public EvalError(String errtag) {
+            this(errtag, null, null);
+        }
     }
 
     public static void error(String errtag, Object... args) {

@@ -97,7 +97,7 @@ public class Session {
 	    }
 	}
 	catch (Exception e) {
-	    throw new CommandException(e.toString(), "#nohelp"); 
+	    throw new CommandException("#exception", e); 
 	}
     }
 
@@ -110,8 +110,7 @@ public class Session {
             loadSession(name, inraw);
         }
         catch (FileNotFoundException e) {
-            throw new CommandException(
-        	    "Can't read " + name, "#nofile");
+            throw new CommandException("#readerr", name);
         }
     }
     
@@ -122,8 +121,7 @@ public class Session {
         InputStream stream = loader.getResourceAsStream(name);
 
         if (stream == null)
-            throw new CommandException(
-        	    "Can't read resource " + name, "#noresource");
+            throw new CommandException("#noresource", name);
 
         loadSession(name, stream);
     }
@@ -135,14 +133,10 @@ public class Session {
 	    ObjectInputStream in = new ObjectInputStream(inraw);
 	    int sig = in.readInt();
 	    if (sig != SIG)
-		throw new CommandException("Sorry, file " + name 
-					   + " is not a saved session",
-					   "#badformat");
+		throw new CommandException("#badformat", name);
 	    int version = in.readInt();
 	    if (version != VERSION)
-		throw new CommandException("Sorry, file " + name
-		    + "was saved by a different version of GeomLab",
-		    "#badversion");
+		throw new CommandException("#badversion", name);
 	
 	    // Install the same plugins
 	    List<String> sessionPlugins = (List<String>) in.readObject();
@@ -156,13 +150,10 @@ public class Session {
 	    GeomBase.theApp.setEditText((String) in.readObject());
 	}
 	catch (IOException e) {
-	    throw new CommandException("I/O failed while reading " + name
-		+ " - " + e, "#readfail");
+	    throw new CommandException("#readfail", name, e);
 	}
 	catch (ClassNotFoundException e) {
-	    throw new CommandException(
-		"Couldn't find class " + e.getMessage(),
-		"#missingclass");
+	    throw new CommandException("#missingclass", e.getMessage());
 	}
 	finally {
 	    try { inraw.close(); } catch (IOException e) { /* Ignore */ }
@@ -184,18 +175,14 @@ public class Session {
         	out.flush();
             }
             catch (IOException e) {
-        	throw new CommandException(
-        		"I/O failed while writing " + file.getName()
-        		+ " - " + e,
-        		"#writefail");
+        	throw new CommandException("#writefail", file.getName(), e);
             }
             finally {
         	try { outraw.close(); } catch (IOException e) { /* Ignore */ }
             }
         }
         catch (FileNotFoundException e) { 
-            throw new CommandException("Couldn't write " + file.getName(),
-        	    "#nowrite");
+            throw new CommandException("#writeerr", file.getName());
         }
     }
 

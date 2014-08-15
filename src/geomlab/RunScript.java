@@ -131,20 +131,21 @@ public class RunScript extends GeomBase {
                 Session.loadSession(sessfile);
             else
                 Session.loadResource("geomlab.gls");
+
+            for (; i < args.length; i++) {
+                if (args[i].equals("-e") && i+1 < args.length)
+		    app.evalString(args[++i]);
+                else if (args[i].equals("-t"))
+                    app.interact();
+                else if (args[i].equals("-"))
+                    app.loadFromStream(System.in);
+                else
+                    app.loadFromFile(new File(args[i]), false);
+            }
+
 	}
 	catch (CommandException e) {
-	    throw new Error(e);
-	}
-
-	for (; i < args.length; i++) {
-	    if (args[i].equals("-e") && i+1 < args.length)
-		    app.evalString(args[++i]);
-	    else if (args[i].equals("-t"))
-		app.interact();
-	    else if (args[i].equals("-"))
-		app.loadFromStream(System.in);
-	    else
-		app.loadFromFile(new File(args[i]), false);
+            app.errorMessage(e);
 	}
 
 	System.exit(app.getStatus());

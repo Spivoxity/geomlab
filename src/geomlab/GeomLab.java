@@ -115,7 +115,7 @@ public class GeomLab extends GeomBase {
             setCurrentFile(file);
         }
         catch (IOException _) {
-            throw new CommandException("Couldn't read " + file, "#ioerr");
+            throw new CommandException("#readerr");
         }
     }
 
@@ -129,14 +129,14 @@ public class GeomLab extends GeomBase {
             setCurrentFile(file);
         }
         catch (IOException _) {
-            throw new CommandException("Couldn't write " + file, "#ioerr");
+            throw new CommandException("#writeerr");
         }
     }
 
     /** Display location of syntax error. */
     @Override
     public void syntaxError(funbase.Scanner.SyntaxError e) {
-	evalError("Oops: ", formatError(e.errtag, e.args), e.errtag);
+	evalError("Oops: ", formatError(e), e.errtag);
 	frame.showError(e.start, e.end);	
     }
 
@@ -333,7 +333,7 @@ public class GeomLab extends GeomBase {
 	    Session.loadPlugin(Command.class);
 	}
 	catch (CommandException e) {
-	    app.errorMessage(e.getMessage(), e.getErrtag());
+	    app.errorMessage(e);
 	}
 	
         if (j < args.length) {

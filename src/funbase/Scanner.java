@@ -299,26 +299,18 @@ public class Scanner {
     }
 
     /** Report a syntax error at the current token */
-    public void syntax_error(String errtag, Object args[]) {
+    public void syntax_error(String errtag, Object... args) {
 	throw new SyntaxError(errtag, args, line_num, 
 			       start_char, char_num, error_chars());
     }
 
-    /** Report a syntax error at the current token */
-    public void syntax_error(String errtag) {
-	throw new SyntaxError(errtag, null, line_num, 
-			       start_char, char_num, error_chars());
-    }
-
-    public static class SyntaxError extends Error {
+    public static class SyntaxError extends Evaluator.MyError {
 	public final int line, start, end;
-	public final String errtag, errtok;
-	public final Object args[];
+	public final String errtok;
 	
 	public SyntaxError(String errtag, Object args[], int line, 
 			    int start, int end, String errtok) {
-	    this.errtag = errtag;
-	    this.args = args;
+            super(errtag, args);
 	    this.line = line;
 	    this.start = start;
 	    this.end = end;

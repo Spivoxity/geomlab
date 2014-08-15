@@ -37,6 +37,7 @@ import javax.swing.*;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Value;
+import funbase.Evaluator;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,12 +68,7 @@ public abstract class Command extends AbstractAction {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-	try {
-	    perform();
-	}
-	catch (CommandException ex) {
-	    app.errorMessage(ex.getMessage(), ex.getErrtag());
-	}
+        app.obey(this);
     }
     
     public abstract void perform() throws CommandException;
@@ -145,7 +141,7 @@ public abstract class Command extends AbstractAction {
             @Override
             public void perform() throws CommandException {
         	if (! app.frame.arena.isPicture())
-		    throw new CommandException("No picture", "#nopicture");
+		    throw new CommandException("#nopicture");
 		
 		JFileChooser saveDialog = new MyFileChooser(".png");
 		if (saveDialog.showSaveDialog(app.frame) 
@@ -155,9 +151,7 @@ public abstract class Command extends AbstractAction {
 			app.frame.arena.writePicture(file);
 		    }
 		    catch (IOException e) {
-			throw new CommandException(
-				"I/O failed while writing " + file.getName(),
-				"#picio");
+			throw new CommandException("#picio", file.getName());
 		    }
 		}
             }
@@ -284,22 +278,17 @@ public abstract class Command extends AbstractAction {
             @Override
             public void perform() { HelpFrame.errorHelp(app.getErrtag()); }
         });
-        menu.add(new Command("About GeomLab ...", KeyEvent.VK_A,  app) {
+        menu.add(new Command("About GeomLab ...", KeyEvent.VK_A, app) {
             @Override
 	    public void perform() { app.aboutBox(); }
         });
 	return menu;
     }
 
-    public static class CommandException extends Exception {
-	private String errtag;
-	
-	public CommandException(String message, String errtag) {
-	    super(message);
-	    this.errtag = errtag;
+    public static class CommandException extends Evaluator.MyError {
+	public CommandException(String errtag, Object... args) {
+	    super(errtag, args);
 	}
-	
-	public String getErrtag() { return errtag; }
     }
 
     /** A boolean option that can appear on a menu. */

@@ -98,10 +98,10 @@ public class GeomBase {
 	logWrite("[" + msg + "]");
     }
 
-    public void errorMessage(String msg, String errtag) {
-	logMessage(msg);
+    public void errorMessage(Command.CommandException e) {
+	logMessage(formatError(e));
 	if (status < 1) status = 1;
-	this.errtag = errtag;
+	errtag = e.errtag;
     }
 
     public void evalError(String prefix, String message, String errtag) {
@@ -138,33 +138,40 @@ public class GeomBase {
 	}
     }
 
+    public void obey(Command cmd) {
+	try {
+	    cmd.perform();
+	}
+	catch (Command.CommandException ex) {
+	    errorMessage(ex);
+	}
+    }
+
     protected Value scan() {
 	return scanner.nextToken();
     }
 
-    public String formatError(String tag, Object args[]) {
-	String msg = properties.getProperty("err"+tag, tag);
-	return String.format(msg, args);
+    public String formatError(Evaluator.MyError err) {
+        // Just print the tag literally if it isn't defined
+	String msg = properties.getProperty("err"+err.errtag, err.errtag);
+	return String.format(msg, err.args);
     }
 
     public void runtimeError(Evaluator.EvalError e) {
 	String cxt = (e.context == null ? "" :
 		      String.format(" in function '%s'", e.context));
-	evalError("Aargh: ", 
-		  formatError(e.errtag, e.args) + cxt, 
-		  e.errtag);
+	evalError("Aargh: ", formatError(e) + cxt, e.errtag);
     }
 
     public void syntaxError(Scanner.SyntaxError e) {
 	evalError("Oops: ", 
 		  String.format("%s (at %s on line %d)",
-				formatError(e.errtag, e.args), 
-				e.errtok, e.line), 
+				formatError(e), e.errtok, e.line), 
 		  e.errtag);
     }
 
     public void failure(Throwable e) {
-	e.printStackTrace(log);
+	// e.printStackTrace(log);
 	evalError("Failure: ", e.toString(), "#failure");
     }
 
@@ -218,7 +225,7 @@ public class GeomBase {
             try { reader.close(); } catch (IOException e) { /* Ignore */ }
         }
         catch (FileNotFoundException e) {
-            errorMessage("Can't read " + file.getName(), "#nofile");
+            throw new Command.CommandException("#nofile", file.getName());
         }
     }
 
@@ -260,7 +267,8 @@ public class GeomBase {
 
     @PRIMITIVE
     public static Value _synerror(Primitive prim, Value tag, Value args) {
-	theApp.scanner.syntax_error(prim.string(tag), prim.toArray(args));
+	theApp.scanner.syntax_error(prim.string(tag), 
+                                    (Object []) prim.toArray(args));
 	return Value.nil;
     }
 

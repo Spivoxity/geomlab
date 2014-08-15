@@ -76,8 +76,7 @@ public class GraphBox extends JPanel {
 		picture.draw(s, ww, hh, ColorValue.white);
 	    }
 	    catch (Throwable e) {
-		GeomBase.theApp.evalError("Failure: ",
-					  e.toString(), "#failure");
+		GeomBase.theApp.failure(e);
 		picture = null;
 	    }
 	}
@@ -166,11 +165,11 @@ public class GraphBox extends JPanel {
     /** Command -- print the current picture */
     public void print() throws CommandException {
         if (picture == null) 
-            throw new CommandException("No picture", "#nopicture");
+            throw new CommandException("#nopicture");
         
         PrinterJob job = PrinterJob.getPrinterJob();
         if (job == null)
-            throw new CommandException("No print job", "#noprint");
+            throw new CommandException("#noprint");
         
         job.setPrintable(new Printable() {
             @Override
@@ -202,7 +201,7 @@ public class GraphBox extends JPanel {
             job.print();
         }
         catch (PrinterException e) {
-            throw new CommandException("Printing failed", "#printfail");
+            throw new CommandException("#printfail");
         }
     }
 
