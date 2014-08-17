@@ -451,8 +451,12 @@ define __top() =
 
   { p_rule -- parse one clause of a function definition }
   let p_rule(x, arity) =
-    let y = p_name() in
-    if x = y then [] else synerror("#names") >>
+    { Inlined p_name and p_sym for better error message }
+    let y = _get(val) in
+    let exp =
+      if isbinop(_get(tok)) or see(#monop) then _get(tok) else #ident in
+    if see(exp) and x <> y then synerror("#names") else [] >>
+    eat(exp) >>
     let lhs = p_formals() in
     if length(lhs) = arity then [] else synerror("#arity") >>
     p_rhs(lhs) in
