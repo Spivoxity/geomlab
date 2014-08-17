@@ -121,9 +121,9 @@ public class Evaluator {
 	if (timeLimit > 0) {
 	    timer = new Thread() {
 		@Override 
-		public synchronized void run() {
+		public void run() {
 		    try {
-			wait(timeLimit);
+			sleep(timeLimit);
 			runFlag = false;
 		    }
 		    catch (InterruptedException e) { }
@@ -140,6 +140,8 @@ public class Evaluator {
 	if (! runFlag) 
 	    throw new EvalError("#time");
 	quantum = QUANTUM;
+
+        //System.out.printf("Checkpoint %d/%d\n", steps, stepLimit);
 	Thread.yield();
     }
     
