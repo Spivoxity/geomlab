@@ -7,13 +7,17 @@ proc test-sess {name sess scripts exp result} {
 
     set scripts1 {}
     foreach f $scripts {append scripts1 "progs/$f"}
+    set cmd [concat [list exec java -cp obj geomlab.RunScript] \
+                     [list -s $sess] $scripts1 [list -e $exp]]
 
-    set out [eval [concat \
-                       [list exec java -cp obj geomlab.RunScript] \
-                       [list -s $sess] \
-                       $scripts1 \
-		       [list -e $exp]]]
-    regexp -line {^--> (.*)$} $out _ val
+    if {[catch {eval $cmd} out]} {
+        # Error message on penultimate line of output
+        set val [lindex [split $out "\n"] end-1]
+    } else {
+        # Value marked with -->
+        regexp -line {^--> (.*)$} $out _ val
+    }
+
     if {[string equal $val $result]} {
 	puts " OK"
     } else {
