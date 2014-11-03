@@ -50,6 +50,9 @@ import funbase.Evaluator;
 public class ImagePicture extends Picture {
     private static final long serialVersionUID = 1L;
     
+    /** Maximum pixmap size */
+    public static final int MAXDIM = 1000;
+
     /** The bitmap itself, represented in a platform-dependent way. */
     protected transient Native.Image image;
     
@@ -194,8 +197,9 @@ public class ImagePicture extends Picture {
     @PRIMITIVE
     public static Value _image(Primitive prim, Value width0, 
 			       Value height0, Value fun0) {
-	int width = (int) prim.number(width0);
-	int height = (int) prim.number(height0);
+        // Silently truncate the width and height
+	int width = Math.min((int) prim.number(width0), MAXDIM);
+	int height = Math.min((int) prim.number(height0), MAXDIM);
 	FunValue fun = prim.cast(FunValue.class, fun0, "a function");
 	Native factory = Native.instance();
 	Native.Image image = factory.image(width, height);
