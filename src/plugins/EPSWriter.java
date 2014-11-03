@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,9 +73,6 @@ public class EPSWriter extends Stylus {
 	"1 setlinecap",
 	"1 setlinejoin",
 
-	// colidx stores the colour index when filling a tile
-	"/colidx 0 def",
-	
 	// initmatrix is the initial transform matrix
 	"/initmatrix matrix currentmatrix def",
 	
@@ -93,16 +91,17 @@ public class EPSWriter extends Stylus {
 	"  mymatrix currentmatrix pop",
 	"} bind def",
 
-	// reuse the transform from mymatrix
+	// Reuse the transform from mymatrix
 	"/usetransform { mymatrix setmatrix } bind def",
 
-	// restore the initial transform
+	// Restore the initial transform
 	"/resettransform { initmatrix setmatrix } bind def",
 	
-	// fill an outline using a colour from the palette
+	// Fill an outline using a colour from the palette.
+        // base index --> base
 	"/palettefill {",
-	"  colidx 0 ge {",
-	"    colidx add palette length mod",
+	"  1 index 0 ge {",
+	"    1 index add palette length mod",
 	"    palette exch get exec fill",
 	"  } { pop } ifelse",
 	"} bind def"
@@ -147,25 +146,85 @@ public class EPSWriter extends Stylus {
 	}
     }
     
+    private class Ascii85Output extends OutputStream {
+        /** Up to 4 bytes of data waiting to be output */
+        private int buf = 0;
+
+        /** Count of waiting bytes */
+        private int count = 0;
+
+        /* Current output column for line wrapping. */
+        private int pos = 0;
+
+        /** Buffer for 5 output characters */
+        private byte conv[] = new byte[5];
+
+        /** Output a character with line wrapping */
+        private void outch(char ch) {
+            if (pos >= 72) { pr.println(); pos = 0; }
+            pr.print(ch); pos++;
+        }
+
+        /** Output a full or partial group */
+        private void put() {
+            if (count == 4 && buf == 0) {
+                outch('z'); count = 0;
+                return;
+            }
+
+            long lbuf = buf & 0xffffffffL;
+
+            for (int i = 4; i >= 0; i--) {
+                conv[i] = (byte) (lbuf % 85);
+                lbuf /= 85;
+            }
+
+            // Note: if the count is short of 4 in the final group,
+            // we reduce the number of characters output from 5 by 
+            // the same amount.
+            for (int j = 0; j <= count; j++)
+                outch((char) ('!' + conv[j]));
+            
+            count = 0; buf = 0;
+        }
+
+        /** Add a byte to the stream */
+        public void write(int b) {
+            buf |= (b&0xff) << (24 - 8*count);
+            if (++count == 4) put();
+        }
+        
+        /** Finish by ouputting a final group and adding "~>" */
+        public void close() {
+            if (count > 0) put();
+            outch('~'); outch('>');
+        }
+    }
+
+    /** Draw an image using base85 encoded JPEG */
     @Override
     public void drawImage(Native.Image image) {
-	// See Red Book, page 310
+	// See Red Book, page 311
 	int w = image.getWidth(), h = image.getHeight();
-	pr.printf("/buf %d string def\n", 3*w);
+	pr.printf("/DeviceRGB setcolorspace\n", 3*w);
 	writeTransform(trans);
-	pr.printf("%d %d 8\n", w, h);
-	pr.printf("[ %d 0 0 %d 0 %d ]\n", w, -h, h);
-	pr.printf("{ currentfile buf readhexstring pop }\n");
-	pr.printf("false 3\n");
-	pr.printf("colorimage\n");
-	
-	for (int y = 0; y < h; y++) {
-	    for (int x = 0; x < w; x++) {
-		if (x > 0 && x % 24 == 0) pr.printf("\n");
-		pr.printf("%06x", image.getRGB(x, y) & 0xffffff);
-	    }
-	    pr.printf("\n");
-	}
+        pr.printf("<< /ImageType 1 /Width %d /Height %d /BitsPerComponent 8\n",
+                  w, h);
+        pr.printf("   /Decode [0 1 0 1 0 1] /ImageMatrix [%d 0 0 %d 0 %d]\n",
+                  w, -h, h);
+        pr.printf("   /DataSource currentfile /ASCII85Decode filter");
+        pr.printf(" /DCTDecode filter >> image\n");
+
+        OutputStream out = new Ascii85Output();
+        Native factory = Native.instance();
+        try {
+            factory.writeImage(image, "jpg", out); 
+            out.close();
+        }
+        catch (IOException e) {
+            throw new Error("writeImage failed");
+        }
+        pr.printf("\n");
 	pr.printf("resettransform\n");
     }
 
@@ -198,7 +257,7 @@ public class EPSWriter extends Stylus {
 	    }
 	    pr.printf("} bind def\n");
 	
-	    pr.printf("/fillt%d { /colidx exch def\n", id);
+	    pr.printf("/fillt%d {\n", id);
 	    for (int i = 0; i < outlines.length; i++) {
 		pr.printf("usetransform\n");
 		writePolygon(outlines[i], Tran2D.identity);
@@ -212,6 +271,7 @@ public class EPSWriter extends Stylus {
 		    pr.printf("%d palettefill\n", spec);
 		}
 	    }
+            pr.printf("pop\n");
 	    pr.printf("} bind def\n");
 	
 	    knownTiles.add(id);
