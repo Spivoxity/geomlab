@@ -1,5 +1,15 @@
 /* CSS placed here will be applied to all skins */
 
+/* No tabs at top of body */
+#left-navigation, #p-personal, #p-views, #p-cactions { 
+    display: none; 
+}
+
+/* Bigger text font */
+#bodyContent {
+    font-size: 1em;
+}
+
 /* Style the Big Green Arrow */
 a.bga2 {
     display: block;
@@ -14,7 +24,6 @@ a.bga2 {
     margin-right: 10px;
     font-weight: bold;
 }
-
 
 /* Show document icon for internal PDF links */
 #bodyContent a.internal[href$=".pdf"] {

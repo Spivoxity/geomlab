@@ -135,7 +135,7 @@ To do so, you will need two more tiles, @E@ and @F@:
 {{GeomPic|6240|F|*}}
 Copies of these two tiles fit together to make a pair of fish
 chasing each other's tails:   
-{{GeomPic|6250|define V {{=}} (E $ F) & (rot2(F) $ rot2(E))|*}}
+{{GeomPic|6250|define V {{=}} (E $ F) & (rot2(F) $ rot2(E))|V}}
 These fish appear along the diagonals of the picture. You should
 aim to define an `inverse limit' function
 @invlimit(<i>n</i>)@ that can be used to produce any

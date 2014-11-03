@@ -7,7 +7,7 @@ JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
 SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
 RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
-	$(HELP:%=%.html) properties
+	$(HELP:%=%.html) properties sunflowers.jpg
 ICONS = icon16.png icon32.png icon64.png icon128.png
 IMAGES = obj/geomlab.gls examples.gls
 
@@ -85,8 +85,12 @@ web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 web/examples.jar: examples.gls
 	jar cf $@ $<
 
+TSA = http://timestamp.comodoca.com/rfc3161
+
 .signed: web/geomlab.jar web/examples.jar
-	for f in $?; do jarsigner -storepass `cat ~/.keypass` $$f mykey; done
+	for f in $?; do \
+	    jarsigner -storepass `cat ~/.keypass` -tsa $(TSA) $$f mykey; \
+	done
 	echo timestamp >$@
 
 web/.htaccess: scripts/htaccess;		cp $< $@

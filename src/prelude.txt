@@ -58,6 +58,7 @@ define image(w, h, f) =
   _image(w, h, function (x, y) f([x, y]));
 define _pixelfun(img) = function ([x, y]) _pixel(img, x, y);
 define mike = _pixelfun(_resource("mike.jpg"));
+define flowers = _pixelfun(_resource("sunflowers.jpg"));
 define photo(url) = _pixelfun(_photo(url));
 
 _install("SlidePicture");
@@ -74,9 +75,9 @@ define not (p) = false when p = true
   | not (p) = true when p = false
   | not (_) = _expect("not", "a boolean");
 
-{ Needed as a function value, as in 'let f = (and) in ...'
-  These are not really recursive, because the bodies are compiled
-  as short-circuit conditions. }
+{ These definitions are needed in case 'and' or 'or' are used as function 
+  values, as in 'let f = (and) in ...'.  The definitions are not really 
+  circular, because the bodies are compiled as short-circuit conditions. }
 define and (x, y) = x and y;
 define or (x, y) = x or y;
 

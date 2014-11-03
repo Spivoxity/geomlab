@@ -6,7 +6,8 @@ PAGES =	geomlab.wiki build.wiki commands.wiki download.wiki errors.wiki \
 	start.wiki teachers.wiki tiles.wiki tips.wiki using.wiki \
 	worksheets.wiki egyptian.wiki common.wiki GeomGrind.php \
 	mathsymbols.wiki IfWiki.tmpl IfBook.tmpl =.tmpl \
-	BigSpace.tmpl Resource.tmpl BigGreenArrow.tmpl sidebar.wiki
+	BigSpace.tmpl Resource.tmpl BigGreenArrow.tmpl sidebar.wiki \
+	winkel.wiki
 
 all: $(PAGES)
 

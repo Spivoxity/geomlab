@@ -25,5 +25,6 @@ set title(bigspace) "Template:Bigspace"
 set title(resource) "Template:Resource"
 
 set title(common) "MediaWiki:Common.css"
+set title(winkel) "MediaWiki:Winkel.css"
 set title(sidebar) "MediaWiki:Sidebar"
 set title(mathsymbols) "MediaWiki:MathSymbols"

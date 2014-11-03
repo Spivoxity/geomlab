@@ -43,8 +43,10 @@ An ''operator'' or ''delimiter'' is one of the reserved words
 and special symbols in the list that follows. Reserved words appear
 entirely in lower case, and may not be used as names.
 
-<pre>and define div else function if in let mod not op or then when
-_ = + - $ * / &amp; ~ : . ++ &lt; &lt;= &lt;&gt; &gt; &gt;= ( ) [ ] , ; |</pre>
+<pre>
+and define div else function if in let mod not op or then when
+_ = + - $ * / &amp; ~ : . ++ &lt; &lt;= &lt;&gt; &gt; &gt;= ( ) [ ] , ; |
+</pre>
 
 The syntax of expressions and definitions in the GeomLab
 language is given
@@ -69,7 +71,7 @@ number tokens, and are yielded as the results of arithmetic operations.
 ===Booleans===
 
 The Boolean values @true@ and @false@
-are denoted by pre-defined names, and are yielded as the results of
+are denoted by predefined names, and are yielded as the results of
 comparison operators.
 
 ===Strings===
@@ -83,10 +85,6 @@ and non-empty lists may be constructed with the operator
 "@:@". A list expression @[<i>x<sub>1</sub></i>, <i>x<sub>2</sub></i>, ..., <i>x<sub>n</sub></i>]@
 is an abbreviation for a list of length ''n'' constructed in
 this way.
-If @x@ and @y@ are integers, then the expression @[x..y]@ stands for the list @[x, x+1, x+2, ..., y]@, equivalent to @_range(x, y)@, where @range@ is the function defined as follows.
-<pre>
-define _range(x, y) = if x > y then [] else x:_range(x+1, y);
-</pre>
 
 ===Functions===
 
@@ -102,12 +100,7 @@ expressions (see Section 8.2).
 ===Other values===
 
 Other kinds of value may be added to the GeomLab languages as
-plug-in
-extensions.
-Typically, such extensions come with a collection of primitive
-functions
-for creating and manipulating the new values.
-In the GeomLab environment, colours and pictures are provided as
+plug-in extensions. Typically, such extensions come with a collection of primitive functions for creating and manipulating the new values. In the GeomLab environment, colours and pictures are provided as
 additional kinds of value in this way.
 
 ==Scope rules==
@@ -124,19 +117,9 @@ Section&nbsp;8. Unless these additional forms of expression are used,
 there is no nesting of environments in GeomLab, and the scope rules
 can be summarised as follows:
 
-<ul>
-  <li>The local part of the environment takes precedence over the
-  global part.  Thus, if the same name is used for a global variable and
-  for one of the formal parameters of a function, then it is the formal
-  parameter that is denoted by the name within the function body.</li>
-
-  <li>If a function is defined, and then later applied after further
-  definitions have been added to the global environment, then it is the
-  global environment at the time the function is applied that is used
-  for evaluating the function body -- a form of dynamic binding. This
-  rule is a natural one for interactive programming, and allows
-  naturally for mutual recursion among top-level functions.</li>
-</ul>
+* The local part of the environment takes precedence over the global part.  Thus, if the same name is used for a global variable and for one of the formal parameters of a function, then it is the formal parameter that is denoted by the name within the function body.
+* If a function is defined, and then later applied after further definitions have been added to the global environment, then it is the global environment at the time the function is applied that is used
+for evaluating the function body -- a form of dynamic binding. This rule is a natural one for interactive programming, and allows naturally for mutual recursion among top-level functions.
 
 The additional forms of expression introduced in Section&nbsp;8
 allow the possiblility of nested scopes in which function values are
@@ -150,10 +133,15 @@ function definitions but not in local value definitions.
 
 ==Expressions==
 
-<pre>Primary    = Name | Number | String
+We give the basic syntax of expressions here, leaving operator sections (@Section@), list comprehensions (@Comprehension@), @let@ expressions, and @function@ expressions to be described later.
+<pre>
+Primary    = Name | Number | String
            | Name { "(" [ Expression { "," Expression } ] ")" }
            | "(" Expression ")" 
+           | Section
            | "[" [ Expression { "," Expression } ] "]"
+           | "[" Expression ".." Expression "]"
+           | Comprehension
  
 Factor     = ( "-" | "~" ) Factor | Primary 
  
@@ -167,7 +155,8 @@ Term       = Term5 { or Term5 }
 
 BasicExpr  = Term | if Term then BasicExpr else BasicExpr
 
-Expression = BasicExpr | LetExpr | FunctionExpr</pre>
+Expression = BasicExpr | LetExpr | FunctionExpr
+</pre>
 
 ===Primary expressions===
 
@@ -177,38 +166,18 @@ numeric constant; and string tokens, which denote a constant string.
 Any expression may appear in parentheses as an operand in a larger
 expression.
 
-An expression 
-<code>[<i>e</i><sub>1</sub>, <i>e</i><sub>2</sub>, 
-..., <i>e<sub>n</sub></i>]</code> 
-denotes a list made up of
-the @n@ values that are denoted by the expressions 
-<code><i>e</i><sub>1</sub></code>, <code><i>e</i><sub>2</sub></code>,
-...&nbsp;<code><i>e</i><sub><i>n</i></sub></code>.  This list is constructed using the empty list
-(denoted @[]@) by <code><i>n</i></code> applications of the construction
-operator&nbsp;"@:@".
+An expression <code>[@@e1@@, @@e2@@, ..., @@e_n@@]</code> denotes a list made up of the @n@ values that are denoted by the expressions @@e1@@, @@e2@@, ...&nbsp;@@e_n@@.  This list is constructed using the empty list (denoted @[]@) by @@n@@ applications of the construction operator&nbsp;"@:@".
+
+If @@x@@ and @@y@@ are integers, then the expression <code>[@@x@@..@@y@@]</code> stands for the list @@[x, x+1, x+2, ..., y]@@, equivalent to <code>_range(@@x@@, @@y@@)</code>, where @range@ is the function defined as follows.
+<pre>
+define _range(x, y) = if x > y then [] else x:_range(x+1, y);
+</pre>
 
 ===Function application===
 
-An expression <code><i>f</i>(<i>e</i><sub>1</sub>,
-<i>e</i><sub>2</sub>, ..., <i>e<sub>n</sub></i>)</code>
-denotes the application of a
-function <code><i>f</i></code> to the <code><i>n</i></code>
-arguments <code><i>e</i><sub>1</sub></code>,
-..., <code><i>e<sub>n</sub></i></code>.
-The number of arguments must match the number expected
-by <code><i>f</i></code>. The arguments and
-the function <code><i>f</i></code> are first
-evaluated.
-If <code><i>f</i></code> is a function that
-has been defined
-as part of the GeomLab program, then the argument values are matched
-with
-the patterns that appear in the definition of <code><i>f</i></code>,
-and the value
-of the application is that value of the appropriate function body.
-Other functions are implemented as primitives in the initial
-environment of the GeomLab program, and deliver a result that
-cannot be expressed as the value of another expression.
+An expression <code>@@f@@(@@e1@@, @@e2@@, ..., @@e_n@@)</code> denotes the application of a function @@f@@ to the @@n@@ arguments @@e1@@, ..., @@e_n@@. The number of arguments must match the number expected
+by @@f@@. The arguments and the function @@f@@ are first evaluated.
+If @@f@@ is a function that has been defined as part of the GeomLab program, then the argument values are matched with the patterns that appear in the definition of @@f@@, and the value of the application is the value yielded by the appropriate function body.  Other functions are implemented as primitives in the initial environment of the GeomLab program, and deliver a result that cannot be expressed as the value of another expression.
 
 ===Unary and binary operators===
 
@@ -219,36 +188,21 @@ operators associate to the left, except for "@:@" and
 @++@, which associate to the right.  An expression written
 with a prefix or infix operator is just an abbreviation for the
 application of the same operator as a function. Thus, the expression
-<code><i>x&nbsp;</i>+&nbsp;<i>y</i></code> is an abbreviation for the
-binary function application <code>(op +)(<i>x</i>, <i>y</i>)</code>;
-this expression uses the name <code>op +</code> that is bound to the
-addition primitive.  All the operators of
+<code>@@x@@ + @@y@@</code> is an abbreviation for the
+binary function application <code>(+)(@@x@@, @@y@@)</code>;
+this expression uses the name <code>(+)</code> for the built-in function that adds numbers together.  All the operators of
 GeomLab are bound to different primitive functions in the initial
 environment.
 
 An exception to this rule is made in the case of the operators
-@and@ and @or@, which are evaluated in a
-'short-circuit' fashion: thus, in the expression <code><i>e</i><sub>1</sub>
-and <i>e</i><sub>2</sub></code>, the
-sub-expression <code><i>e</i><sub>1</sub></code>
-must yield a Boolean value. If this value is @true@,
-then the
-value of the expression is whatever value is yielded by evaluating
-<code><i>e</i><sub>2</sub></code>; otherwise the value of the 
-expression is @false@.
-Similarly, the value of <code><i>e</i><sub>1</sub>
-or <i>e</i><sub>2</sub></code> is the
-value of <code><i>e</i><sub>2</sub></code>
-if <code><i>e</i><sub>1</sub></code>
-yields @false@, and otherwise it is @true@.
-This means that <code><i>e</i><sub>1</sub>
-and <i>e</i><sub>2</sub></code> is
-equivalent to the
-conditional expression
- if <i>e</i><sub>1</sub> then <i>e</i><sub>2</sub> else false
-and <code><i>e</i><sub>1</sub> or <i>e</i><sub>2</sub></code>
-is equivalent to
- if <i>e</i><sub>1</sub> then true else <i>e</i><sub>2</sub>.
+@and@ and @or@, which are evaluated in a 'short-circuit' fashion: thus, in the expression <code>@@e1@@ and @@e2@@</code>, the sub-expression @@e1@@ must yield a Boolean value. If this value is @true@,
+then the value of the expression is whatever value is yielded by evaluating @@e2@@; otherwise the value of the  expression is @false@.  Similarly, the value of <code>@@e1@@ or @@e2@@</code> is the
+value of @@e2@@ if @@e1@@ yields @false@, and otherwise it is @true@.
+
+This means that <code>@@e1@@ and @@e2@@</code> is equivalent to the conditional expression
+ if @@e1@@ then @@e2@@ else false
+and <code>@@e1@@ or @@e2@@</code> is equivalent to
+ if @@e1@@ then true else @@e2@@.
 
 ===Conditional expressions===
 
@@ -265,12 +219,6 @@ is chosen for evaluation, depending on the Boolean value, and the value
 of the chosen expression becomes the value of the whole
 conditional expression. The other sub-expression is not evaluated.
 
-===Other forms of expression===
-
-Four additional forms of expression -- @let@
-expressions and @function@ expressions -- are allowed.
-They are described on Section&nbsp;8.
-
 ==Patterns==
 
 Patterns are used in function definitions (see Section&nbsp;6) and
@@ -286,15 +234,18 @@ the values that it matches are all equal. The equality test that is
 applied is the same as the one used
 for the <code>=</code> operator.
 
-<pre>PattPrimary = Ident | "_" 
+<pre>
+PattPrimary = Ident | "_" 
             | [ "-" | "~" ] Number 
             | String
             | "(" Pattern ")" 
             | "[" [ Pattern { "," Pattern } ] "]"
+            | Ident "(" [ Pattern { "," Pattern } ] ")"
 
 PattFactor  = PattPrimary { ":" PattPrimary }
 
-Pattern     = PattFactor { "+" Number }</pre>
+Pattern     = PattFactor { "+" Number }
+</pre>
 
 ===Primary patterns===
 
@@ -313,6 +264,8 @@ patterns <code><i>p</i><sub>1</sub></code>,
 <code><i>p</i><sub>2</sub></code>, 
 ...&nbsp;<code><i>p<sub>n</sub></i></code> respectively.
 
+A constructor pattern <code>@@c@@(@@p1@@, ..., @@p_n@@)</code> is allowed if @@c@@ denotes a ''primitive constructor'' of @@n@@ arguments.  It matches values built with the constructor if patterns @@p1@@, ..., @@p_n@@ match the arguments of the constructor.  Primitive constructors defined in the GeomLab library include @rgb(r, g, b)@ for constucting colours, and the commands @ahead(d)@, @left(a)@ and @right(a)@ for constructing turtle commands.  Others may be added by plug-in modules.
+
 ===Cons patterns===
 
 A "cons" pattern
@@ -323,22 +276,17 @@ by <code><i>p</i><sub>2</sub></code>.
 
 ===Plus patterns===
 
-A "plus" pattern has the form <code><i>p</i>+<i>n</i></code>,
-where <code><i>n</i></code> is a number. It matches a number
-<code><i>x</i></code> if <code><i>n</i> &gt; 0</code>
-and the difference <code><i>y</i> = <i> x</i> - <i> n</i></code> 
-is an integer such that <code><i>y</i> &gt;= 0</code> 
-and the pattern <code><i>p</i></code> 
-matches&nbsp;<code><i>y</i></code>.
+A "plus" pattern has the form <code>@@p@@+@@n@@</code>,
+where @@n@@ is a number. It matches a number @@x@@ if @@n > 0@@ and the difference @@y = x - n@@ is an integer such that @@y >= 0@@ and the pattern @@p@@ matches&nbsp;@@y@@.
 
 ==Definitions==
-
-<pre>Definition = ValueDef | FuncDef</pre>
 
 Definitions appear in @define@ paragraphs to
 add a definition to the
 global environment, and also in @let@
 expressions to define a name locally to an expression.
+
+<pre>Definition = ValueDef | FuncDef</pre>
 
 ===Value definitions===
 

@@ -160,6 +160,11 @@ define check(t, [x, y]) =
   if odd(int(x/t)) = odd(int(y/t)) then black else white;
 
 
+{ Sheet 10 }
+
+define flow2([x, y]) = flowers([2*x, 2*y]);
+
+
 { Making tiles }
 
 define tile1 = 
