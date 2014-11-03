@@ -1,0 +1,8 @@
+<!--Contact us-->
+Whether you've visited this site as part of an activity organised
+in your school, or whether you have found and explored it on your own,
+we'd love to hear from you. Please use the form on this page to
+send us your comments. If you include an e-mail address, then
+we'll get back to you as soon as we can.
+
+{{#html:ContactForm}}
