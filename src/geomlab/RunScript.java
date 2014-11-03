@@ -62,7 +62,7 @@ public class RunScript extends GeomBase {
 
 		@Override
 		public int read(char cbuf[], int off, int len) 
-		    					throws IOException{
+		    					throws IOException {
 		    if (buf == null) {
 			fill();
 			if (buf == null) return -1;
@@ -79,15 +79,24 @@ public class RunScript extends GeomBase {
 		    return nread;
 		}
 
+                @Override
+                public void reset() {
+                    buf = null;
+                }
+
 		@Override
 		public void close() { }
 	    };
 
 	System.out.print("Welcome to GeomLab\n\n");
-	while (true) {
-	    if (eval_loop(promptReader, false, true))
-		break;
-	}
+        try {
+            while (true) {
+                if (eval_loop(promptReader, false, true))
+                    break;
+                promptReader.reset();
+            }
+        }
+        catch (IOException _) { }
 	System.out.print("\nSayonara!\n");
 	System.exit(0);
     }
@@ -95,7 +104,7 @@ public class RunScript extends GeomBase {
     public static void main(String args[]) {
 	System.setProperty("java.awt.headless", "true");
 	GeomBase.loadProperties();
-        // funbase.Evaluator.setLimits(0, 0, 0);
+        funbase.Evaluator.setLimits(0, 0, 0);
 	Native.register(new AWTFactory());
 	final RunScript app = new RunScript();
 	GeomBase.registerApp(app);
