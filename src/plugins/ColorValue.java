@@ -137,8 +137,10 @@ public class ColorValue extends Picture {
     /** Paint the colour as a circular swatch. */
     @Override
     public void paint(int layer, int col, Stylus g, Tran2D t) {
-	g.setTrans(t);
-	g.fillOval(new Vec2D(0.5f, 0.5f), 0.45f, 0.45f, this);
+        if (layer == FILL) {
+            g.setTrans(t);
+            g.fillOval(new Vec2D(0.5f, 0.5f), 0.45f, 0.45f, this);
+        }
     }
 
     /** Truncate a double argument to the range [0.0, 1.0]. */
