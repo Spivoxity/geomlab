@@ -1,0 +1,112 @@
+<!--The GeomLab machine-->
+Functions defined in the GeomLab language become machine code by a slightly tortuous process:
+* First, a compiler (itself written in the GeomLab language) translates the function into code for a special abstract machine.  That machine is the subject of the rest of this note.
+* Second, a translator written in Java turns the abstract machine code into a class that can be loaded into the Java virtual machine (JVM).  This involves generating JVM code for the function.
+* Third, the JVM itself can use JIT techniques to produce native machine code for the function.
+The GeomLab machine that is the target of the first step is designed to bridge the gap between the input language and the JVM, and the translation of common constructs is chosen partly so that the subsequent process of generating JVM code can work smoothly.
+
+A stack machine.
+
+This document describes the representation of code for the GeomLab machine that is output by the first stage compiler.  There is another representation, where labels and jumps have been resolved, and constants have been compiled into a table.  The differences in that representation are listed at the end.
+
+GeomLab contains other implementations of the various layers of language than the ones listed above.  There is an interpreter (written in Java) for the GeomLab abstract machine that can be used on devices that do not support dynamic generation of JVM code.  Also, most JVM implementations contain a Java bytecode interpreter that is initially used to execute methods, until they have consumed sufficient CPU time for it to be worthwhile generating native code for them.
+
+==Context and values==
+
+Each function body has access to several arrays of values: there are the arguments to the function, the local variables that have been introduced by @let@-expressions within the function, free variables that are accessible from the surrounding context, and, lastly, constants that appear in the body itself.  Each class of values is kept in a separate array, with separate instructions to load and in some cases to store values in it.
+
+;@@GLOBAL x@@: push the global value of the name @x@, or signal an error is @x@ has no global definition.
+;@@LOCAL n@@: push the value of the @n@'th local variable.
+;@@BIND n@@: pop a value and store it as the @n@'th local variable.
+;@@ARG n@@: push the value of the @n@'th argument.
+;@@FVAR n@@: push the value of the @n@'th free variable.
+;@@QUOTE v@@: push the constant @v@.
+
+
+==Function call and return==
+
+A function call 
+<code><i>f</i>(<i>e</i><sub>0</sub>,
+<i>e</i><sub>1</sub>, ..., <i>e</i><sub><i>n</i>-1</sub></i>)</code>
+is compiled into the sequence
+:@<code for f>, PREP n, <code for e0>, PUTARG 0, <code for e1>, PUTARG 1, ..., <code for en-1>, PUTARG n-1, CALL n@.
+You can think of the instruction @PREP n@ as preparing an 'argument block' on the stack with room for @n@ arguments, and as the @PUTARG i@ instruction as storing a value into the @i@'th slot in the argument block.  The @CALL n@ instruction will then find the function @f@ and its argument block at the top of the stack.
+
+An implementation, however, is free to do other things: it could ignore the @PREP@ and @PUTARG@ instructions, and let @n@ individual arguments accumulate on the stack.  Or it could use the @PREP@ instruction as a trigger to notice that a known primitive had been pushed as the value @f@, and compile the code for that primitive inline.  This means that we do not specify exactly the effects of the individual instructions @PREP@, @PUTARG@ and @CALL@.  For example, the arguments must be compiled in left-to-right order, and the effect is not defined if they are compiled in another order, even if the @PUTARG@ instructions are suitably rearranged.
+
+In fact, the FunCode interpreter ignores the @PREP@ and @PUTARG@ instructions and 
+
+	PREP,        // [#prep, n]: prepare for a call with n arguments
+	PUTARG,      // [#putarg, i]: mark i'th argument of a call
+        CALL,        // [#call, n]: call a function with n arguments
+
+==Labels and branches==
+
+;@@lab@@: an integer appearing on its own in the code denotes a label.
+;@@JUMP lab@@: jump to label @lab:.
+;@@JFALSE lab@@: pop a value and jump to label @lab@ if the value is the Boolean @false@, but continue with the next instruction if it is the Boolean @true@; signal an error if the value popped is not a Boolean.
+
+
+==Pattern matching==
+
+Functions in the GeomLab language can be defined by giving multiple rules, with patterns that are matched with the actual parameters.  For example, a function to append two lists might be defined as follows
+ define append(x:xs, ys) = x : append(xs, ys)
+   | append([], ys) = ys;
+The body of such a function is compiled into a sequence of chunks, one for each clause, where a failure in one clause causes a jump to the next.  Let's look at the code for the @append@ example.
+
+First comes code to match the pattern @append(x:xs, ys)@ by fetching the first argument and testing whether it is a cons.
+     ARG 0 
+     TRAP 23
+     MCONS 
+     BIND 0 
+     GETTAIL 
+     BIND 1 
+The key instruction here is @MCONS@; when it is executed, the first argument of the function (@ARG 0@) is on the stack, and label @23@ has been identified as the failure point.  Either @MCONS@ finds a cons cell on the stack, keeps it, and pushes its head on top; or it finds something else, pops it
+
+
+[[#ARG, 0], [#TRAP, 1], [#MCONS], [#BIND, 0], [#GETTAIL], [#BIND, 1], [#GLOBAL, #:], [#PREP, 2], [#LOCAL, 0], [#PUTARG, 0], [#FVAR, 0], [#PREP, 2], [#LOCAL, 0], [#PUTARG, 0], [#ARG, 1], [#PUTARG, 1], [#CALL, 2], [#PUTARG, 1], [#CALL, 2], [#RETURN], 
+
+
+     GLOBAL #: 
+     PREP 2 
+     LOCAL 0 
+     PUTARG 0 
+     FVAR 0 
+     PREP 2 
+     LOCAL 0 
+     PUTARG 0 
+     ARG 1 
+     PUTARG 1 
+     CALL 2 
+     PUTARG 1 
+     CALL 2 
+     RETURN 
+ 23: 
+     ARG 0
+     TRAP 24
+     MNIL
+     ARG 1
+     RETURN
+ 24:
+     FAIL
+
+
+	MPLUS,       // [#mplus, k]: match an n+k pattern by poppinginteger
+		     //   x with x >= k and pushing x-k; otherwisetrap
+	MEQ,         // [#meq]: pop two values and trap if not equal
+	MNIL,        // [#mnil]: pop the empty list; otherwise trap
+	MCONS,       // [#mcons]: pop a cons cell and push its tailand head
+	GETTAIL,     // [#gettail]: fetch tail following MCONS
+
+
+
+	POP,         // [#pop]: pop and discard a value
+	NIL,	     // [#nil]: push the empty list
+	CONS,        // [#cons]: pop a tail then a head, push a cons
+	TRAP,        // [#trap, lab] becomes TRAP i: set trap register
+	FAIL,        // [#fail]: die with "no clause matched"
+	RETURN,      // [#return]: return from function
+	TCALL,       // [#tcall, n]: tail recursive call
+        FRAME,       // [#frame, n]: create a free var frame with n slots
+        CLOSURE,     // [#closure, n]: form a closure with n free variables
+        MPRIM;       // [#mprim, n]: pattern match a constructor with n args

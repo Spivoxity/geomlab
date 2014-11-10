@@ -1,0 +1,5 @@
+/* Layout adjustments for Winkel skin */
+
+#right-navigation { margin-top: 0.5em; }
+
+#mw-head-base { height: 2.0em; }

@@ -1,0 +1,23 @@
+@flowers@ is a function that, given a pair of coordinates, yields a colour.  For example, @flowers([150, 200])@ is a mustard colour close to @rgb(0.83, 0.65, 0.05)@:
+{{GeomPic|10010|flowers([150, 200])|*}}
+Note that the two coordinates @150@ and @200@ are passed to @flowers@ as a list with two elements, not as two separate arguments: this will become important later.
+
+As you can discover for yourself, evaluating @flowers([x, y])@ for different values of @x@ and @y@ gives different colours. The results start to make more sense if we systematically apply the function to values @x@ and @y@ in some range and use the results to colour points in a picture.  That is what has been done in the image below.
+{{GeomPic|10020|image(300, 400, flowers)|!}}
+The predefined function @image@ takes two integers @w@ and @h@ and a function @f@, and produces an image that is @w@ pixels wide and @h@ pixels high.  The colour of the pixel with coordinates @x@ and @y@ in the image is determined by evaluating @f([x, y])@.  In the case of @flowers@, these colours are the ones that appear in one of van Gogh's sunflower pictures.
+
+Once we can make pictures by specifying the colour that appears at each point, many possibilities open up.  We could use a different picture to define the colours: for example, a function @mike@ is predefined to produce a photograph of the programmer who created GeomLab, also 300 pixels wide by 400 pixels high.
+You can also turn any picture found on the web into a function in a similar way. After the definition,
+ define pic = photo("http://well-known-url-here");
+you can use the function @pic@ to produce pictures in the same way as @flowers@ and @mike@
+
+By varying the width and height, we can show a picture cut from the bottom left corner of the original.
+{{GeomPic|10030|image(150, 200, flowers)|!}}
+Or, if the width and height are increased, a picture that has a white border at the top and right:
+{{GeomPic|10040|image(400, 500, flowers)|!}}
+The border is white because (as you can check) the @flowers@ function returns the white colour @rgb(1, 1, 1)@ for any points that lie outside the rectangle of the picture.
+
+The results of varying the width and height are a bit disappointing, because we have only cut out a portion of the picture, not scaled the whole thing to be smaller or larger.  To achieve that, we will need a different function to calculate the pixels.  For example, to make a scaled version of the picture that is half the size -- 150 by 200 pixels -- we need a function @flow2([x, y])@ that ranges over the entire picture as @x@ varies between 0 and 149 and @y@ varies between 0 and 199.  The solution, though it seems counter-intuitive at first, is to make this definition:
+ define flow2([x, y]) = flowers([2*x, 2*y]);
+Afterwards, we can create an image of half the size using this function to calculate the pixels:
+{{GeomPic|10050|image(150, 200, flow2)|!}}
