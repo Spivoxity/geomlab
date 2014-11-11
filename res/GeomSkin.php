@@ -125,7 +125,7 @@ class GeomSkinTemplate extends BaseTemplate {
         <!-- /content -->
         <!-- header -->
         <div id="mw-head" class="noprint">
-	    <div id="mw-logo" style="background-image: url(<?php $this->text( 'logopath' ) ?>);"></div>
+	    <div id="mw-logo"></div>
             <?php $this->renderSearch(); ?>
 	    <p><?php $msgObj = wfMessage( 'strapline' ); echo htmlspecialchars( $msgObj->exists() ? $msgObj->text() : $msg ); ?></p>
         </div>

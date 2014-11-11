@@ -15,6 +15,8 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 	exit;
 }
 
+include "Secrets.php";
+
 ## Uncomment this to disable output compression
 # $wgDisableOutputCompression = true;
 
@@ -38,7 +40,7 @@ $wgStylePath = "$wgScriptPath/skins";
 
 ## The relative URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo = "$wgScriptPath/files/quad96.png";
+$wgLogo = "$wgStylePath/common/images/escher.png";
 
 ## UPO means: this is also a user preference option
 
@@ -56,8 +58,8 @@ $wgEmailAuthentication = true;
 $wgDBtype = "mysql";
 $wgDBserver = "localhost";
 $wgDBname = "geomlab";
-$wgDBuser = "root";
-$wgDBpassword = "tl-atw-av";
+# $wgDBuser = SECRET;
+# $wgDBpassword = SECRET;
 
 # MySQL specific settings
 $wgDBprefix = "";
@@ -103,11 +105,11 @@ $wgShellLocale = "en_US.utf8";
 # Site language code, should be one of the list in ./languages/Names.php
 $wgLanguageCode = "en-gb";
 
-$wgSecretKey = "581d79decea793f651d17d1be11f3a17e19bef897c48f763ca20ffa1cb3ae778";
+# $wgSecretKey = SECRET;
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "ed60a3fe02fde13e";
+# $wgUpgradeKey = SECRET;
 
 ## Default skin: you can change the default skin. Use the internal symbolic
 ## names, ie 'cologneblue', 'monobook', 'vector':

@@ -7,12 +7,6 @@ source "$scriptdir/../wiki/titles"
 
 proc page-upload {page} {
     set name [file tail $page]
-
-    if {[regexp {\.php$} $name]} {
-        exec rsync $page spivey:/var/www/gwiki/extensions/$name >@stdout
-        return
-    }
-
     set text [file-data $page]
     set title [get-title $name $text]
 

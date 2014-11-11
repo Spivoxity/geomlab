@@ -1,5 +1,5 @@
 div#mw-head p {
-	background: url("../../files/cycletpale.png");
+	background: url("images/cycletpale.png");
 	font-weight: bold;
 	font-size: 120%;
 	color: #002147;
@@ -12,6 +12,7 @@ div#mw-logo {
 	float: left;
 	width: 9em;
 	height: 8em;
+        background-image: url(images/quad96.png);
 	background-repeat: no-repeat;
 	background-position: left;
 	margin-left: 2em;

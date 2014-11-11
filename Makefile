@@ -73,38 +73,46 @@ PREFIX = https://spivey.oriel.ox.ac.uk/gwiki/files
 
 web: web-dirs update .signed
 
+FILES = .htaccess geomlab.jar examples.jar geomlab.jnlp \
+	deployJava.js arrow.png icon32.png icon64.png
+
+SKIN = web/skins/GeomSkin
+
 web-dirs: force
-	@mkdir -p web
+	@mkdir -p web/files $(SKIN)/images web/extensions
 
-update: web/.htaccess web/geomlab.jar web/examples.jar web/geomlab.jnlp \
-	web/deployJava.js web/arrow.png web/icon32.png web/icon64.png \
-	web/cycletpale.png web/quad96.png
+update: $(FILES:%=web/files/%) \
+	$(SKIN)/GeomSkin.php $(SKIN)/screen.css \
+	$(SKIN)/images/cycletpale.png $(SKIN)/images/quad96.png \
+	$(SKIN)/images/document.png \
+	web/LocalSettings.php \
+	web/extensions/GeomGrind.php
 
-web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
+web/files/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 	cd obj; jar cfm ../$@ ../scripts/manifest \
 		$(PACKAGES) $(RESOURCES) $(ICONS) geomlab.gls
 
-web/examples.jar: examples.gls
+web/files/examples.jar: examples.gls
 	jar cf $@ $<
 
-web/.htaccess: scripts/htaccess;		cp $< $@
-web/%: res/%;					cp $< $@
-web/%: obj/%;					cp $< $@
-web/deployJava.js: web/%: scripts/%;		cp $< $@
+web/files/.htaccess: res/htaccess;		cp $< $@
+web/files/%: obj/%;				cp $< $@
+web/% web/files/% web/extensions/% \
+	$(SKIN)/% $(SKIN)/images/%: res/%; 	cp $< $@
 
-web/%.jnlp: scripts/%.jnlp.in
+web/files/%.jnlp: res/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
 
 TSA = http://timestamp.comodoca.com/rfc3161
 
-.signed: web/geomlab.jar web/examples.jar
+.signed: web/files/geomlab.jar web/files/examples.jar
 	for f in $?; do \
 	    jarsigner -storepass `cat ~/.keypass` -tsa $(TSA) $$f mykey; \
 	done
 	echo timestamp >$@
 
 publish:: web force
-	rsync -rvt --delete web/ spivey:/var/www/gwiki/files
+	rsync -rvt web/ spivey:/var/www/gwiki
 
 publish:: force
 	$(MAKE) -C wiki $@
