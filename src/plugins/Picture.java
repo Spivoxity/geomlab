@@ -149,7 +149,7 @@ public class Picture extends Value implements Stylus.Drawable {
 	private static final long serialVersionUID = 1L;
 
 	/** One of the component pictures. */
-	private final Picture left, right;
+	protected final Picture left, right;
 	
 	private BinaryPicture(float aspect, Picture left, Picture right) {
 	    super(aspect, left.isInteractive() || right.isInteractive());
@@ -174,6 +174,58 @@ public class Picture extends Value implements Stylus.Drawable {
 	return new BinaryPicture((float) prim.number(x), 
 				 prim.cast(Picture.class, y, "a picture"),
 				 prim.cast(Picture.class, z, "a picture"));
+    }
+
+    private static class BesidePicture extends BinaryPicture {
+        private Tran2D tleft, tright;
+
+        public BesidePicture(Picture left, Picture right) {
+            this(left, left.getAspect(), right, right.getAspect());
+        }
+
+        private BesidePicture(Picture left, float la, Picture right, float ra) {
+            super(la+ra, left, right);
+            tleft = new Tran2D(la/(la+ra), 0, 0, 1, 0, 0);
+            tright = new Tran2D(ra/(la+ra), 0, 0, 1, la/(la+ra), 0);
+        }            
+
+        @Override
+	public void paint(int layer, int col, Stylus g, Tran2D t) {
+	    left.paintPart(layer, col, g, t.concat(tleft));
+            right.paintPart(layer, col, g, t.concat(tright));
+	}
+    }
+
+    @PRIMITIVE
+    public static Value _beside(Primitive prim, Value x, Value y) {
+	return new BesidePicture(prim.cast(Picture.class, x, "a picture"),
+				 prim.cast(Picture.class, y, "a picture"));
+    }
+
+    private static class AbovePicture extends BinaryPicture {
+        private Tran2D ttop, tbot;
+
+        public AbovePicture(Picture top, Picture bottom) {
+            this(top, top.getAspect(), bottom, bottom.getAspect());
+        }
+
+        private AbovePicture(Picture top, float ta, Picture bottom, float ba) {
+            super(ta*ba/(ta + ba), top, bottom);
+            ttop = new Tran2D(1, 0, 0, ba/(ta+ba), 0, ta/(ta+ba));
+            tbot = new Tran2D(1, 0, 0, ta/(ta+ba), 0, 0);
+        }            
+
+        @Override
+	public void paint(int layer, int col, Stylus g, Tran2D t) {
+	    left.paintPart(layer, col, g, t.concat(ttop));
+            right.paintPart(layer, col, g, t.concat(tbot));
+	}
+    }
+
+    @PRIMITIVE
+    public static Value _above(Primitive prim, Value x, Value y) {
+	return new AbovePicture(prim.cast(Picture.class, x, "a picture"),
+                                prim.cast(Picture.class, y, "a picture"));
     }
 
     /** A picture that is drawn with a specified transformation.

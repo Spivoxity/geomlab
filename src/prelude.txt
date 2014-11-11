@@ -174,22 +174,31 @@ define flip(p) = _transpic(aspect(p), p, _transform(-1, 0, 0, 1, 1, 0), 0);
 
 define stretch(r, p) = _transpic(r * aspect(p), p, _identity, 0);
 
-define _binarypic(a, p, tp, q, tq) = 
-  _combine(a, _transpic(a, p, tp, 0), _transpic(a, q, tq, 0));
-
 _infixl(#$, 6);
+_infixl(#&, 5);
+
+{ $ an & can be defined in terms of _combine and _transpic as shown
+  in the commented-out code below, but it's better to provide specialised
+  primitives in order to reduce the recursion depth in rendering complex
+  pictures. }
+
+{ define _binarypic(a, p, tp, q, tq) = 
+  _combine(a, _transpic(a, p, tp, 0), _transpic(a, q, tq, 0)); }
+
 define $ (left, right) =
   let la = aspect(left) in let ra = aspect(right) in
   if la = 0 then right else if ra = 0 then left else
-  _binarypic(la+ra, left, _transform(la/(la+ra), 0, 0, 1, 0, 0),
-  	     right, _transform(ra/(la+ra), 0, 0, 1, la/(la+ra), 0));
+  { _binarypic(la+ra, left, _transform(la/(la+ra), 0, 0, 1, 0, 0),
+  	     right, _transform(ra/(la+ra), 0, 0, 1, la/(la+ra), 0)) }
+  _beside(left, right);
 
-_infixl(#&, 5);
 define & (top, bottom) =
   let ta = aspect(top) in let ba = aspect(bottom) in
   if ta = 0 then bottom else if ba = 0 then top else
-  _binarypic(ta*ba/(ta+ba), top, _transform(1, 0, 0, ba/(ta+ba), 0, ta/(ta+ba)),
-             bottom, _transform(1, 0, 0, ta/(ta+ba), 0, 0));
+  { _binarypic(ta*ba/(ta+ba), 
+             top, _transform(1, 0, 0, ba/(ta+ba), 0, ta/(ta+ba)),
+             bottom, _transform(1, 0, 0, ta/(ta+ba), 0, 0)) }
+  _above(top, bottom);
 
 define _super(back, front) =
   let la = aspect(back) in let ua = aspect(front) in

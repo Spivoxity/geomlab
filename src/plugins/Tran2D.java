@@ -48,8 +48,8 @@ public class Tran2D extends Value {
     
     public final float m_xx, m_yx, m_xy, m_yy, m_x, m_y;
     
-    private Tran2D(float m_xx, float m_yx, float m_xy, 
-                   float m_yy, float m_x, float m_y) {
+    public Tran2D(float m_xx, float m_yx, float m_xy, 
+                  float m_yy, float m_x, float m_y) {
 	this.m_xx = m_xx; this.m_yx = m_yx; this.m_xy = m_xy; 
         this.m_yy = m_yy; this.m_x = m_x; this.m_y = m_y;
     }
