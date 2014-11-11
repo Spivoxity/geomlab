@@ -1,3 +1,4 @@
+<!--Error messages from GeomLab-->
 This page lists most of the error messages that can be produced by
 GeomLab, with an explanation of the circumstances that can lead to
 each one. After an error has occurred, you can use the command

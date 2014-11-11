@@ -52,7 +52,7 @@ public class CodeInput extends JTextArea {
     private ActionListener actionListener = null;
     private MyHighlightPainter lowlightPainter = new MyHighlightPainter();
     private Object lowlight = null;
-    protected boolean showMatches = true;
+    protected boolean showMatches = false;
     
     public CodeInput(int rows, int columns) {
 	super(new ClumpUndoDocument(), "", rows, columns);

@@ -1,3 +1,4 @@
+<!--The GeomLab library-->
 Here is a list of the names that are defined when GeomLab starts.
 These are the names that you can initially used in expressions, both
 constants that stand for values themselves, and functions that can be

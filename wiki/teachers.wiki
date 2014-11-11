@@ -1,3 +1,4 @@
+<!--Mainly for teachers-->
 ==Overview==
 
 In this activity, participants use a computer to explore a language
@@ -18,6 +19,9 @@ structure of one of Escher's designs, and to reproduce it on the
 computer screen at any desired level of detail. The final challenge is
 to describe another picture that is related to Escher's design but
 leads off to infinity in a new way.
+
+* An [[Media:CAS-article.pdf|article]] in the newsletter of the Computing at School organisation.
+* A [[Media:ATM-article.pdf|review]] of GeomLab from the magazine Mathematics Today.
 
 ==Links with Mathematics==
 
@@ -161,7 +165,7 @@ It's fun to make a list of the different programming languages that I used in im
 ;Java: provides the infrastructure for the whole GeomLab application.  The main window is built using Java's Swing GUI library, and all the pictures are drawn with the Java2D graphics package.
 ;JVM code: is the target language for the GeomLab compiler.  The system includes a special-purpose library for putting together binary class files in memory.
 ;The GeomLab language: itself is used to implement as much as possible of the system; in particular, the high-level compiler that translates the language into low-level stack operations, though initiall implemented in Java, now exists only as a GeomLab program capable of translating itself.
-;PostScript,: a page description language, is used as an alternative means of graphical output, so that the images can be captured in a high-quality form for printing.
+;PostScript: -- a page description language -- is used as an alternative means of graphical output, so that the images can be captured in a high-quality form for printing.
 ;JavaScript: is used to manage the process of launching the GeomLab program from a web page.
 ;Plain TeX: is used for printing the PDF and paper version of the materials.  The TeX markup is generated automatically by a translation process that also collects and formats the embedded images.
 ;MediaWiki markup: with special-purpose templates is used for writing the materials and displaying them online.

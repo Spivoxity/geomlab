@@ -7,6 +7,10 @@ proc get-title {name text} {
         return "Template:$key"
     }
 
+    if {[file extension $name] eq ".css"} {
+        return "MediaWiki:$key"
+    }
+
     if {[regexp {^<!--(.*?)-->} $text _ ttl]} {
         return $ttl
     }

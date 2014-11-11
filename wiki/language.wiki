@@ -1,3 +1,4 @@
+<!--The GeomLab language-->
 This page contains a concise and fairly formal description of the
 programming language that is part of GeomLab. Reading it is almost
 certainly not the best way to learn to write programs for GeomLab:

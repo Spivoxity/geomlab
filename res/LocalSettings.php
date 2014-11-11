@@ -33,7 +33,7 @@ $wgArticlePath = "/geomlab/$1";
 $wgScriptExtension = ".php";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://spivey";
+$wgServer = "http://spivey.oriel.ox.ac.uk";
 
 ## The relative URL path to the skins directory
 $wgStylePath = "$wgScriptPath/skins";
@@ -154,10 +154,8 @@ require_once "$IP/extensions/HtmlTemplate.php";
 require_once "$IP/skins/GeomSkin/GeomSkin.php";
 
 # Customize footer
-$wgRightsPage = 'none';
 $wgHooks['SkinTemplateOutputPageBeforeExec'][] = 'myFooter';
 function myFooter( $sk, &$tpl ) {
-	$tpl->data['footerlinks'][] = 'copyright';
 	unset($tpl->data['footerlinks']['places']);
 	return true;
 }

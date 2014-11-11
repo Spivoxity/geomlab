@@ -11,6 +11,8 @@ RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
 ICONS = icon16.png icon32.png icon64.png icon128.png
 SESSIONS = obj/geomlab.gls examples.gls
 
+default: build 
+
 all: build figs book
 
 figs book: force
@@ -111,13 +113,17 @@ TSA = http://timestamp.comodoca.com/rfc3161
 	done
 	echo timestamp >$@
 
-publish:: web force
-	rsync -rvt web/ spivey:/var/www/gwiki
+HOST = spivey.oriel.ox.ac.uk
+WIKI = /var/www/gwiki
 
-publish:: force
+publish: web force
+	rsync -rvt web/ $(HOST):$(WIKI)
 	$(MAKE) -C wiki $@
 	$(MAKE) -C figs $@
 	$(MAKE) -C img $@
+
+purge: force
+	ssh $(HOST) php $(WIKI)/maintenance/deleteOldRevisions.php --delete
 
 clean: force
 	rm -rf obj examples.gls

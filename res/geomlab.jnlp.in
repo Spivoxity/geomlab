@@ -3,9 +3,11 @@
   <information>
     <title>GeomLab</title>
     <vendor>Mike Spivey</vendor>
+    <description>The GeomLab programming environment</description>
     <icon type="splash" href="icon64.png"/>
     <icon href="icon32.png"/>
     <offline-allowed/>
+    <homepage href="http://spivey.oriel.ox.ac.uk/geomlab"/>
   </information>
   <security>
     <all-permissions/>
