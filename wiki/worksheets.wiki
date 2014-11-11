@@ -11,7 +11,7 @@ Each worksheet is provided as a web page that can be accessed by the
 links below. But if your screen is not huge, it's probably best to
 download and print out the [[Media:workbook.pdf|entire collection]] of
 worksheets formatted as a PDF file. (Adobe PDF files require a
-[http://www.adobe.com/products/acrobat/readstep2.html reader program]
+[http://get.adobe.com/reader reader program]
 that is available free from the Adobe website.)
 
 There's also a short 
@@ -69,6 +69,3 @@ Other families of curves are difficult to make with tiles, and this
 worksheet introduces another way of describing them: as sequences of
 instructions for following the curve by turning to the left and to the
 right.
-
-[[Worksheet 9: Colours and images]].
-A hotch-potch of pictures that are waiting for a connecting thread of explanation.

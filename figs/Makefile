@@ -1,7 +1,7 @@
 # figs/Makefile -- figures for worksheets, etc.
 
 SOURCES = sheet1 sheet2 sheet3 sheet4 sheet5 sheet6 \
-	sheet7 sheet8 sheet9 tiles
+	sheet7 sheet8 tiles
 
 all: $(SOURCES:%=.%-fig) blank.png limit3-400.png invlimit-400.png
 

@@ -34,13 +34,16 @@ proc regsub-eval {re string cmd} {
     return [subst $string]
 }
 
+regsub -all {<!--.*?-->} $content "" content
+
 regsub -line -all {{{GeomPic\|(.*?)\|(.*?)\|(.*?)}}} $content \
     {\\example@\2@\\gives \1\\end} content
 regsub -line -all {{{GeomPic\|(.*?)\|(.*?)}}} $content \
     {\\example@\2@\\gives blank\\end} content
 regsub -line -all {^:(.*)$} $content "\\\\quotation\n\\1\n\\\\endquote" content
 
-regsub -line -all {{{IfWiki\|.*?\|(.*?)}}} $content "\\1" content
+regsub -all {{{IfWiki\|.*?\|(.*?)}}} $content "\\1" content
+regsub -all {{{IfBook\|(.*?)\|.*?}}} $content "\\1" content
 
 proc verbfun {s} {
     regsub -all -line {^ } $s "" s
@@ -48,6 +51,7 @@ proc verbfun {s} {
 }
 set content [regsub-eval "(\n \[^\n]*)+" $content {verbfun "\0"}]
 
+regsub -line -all {<b>(.*?)</b>} $content {{\\bf \1}} content
 regsub -line -all {&nbsp;} $content {~} content
 regsub -line -all {''([^']*)''} $content {{\\it \1\\/}} content
 regsub -line -all {&times;} $content {$\times$} content

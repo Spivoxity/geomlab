@@ -9,9 +9,14 @@ HELP = commands errors language library tips
 RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
 	$(HELP:%=%.html) properties sunflowers.jpg
 ICONS = icon16.png icon32.png icon64.png icon128.png
-IMAGES = obj/geomlab.gls examples.gls
+SESSIONS = obj/geomlab.gls examples.gls
 
-all: prep .compiled $(RESOURCES:%=obj/%) $(IMAGES) $(ICONS:%=obj/%)
+all: build figs book
+
+figs book: force
+	$(MAKE) -C $@ all
+
+build: prep .compiled $(RESOURCES:%=obj/%) $(SESSIONS) $(ICONS:%=obj/%)
 
 prep: force
 	@mkdir -p obj
@@ -71,12 +76,9 @@ web: web-dirs update .signed
 web-dirs: force
 	@mkdir -p web
 
-#update: web/.htaccess web/geomlab.jar web/examples.jar \
-#		web/geomlab.jnlp web/geomdemo.jnlp \
-#		
-
 update: web/.htaccess web/geomlab.jar web/examples.jar web/geomlab.jnlp \
-	web/deployJava.js web/arrow.png web/icon32.png web/icon64.png
+	web/deployJava.js web/arrow.png web/icon32.png web/icon64.png \
+	web/cycletpale.png web/quad96.png
 
 web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 	cd obj; jar cfm ../$@ ../scripts/manifest \
@@ -84,14 +86,6 @@ web/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
 
 web/examples.jar: examples.gls
 	jar cf $@ $<
-
-TSA = http://timestamp.comodoca.com/rfc3161
-
-.signed: web/geomlab.jar web/examples.jar
-	for f in $?; do \
-	    jarsigner -storepass `cat ~/.keypass` -tsa $(TSA) $$f mykey; \
-	done
-	echo timestamp >$@
 
 web/.htaccess: scripts/htaccess;		cp $< $@
 web/%: res/%;					cp $< $@
@@ -101,8 +95,21 @@ web/deployJava.js: web/%: scripts/%;		cp $< $@
 web/%.jnlp: scripts/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
 
-publish: web force
+TSA = http://timestamp.comodoca.com/rfc3161
+
+.signed: web/geomlab.jar web/examples.jar
+	for f in $?; do \
+	    jarsigner -storepass `cat ~/.keypass` -tsa $(TSA) $$f mykey; \
+	done
+	echo timestamp >$@
+
+publish:: web force
 	rsync -rvt --delete web/ spivey:/var/www/gwiki/files
+
+publish:: force
+	$(MAKE) -C wiki $@
+	$(MAKE) -C figs $@
+	$(MAKE) -C img $@
 
 clean: force
 	rm -rf obj examples.gls

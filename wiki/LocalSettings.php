@@ -38,7 +38,7 @@ $wgStylePath = "$wgScriptPath/skins";
 
 ## The relative URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo = "$wgStylePath/common/images/escher.png";
+$wgLogo = "$wgScriptPath/files/quad96.png";
 
 ## UPO means: this is also a user preference option
 
@@ -79,6 +79,7 @@ $wgUseImageMagick = true;
 $wgImageMagickConvertCommand = "/usr/bin/convert";
 
 $wgFileExtensions[] = 'pdf';
+$wgFileExtensions[] = 'ppt';
 
 # InstantCommons allows wiki to use images from http://commons.wikimedia.org
 $wgUseInstantCommons = false;
@@ -110,12 +111,12 @@ $wgUpgradeKey = "ed60a3fe02fde13e";
 
 ## Default skin: you can change the default skin. Use the internal symbolic
 ## names, ie 'cologneblue', 'monobook', 'vector':
-$wgDefaultSkin = "winkel";
+$wgDefaultSkin = "geomskin";
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
 ## License and Creative Commons licenses are supported so far.
-$wgRightsPage = ""; # Set to the title of a wiki page that describes your license/copyright
+$wgRightsPage = "none"; # Set to the title of a wiki page that describes your license/copyright
 $wgRightsUrl = "";
 $wgRightsText = "";
 $wgRightsIcon = "";
@@ -148,9 +149,17 @@ require_once "$IP/extensions/ParserFunctions/ParserFunctions.php";
 require_once "$IP/extensions/GeomGrind.php";
 require_once "$IP/extensions/HtmlTemplate.php";
 
-# Disable Talk tab
-$wgHooks['SkinTemplateNavigation'][] = 'replaceTabs';
-function replaceTabs($skin, &$links) {
-    unset($links['namespaces']['talk']);
+require_once "$IP/skins/GeomSkin/GeomSkin.php";
+
+# Customize footer
+$wgRightsPage = 'none';
+$wgHooks['SkinTemplateOutputPageBeforeExec'][] = 'myFooter';
+function myFooter( $sk, &$tpl ) {
+	$tpl->data['footerlinks'][] = 'copyright';
+	unset($tpl->data['footerlinks']['places']);
+	return true;
 }
 
+# When you make changes to this configuration file, this will make
+# sure that cached pages are cleared.
+$wgCacheEpoch = max($wgCacheEpoch, gmdate('YmdHis', @filemtime(__FILE__)));

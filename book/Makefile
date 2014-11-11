@@ -3,7 +3,7 @@
 all: workbook.pdf
 
 TRAN = intro.tex sheet1.tex sheet2.tex sheet3.tex sheet4.tex \
-	sheet5.tex sheet6.tex sheet7.tex sheet8.tex sheet9.tex
+	sheet5.tex sheet6.tex sheet7.tex sheet8.tex
 
 workbook.dvi: $(TRAN)
 
@@ -12,7 +12,6 @@ publish: .publish
 .publish: workbook.pdf
 	tclsh ../scripts/image-upload.tcl $?
 	echo timestamp >$@
-
 
 %.pdf: %.dvi
 	dvips -Ppdf $<
@@ -23,6 +22,9 @@ publish: .publish
 
 $(TRAN): %.tex: ../wiki/%.wiki ../scripts/textran.tcl
 	tclsh ../scripts/textran.tcl $< >$@
+
+clean: force
+	rm -f .publish workbook.pdf workbook.ps *.dvi *.bkm *.log *.bko $(TRAN) 
 
 .DELETE_ON_ERROR:
 

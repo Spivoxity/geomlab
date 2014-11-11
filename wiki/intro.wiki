@@ -1,4 +1,4 @@
-This website will introduce you to some of the most important ideas
+This {{IfWiki|website|booklet}} will introduce you to some of the most important ideas
 in computer programming in an interactive, visual way through a guided
 activity. The activity is about a language for describing
 pictures. You will use a computer program that lets you type a
@@ -9,7 +9,7 @@ supporting two smaller men. But gradually, the pictures will get more
 complicated, and soon we will be describing pictures like the one on
 the entry page of this website. That picture looks frighteningly
 complicated, but like all the pictures we will describe, it consists
-of a few basic tiles combined according to some rules.
+of a few basic tiles combined according to some simple rules.
 
 The point of this activity is not that the language of pictures is
 useful in itself (although it has important uses in describing the

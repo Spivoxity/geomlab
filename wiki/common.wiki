@@ -1,10 +1,5 @@
 /* CSS placed here will be applied to all skins */
 
-/* No tabs at top of body */
-#left-navigation, #p-personal, #p-views, #p-cactions { 
-    display: none; 
-}
-
 /* Bigger text font */
 #bodyContent {
     font-size: 1em;

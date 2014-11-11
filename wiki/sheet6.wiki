@@ -13,8 +13,7 @@ instead define a function that can produce any finite portion of
 it. At first, we'll aim at making a black-and-white version of the
 picture.
 
-The picture is made from four square tiles: @A@,
-@B@, @C@ and @D@:
+The picture is made from four square tiles: @A@, @B@, @C@ and @D@:
 {{GeomPic|6010|A|*}}
 {{GeomPic|6020|B|*}}
 {{GeomPic|6030|C|*}}
@@ -114,7 +113,7 @@ then these fit perfectly to make the next pictures in Escher's
 sequence:
 {{GeomPic|6210|define limit2 {{=}} frame(corner2, side2, U)|*}}
 {{GeomPic|6220|define limit3 {{=}} frame(corner3, side3, U)|*}}
-You can make colour versions of any of these pictures by typing (for
+You can make colour versions of these pictures by typing (for
 example) @colour(limit3)@.
 
 Now two problems for you: first, to define recursive functions
