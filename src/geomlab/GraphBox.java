@@ -153,6 +153,10 @@ public class GraphBox extends JPanel {
 		    GeomBase.theApp.runtimeError(e);
 		    newpic = null;
 		}
+                catch (Throwable e) {
+                    GeomBase.theApp.failure(e);
+                    newpic = null;
+                }
 		
 		if (picture == newpic) {
 		    GraphBox.this.picture = picture;
