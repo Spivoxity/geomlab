@@ -206,9 +206,11 @@ public class GeomLab extends GeomBase {
         String licence = properties.getProperty("licence");
         JTextArea licenceArea = new JTextArea(licence);
         licenceArea.setEditable(false);
-        String javaVersion = System.getProperty("java.version");
-        Object contents[] = new Object[] { version, copyright, licenceArea, 
-        	"Java version " + javaVersion };
+        String javaVersion = 
+            System.getProperty("os.name") + " -- " +
+            System.getProperty("java.version");
+        Object contents[] = 
+            new Object[] { version, copyright, licenceArea, javaVersion };
         JOptionPane.showMessageDialog(frame, contents, "About GeomLab",
         	JOptionPane.INFORMATION_MESSAGE);
     }
@@ -254,7 +256,7 @@ public class GeomLab extends GeomBase {
     	if (fontResource != null)
     	    setFont(fontResource.deriveFont(fontScale * fontSize));
 	else
-    	    setFont(new Font("Default", Font.PLAIN, 
+    	    setFont(new Font(Font.MONOSPACED, Font.PLAIN, 
 			     Math.round(fontScale * fontSize)));
     }
     
@@ -289,11 +291,14 @@ public class GeomLab extends GeomBase {
 	GeomBase.loadProperties();
 
 	// System-dependent UI tweaks
-	if (System.getProperty("mrj.version") != null) {
+        String opsys = System.getProperty("os.name");
+	if (opsys.contains("OS X")) {
 	    // Use Mac menu bar
 	    System.setProperty("apple.laf.useScreenMenuBar", "true");
 	    System.setProperty(
                 "com.apple.mrj.application.apple.menu.about.name", "GeomLab");
+            // Disable use of bundled font
+            properties.remove("fontname");
 	} else {
 	    // Try for a specified look and feel.
 	    String spec = properties.getProperty("lookandfeel");
