@@ -9,8 +9,8 @@ pngtest tile4 examples.txt {colour(frame(blank, side(2), U))} 840cd5b185b88b2e90
 pngtest tile5 examples.txt {colour(frame(corner(2), side(2), U))} 6ae5d10b08b486f8abc65056c061ed57
 pngtest invlimit examples.txt {colour(invlimit(8))} 7546f836cddb68d1f1744bc1cd9c50f2
 pngtest hilbert examples.txt {hilbert(5)} 45ebb6c1950b6834f5551dcba2aee6e6
-pngtest hilbslide examples.txt {hilbslide} e7ab0140a61d6d365a37072fb3318963
+pngtest hilbslide examples.txt {hilbslide} 42fc02d2654d38659f00458422e98c72
 pngtest dragon examples.txt {turtle(dragon(10))} 06bf23cbe08f19b0df331ab8a8ecb881
 pngtest bush examples.txt {bush(system(3))} f6abf2421b3e43bec655c3751d6a28d0
-pngtest julia examples.txt {plot(600, -1, 0.285, 0.02, mfun)} 88c07b54d40edd8889cc956505d18637
-pngtest transmike examples.txt {transmike} 8a11ce5549c4bb2862b2f186d428ecfc
+pngtest julia examples.txt {plot(600, -1, 0.285, 0.02, mfun)} c98d4685319dceba7b21de046d393f72
+pngtest transmike examples.txt {transmike} 30c8f75ad24e7f18b42f187cf8fa9559

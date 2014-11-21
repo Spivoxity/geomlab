@@ -157,6 +157,9 @@ define solid(r, c) =
 define square = __tile(1, 1, 0, 0, [[0,0, 1,0, 1,1, 0,1, 0,0]], []);
 
 define _identity = _transform(1, 0, 0, 1, 0, 0);
+define _rot90 = _transform(0, 1, -1, 0, 1, 0);
+define _rot180 = _transform(-1, 0, 0, -1, 1, 1);
+define _flip = _transform(-1, 0, 0, 1, 1, 0);
 
 define rot(p) =
   { A picture that has been rotated anticlockwise by 90 
@@ -164,13 +167,13 @@ define rot(p) =
     cycle of four too; this makes Escher pictures come 
     out nicely. }
   let r = aspect(p) in 
-  if r = 0 then p else _transpic(1/r, p, _transform(0, 1, -1, 0, 1, 0), 1);
+  if r = 0 then p else _transpic(1/r, p, _rot90, 1);
 
 define _rot2(p) =
   let r = aspect(p) in
-  if r = 0 then p else _transpic(r, p, _transform(-1, 0, 0, -1, 1, 1), 2);
+  if r = 0 then p else _transpic(r, p, _rot180, 2);
 
-define flip(p) = _transpic(aspect(p), p, _transform(-1, 0, 0, 1, 1, 0), 0);
+define flip(p) = _transpic(aspect(p), p, _flip, 0);
 
 define stretch(r, p) = _transpic(r * aspect(p), p, _identity, 0);
 

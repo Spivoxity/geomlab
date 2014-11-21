@@ -1,23 +1,63 @@
+define join([]) = "" 
+  | join([s]) = s 
+  | join(s:ss) = s ^ chr(10) ^ join(ss)
+  | join(s) = s;
+
 define _init() =
   let examples(menu) =
-    let subst(s) = implode(map(function (c) if c = "/" then chr(10) else c,
-				  explode(s))) in
-    _examples(map(subst, menu)) in
+    _examples(map(join, menu)) in
   examples(["man", "man $ woman", "man & man",
     "man $ (woman & tree)", "(man $ woman) & tree",
-    "define f(p) = p $ (p & p);//f(man)",
+    ["define f(p) = p $ (p & p);", "", "f(man)"],
     "f(woman)", "f(man $ tree)", "f(f(man))", "f(f(f(man)))",
-    "define row(1, p) = p/  | row(n, p) = p $ row(n-1, p) when n > 1;//"
-      ^ "row(4, man)",
-    "define crowd(a, a, p) = row(a, p)/"
-      ^ "  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;//"
-      ^ "crowd(5, 10, man)",
+    ["{ row }", "",
+      "define row(1, p) = p", 
+      "  | row(n, p) = p $ row(n-1, p) when n > 1;",
+      "", "row(4, man)"],
+    ["{ crowd }", "",
+      "define crowd(a, a, p) = row(a, p)",
+      "  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;",
+      "", "crowd(5, 10, man)"],
     "spiral(10)", "zagzig(10)", 
     "colour((T & blank) $ T)", "colour((T & rot(T)) $ T)",
     "colour(side(2) $ T)", "colour(frame(blank, side(2), U))",
     "colour(frame(corner(2), side(2), U))", "colour(invlimit(8))",
     "hilbert(5)", "hilbslide", "turtle(dragon(12))", "bush(system(4))",
-    "plot(600, -1, 0.285, 0.02, mfun)", "transmike"]);
+    ["{ Mandelbrot set }", "",
+      "define forever = 1000;", "",
+      "define mandel(cx, cy) =",
+      "  let loop(n, x, y) =",
+      "    if n >= forever then -1",
+      "    else if x*x + y*y > 4 then n",
+      "    else loop(n+1, x*x - y*y + cx, 2*x*y + cy) in",
+      "  loop(0, 0, 0);", "",
+      "define mfun(x, y) =",
+      "  let m = mandel(x, y) in",
+      "  if m < 0 then black else hsv(m/forever, 0.7, 1);", "",
+      "define plot(w, x0, y0, s, f) =",
+      "  image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));",
+      "", "plot(600, -1, 0.285, 0.02, mfun)"], 
+    ["{ Pixellation }", "",
+      "define pixpic(n, f) =",
+      "  function ([x, y]) f([n*(x div n), n*(y div n)]);", "",
+      "slide(function (t)",
+      "  image(300, 400, pixpic(40*t+1, mike)))"],
+    ["{ Nonlinear transformation }", "",
+      "slideimg(500, 500, triage([",
+      "  function (t)   mike . shear(t/5),",      
+      "  function (t) interpic(t,",
+      "                 mike . shear(1/5),",
+      "                 weird . mike . shear(1/5)),",
+      "  function (t)   weird . mike . shear(1/5) . pp(t/250)]))"],
+    ["{ Digits puzzle }", "",
+      "define delete(d, f) =",
+      "  function (x) (x <> d) and f(x);", "",
+      "define search(k, n, avail) =",
+      "  if k = 9 then [n] else",
+      "    [ s | d <- [1..9] when avail(d),",
+      "          n1 <- [10*n+d] when n1 mod (k+1) = 0,",
+      "          s <- search(k+1, n1, delete(d, avail)) ];", "",
+      "search(0, 0, function (x) true);"]]);
   
 _stage(1); { These definitions are defaults }
 
@@ -84,23 +124,6 @@ define process(f, s) = implode(map(f, explode(s)));
 
 define system(0) = "F" | system(n+1) = process(rule, system(n));
 
-{ Mandelbrot set }
-
-define forever = 1000;
-
-define mandel(cx, cy) =
-  let loop(n, x, y) =
-    if n >= forever then -1
-    else if x*x + y*y > 4 then n
-    else loop(n+1, x*x - y*y + cx, 2*x*y + cy) in
-  loop(0, 0, 0);
-
-define mfun(x, y) =
-  let m = mandel(x, y) in
-  if m < 0 then black else hsv(m/forever, 0.7, 1);
-
-define plot(w, x0, y0, s, f) =
-  image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));
 
 { Image transformations }
 
@@ -136,13 +159,6 @@ define triage(fs) =
 define slideimg(w, h, f) =
   slide(function (t) image(w, h, f(t)));
   
-{ example -- shear mike, recolour him, and then transform non-linearly }
-define transmike =
-  slideimg(500, 500, triage([
-    function (t) mike . shear(t/5),
-    function (t) interpic(t, mike . shear(1/5), weird . mike . shear(1/5)),
-    function (t) weird . mike . shear(1/5) . pp(t/250)]));
-
 define render(p, w, h, g) = _pixelfun(_render(p, w, h, g));
 
 define intermin(t, f, g) = 
@@ -162,18 +178,32 @@ define hilbslide =
   let p2 = render(hilbert(4), 400, 400, 1) in
   slide(function (t) image(400, 400, intermin(t, p1, p2)));
 
+{ Mandelbrot set }
 
-{ Digits puzzle }
+define forever = 1000;
 
-define delete(d, f) =
-  function (x) (x <> d) and f(x);
+define mandel(cx, cy) =
+  let loop(n, x, y) =
+    if n >= forever then -1
+    else if x*x + y*y > 4 then n
+    else loop(n+1, x*x - y*y + cx, 2*x*y + cy) in
+  loop(0, 0, 0);
 
-define search(k, n, avail) =
-  if k = 9 then [n] else
-    [ s | d <- [1..9] when avail(d),
-          n1 <- [10*n+d] when n1 mod (k+1) = 0,
-	  s <- search(k+1, n1, delete(d, avail)) ];
+define mfun(x, y) =
+  let m = mandel(x, y) in
+  if m < 0 then black else hsv(m/forever, 0.7, 1);
 
-define digits() = search(0, 0, function (x) true);
+define plot(w, x0, y0, s, f) =
+  image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));
+
+{ Nonlinear transformation }
+
+define transmike =
+slideimg(500, 500, triage([
+  function (t)   mike . shear(t/5),
+  function (t) interpic(t,
+                 mike . shear(1/5),
+                 weird . mike . shear(1/5)),
+  function (t)   weird . mike . shear(1/5) . pp(t/250)]));
 
 _stage(2);

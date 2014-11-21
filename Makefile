@@ -109,7 +109,8 @@ TSA = http://timestamp.comodoca.com/rfc3161
 
 .signed: web/files/geomlab.jar web/files/examples.jar
 	for f in $?; do \
-	    jarsigner -storepass `cat ~/.keypass` -tsa $(TSA) $$f mykey; \
+	    jarsigner -keystore javakey/keystore \
+		-storepass `cat javakey/storepass` -tsa $(TSA) $$f geomlab; \
 	done
 	echo timestamp >$@
 

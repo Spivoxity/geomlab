@@ -119,6 +119,22 @@ steps in the path that matter, and not their absolute value.
 :The opposite of the command @c@: if @c = left(a)@ then @opp(c) = right(a)@, and vice versa.  If @c = ahead(x)@ then @opp(c) = ahead(x)@ also.
 {{Markup|/dl}}
 
+==Images==
+
+;@image(w, h, f)@
+:An image @w@ pixels wide by @h@ pixels high, with the pixel at @(x, y)@, for @0 <= x < w@ and @0 <= y < h@ given by @f([x, y])@.
+;@flowers@
+:A function such that @flowers([x, y])@ for @0 <= x < 300@ and @0 <= y < 400@ is a pixel in a reproduction of van Gogh's painting ''Three Sunflowers''
+;@mike@
+:A function such that @mike([x, y])@ for @0 <= x < 300@ and @0 <= y < 400@ is a pixel in a photograph of GeomLab's author.
+;@photo(url)@
+:If @url@ is the URL of an image, the @photo(url)@ returns a pixel function for it, suitable for use as an argument of @image@.
+
+==Interaction==
+
+;@slide(f)@
+:The argument @f@ should be a function such that @f(t)@ is a picture for @0 <= t <= 1@. The result is a picture-like object that GeomLab displays by showing a slider, and applying @f@ to the slider value each time it changes.
+
 ==Convenience==
 
 The following constants and functions are included in the initial state of
