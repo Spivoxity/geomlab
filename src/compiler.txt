@@ -30,20 +30,17 @@
  
 { LEXICAL TOKENS }
 
-_topdef(#_syntax, _hash());
+_update(_syntax, #function, [#function, 0, 0]);
 
-_update(_syntax, #let, [#let, 0, 0]); 
+_iter(function (tok) _update(_syntax, tok, [tok, 0, 0]),
+  [#define, #else, #if, #in, #let, #then, #when, #_, #.., #<-, #>>]);
+
 _update(_syntax, #=, [#=, 3, 4]);
-_update(_syntax, #in, [#in, 0, 0]); 
-_update(_syntax, #>>, [#>>, 0, 0]); 
-
-let kwd(tok) = _update(_syntax, tok, [tok, 0, 0]) in
-  kwd(#define) >> kwd(#else) >> kwd(#function) >> kwd(#if) >>
-  kwd(#then) >> kwd(#when) >> kwd(#_) >> kwd(#..) >> kwd(#<-);
-
 _update(_syntax, #+, [#+, 5, 6]);
 _update(_syntax, #-, [#-, 5, 6]);
 _update(_syntax, #:, [#:, 7, 7]);
+_update(_syntax, #~, [#monop, 0, 0]);
+_update(_syntax, #not, [#monop, 0, 0]);
 
 define _infixl(tag, p) = _update(_syntax, tag, [#binop, p, p+1]);
 define _infixr(tag, p) = _update(_syntax, tag, [#binop, p, p]);
@@ -55,9 +52,6 @@ _infixl(#>, 3); _infixl(#>=, 3);
 _infixr(#++, 4);
 _infixl(#^, 5);
 _infixl(#*, 6); _infixl(#/, 6);
-
-_update(_syntax, #~, [#monop, 0, 0]);
-_update(_syntax, #not, [#monop, 0, 0]);
 
 
 { BASIC DEFINITIONS }
@@ -86,6 +80,8 @@ define assoc(x, []) = []
   | assoc(x, [u,v]:zs) = if x = u then v else assoc(x, zs);
       
 define map(f, []) = [] | map(f, x:xs) = f(x) : map(f, xs);
+
+define _iter(f, []) = [] | _iter(f, x:xs) = f(x) >> _iter(f, xs);
 
 define filter(p, []) = [] 
   | filter(p, x:xs) = if p(x) then x:filter(p, xs) else filter(p, xs);
@@ -159,10 +155,6 @@ define __top() =
     | describe(#eof) = "end of input" 
     | describe(x) = "'" ^ _spelling(x) ^ "'" in
 
-  { syntax -- syntax table (empty during bootstrap) }
-  let syntax =
-    if _defined(#_syntax) then _syntax else _hash() in
-
   { tok -- latest lexer token }
   let tok = _new(0) in
 
@@ -174,10 +166,10 @@ define __top() =
     let t = _scan() in
     debug(2, t) >>
     let case(#ident) =
-          let tk = _lookup(syntax, snd(t)) in
+          let tk = _lookup(_syntax, snd(t)) in
           _set(tok, if tk <> [] then fst(tk) else #ident) >> debug(2, _get(tok))
       | case(#op) =
-          let tk = _lookup(syntax, snd(t)) in
+          let tk = _lookup(_syntax, snd(t)) in
           if tk <> [] then _set(tok, fst(tk)) else synerror("#badtok")
       | case(x) =
           _set(tok, x) in
@@ -185,7 +177,7 @@ define __top() =
 
   { priority -- find priority pair for operator }
   let _priority(op) =
-    let tk = _lookup(syntax, op) in
+    let tk = _lookup(_syntax, op) in
     if tk <> [] then tail(tk) else [0, 0] in
 
   let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
@@ -891,6 +883,8 @@ define __top() =
     | exec(exp) = 
         { A top-level expression }
 	_topval(interp(exp, empty())) in
+
+  if _defined(#_syntax) then [] else _topdef(#_syntax, _hash()) >>
 
   { The read-eval-print routine }
   function ()
