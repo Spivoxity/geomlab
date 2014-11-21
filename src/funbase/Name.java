@@ -215,14 +215,17 @@ public final class Name extends Value implements Comparable<Name> {
     private static class Reset {
         Name n;
         Value v;
+        int l;
 
         public Reset(Name n) {
             this.n = n;
             this.v = n.glodef;
+            this.l = n.level;
         }
 
         public void reset() {
             n.glodef = v;
+            n.level = l;
         }
     }
 
