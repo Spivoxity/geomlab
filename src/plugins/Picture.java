@@ -131,6 +131,13 @@ public class Picture extends Value implements Stylus.Drawable {
     }
     
     @Override
+    public Native.Image render(int width, int height, 
+                               float slider, ColorValue background) {
+        Native factory = Native.instance();
+        return factory.render(this, width, height, slider, background);
+    }
+
+    @Override
     public void printOn(PrintWriter out) {
 	out.print("<picture>");
     }

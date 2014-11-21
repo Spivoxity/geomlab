@@ -69,7 +69,12 @@ public class ImagePicture extends Picture {
 	this(image, null);
     }
     
-    public Native.Image getImage() { return image; }
+    @Override
+    public Native.Image render(int width, int height, 
+                               float slider, ColorValue background) {
+        // Ignore the specified dimensions
+        return image;
+    }
 
     @Override
     public void printOn(PrintWriter w) {
@@ -134,7 +139,6 @@ public class ImagePicture extends Picture {
 	return image;
     }
     
-
     /* Some explanation is needed here.  The typical use of the photo
        primitive is a global definition
 

@@ -66,7 +66,7 @@ public abstract class Native {
     	float sqrtAspect = (float) Math.sqrt(aspect);
     	int width = Math.round(meanSize * sqrtAspect);
     	int height = Math.round(meanSize / sqrtAspect);
-	return render(pic, width, height, slider, background);
+	return pic.render(width, height, slider, background);
     }
 
     /** Read an image from a file */

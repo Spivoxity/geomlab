@@ -70,6 +70,12 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     }
 
     @Override
+    public Native.Image render(int width, int height, 
+                               float slider, ColorValue background) {
+        return cache.render(width, height, slider, background);
+    }
+
+    @Override
     public boolean isInteractive() { return true; }
 
     @Override

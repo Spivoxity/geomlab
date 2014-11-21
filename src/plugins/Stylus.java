@@ -134,5 +134,12 @@ public abstract class Stylus {
          *  so they override this method to add a blank border when
          *  necessary. */
         public void draw(Stylus g, int ww, int hh, ColorValue background);
+
+        /** Render the image
+         *
+         *  This method is used for saving images on a file.  Like the
+         *  draw method, it is implemented specially for ImagePictures. */
+        public Native.Image render(int width, int height, 
+                                   float slider, ColorValue background);
     }
 }
