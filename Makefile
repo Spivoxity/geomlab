@@ -105,7 +105,8 @@ web/% web/files/% web/extensions/% \
 web/files/%.jnlp: res/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
 
-TSA = http://timestamp.comodoca.com/rfc3161
+# TSA = http://timestamp.comodoca.com/rfc3161
+TSA = http://timestamp.globalsign.com/scripts/timestamp.dll 
 
 .signed: web/files/geomlab.jar web/files/examples.jar
 	for f in $?; do \
