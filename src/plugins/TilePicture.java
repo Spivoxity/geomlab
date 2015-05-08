@@ -59,6 +59,9 @@ public class TilePicture extends Picture {
 	g.drawTile(this, layer, col);
     }
 
+    /** Stroke width for tiles */
+    protected static float stroke = 1.0f;
+
     /** Palette for Escher picture */
     protected static float hbase = 0.3f, hstep = 0.1f, 
 	svalue = 0.5f, bvalue = 1.0f;
@@ -75,7 +78,7 @@ public class TilePicture extends Picture {
     public void defaultDraw(int layer, int col, Stylus g) {
 	switch (layer) {
 	case Picture.DRAW:
-	    g.setStroke(2);
+	    g.setStroke(stroke);
 	    for (int i = 0; i < strokes.length; i++)
 		g.drawStroke(strokes[i]);
 	    break;
@@ -133,5 +136,12 @@ public class TilePicture extends Picture {
 	svalue = (float) prim.number(sval);
 	bvalue = (float) prim.number(bval);
 	return Value.nil;
+    }
+
+    /** Set the stroke width for rendering tiles. */
+    @PRIMITIVE
+    public static Value _stroke(Primitive prim, Value x) {
+        stroke = (float) prim.number(x);
+        return Value.nil;
     }
 }

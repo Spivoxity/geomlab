@@ -69,7 +69,7 @@ public class EPSWriter extends Stylus {
     }
 
     private String prelude[] = {
-	"0.4 setlinewidth",
+	"0.5 setlinewidth",
 	"1 setlinecap",
 	"1 setlinejoin",
 
@@ -281,6 +281,7 @@ public class EPSWriter extends Stylus {
 
 	switch (layer) {
 	case Picture.DRAW:
+            setStroke(TilePicture.stroke);
 	    pr.printf("drawt%d\n", id);
 	    break;
 
@@ -299,7 +300,7 @@ public class EPSWriter extends Stylus {
 	    trans.scale(1.0f/(xmax-xmin), 1.0f/(ymax-ymin))
 		.translate(-xmin, -ymin);
 	pr.printf("gsave\n");
-	setStroke(2);
+	setStroke(2.0f);
 	writeTransform(t1);
 	
 	float x = 0, y = 0, dir = 0;
@@ -387,10 +388,16 @@ public class EPSWriter extends Stylus {
 	pr.printf("fill\n");
     }
     
+    private static float stroke = 1.0f;
+
     @Override
     public void setStroke(float width) {
-	final float factor = 2.0f;
-	pr.printf("%.3f setlinewidth\n", width/factor);
+        final float factor = 2.0f;
+
+        if (stroke != width) {
+            pr.printf("%.3f setlinewidth\n", width/factor);
+            stroke = width;
+        }
     }
 
     @Override
