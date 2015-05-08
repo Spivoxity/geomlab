@@ -1,6 +1,6 @@
 # Top level Makefile for GeomLab
 
-JAVAC = /usr/lib/jvm/java-6-openjdk-i386/bin/javac
+JAVAC = javac
 
 PACKAGES = funbase funjit geomlab plugins
 JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
