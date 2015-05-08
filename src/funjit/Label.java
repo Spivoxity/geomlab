@@ -46,8 +46,10 @@ class Label {
     /** Information about forward references. */
     private List<Fixup> fixups;
 
+    private static int UNKNOWN = 999;
+
     /** Stack depth at the label */
-    private int depth = -1;
+    private int depth = UNKNOWN;
 
     private static int labcount = 0;
 
@@ -105,15 +107,18 @@ class Label {
     }
 
     public void setDepth(int stack) {
-	if (depth < 0)
+        if (depth < 0)
+            throw new Error("negative depth");
+
+	if (depth == UNKNOWN)
 	    depth = stack;
 	else if (stack >= 0 && depth != stack)
 	    throw new Error("inconsistent depth info");
     }
 
     public int getDepth() {
-	if (depth < 0)
-	    throw new Error("unknown label depth");
+	if (depth == UNKNOWN)
+	    throw new Error("unknown label depth at " + toString());
 
 	return depth;
     }

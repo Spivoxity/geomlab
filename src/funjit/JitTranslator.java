@@ -203,26 +203,31 @@ public class JitTranslator implements FunCode.Jit {
     /** Translate a PREP instruction. */
     private void genPrep(int n) {
     	code.gen(GETFIELD, value_cl, "subr", function_t);
-	prepArgs(n);
+	prepArgs(n, 0);
     }
 
-    private void prepArgs(int n) {
+    private void genFrame(int n) {
+	code.gen(CHECKCAST, funcode_cl);
+        prepArgs(n, 1);
+    }
+
+    private void prepArgs(int n, int i) {
 	nstack.push(n);
 	if (n >= MANY) {
 	    code.gen(CONST, n);
 	    code.gen(ANEWARRAY, value_cl);
             code.gen(DUP);
-            code.gen(CONST, 0);
+            code.gen(CONST, i);
 	}
     }
 
     /** Translate a PUTARG instruction. */
     protected void genPutarg(int i) {
 	int n = nstack.peek();
-	if (n >= 0 && n < MANY) return;
+	if (n < MANY) return;
 
         code.gen(AASTORE);
-        if (i+1 < Math.abs(n)) {
+        if (i+1 < n) {
             code.gen(DUP);
             code.gen(CONST, i+1);
         }
@@ -239,6 +244,14 @@ public class JitTranslator implements FunCode.Jit {
     	}
     }
 
+    private void genClosure(int n) {
+	nstack.pop();
+        if (n < MANY)
+            code.gen(INVOKEVIRTUAL, funcode_cl, "makeClosure"+n, applyn_t[n-1]);
+        else
+            code.gen(INVOKEVIRTUAL, funcode_cl, "makeClosure", fun_A_V_t);
+    }
+    
     /** Translate a TCALL instruction into a jump */
     private void genTCall(int n) {
 	// No PREP or PUTARG instructions are generated for a tail call.
@@ -316,22 +329,6 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(ARETURN);
     }
 
-    private void genFrame(int n) {
-        nstack.push(-n);
-	code.gen(CHECKCAST, funcode_cl);
-	code.gen(CONST, n);
-	code.gen(ANEWARRAY, value_cl);
-        if (n > 1) {
-            code.gen(DUP);
-            code.gen(CONST, 1);
-        }
-    }
-
-    private void genClosure(int n) {
-	nstack.pop();
-	code.gen(INVOKEVIRTUAL, funcode_cl, "makeClosure", fun_A_V_t);
-    }
-    
     private void genMNil() {
     	// v = stack[--sp];
     	// if (! v.isNilValue()) goto trap;
@@ -498,7 +495,7 @@ public class JitTranslator implements FunCode.Jit {
             public boolean compile(int rands[], int ip) {
 		if (rands[ip] == 0) {
                     code.gen(ALOAD, _this);
-                    prepArgs(rands[ip+1]);
+                    prepArgs(rands[ip+1], 0);
                     return true;
                 }
                 return false;
@@ -676,7 +673,7 @@ public class JitTranslator implements FunCode.Jit {
 		dump.write(binary);
 		dump.close();
 	    }
-	    catch (java.io.IOException _) { }
+	    catch (java.io.IOException ex) { }
 	}
 
 	classTable.put(className, new WeakReference<FunCode>(funcode));

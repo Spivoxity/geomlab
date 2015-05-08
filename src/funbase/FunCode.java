@@ -158,6 +158,31 @@ public class FunCode extends Value {
 	return result;
     }
 
+    public Value makeClosure1() {
+        return makeClosure(new Value[1]);
+    }
+
+    public Value makeClosure2(Value fv1) {
+        return makeClosure(new Value[] { null, fv1 });
+    }
+
+    public Value makeClosure3(Value fv1, Value fv2) {
+        return makeClosure(new Value[] { null, fv1, fv2 });
+    }
+
+    public Value makeClosure4(Value fv1, Value fv2, Value fv3) {
+        return makeClosure(new Value[] { null, fv1, fv2, fv3 });
+    }
+
+    public Value makeClosure5(Value fv1, Value fv2, Value fv3, Value fv4) {
+        return makeClosure(new Value[] { null, fv1, fv2, fv3, fv4 });
+    }
+
+    public Value makeClosure6(Value fv1, Value fv2, Value fv3, 
+                              Value fv4, Value fv5) {
+        return makeClosure(new Value[] { null, fv1, fv2, fv3, fv4, fv5 });
+    }
+
     /** Build a closure */
     public Function buildClosure(Value func, Value fvars[]) {
 	if (jitcode == null)
