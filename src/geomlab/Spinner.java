@@ -91,7 +91,7 @@ public class Spinner extends JComponent implements Runnable {
     	    repaint();
     	    Thread.sleep(tick);
     	}
-        } catch (InterruptedException _) {
+        } catch (InterruptedException ex) {
     	// Die
         }
     }

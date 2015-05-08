@@ -96,7 +96,7 @@ public class RunScript extends GeomBase {
                 promptReader.reset();
             }
         }
-        catch (IOException _) { }
+        catch (IOException ex) { }
 	System.out.print("\nSayonara!\n");
 	System.exit(0);
     }

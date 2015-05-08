@@ -72,7 +72,7 @@ public class GeomBase {
 		properties.load(propStream);
 		propStream.close();
 	    }
-	    catch (IOException _) { 
+	    catch (IOException ex) { 
 		System.out.println("Panic -- couldn't find properties file");
 		System.exit(2);
 	    }

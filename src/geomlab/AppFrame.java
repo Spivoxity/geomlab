@@ -90,7 +90,7 @@ public class AppFrame extends JFrame {
 	    }
 	    setIconImages(images);
 	}
-	catch (IOException _) { }
+	catch (IOException ex) { }
 
 	Border bevel = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
 	Border spacer = BorderFactory.createEmptyBorder(b, b, b, b);
@@ -227,7 +227,7 @@ public class AppFrame extends JFrame {
                     input.append("\n");
             }
         }
-        catch (javax.swing.text.BadLocationException _) { }
+        catch (javax.swing.text.BadLocationException ex) { }
         input.write(out);
     }
 }

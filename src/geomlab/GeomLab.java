@@ -114,7 +114,7 @@ public class GeomLab extends GeomBase {
 
             setCurrentFile(file);
         }
-        catch (IOException _) {
+        catch (IOException ex) {
             throw new CommandException("#readerr");
         }
     }
@@ -128,7 +128,7 @@ public class GeomLab extends GeomBase {
 
             setCurrentFile(file);
         }
-        catch (IOException _) {
+        catch (IOException ex) {
             throw new CommandException("#writeerr");
         }
     }
@@ -232,7 +232,7 @@ public class GeomLab extends GeomBase {
 	try { 
 	    fontSize = Float.parseFloat(sizeSpec); 
 	}
-	catch (NumberFormatException _) { 
+	catch (NumberFormatException ex) { 
 	    throw new Error("bad fontsize");
 	}
 
@@ -345,7 +345,7 @@ public class GeomLab extends GeomBase {
             try {
                 app.loadInput(new File(args[j]));
             }
-            catch (CommandException _) {
+            catch (CommandException ex) {
                 JOptionPane.showMessageDialog(app.frame,
                     "Couldn't load " + args[j],
                     "Oops!", JOptionPane.ERROR_MESSAGE);

@@ -138,7 +138,7 @@ public class GraphBox extends JPanel {
 			try {
 			    wait();
 			}	
-			catch (InterruptedException _) {
+			catch (InterruptedException ex) {
 			    return;
 			}
 		    }

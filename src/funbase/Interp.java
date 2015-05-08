@@ -206,7 +206,7 @@ public class Interp implements FunCode.Jit {
 			try {
 			    Value b = frame[--sp];
 			    if (! b.asBoolean()) pc = rand;
-			} catch (WrongKindException _) {
+			} catch (WrongKindException ex) {
 			    Evaluator.err_boolcond();
 			}
 			break;
@@ -230,7 +230,7 @@ public class Interp implements FunCode.Jit {
 			    else
 				pc = trap;
 			}
-			catch (ClassCastException _) {
+			catch (ClassCastException ex) {
 			    pc = trap;
 			}
 			break;
@@ -251,7 +251,7 @@ public class Interp implements FunCode.Jit {
 			    Value.ConsValue cell = 
 				(Value.ConsValue) frame[sp-1];
 			    frame[sp++] = cell.head;
-			} catch (ClassCastException _) {
+			} catch (ClassCastException ex) {
                             sp--;
 			    pc = trap;
 			}

@@ -170,7 +170,7 @@ public class BasicPrims {
 		args[1] = cell.head;
 		return args;
 	    }
-	    catch (ClassCastException _) {
+	    catch (ClassCastException ex) {
 		return null;
 	    }
 	}
@@ -182,7 +182,7 @@ public class BasicPrims {
 	    Value.ConsValue xs = (Value.ConsValue) x;
 	    return xs.head;
 	}
-	catch (ClassCastException _) {
+	catch (ClassCastException ex) {
 	    Evaluator.list_fail(x, "#head");
 	    return null;
 	}
@@ -194,7 +194,7 @@ public class BasicPrims {
 	    Value.ConsValue xs = (Value.ConsValue) x;
 	    return xs.tail;
 	}
-	catch (ClassCastException _) {
+	catch (ClassCastException ex) {
 	    Evaluator.list_fail(x, "#tail");
 	    return null;
 	}

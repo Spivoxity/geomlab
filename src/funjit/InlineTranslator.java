@@ -128,7 +128,7 @@ public class InlineTranslator extends JitTranslator {
 			code.gen(CONST, v.asNumber());
 			return true;
 		    }
-		    catch (WrongKindException _) { /* PUNT */ }
+		    catch (WrongKindException ex) { /* PUNT */ }
 		}
 		
 		return false;

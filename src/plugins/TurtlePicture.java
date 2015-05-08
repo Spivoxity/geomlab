@@ -249,7 +249,7 @@ public class TurtlePicture extends Picture {
 		args[0] = NumValue.getInstance(c.arg);
 		return args;
 	    }
-	    catch (ClassCastException _) {
+	    catch (ClassCastException ex) {
 		return null;
 	    }
 	}

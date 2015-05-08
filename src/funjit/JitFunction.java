@@ -60,7 +60,7 @@ public abstract class JitFunction extends Function.Closure
 	    JitFunction body = (JitFunction) clone();
 	    body.fvars = fvars;
 	    return body;
-	} catch (CloneNotSupportedException _) {
+	} catch (CloneNotSupportedException ex) {
 	    throw new Error("Couldn't clone for closure");
 	}
     }

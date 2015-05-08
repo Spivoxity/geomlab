@@ -178,7 +178,7 @@ public class BootLoader {
             Value.StringValue s = (Value.StringValue) get(STRING);
             return s.text;
         }
-        catch (ClassCastException _) {
+        catch (ClassCastException ex) {
             throw new Error("missing string");
         }
     }
@@ -195,7 +195,7 @@ public class BootLoader {
             int n = (int) x.asNumber();
             return (neg ? -n : n);
         }
-        catch (WrongKindException _) {
+        catch (WrongKindException ex) {
             throw new Error("missing number");
         }
     }

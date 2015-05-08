@@ -63,7 +63,7 @@ public abstract class Primitive extends Function {
 	try {
 	    return a.asNumber();
 	}
-	catch (WrongKindException _) {
+	catch (WrongKindException ex) {
 	    expect("a numeric");
 	    return 0.0;
 	}
@@ -116,7 +116,7 @@ public abstract class Primitive extends Function {
         try {
             return cl.cast(v);
         }
-        catch (ClassCastException _) {
+        catch (ClassCastException ex) {
             expect(expected);
             return null;
         }
@@ -292,7 +292,7 @@ public abstract class Primitive extends Function {
 		    else
 			throw new Error(e0);
 		}
-		catch (IllegalAccessException _) {
+		catch (IllegalAccessException ex) {
 		    throw new Error("reflection failed for " + name);
 		}
 	    }
