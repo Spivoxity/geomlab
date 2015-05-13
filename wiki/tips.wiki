@@ -1,4 +1,4 @@
-<!--Hints and tips for GeomLab-->
+<!--Hints and tips for GeomLab/using-->
 {{Markup|ol}}
 #To make it easier to match parentheses in complex expressions, turn on the option 'Options/Match brackets'. Typing a '@)@' or '@]@' will now momentarily underline the region up to the matching '@(@' or '@[@' in blue. If brackets do not match properly -- because '@(@' is closed by '@]@' or there are more '@)@'s than '@(@'s -- then the region is underlined in red.
 #To find a list of all the names that are defined, choose the command 'Tools/List defined names'. A list of all the names you can use in expressions will be inserted into the output pane.

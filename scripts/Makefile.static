@@ -1,0 +1,40 @@
+PAGES =	home build commands download errors \
+	language library nojava sheet1 sheet2 sheet3 sheet4 \
+	sheet5 sheet6 sheet7 sheet8 \
+	start teachers tiles tips using worksheets help
+
+IMAGES := $(notdir $(wildcard ../figs/*.png) $(wildcard ../figs/*.jpg))
+
+FILES = index.html geomlab.css cycletpale.png arrow.png quad96.png \
+	deployJava.js examples.jar geomlab.jar geomlab.jnlp \
+	.htaccess icon32.png icon64.png \
+	GeomLab-1.png GeomLab-2.png GeomLab-3.png GeomLab-4.png GeomLab-5.png \
+	GeomLab-talk.ppt ATM-article.pdf CAS-article.pdf
+
+ALL = $(PAGES:%=%.html) $(IMAGES) $(FIXED) $(FILES) 
+
+all: $(ALL)
+
+webcheck: force
+	(grep -o '<a href=[^>]*>' *.html | sed 's/.*"\(.*\)".*/\1/' \
+		| grep -v '^https*:'; \
+	    grep -o '<img src=[^>]*>' *.html \
+		| sed 's/.*src="\([^"]*\)".*/\1/') | sort -u >/tmp/aaa
+	ls | join -v 2 - /tmp/aaa
+
+
+vpath %.wiki ../wiki
+vpath %.tmpl ../wiki
+
+%:: ../res/%; cp $< $@
+%:: ../img/%; cp $< $@
+%:: ../web/files/%; cp $< $@
+
+$(IMAGES): %: ../figs/%; cp $< $@
+
+%.html: %.wiki ../scripts/makepage.tcl ../scripts/skeleton.html
+	tclsh ../scripts/makepage.tcl $< >$@
+
+nojava.html help.html: HelpStart.tmpl
+
+force:

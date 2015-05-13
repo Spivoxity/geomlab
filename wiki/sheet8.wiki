@@ -1,4 +1,4 @@
-<!--Worksheet 8: Turtle graphics-->
+<!--Worksheet 8: Turtle graphics/worksheets-->
 This worksheet introduces a different way of drawing pictures that
 will allow us to escape from the world where every non-trivial picture
 consists of two other pictures put either one <i>beside</i> the other
@@ -10,12 +10,8 @@ a list @y@, then use a function @turtle(y)@ that
 is provided by GeomLab: this function takes the list of instructions
 and produces a picture of the track that the robot follows.
 
-The turtle obeys a number of different commands, and among them are
-@ahead(x)@, an instruction to move ahead by @x@ units;
-@left(a)@, an instruction to turn to the left through an
-angle of @a@ degrees,
-and @right(a)@, a similar instruction to turn to the
-right.
+The turtle obeys a number of different commands, and among them are @ahead(x)@, an instruction to move ahead by @x@ units; @left(a)@, an instruction to turn to the left through an angle of @a@ degrees,
+and @right(a)@, a similar instruction to turn to the right.
 When the robot turns, it moves along the arc of a circle that has
 diameter 1 unit.
 
@@ -39,20 +35,14 @@ on how the turtle moves, the starting and ending positions can be
 anywhere within the window or at its edge.
 
 GeomLab provides a number of operations that act
-on lists.  If @xs@ and @ys@ are lists, then
-@xs ++ ys@ is a list that 
-contains all the elements of @xs@, followed by all the elements of
-@ys@. Here's an example that uses lists of numbers instead
-of lists of commands:
+on lists.  If @xs@ and @ys@ are lists, then @xs ++ ys@ is a list that 
+contains all the elements of @xs@, followed by all the elements of @ys@. Here's an example that uses lists of numbers instead of lists of commands:
  [1, 2, 3] ++ [4, 5] = [1, 2, 3, 4, 5]
 Another operation that is provided is @reverse@, which
 gives a list that contains the same elements as its argument, but in
 reverse order:
  reverse([1, 2, 3]) = [3, 2, 1]
-If @xs@ is a list of <i>commands</i>, then
-@opposite(xs)@ is a list that is modified so that each
-command @left(a)@ is replaced by @right(a)@, and
-vice versa:
+If @xs@ is a list of <i>commands</i>, then @opposite(xs)@ is a list that is modified so that each command @left(a)@ is replaced by @right(a)@, and vice versa:
  opposite([left(90), right(90), left(180), ahead(1)])
    = [right(90), left(90), right(180), ahead(1)]
 Here is an example that shows the effect of reversing a list of
@@ -68,9 +58,7 @@ We can use @turtle@ to replicate the Hilbert curves that
 we drew in Worksheet~7, but describing them now in terms of the turns
 to left and right that the turtle must make as it follows the curve.
 The best way to do this is to define a function @hilb(n)@
-that produces the list of commands that must be obeyed in drawing the
-@n@'th curve in the sequence.  Here are the first three
-curves, drawn in this way: 
+that produces the list of commands that must be obeyed in drawing the @n@'th curve in the sequence.  Here are the first three curves, drawn in this way: 
 {{GeomPic|8040|turtle(hilb(1))|*}}
 {{GeomPic|8050|turtle(hilb(2))|*}}
 {{GeomPic|8060|turtle(hilb(3))|*}}
@@ -99,8 +87,7 @@ with a left turn between them; but the second copy is reversed, so
 that the turtle traces it from what was the end to what was the
 beginning.
 
-An entertaining way of generating the dragon curve by hand is as
-follows:
+An entertaining way of generating the dragon curve by hand is as follows:
 take a narrow strip of paper and lay it horizontally in front of you.
 Take the left-hand end of the strip and lay it over the right-hand
 end, thus folding the strip in half.  Repeat this, taking the crease

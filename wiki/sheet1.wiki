@@ -1,4 +1,5 @@
-<!--Worksheet 1: Above and beside-->
+<!--Worksheet 1: Above and beside/worksheets-->
+
 Among other things, GeomLab is a language for describing pictures.  The GeomLab program lets you write a description in the left-hand part of the window, and will then show you the corresponding picture in the right-hand part.
 
 To get you started, we have provided several pre-drawn pictures and given them names.

@@ -1,4 +1,4 @@
-<!--Error messages from GeomLab-->
+<!--Error messages from GeomLab/using-->
 This page lists most of the error messages that can be produced by
 GeomLab, with an explanation of the circumstances that can lead to
 each one. After an error has occurred, you can use the command
@@ -14,8 +14,7 @@ have typed is left in the bottom pane of the GeomLab window, with a
 highlight on the first symbol in your expression that GeomLab can't
 deal with.  Up to this point, the expression obeys the rules of the
 language, but the highlit symbol is one that can't possibly come next.
-Usually, the error message will give some indication of what symbols
-''could'' come next.
+Usually, the error message will give some indication of what symbols ''could'' come next.
 
 The other kind of error message appears when you enter an expression
 that obeys the rules of the language, but GeomLab fails to compute the
@@ -32,74 +31,38 @@ seriously.  Everyone makes mistakes!
 
 Here is the list of error messages:
 {{Markup|dl}}
-;{{Message|comment|Oops|unterminated comment}}
-:Comments in the GeomLab language are enclosed in braces @{ ... }@.  Your expression contains an opening brace without a matching closing brace, so that all the last part of the expression was taken as a comment by GeomLab.
-;{{Message|bracematch|Oops|Can't find matching '{'}}
-:A closing brace (which should end a comment) appears in your expression without a previous opening brace.
-;{{Message|string|Oops|unterminated string constant}}
-:A string constant (beginning with a double quote character) appears in your expression without a matching double quote before the end of the line.
-;{{Message|badtok|Oops|unknown symbol}}
-:GeomLab does not recognise a character as one of those that can appear in a valid expression.
-;{{Message|eat|Oops|I expected <i>symbol</i> here}}
-:At this point, the only acceptable symbol is the one indicated, but a different symbol occurred in the input.
-;{{Message|parenmatch|Oops|Can't find matching '('}}
-:A closing parenthesis in the expression you entered does not have a matching opening parenthesis, perhaps because your expression contains fewer '('s than ')'s altogether.  For complex expressions, the option that's enabled by the command 'Options/Match brackets' will help you to make sure that parentheses match correctly.
-;{{Message|bramatch|Oops|Can't find matching '['}}
-:A closing square bracket (ending a possible list expression) does not have a matching opening bracket.  A possible cause of this (if the opening bracket is not just missing) is that round brackets and square ones have become muddled, so that a ')' is needed before the ']' that matches the earlier '['.  Again, the option 'Options/Match brackets' can help you to keep things straight.
-;{{Message|junk|Oops|extra text appears after the end of the expression}}
-:The input begins with a valid expression, but there is more text after the end of the expression that could not be part of any longer expression.
-;{{Message|badexp|Oops|I don't recognise this expression}}
-:An expression should appear here, but the next symbol is not the start of any valid expression.
-;{{Message|exp|Oops|I expected an expression here}}
-:A further expression should appear, but the input ends at this point.
-;{{Message|op|Oops|I expected an operator symbol here}}
-:An operator symbol like @+@ should appear here, but another symbol was found.
-;{{Message|names|Oops|the same function name should appear in each equation}}
-:When a function definition consists of more than one clause, the same function name should appear in each clause.
-;{{Message|arity|Oops|each equation should have the same number of arguments}}
-:When a function definition consists of more than one clause, each clause should contain the same number of argument patterns.
-;{{Message|pattern|Oops|I don't recognise this pattern}}
-:A pattern should appear here, but the next symbol does not begin any valid pattern.
-;{{Message|numargs|Aargh|function @f@ called with @n@ arguments but needs @m@}}
-:Each function in GeomLab takes a fixed number of arguments: for example, the function @pair@ defined by
-::@define pair(p, q) = p $ flip(q)@
-:takes two pictures as its arguments.  It makes no sense to call a function with a different number of arguments: so the expressions @pair(man)@ and @pair(man, woman, star)@ have no value.
-;{{Message|match|Aargh|function @f@ undefined  for arguments @(x, y, z)@}}
-:The function @f@ has been called with the arguments shown, but none of the clauses in the definition of @f@ match the arguments.
-;{{Message|stack|Aargh|recursion went too deep}}
-:Can this ever happen?  Let us know!
-;{{Message|time|Aargh|sorry, that took too long}}<br/>{{Message|memory|Aargh|sorry, that took too much memory}}
-:GeomLab spends no more than a certain time (by default, 10 seconds) and no more than a certain amount of memory space (by default, 50000 objects) in trying to evaluate any expression you type. This is necessary in order to catch expressions that would never finish evaluating, and to stop the memory space of the computer from becoming so clogged up that GeomLab ceases to function properly. Since all the expressions you'll need to evaluate as you follow the worksheets fall well within these limits, the most likely thing is that the expression you've typed would never produce a value. Most commonly, this is because some recursive function @f@ in your program either leads from a call of @f(n)@ to another call of @f(n)@ with the same value of @n@, or has no proper 'base case', so that calling @f(0)@ leads to calls of @f(-1)@, @f(-2)@, and so on forever.
-;{{Message|apply|Aargh|applying a non-function}}
-:An expression @f(x, y, z)@ makes sense only if @f@ is a function.  In this case, it is some other value.  Perhaps you defined a name with @define f = ...@ when you meant to write @define f(x) = ...@?
-;{{Message|condbool|Aargh|boolean required in condition}}
-:In an expression "@if <i>condition</i> then <i>expression-1</i> else <i>expression-2</i>@", evaluating the condition must yield a Boolean value, either @true@ or @false@. In this case, the condition has yielded some other value.
-;{{Message|undef|Aargh|@x@ is not defined}}
-:The name @x@ has been used in an expression, but it does not have a value.
-;{{Message|redef|Aargh|can't replace built-in definition of @x@}}
-:You have attempted to redefine one of the constants or functions that are built-in to GeomLab.  To prevent confusion, this is not permitted: choose a different name for you new object.
-;{{Message|primfail|Aargh|primitive @f@ not understood}}
-:An object named @f@ has been called as a primitive function, but GeomLab has no method for evaluating it.  This can only happen because of a bug in GeomLab itself, or in some plug-in module.
-;{{Message|head|Aargh|taking head of the empty list / a non-list}}
-:The function @head(xs)@ yields a value only if @xs@ is a non-empty list: in this case, the value is the first element of the list.  It has been applied in a context where @xs@ is either the empty list @[]@, or is not a list at all.
-;{{Message|tail|Aargh|taking tail of the empty list / a non-list}}
-:The function @tail(xs)@ yields a value only if @xs@ is a non-empty list: in this case, the value is a list containing all but the first element of @xs@.  It has been applied in a context where @xs@ is either the empty list @[]@, or is not a list at all.
-;{{Message|type|Aargh|@f@ expects a <i>kind</i> argument}}
-:The function @f@ expects an argument of some specific kind: a number, a picture, etc..  The argument it received was not of some other kind.
-;{{Message|install|Aargh|install failure - <i>details</i>}}
-:An attempt to install a plug-in module into GeomLab has failed for the reason shown.
-;{{Message|sqrt|Aargh|taking square root of a negative number}}
-:The function @sqrt(x)@ is defined only if @x &gt;= 0@, but somehow it has been invoked when @x &lt; 0@.
-;{{Message|divzero|Aargh|division by zero}}
-:In an expression @x / y@, the value of @y@ was zero.
-;{{Message|concat|Aargh|bad arguments to operator '++'}}
-:The binary operator <code>++</code> is used to concatenate two  lists, but the left-hand operand is not a well-formed list.
-;{{Message|not|Aargh|not expects a boolean operand}}
-:In the expression @not p@, the operand @p@ should be a boolean value: either @true@ or @false@.
-;{{Message|reverse|Aargh|bad argument to function 'reverse'}}
-:The function @reverse(xs)@ is used to reverse a list @xs@, but @xs@ is not a well-formed list.
-;{{Message|length|Aargh|bad argument to function 'length'}}
-:The function @length(xs)@ is used to find the length of a list @xs@, but @xs@ is not a well-formed list.
-;{{Message|failure|Failure|<i>details</i>}}
-:This message appears only after an unexpected failure in the evaluation mechanism of GeomLab: you should never see it, and if you do, then that is evidence of a bug in GeomLab itself.  See if you can reproduce the circumstances that led to the failure, and if so, please write to us and give us enough information for us to reproduce the bug ourselves, so that we can fix it.
+;{{Message|comment|Oops|unterminated comment}}: Comments in the GeomLab language are enclosed in braces @{ ... }@.  Your expression contains an opening brace without a matching closing brace, so that all the last part of the expression was taken as a comment by GeomLab.
+;{{Message|bracematch|Oops|Can't find matching '{'}}: A closing brace (which should end a comment) appears in your expression without a previous opening brace.
+;{{Message|string|Oops|unterminated string constant}}: A string constant (beginning with a double quote character) appears in your expression without a matching double quote before the end of the line.
+;{{Message|badtok|Oops|unknown symbol}}: GeomLab does not recognise a character as one of those that can appear in a valid expression.
+;{{Message|eat|Oops|I expected <i>symbol</i> here}}: At this point, the only acceptable symbol is the one indicated, but a different symbol occurred in the input.
+;{{Message|parenmatch|Oops|Can't find matching '('}}: A closing parenthesis in the expression you entered does not have a matching opening parenthesis, perhaps because your expression contains fewer '('s than ')'s altogether.  For complex expressions, the option that's enabled by the command 'Options/Match brackets' will help you to make sure that parentheses match correctly.
+;{{Message|bramatch|Oops|Can't find matching '['}}: A closing square bracket (ending a possible list expression) does not have a matching opening bracket.  A possible cause of this (if the opening bracket is not just missing) is that round brackets and square ones have become muddled, so that a ')' is needed before the ']' that matches the earlier '['.  Again, the option 'Options/Match brackets' can help you to keep things straight.
+;{{Message|junk|Oops|extra text appears after the end of the expression}} :The input begins with a valid expression, but there is more text after the end of the expression that could not be part of any longer expression.
+;{{Message|badexp|Oops|I don't recognise this expression}}: An expression should appear here, but the next symbol is not the start of any valid expression.
+;{{Message|exp|Oops|I expected an expression here}}: A further expression should appear, but the input ends at this point.
+;{{Message|op|Oops|I expected an operator symbol here}}: An operator symbol like @+@ should appear here, but another symbol was found.
+;{{Message|names|Oops|the same function name should appear in each equation}}: When a function definition consists of more than one clause, the same function name should appear in each clause.
+;{{Message|arity|Oops|each equation should have the same number of arguments}}: When a function definition consists of more than one clause, each clause should contain the same number of argument patterns.
+;{{Message|pattern|Oops|I don't recognise this pattern}}: A pattern should appear here, but the next symbol does not begin any valid pattern.
+;{{Message|numargs|Aargh|function @f@ called with @n@ arguments but needs @m@}}: Each function in GeomLab takes a fixed number of arguments: for example, the function @pair@ defined by @define pair(p, q) = p $ flip(q)@ takes two pictures as its arguments.  It makes no sense to call a function with a different number of arguments: so the expressions @pair(man)@ and @pair(man, woman, star)@ have no value.
+;{{Message|match|Aargh|function @f@ undefined  for arguments @(x, y, z)@}}: The function @f@ has been called with the arguments shown, but none of the clauses in the definition of @f@ match the arguments.
+;{{Message|stack|Aargh|recursion went too deep}}: Can this ever happen?  Let us know!
+;{{Message|time|Aargh|sorry, that took too long}}<br/>{{Message|memory|Aargh|sorry, that took too much memory}}: GeomLab spends no more than a certain time (by default, 10 seconds) and no more than a certain amount of memory space (by default, 50000 objects) in trying to evaluate any expression you type. This is necessary in order to catch expressions that would never finish evaluating, and to stop the memory space of the computer from becoming so clogged up that GeomLab ceases to function properly. Since all the expressions you'll need to evaluate as you follow the worksheets fall well within these limits, the most likely thing is that the expression you've typed would never produce a value. Most commonly, this is because some recursive function @f@ in your program either leads from a call of @f(n)@ to another call of @f(n)@ with the same value of @n@, or has no proper 'base case', so that calling @f(0)@ leads to calls of @f(-1)@, @f(-2)@, and so on forever.
+;{{Message|apply|Aargh|applying a non-function}}: An expression @f(x, y, z)@ makes sense only if @f@ is a function.  In this case, it is some other value.  Perhaps you defined a name with @define f = ...@ when you meant to write @define f(x) = ...@?
+;{{Message|condbool|Aargh|boolean required in condition}}: In an expression "@if <i>condition</i> then <i>expression-1</i> else <i>expression-2</i>@", evaluating the condition must yield a Boolean value, either @true@ or @false@. In this case, the condition has yielded some other value.
+;{{Message|undef|Aargh|@x@ is not defined}}: The name @x@ has been used in an expression, but it does not have a value.
+;{{Message|redef|Aargh|can't replace built-in definition of @x@}}: You have attempted to redefine one of the constants or functions that are built-in to GeomLab.  To prevent confusion, this is not permitted: choose a different name for you new object.
+;{{Message|primfail|Aargh|primitive @f@ not understood}}: An object named @f@ has been called as a primitive function, but GeomLab has no method for evaluating it.  This can only happen because of a bug in GeomLab itself, or in some plug-in module.
+;{{Message|head|Aargh|taking head of the empty list / a non-list}}: The function @head(xs)@ yields a value only if @xs@ is a non-empty list: in this case, the value is the first element of the list.  It has been applied in a context where @xs@ is either the empty list @[]@, or is not a list at all.
+;{{Message|tail|Aargh|taking tail of the empty list / a non-list}}: The function @tail(xs)@ yields a value only if @xs@ is a non-empty list: in this case, the value is a list containing all but the first element of @xs@.  It has been applied in a context where @xs@ is either the empty list @[]@, or is not a list at all.
+;{{Message|type|Aargh|@f@ expects a <i>kind</i> argument}}: The function @f@ expects an argument of some specific kind: a number, a picture, etc..  The argument it received was not of some other kind.
+;{{Message|install|Aargh|install failure - <i>details</i>}}: An attempt to install a plug-in module into GeomLab has failed for the reason shown.
+;{{Message|sqrt|Aargh|taking square root of a negative number}}: The function @sqrt(x)@ is defined only if @x &gt;= 0@, but somehow it has been invoked when @x &lt; 0@.
+;{{Message|divzero|Aargh|division by zero}}: In an expression @x / y@, the value of @y@ was zero.
+;{{Message|concat|Aargh|bad arguments to operator '++'}}: The binary operator <code>++</code> is used to concatenate two  lists, but the left-hand operand is not a well-formed list.
+;{{Message|not|Aargh|not expects a boolean operand}}: In the expression @not p@, the operand @p@ should be a boolean value: either @true@ or @false@.
+;{{Message|reverse|Aargh|bad argument to function 'reverse'}}: The function @reverse(xs)@ is used to reverse a list @xs@, but @xs@ is not a well-formed list.
+;{{Message|length|Aargh|bad argument to function 'length'}}: The function @length(xs)@ is used to find the length of a list @xs@, but @xs@ is not a well-formed list.
+;{{Message|failure|Failure|<i>details</i>}}: This message appears only after an unexpected failure in the evaluation mechanism of GeomLab: you should never see it, and if you do, then that is evidence of a bug in GeomLab itself.  See if you can reproduce the circumstances that led to the failure, and if so, please write to us and give us enough information for us to reproduce the bug ourselves, so that we can fix it.
 {{Markup|/dl}}

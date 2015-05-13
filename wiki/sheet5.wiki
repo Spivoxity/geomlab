@@ -1,4 +1,4 @@
-<!--Worksheet 5: Spirals and zig-zags-->
+<!--Worksheet 5: Spirals and zig-zags/worksheets-->
 This worksheet uses two constants @straight@ and @bend@ that look like square tiles:
 {{GeomPic|5010|straight|*}}
 {{GeomPic|5020|bend|*}}
@@ -25,15 +25,13 @@ typing more and more complicated expressions? The answer is to write a
 program to do it.
 
 We can start by working out how to draw one <i>arm</i> of a
-spiral. This is a number of @straight@'s, with a
-@bend@ at the end. As we did with the rows of men in
+spiral. This is a number of @straight@'s, with a @bend@ at the end. As we did with the rows of men in
 Worksheet 4, let's begin by drawing the first few sides one
 at a time, and then look for a pattern:
 {{GeomPic|5070|define a1 {{=}} bend|*}}
 {{GeomPic|5080|define a2 {{=}} bend $ straight|*}}
 {{GeomPic|5090|define a3 {{=}} bend $ straight $ straight|*}}
-From the examples above, we can see that we start with a
-@bend@ and add @straight@'s one at a
+From the examples above, we can see that we start with a @bend@ and add @straight@'s one at a
 time.  We can express this process using a recursive function, as described in Worksheet 4:
  define arm(n) = arm(n-1) $ straight when n > 1
    | arm(1) = bend
@@ -42,24 +40,18 @@ desired length:
 {{GeomPic|5100|arm(3)|*}}
 {{GeomPic|5110|arm(4)|*}}
 Let's now try to use our function @arm@ to create some
-spirals. How can we get from @spi2@ (defined earlier) to
-@spi3@, and from there to the next spiral, and so on? We
+spirals. How can we get from @spi2@ (defined earlier) to @spi3@, and from there to the next spiral, and so on? We
 can see that @spi1@ is a 2 &times; 2 arrangement of
-tiles, and the same tiles appear as one corner of
-@spi3@, after being rotated by 180 degrees. The rest of
-@spi3@ consists of a rotated copy of @arm(2)@
+tiles, and the same tiles appear as one corner of @spi3@, after being rotated by 180 degrees. The rest of @spi3@ consists of a rotated copy of @arm(2)@
 and a copy of @arm(3)@, as shown in the image below:
 {{GeomPic|5120|arm(3) & (rot(arm(2)) $ rot2(spi2))|special1}}
 (I've separated the parts of the picture a bit, so that you can see
-how it fits together). The resulting image looks exactly like
-@spi3@. This process can be repeated using
-@spi3@ to produce @spi4@, as shown
+how it fits together). The resulting image looks exactly like @spi3@. This process can be repeated using @spi3@ to produce @spi4@, as shown
 below:
 {{GeomPic|5130|arm(4) & (rot(arm(3)) $ rot2(spi3))|special2}}
 We can see that this process can be applied to any spiral, so it
 must be possible to use it in a recursive function that draws
-spirals of any size. Since we have defined @spi1@ as simply
-@bend@, we can use this as a base case for the following
+spirals of any size. Since we have defined @spi1@ as simply @bend@, we can use this as a base case for the following
 recursive definition:
  define spiral(n) = ???? when n > 1
    | spiral(1) = bend
@@ -76,8 +68,7 @@ very small, and you'll start to see them merge together in a way
 that may look a bit uneven on the computer screen. Don't worry, this
 is normal!)
 
-Now here is a challenge for you: define a function
-@zigzag@ that can draw zig-zags like these:
+Now here is a challenge for you: define a function @zigzag@ that can draw zig-zags like these:
 {{GeomPic|5160|zigzag(4,3)|*}}
 {{GeomPic|5170|zigzag(10,5)|*}}
 The picture @zigzag(m,n)@ should be @m@ units

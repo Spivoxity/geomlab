@@ -1,17 +1,12 @@
-<!--Getting started with GeomLab-->
-When you start GeomLab (by clicking on the [[GeomLab|Big Green
-Arrow]]), you may be asked for permission to run a signed application.
-After you give permission, a window appears that looks like this:
+<!--Getting started with GeomLab/start-->
+When you start GeomLab (by clicking on the {{XLink|home|GeomLab|Big Green Arrow}}), you may be asked for permission to run a signed application. After you give permission, a window appears that looks like this:
 
 [[Image:GeomLab-1.png|Screenshot|link=]]
 
 This window has two areas for text. To the left
 is an area where you can
-type an expression like &quot;@2+3@&quot;; then either hold down the
-@Shift@ key and press the @Return@ key, or click with the mouse on the
-@Go@ button at the right. (Pressing just @Return@ in its own simply
-inserts a newline into the expression).  GeomLab copies your expression
-into the area at the right, 
+type an expression like &quot;@2+3@&quot;; then either hold down the @Shift@ key and press the @Return@ key, or click with the mouse on the @Go@ button at the right. (Pressing just @Return@ in its own simply
+inserts a newline into the expression).  GeomLab copies your expression into the area at the right, 
 and then shows the value of the expression, like this:
 
 [[Image:GeomLab-2.png|Screenshot|link=]]
@@ -32,7 +27,6 @@ At first, you will only need to type single expressions and look at the pictures
 
 [[Image:GeomLab-4.png|Screenshot|link=]]
 
-Each definition has a semicolon to separate it from the next definition or expression.
+Each definition has a semicolon to separate it from the next definition or expression.  GeomLab forgets your previous definitions and starts afresh each time you press @Shift-Return@ or click on Go, so if you don't like the way your functions are working, you can change the definitions and try again.
 
-You are now ready to begin work on the 
-[[Worksheets for GeomLab|first worksheet]].
+You are now ready to begin work on the {{XLink|worksheets|Worksheets for GeomLab|first worksheet}}.

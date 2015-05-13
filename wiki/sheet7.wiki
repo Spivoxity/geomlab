@@ -1,4 +1,4 @@
-<!--Worksheet 7: Space-filling curves-->
+<!--Worksheet 7: Space-filling curves/worksheets-->
 ==Hilbert curve==
 By now, I hope you will relish the challenge of working out how to
 draw pictures without much help from me.
@@ -6,31 +6,25 @@ If so, here are two families of pictures that are made up from square
 tiles.
 
 The first family was discovered by the German mathematician David
-Hilbert (1862--1943), and can be made with the @bend@ and
-@straight@ tiles that we used earlier:
+Hilbert (1862--1943), and can be made with the @bend@ and @straight@ tiles that we used earlier:
 {{GeomPic|7010|bend|*}}
 {{GeomPic|7020|straight|*}}
-The first curve in the family (let's call it
-@hilbert(1)@) consists of four copies of @bend@,
-rotated and joined together:
+The first curve in the family (let's call it @hilbert(1)@) consists of four copies of @bend@, rotated and joined together:
 {{GeomPic|7030|hilbert(1)|*}}
 The next curve is a little more complicated:
 {{GeomPic|7040|hilbert(2)|*}}
 With the third curve in the sequence, a pattern starts to
 emerge:
 {{GeomPic|7050|hilbert(3)|*}}
-It looks as if this curve is made up of four copies of
-@hilbert(2)@ rotated and joined in the right way.
+It looks as if this curve is made up of four copies of @hilbert(2)@ rotated and joined in the right way.
 But if you look closely, you will see that in each copy of the curve,
 one of the ends has been bent so as to make it join with the next part
 of the curve, so that @hilbert(3)@ actually consists of
-four copies of different picture -- let's call it
-@hilbend(2)@:
+four copies of different picture -- let's call it @hilbend(2)@:
 {{GeomPic|7060|hilbend(2)|*}}
 To draw the Hilbert curves properly, you will need to define
 <i>two</i> recursive functions that depend on each other.  You can
-begin to work out their definitions by asking what
-@hilbend(1)@ would need to look like if it had the same
+begin to work out their definitions by asking what @hilbend(1)@ would need to look like if it had the same
 relationship with @hilbert(2)@ that @hilbend(2)@
 has with @hilbert(3)@.
 
@@ -41,10 +35,7 @@ Does the sequence have to start with @hilbert(1)@?  Is there an
 appropriate definition of @hilbert(0)@ that fits the pattern?
 
 These hints should be enough for you to define the two functions
-for yourself.  When you have done so, what happens if you evaluate
-@hilbert(10)@?  Does this 
-justify the term <i>space-filling curve</i> that is used to describe
-the behaviour of curves in this family?
+for yourself.  When you have done so, what happens if you evaluate @hilbert(10)@?  Does this  justify the term <i>space-filling curve</i> that is used to describe the behaviour of curves in this family?
 
 ==Sierpinski curve==
 

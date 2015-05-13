@@ -1,4 +1,4 @@
-<!--Mainly for teachers-->
+<!--Mainly for teachers/teachers-->
 ==Overview==
 
 In this activity, participants use a computer to explore a language
@@ -19,9 +19,10 @@ structure of one of Escher's designs, and to reproduce it on the
 computer screen at any desired level of detail. The final challenge is
 to describe another picture that is related to Escher's design but
 leads off to infinity in a new way.
-
+{{Markup|ul}}
 * An [[Media:CAS-article.pdf|article]] in the newsletter of the Computing at School organisation.
 * A [[Media:ATM-article.pdf|review]] of GeomLab from the magazine Mathematics Today.
+{{Markup|/ul}}
 
 ==Links with Mathematics==
 
@@ -88,17 +89,7 @@ GeomLab has been designed as a <i>functional</i> programming
 language -- one where programs are like mathematical functions that
 compute outputs from inputs, rather than being sets of instructions
 that modify the contents of storage cells, as they are in
-conventional, <i>imperative</i> languages. This way of
-programming has a long history, beginning with the language LISP,
-developed by John McCarthy and co-workers in the late 1950's. We
-use similar ideas, but with a more modern notation. A crucial
-difference between functional and imperative programs is that complex
-structures can be built imperatively by repetition -- to draw a row of
-men, draw the first man then repeat a certain number of times -- but
-in a functional program, they must be expressed recursively, by
-exploiting a recurrence relation -- such as the fact that a row of
-<i>n</i> men consists of a man drawn next to a row of <i>n</i>-1
-men.
+conventional, <i>imperative</i> languages. This way of programming has a long history, beginning with the language LISP, developed by John McCarthy and co-workers in the late 1950's. We use similar ideas, but with a more modern notation. A crucial difference between functional and imperative programs is that complex structures can be built imperatively by repetition -- to draw a row of men, draw the first man then repeat a certain number of times -- but in a functional program, they must be expressed recursively, by exploiting a recurrence relation -- such as the fact that a row of <i>n</i> men consists of a man drawn next to a row of <i>n</i>-1 men.
 
 I've chosen to base the activity on functional programming for
 several reasons: first and foremost, because doing so makes it

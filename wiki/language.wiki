@@ -1,4 +1,4 @@
-<!--The GeomLab language-->
+<!--The GeomLab language/using-->
 This page contains a concise and fairly formal description of the
 programming language that is part of GeomLab. Reading it is almost
 certainly not the best way to learn to write programs for GeomLab:
@@ -43,12 +43,8 @@ character or a line break.
 An ''operator'' or ''delimiter'' is one of the reserved words
 and special symbols in the list that follows. Reserved words appear
 entirely in lower case, and may not be used as names.
-
-<pre>
-and define div else function if in let mod not op or then when
-_ = + - $ * / &amp; ~ : . ++ &lt; &lt;= &lt;&gt; &gt; &gt;= ( ) [ ] , ; |
-</pre>
-
+ and define div else function if in let mod not op or then when
+ _ = + - $ * / &amp; ~ : . ++ &lt; &lt;= &lt;&gt; &gt; &gt;= ( ) [ ] , ; |
 The syntax of expressions and definitions in the GeomLab
 language is given
 in subsequent sections of this document using EBNF notation. In this
@@ -82,8 +78,7 @@ Strings are denoted by string tokens. ''Strings are not much used in GeomLab pro
 ===Lists===
 
 The empty list is denoted by the expression @[]@,
-and non-empty lists may be constructed with the operator
-"@:@". A list expression @[<i>x<sub>1</sub></i>, <i>x<sub>2</sub></i>, ..., <i>x<sub>n</sub></i>]@
+and non-empty lists may be constructed with the operator "@:@". A list expression @[<i>x<sub>1</sub></i>, <i>x<sub>2</sub></i>, ..., <i>x<sub>n</sub></i>]@
 is an abbreviation for a list of length ''n'' constructed in
 this way.
 
@@ -117,11 +112,10 @@ of the additional forms of expression covered in
 Section&nbsp;8. Unless these additional forms of expression are used, 
 there is no nesting of environments in GeomLab, and the scope rules
 can be summarised as follows:
-
+{{Markup|ul}}
 * The local part of the environment takes precedence over the global part.  Thus, if the same name is used for a global variable and for one of the formal parameters of a function, then it is the formal parameter that is denoted by the name within the function body.
-* If a function is defined, and then later applied after further definitions have been added to the global environment, then it is the global environment at the time the function is applied that is used
-for evaluating the function body -- a form of dynamic binding. This rule is a natural one for interactive programming, and allows naturally for mutual recursion among top-level functions.
-
+* If a function is defined, and then later applied after further definitions have been added to the global environment, then it is the global environment at the time the function is applied that is used for evaluating the function body -- a form of dynamic binding. This rule allows mutual recursion among top-level functions.
+{{Markup|/ul}}
 The additional forms of expression introduced in Section&nbsp;8
 allow the possiblility of nested scopes in which function values are
 first-class citizens. For these forms of expression, it is necessary
@@ -135,29 +129,27 @@ function definitions but not in local value definitions.
 ==Expressions==
 
 We give the basic syntax of expressions here, leaving operator sections (@Section@), list comprehensions (@Comprehension@), @let@ expressions, and @function@ expressions to be described later.
-<pre>
-Primary    = Name | Number | String
-           | Name { "(" [ Expression { "," Expression } ] ")" }
-           | "(" Expression ")" 
-           | Section
-           | "[" [ Expression { "," Expression } ] "]"
-           | "[" Expression ".." Expression "]"
-           | Comprehension
- 
-Factor     = ( "-" | "~" ) Factor | Primary 
- 
-Term0      = { Factor ":" } Factor
-Term1      = Term0 { ( "*" | "/" | "$" ) Term0
-Term2      = Term1 { ( "+" | "-" | "&amp;" ) Term1 }
-Term3      = { Term2 "++" } Term2
-Term4      = Term3 { ( "=" | "&lt;" | "&lt;=" | "&lt;&gt;" | "&gt;" | "&gt;=" ) Term3 }
-Term5      = Term4 { and Term4 }
-Term       = Term5 { or Term5 }
+ Primary    = Name | Number | String
+            | Name { "(" [ Expression { "," Expression } ] ")" }
+            | "(" Expression ")" 
+            | Section
+            | "[" [ Expression { "," Expression } ] "]"
+            | "[" Expression ".." Expression "]"
+            | Comprehension
 
-BasicExpr  = Term | if Term then BasicExpr else BasicExpr
+ Factor     = ( "-" | "~" ) Factor | Primary 
 
-Expression = BasicExpr | LetExpr | FunctionExpr
-</pre>
+ Term0      = { Factor ":" } Factor
+ Term1      = Term0 { ( "*" | "/" | "$" ) Term0
+ Term2      = Term1 { ( "+" | "-" | "&amp;" ) Term1 }
+ Term3      = { Term2 "++" } Term2
+ Term4      = Term3 { ( "=" | "&lt;" | "&lt;=" | "&lt;&gt;" | "&gt;" |  "&gt;=" ) Term3 }
+ Term5      = Term4 { and Term4 }
+ Term       = Term5 { or Term5 }
+
+ BasicExpr  = Term | if Term then BasicExpr else BasicExpr
+
+ Expression = BasicExpr | LetExpr | FunctionExpr
 
 ===Primary expressions===
 
@@ -170,9 +162,8 @@ expression.
 An expression <code>[@@e1@@, @@e2@@, ..., @@e_n@@]</code> denotes a list made up of the @n@ values that are denoted by the expressions @@e1@@, @@e2@@, ...&nbsp;@@e_n@@.  This list is constructed using the empty list (denoted @[]@) by @@n@@ applications of the construction operator&nbsp;"@:@".
 
 If @@x@@ and @@y@@ are integers, then the expression <code>[@@x@@..@@y@@]</code> stands for the list @@[x, x+1, x+2, ..., y]@@, equivalent to <code>_range(@@x@@, @@y@@)</code>, where @range@ is the function defined as follows.
-<pre>
-define _range(x, y) = if x > y then [] else x:_range(x+1, y);
-</pre>
+
+ define _range(x, y) = if x > y then [] else x:_range(x+1, y);
 
 ===Function application===
 
@@ -185,20 +176,15 @@ If @@f@@ is a function that has been defined as part of the GeomLab program, the
 Simple expressions may be combined with various unary and binary
 operators to form more complex expressions; these operators have the
 binding powers that are implied by the syntax rules above. All binary
-operators associate to the left, except for "@:@" and
-@++@, which associate to the right.  An expression written
+operators associate to the left, except for "@:@" and @++@, which associate to the right.  An expression written
 with a prefix or infix operator is just an abbreviation for the
-application of the same operator as a function. Thus, the expression
-<code>@@x@@ + @@y@@</code> is an abbreviation for the
+application of the same operator as a function. Thus, the expression <code>@@x@@ + @@y@@</code> is an abbreviation for the
 binary function application <code>(+)(@@x@@, @@y@@)</code>;
 this expression uses the name <code>(+)</code> for the built-in function that adds numbers together.  All the operators of
 GeomLab are bound to different primitive functions in the initial
 environment.
 
-An exception to this rule is made in the case of the operators
-@and@ and @or@, which are evaluated in a 'short-circuit' fashion: thus, in the expression <code>@@e1@@ and @@e2@@</code>, the sub-expression @@e1@@ must yield a Boolean value. If this value is @true@,
-then the value of the expression is whatever value is yielded by evaluating @@e2@@; otherwise the value of the  expression is @false@.  Similarly, the value of <code>@@e1@@ or @@e2@@</code> is the
-value of @@e2@@ if @@e1@@ yields @false@, and otherwise it is @true@.
+An exception to this rule is made in the case of the operators @and@ and @or@, which are evaluated in a 'short-circuit' fashion: thus, in the expression <code>@@e1@@ and @@e2@@</code>, the sub-expression @@e1@@ must yield a Boolean value. If this value is @true@, then the value of the expression is whatever value is yielded by evaluating @@e2@@; otherwise the value of the  expression is @false@.  Similarly, the value of <code>@@e1@@ or @@e2@@</code> is the value of @@e2@@ if @@e1@@ yields @false@, and otherwise it is @true@.
 
 This means that <code>@@e1@@ and @@e2@@</code> is equivalent to the conditional expression
  if @@e1@@ then @@e2@@ else false
@@ -222,8 +208,7 @@ conditional expression. The other sub-expression is not evaluated.
 
 ==Patterns==
 
-Patterns are used in function definitions (see Section&nbsp;6) and
-@function@ 
+Patterns are used in function definitions (see Section&nbsp;6) and @function@ 
 expressions (see Section&nbsp;8) to match the arguments
 of a function. An attempt to match a pattern against a value may either
 succeed or fail; if it succeeds, then the names that appear in the
@@ -235,18 +220,16 @@ the values that it matches are all equal. The equality test that is
 applied is the same as the one used
 for the <code>=</code> operator.
 
-<pre>
-PattPrimary = Ident | "_" 
-            | [ "-" | "~" ] Number 
-            | String
-            | "(" Pattern ")" 
-            | "[" [ Pattern { "," Pattern } ] "]"
-            | Ident "(" [ Pattern { "," Pattern } ] ")"
+ PattPrimary = Ident | "_" 
+             | [ "-" | "~" ] Number 
+             | String
+             | "(" Pattern ")" 
+             | "[" [ Pattern { "," Pattern } ] "]"
+             | Ident "(" [ Pattern { "," Pattern } ] ")"
 
-PattFactor  = PattPrimary { ":" PattPrimary }
+ PattFactor  = PattPrimary { ":" PattPrimary }
 
-Pattern     = PattFactor { "+" Number }
-</pre>
+ Pattern     = PattFactor { "+" Number }
 
 ===Primary patterns===
 
@@ -257,20 +240,16 @@ strings, which match the single, constant values denoted by the number
 or string.  Any pattern may also be enclosed in parentheses and used
 as a primary part of a larger pattern.
 
-A list pattern
-<code>[<i>p</i><sub>1</sub>, <i>p</i><sub>2</sub>, 
+A list pattern <code>[<i>p</i><sub>1</sub>, <i>p</i><sub>2</sub>, 
 ..., <i>p<sub>n</sub></i>]</code> 
 matches any list of length @n@ whose elements are matched by the
-patterns <code><i>p</i><sub>1</sub></code>, 
-<code><i>p</i><sub>2</sub></code>, 
-...&nbsp;<code><i>p<sub>n</sub></i></code> respectively.
+patterns <code><i>p</i><sub>1</sub></code>, <code><i>p</i><sub>2</sub></code>, ...&nbsp;<code><i>p<sub>n</sub></i></code> respectively.
 
 A constructor pattern <code>@@c@@(@@p1@@, ..., @@p_n@@)</code> is allowed if @@c@@ denotes a ''primitive constructor'' of @@n@@ arguments.  It matches values built with the constructor if patterns @@p1@@, ..., @@p_n@@ match the arguments of the constructor.  Primitive constructors defined in the GeomLab library include @rgb(r, g, b)@ for constucting colours, and the commands @ahead(d)@, @left(a)@ and @right(a)@ for constructing turtle commands.  Others may be added by plug-in modules.
 
 ===Cons patterns===
 
-A "cons" pattern
-<code><i>p</i><sub>1</sub>:<i>p</i><sub>2</sub></code> matches any
+A "cons" pattern <code><i>p</i><sub>1</sub>:<i>p</i><sub>2</sub></code> matches any
 non-empty list whose head is 
 matched by <code><i>p</i><sub>1</sub></code> and whose tail is matched
 by <code><i>p</i><sub>2</sub></code>.
@@ -287,11 +266,11 @@ add a definition to the
 global environment, and also in @let@
 expressions to define a name locally to an expression.
 
-<pre>Definition = ValueDef | FuncDef</pre>
+ Definition = ValueDef | FuncDef
 
 ===Value definitions===
 
-<pre>ValueDef = Name "=" Expression</pre>
+ ValueDef = Name "=" Expression
 
 A value definition defines a name as standing for the value of a
 certain expression. The expression is evaluated immediately, and the
@@ -299,11 +278,11 @@ name becomes bound to its value.
 
 ===Function definitions===
 
-<pre>FuncDef = Clause { "|" Clause }
-
-Clause  = Name Formals "=" Expression [ when Expression ]
-
-Formals = "(" [ Pattern { "," Pattern } ] ")"</pre>
+ FuncDef = Clause { "|" Clause }
+ 
+ Clause  = Name Formals "=" Expression [ when Expression ]
+ 
+ Formals = "(" [ Pattern { "," Pattern } ] ")"
 
 A function definition defines a name as standing for a function.
 The function is defined by a sequence of clauses, each containing a
@@ -334,12 +313,10 @@ one matching a different pattern of arguments. For example,
 here is the definition of a function <code>pow(a, b)</code> that
 computes @a@ raised to the power @b@:
 
-<pre>define pow(a, b) = a * pow(a, b-1) when b &gt; 0
- | pow(a, 0) = 1
-</pre>
+ define pow(a, b) = a * pow(a, b-1) when b &gt; 0
+   | pow(a, 0) = 1
 
-The first clause deals with the case where <code>b &gt; 0</code>, defining
-<code>pow(a, b)</code> in terms of <code>pow(a, b-1)</code>; the
+The first clause deals with the case where <code>b &gt; 0</code>, defining <code>pow(a, b)</code> in terms of <code>pow(a, b-1)</code>; the
 second clause deals with 
 the case where <code>b = 0</code>, giving the result directly,
 and providing a place for the recursion to stop. (The function is not
@@ -347,24 +324,21 @@ defined at all if <code>b &lt; 0</code>.)
 
 The first clause in this definition has patterns (@a@
 and @b@) that will match any arguments that are
-supplied, but the guard <code>b &gt; 0</code> rules out those where
-<code>b &lt;= 0</code>. The second clause matches those argument lists
+supplied, but the guard <code>b &gt; 0</code> rules out those where <code>b &lt;= 0</code>. The second clause matches those argument lists
 where the second argument is equal to 0.
 
 ==Paragraphs==
 
-<pre>Paragraph = Expression [ ";" ] 
-          | define Definition [ ";" ]</pre>
+ Paragraph = Expression [ ";" ] 
+           | define Definition [ ";" ]
 
-A program in the GeomLab language consists of a sequence of
-<i>paragraphs</i> that are entered at the top-level prompt or read
+A program in the GeomLab language consists of a sequence of <i>paragraphs</i> that are entered at the top-level prompt or read
 from one or more text files.
 Each paragraph is either an expression to be evaluated in the current
 global environment, or a definition that adds to that environment.
 
 When paragraphs are written on a file for use with the
-File/Load command of GeomLab, each paragraph must end with a semicolon.
-The semicolon can be
+File/Load command of GeomLab, each paragraph must end with a semicolon. The semicolon can be
 omitted when paragraphs are entered at the interactive prompt.
 
 ==Additional forms of expression==
@@ -378,7 +352,7 @@ but they do make some kinds of program easier to write.
 
 ===@let@ expressions===
 
-<pre>LetExpr = let Definition in Expression</pre>
+ LetExpr = let Definition in Expression
 
 An expression <code>let <i>d</i> in <i>e</i></code>
 allows the name defined
@@ -386,7 +360,7 @@ by the definition <code><i>d</i></code> to be
 used in the expression <code><i>e</i></code>.
 For example, the value of the expression
 
-<pre>let y = x + 1 in y * y</pre>
+ let y = x + 1 in y * y
 
 is the square of whatever is the value of <code>x + 1</code>.
 The advantages
@@ -397,123 +371,108 @@ and substituting the right-hand side of the definition for the
 left-hand side,
 like this:
 
-<pre>(x + 1) * (x + 1)</pre>
+ (x + 1) * (x + 1)
 
 Also, @let@ expressions can be used to define
 functions that are local to a single expression.
 
 ===@function@ expressions===
 
-<pre>FunctionExpr = function Formals Expression</pre>
+ FunctionExpr = function Formals Expression
 
 A @function@ expression denotes a function that is defined
 by a single clause with no guard.  A @function@
 expression
-
 :<code>function (<i>p</i><sub>1</sub>, <i>p</i><sub>2</sub>, ..., <i>p<sub>n</sub></i>) e</code>
-
 denotes the same function @f@ as is defined by the
 definition
-
 :<code>(<i>p</i><sub>1</sub>, <i>p</i><sub>2</sub>, ..., <i>p<sub>n</sub></i>) = e</code>
-
 There is no need, however, to invent a fresh name @f@ in
-order to write the function as a @function@ expression.
-<code>Lambda</code> expressions are mainly used in more advanced
+order to write the function as a @function@ expression. <code>Lambda</code> expressions are mainly used in more advanced
 programming to specify arguments to higher-order functions.
 
 ===Operator sections===
 
 An operator symbol in parentheses, such as @(+)@, denotes the two-argument function performed by the operator.  This is useful with higher-order functions like this:
-
-:define sum(xs) = foldl((+), 0, xs)
-
+:@define sum(xs) = foldl((+), 0, xs)@
 A binary operator symbol may also appear in parentheses together with one or other of its operands and denotes a function of one argument.  Thus @(+1)@ is the function that adds one to its argument, and @(12/)@ is the function that divides 12 by its argument.
 
 (Concrete syntax for operator sections is missing from this summary.)
 
 Operator sections are implemented in terms of two functions @_lsect@ and @_rsect@, so that @(12/)@ is equivalent to @_lsect((/), 12)@ and @(+1)@ is equivalent to @_rsect((+), 1)@, where @_lsect@ and @_rsect@ are defined as follows.
-<pre>
-define _lsect(f, x) = function (y) f(x, y);
-define _rsect(f, x) = function (x) f(x, y);
-</pre>
+ define _lsect(f, x) = function (y) f(x, y);
+ define _rsect(f, x) = function (x) f(x, y);
 
 ===List comprehensions==
 
 List comprehensions provide compact notation for expressions that would otherwise involve higher-order functions such as @map@ and @filter@.
-<pre>
-Primary     = "[" Expression "|" 
-                  Generator { "," Generator | "when" Expression } "]"
+ Primary     = "[" Expression "|" 
+                   Generator { "," Generator | "when" Expression } "]"
 
-Generator   = Pattern "<-" Expression
-</pre>
+ Generator   = Pattern "<-" Expression
 For example, the comprehension @[ f(x) | x <- xs ]@ is equivalent to @map(f, xs)@, the compreshension @[ x | x <- xs when p(x) ]@ is equivalent to @filter(p, xs)@, and the compreshension @[ x | xs <- xss, x <- xs ]@ is equivalent to @concat(xss)@.
 
 List comprehensions are implemented in terms of a single function @_mapa@, defined by
  define _mapa(f, [], a) = a
    | _mapa(f, x:xs, a) = f(, _mapa(f, xs, a))
 A list comprehension @[ E | G1, G2, ... ]@ is defined as equivalent to the expression @T(E, [G1, G2, ...], [])@, where the transformation @T@ is defined as informally as follows.
-<pre>
-T(E, [], a) = "E : a"
+ T(E, [], a) = "E : a"
 
-T(E, ["x <- E1", ...], a) =
-  "_mapa(function (x, b) T(E, [...], b), E1, a)"
+ T(E, ["x <- E1", ...], a) =
+   "_mapa(function (x, b) T(E, [...], b), E1, a)"
 
-T(E, ["when E2", ...], a) =
-  "if E2 then T(E1, [...], a) else a"
-</pre>
+ T(E, ["when E2", ...], a) =
+   "if E2 then T(E1, [...], a) else a"
 (The names @x@ and @b@ introduced by this translation are replaced by other names that do not occur elsewhere in the program.)
 
 ==Syntax summary==
 
-<pre>
-Paragraph   = Expression [ ";" ] 
-            | define Definition [ ";" ]
+ Paragraph   = Expression [ ";" ] 
+             | define Definition [ ";" ]
 
-Definition  = ValueDef | FuncDef
+ Definition  = ValueDef | FuncDef
 
-ValueDef    = Name "=" Expression
+ ValueDef    = Name "=" Expression
 
-FuncDef     = Clause { "|" Clause }
+ FuncDef     = Clause { "|" Clause }
 
-Clause      = Name Formals "=" Expression [ when Expression ]
+ Clause      = Name Formals "=" Expression [ when Expression ]
 
-Name        = Ident | Operator
+ Name        = Ident | Operator
 
-Expression  = Term 
-            | if Term then BasicExpr else BasicExpr
-            | let Definition in Expression
-            | function Formals Expression
+ Expression  = Term 
+             | if Term then BasicExpr else BasicExpr
+             | let Definition in Expression
+             | function Formals Expression
 
-Term        = Term5 { or Term5 }
-Term5       = Term4 { and Term4 }
-Term4       = Term3 { ( "=" | "&lt;" | "&lt;=" | "&lt;&gt;" | "&gt;" | "&gt;=" ) Term3 }
-Term3       = { Term2 "++" } Term2
-Term2       = Term1 { ( "+" | "-" | "&amp;" ) Term1 }
-Term1       = Term0 { ( "*" | "/" | "$" ) Term0
-Term0       = { Factor ":" } Factor
+ Term        = Term5 { or Term5 }
+ Term5       = Term4 { and Term4 }
+ Term4       = Term3 { ( "=" | "&lt;" | "&lt;=" | "&lt;&gt;" | "&gt;" |  "&gt;=" ) Term3 }
+ Term3       = { Term2 "++" } Term2
+ Term2       = Term1 { ( "+" | "-" | "&amp;" ) Term1 }
+ Term1       = Term0 { ( "*" | "/" | "$" ) Term0
+ Term0       = { Factor ":" } Factor
 
-Factor      = ( "-" | "~" ) Factor | Primary
- 
-Primary     = Ident | Number | String
-	    | Ident { "(" [ Expression { "," Expression } ] ")" }
-            | "(" Expression ")" 
-            | "[" [ Expression { "," Expression } ] "]"
-            | "[" Expression ".." Expression "]"
- 
-Formals     = "(" [ Pattern { "," Pattern } ] ")"
+ Factor      = ( "-" | "~" ) Factor | Primary
 
-Pattern     = PattFactor { "+" Number }
+ Primary     = Ident | Number | String
+             | Ident { "(" [ Expression { "," Expression } ] ")" }
+             | "(" Expression ")" 
+             | "[" [ Expression { "," Expression } ] "]"
+             | "[" Expression ".." Expression "]"
 
-PattFactor  = PattPrimary { ":" PattPrimary }
+ Formals     = "(" [ Pattern { "," Pattern } ] ")"
 
-PattPrimary = Ident | "_" 
-            | [ "-" | "~" ] Number 
-            | String
-            | "(" Pattern ")" 
-            | "[" [ Pattern { "," Pattern } ] "]"
+ Pattern     = PattFactor { "+" Number }
 
-Operator    = and | div | mod | not | or | "=" | "+" | "-" 
-            | "$" | "*" | "/" | "&amp;" | "~" | ":" | "@" 
-            | "&lt;" | "&lt;=" | "&lt;&gt;" | "&gt;" | "&gt;=" 
-</pre>
+ PattFactor  = PattPrimary { ":" PattPrimary }
+
+ PattPrimary = Ident | "_" 
+             | [ "-" | "~" ] Number 
+             | String
+             | "(" Pattern ")" 
+             | "[" [ Pattern { "," Pattern } ] "]"
+
+ Operator    = and | div | mod | not | or | "=" | "+" | "-" 
+             | "$" | "*" | "/" | "&amp;" | "~" | ":" | "@" 
+             | "&lt;" | "&lt;=" | "&lt;&gt;" | "&gt;" | "&gt;=" 

@@ -1,4 +1,4 @@
-<!--The GeomLab library-->
+<!--The GeomLab library/library-->
 Here is a list of the names that are defined when GeomLab starts.
 These are the names that you can initially used in expressions, both
 constants that stand for values themselves, and functions that can be
@@ -8,95 +8,63 @@ that can be used in expressions.
 ==Numeric functions and operators==
 
 {{Markup|dl}}
-;@x + y@, @x - y@, @x * y@, @x / y@
-:Arithmetic operators.
-;@- x@, @~ x@
-:The negative of the number @x@.  Either notation is accepted.
-;@x &lt; y@, @x &lt;= y@, @x = y@, @x &lt;&gt; y@, @x &gt;= y@, @x &gt; y@
-:Comparison operators.  These compare two numbers and yield a Boolean: either true or false.
-;@int(x)@
-:The integer part of the number&nbsp;@x@.  This is the greatest integer @n@ such that @n &lt;= x@; it has the property that if @k@ is any integer, then @k &lt;= x@ if and only if @k &lt;= n@.  (EWD)
-;@x div y@, @x mod y@
-:Integer division and remainder.  These are defined by @x div y = int(x/y)@ and @x mod y = x - y * (x div y)@.
-;@sqrt(x)@
-:The square root of @x@.
-;@sin(x)@, @cos(x)@, @tan(x)@
-:Trigonometric functions.  These expect an argument in degrees.
-;@numeric(x)@
-:Yields @true@ if @x@ is a number, @false@ otherwise. 
+;{{LibDef|@x + y, x - y, x * y, x / y@}}: Arithmetic operators.
+;{{LibDef|@- x, ~ x@}}: The negative of the number @x@.  Either notation is accepted.
+;{{LibDef|@x &lt; y, x &lt;= y, x = y, x &lt;&gt; y, x &gt;= y, x &gt; y@}}: Comparison operators.  These compare two numbers and yield a Boolean: either true or false.
+;{{LibDef|@int(x)@}}: The integer part of the number&nbsp;@x@.  This is the greatest integer @n@ such that @n &lt;= x@; it has the property that if @k@ is any integer, then @k &lt;= x@ if and only if @k &lt;= n@.  (EWD)
+;{{LibDef|@x div y, x mod y@}}: Integer division and remainder.  These are defined by @x div y = int(x/y)@ and @x mod y = x - y * (x div y)@.
+;{{LibDef|@sqrt(x)@}}: The square root of @x@.
+;{{LibDef|@sin(x)@, @cos(x), tan(x)@}}: Trigonometric functions.  These expect an argument in degrees.
+;{{LibDef|@numeric(x)@}}: Yields @true@ if @x@ is a number, @false@ otherwise. 
 {{Markup|/dl}}
 
 ==Booleans==
 
 {{Markup|dl}}
-;@true@, @false@
-:The two Boolean constants.
-;@not p@, @p and q@, @p or q@
-:Boolean operators.  Note that @and@ and @or@ evaluate only their left-hand argument if that is enough to determine the result.
+;{{LibDef|@true, false@}}: The two Boolean constants.
+;{{LibDef|@not p, p and q, p or q@}}: Boolean operators.  Note that @and@ and @or@ evaluate only their left-hand argument if that is enough to determine the result.
 {{Markup|/dl}}
 
 ==Lists==
 
 {{Markup|dl}}
-;@x : xs@
-:The list obtained by adding @x@ to the beginning of the list @xs@ as a new first element.
-;@head(xs)@
-:If @xs@ is a non-empty list, the first element of @xs@.
-;@tail(xs)@
-:If @xs@ is a non-empty list, the list that contains all but the first element of @xs@.
-;@xs ++ ys@
-:The list containing all elements of list @xs@, followed by all elements of list&nbsp;@ys@.
-;@reverse(xs)@
-:The list containing the same elements as list @xs@, but in reverse order.
-;@length(xs)@
-:The length of the list&nbsp;@xs@.
+;{{LibDef|@x{{Cons}}xs@}}: The list obtained by adding @x@ to the beginning of the list @xs@ as a new first element.
+;{{LibDef|@head(xs)@}}: If @xs@ is a non-empty list, the first element of @xs@.
+;{{LibDef|@tail(xs)@}}: If @xs@ is a non-empty list, the list that contains all but the first element of @xs@.
+;{{LibDef|@xs ++ ys@}}: The list containing all elements of list @xs@, followed by all elements of list&nbsp;@ys@.
+;{{LibDef|@reverse(xs)@}}: The list containing the same elements as list @xs@, but in reverse order.
+;{{LibDef|@length(xs)@}}: The length of the list&nbsp;@xs@.
 {{Markup|/dl}}
 
 ==Pictures==
 
 {{Markup|dl}}
-;@blank@
-:A square picture that is completely blank
-;@null@
-:The null picture.  This has the properties that @null $ p = p = p $ null@ and @null & p = p = p & null@ for all pictures&nbsp;@p@.
-;@solid(r, c)@
-:A picture that is a solid block of colour&nbsp;@c@.  The ratio width/height of the picture is the number&nbsp;@r@.
-;@p $ q@
-:The compound picture obtained by placing @p@ beside&nbsp;@q@.  The two pictures are scaled relative to each other so that they have the same height.
-;@p &amp; q@
-:The compound picture obtained by placing @p@ above&nbsp;@q@.  The two pictures are scaled relative to each other so that they have the same width.
-;@rot(p)@
-:A copy of picture @p@ rotated by anticlockwise by 90&deg;.
-;@flip(p)@
-:A copy of picture @p@ reflected about the vertical axis.
-;@stretch(r, p)@
-:A copy of picture @p@ that has been stretched by a scale factor @r@ in the @x@ direction.
-;@colour(p)@
-:A coloured copy of picture&nbsp;@p@.  Some pre-defined pictures (i.e., the tiles used in making Escher pictures) have an implicit colour scheme that is linked to rotations of the tiles.  If picture @p@ contains such tiles, then @colour(p)@ is a picture in which these implicit colours have been made visible.
-;@aspect(p)@
-:The aspect ratio (<i>width</i>/<i>height</i>) of picture&nbsp;@p@.
+;{{LibDef|@blank@}}: A square picture that is completely blank
+;{{LibDef|@null@}}: The null picture.  This has the properties that @null $ p = p = p $ null@ and @null & p = p = p & null@ for all pictures&nbsp;@p@.
+;{{LibDef|@solid(r, c)@}}: A picture that is a solid block of colour&nbsp;@c@.  The ratio width/height of the picture is the number&nbsp;@r@.
+;{{LibDef|@p $ q@}}: The compound picture obtained by placing @p@ beside&nbsp;@q@.  The two pictures are scaled relative to each other so that they have the same height.
+;{{LibDef|@p &amp; q@}}: The compound picture obtained by placing @p@ above&nbsp;@q@.  The two pictures are scaled relative to each other so that they have the same width.
+;{{LibDef|@rot(p)@}}: A copy of picture @p@ rotated by anticlockwise by 90&deg;.
+;{{LibDef|@flip(p)@}}: A copy of picture @p@ reflected about the vertical axis.
+;{{LibDef|@stretch(r, p)@}}: A copy of picture @p@ that has been stretched by a scale factor @r@ in the @x@ direction.
+;{{LibDef|@colour(p)@}}: A coloured copy of picture&nbsp;@p@.  Some pre-defined pictures (i.e., the tiles used in making Escher pictures) have an implicit colour scheme that is linked to rotations of the tiles.  If picture @p@ contains such tiles, then @colour(p)@ is a picture in which these implicit colours have been made visible.
+;{{LibDef|@aspect(p)@}}: The aspect ratio (<i>width</i>/<i>height</i>) of picture&nbsp;@p@.
 {{Markup|/dl}}
 
 ==Colours==
 
 {{Markup|dl}}
-;@rgb(r, g, b)@
-:The colour with the red, green and blue components specified. Each component is a number between 0 and 1; components that lie outside this range are truncated.
-;@hsv(h, s, v)@
-:The colour with the hue, saturation and value components specified. Again, the components are truncated if necessary so that they lie between 0 and&nbsp;1.
-;@rpart(c), gpart(c), bpart(c)@
-:Given a colour, these functions find its red, green and blue components.
+;{{LibDef|@rgb(r, g, b)@}}: The colour with the red, green and blue components specified. Each component is a number between 0 and 1; components that lie outside this range are truncated.
+;{{LibDef|@hsv(h, s, v)@}}: The colour with the hue, saturation and value components specified. Again, the components are truncated if necessary so that they lie between 0 and&nbsp;1.
+;{{LibDef|@rpart(c), gpart(c), bpart(c)@}}: Given a colour, these functions find its red, green and blue components.
 {{Markup|/dl}}
 
 ==Picture constants==
 
 {{Markup|dl}}
-;@man@, @woman@, @tree@, @star@
-:Stick-figures of a man, a woman, a pine tree, and a five-pointed star.
-;@A@, @B@, @C@, @D@, @E@, @F@
-:Six tiles for use in drawing Escher pictures.  These have colours that are made visible using the primitive @colour(p)@.
-;@bend@, @straight@
-:Two square tiles that respectively show a bent and a straight line.
+;{{LibDef|@man, woman, tree, star@}}: Stick-figures of a man, a woman, a pine tree, and a five-pointed star.
+;{{LibDef|@A, B, C, D, E, F@}}: Six tiles for use in drawing Escher pictures.  These have colours that are made visible using the primitive @colour(p)@.
+;{{LibDef|@bend, straight@}}: Two square tiles that respectively show a bent and a straight line.
 {{Markup|/dl}}
 
 ==Turtle graphics==
@@ -109,31 +77,22 @@ turtle.  Because of this, it is only the relative lengths of the
 steps in the path that matter, and not their absolute value.
 
 {{Markup|dl}}
-;@turtle(xs)@
-:@xs@ must be a list of commands, created with the primitives that are listed below.  The function creates a picture by obeying the commands one after another.
-;@ahead(x)@
-:Create a command that moves the turtle forward by a distance @x@.
-;@left(a), right(a)@
-:Create commands the turn the turtle to the left or right through an angle @a@ in degrees.  The path of the turtle is a circular arc with radius 1.
-;@opp(c)@
-:The opposite of the command @c@: if @c = left(a)@ then @opp(c) = right(a)@, and vice versa.  If @c = ahead(x)@ then @opp(c) = ahead(x)@ also.
+;{{LibDef|@turtle(xs)@}}: @xs@ must be a list of commands, created with the primitives that are listed below.  The function creates a picture by obeying the commands one after another.
+;{{LibDef|@ahead(x)@}}: Create a command that moves the turtle forward by a distance @x@.
+;{{LibDef|@left(a), right(a)@}}: Create commands the turn the turtle to the left or right through an angle @a@ in degrees.  The path of the turtle is a circular arc with radius 1.
+;{{LibDef|@opp(c)@}}: The opposite of the command @c@: if @c = left(a)@ then @opp(c) = right(a)@, and vice versa.  If @c = ahead(x)@ then @opp(c) = ahead(x)@ also.
 {{Markup|/dl}}
 
 ==Images==
 
-;@image(w, h, f)@
-:An image @w@ pixels wide by @h@ pixels high, with the pixel at @(x, y)@, for @0 <= x < w@ and @0 <= y < h@ given by @f([x, y])@.
-;@flowers@
-:A function such that @flowers([x, y])@ for @0 <= x < 300@ and @0 <= y < 400@ is a pixel in a reproduction of van Gogh's painting ''Three Sunflowers''
-;@mike@
-:A function such that @mike([x, y])@ for @0 <= x < 300@ and @0 <= y < 400@ is a pixel in a photograph of GeomLab's author.
-;@photo(url)@
-:If @url@ is the URL of an image, the @photo(url)@ returns a pixel function for it, suitable for use as an argument of @image@.
+;{{LibDef|@image(w, h, f)@}}: An image @w@ pixels wide by @h@ pixels high, with the pixel at @(x, y)@, for @0 <= x < w@ and @0 <= y < h@ given by @f([x, y])@.
+;{{LibDef|@flowers@}}: A function such that @flowers([x, y])@ for @0 <= x < 300@ and @0 <= y < 400@ is a pixel in a reproduction of van Gogh's painting ''Three Sunflowers''
+;{{LibDef|@mike@}}: A function such that @mike([x, y])@ for @0 <= x < 300@ and @0 <= y < 400@ is a pixel in a photograph of GeomLab's author.
+;{{LibDef|@photo(url)@}}: If @url@ is the URL of an image, the @photo(url)@ returns a pixel function for it, suitable for use as an argument of @image@.
 
 ==Interaction==
 
-;@slide(f)@
-:The argument @f@ should be a function such that @f(t)@ is a picture for @0 <= t <= 1@. The result is a picture-like object that GeomLab displays by showing a slider, and applying @f@ to the slider value each time it changes.
+;{{LibDef|@slide(f)@}}: The argument @f@ should be a function such that @f(t)@ is a picture for @0 <= t <= 1@. The result is a picture-like object that GeomLab displays by showing a slider, and applying @f@ to the slider value each time it changes.
 
 ==Convenience==
 
@@ -143,23 +102,18 @@ anew every session.  Unlike the other names listed in this document,
 each of these names can be re-defined by entering a new definition.
 
 {{Markup|dl}}
-;@rot2(p)@
-:A copy of picture @p@ rotated by 180&deg;: 
-<pre>define rot2(p) = rot(rot(p))</pre>
-;@rot3(p)@
-:A copy of picture @p@ rotated anticlockwise by 270&deg;:
-<pre>define rot3(p) = rot(rot(rot(p)))</pre>
-;@cycle(p)@
-:Four copies of picture @p@, assembled in a square pattern:
-<pre>define cycle(p) = (p $ rot3(p)) & (rot(p) $ rot2(p))</pre>
-;@T@, @U@
-:Two tiles formed by assembling the parts @A@, @B@, @C@ and&nbsp;@D@:
-<pre>define T = (A $ B) & (C $ D)
-define U = (A $ rot3(A)) & (rot(A) $ rot2(A))</pre>
-;@frame(c, s, p)@
-:The picture obtained by surrounding a copy of @p@ with a frame that has rotated copies of @s@ at the sides and @c@ at the corners: 
-<pre> define frame(c, s, p) =
-    (c      $ rot3(s) $ rot3(c))
-  & (s      $ p       $ rot2(s))
-  & (rot(c) $ rot(s)  $ rot2(c))</pre>
+;{{LibDef|@rot2(p)@}}: A copy of picture @p@ rotated by 180&deg;: 
+ define rot2(p) = rot(rot(p))
+;{{LibDef|@rot3(p)@}}: A copy of picture @p@ rotated anticlockwise by 270&deg;:
+ define rot3(p) = rot(rot(rot(p)))
+;{{LibDef|@cycle(p)@}}: Four copies of picture @p@, assembled in a square pattern:
+ define cycle(p) = (p $ rot3(p)) & (rot(p) $ rot2(p))
+;{{LibDef|@T, U@}}: Two tiles formed by assembling the parts @A@, @B@, @C@ and&nbsp;@D@:
+ define T = (A $ B) & (C $ D)
+ define U = (A $ rot3(A)) & (rot(A) $ rot2(A))
+;{{LibDef|@frame(c, s, p)@}}: The picture obtained by surrounding a copy of @p@ with a frame that has rotated copies of @s@ at the sides and @c@ at the corners: 
+ define frame(c, s, p) =
+     (c      $ rot3(s) $ rot3(c))
+   & (s      $ p       $ rot2(s))
+   & (rot(c) $ rot(s)  $ rot2(c))
 {{Markup|/dl}}

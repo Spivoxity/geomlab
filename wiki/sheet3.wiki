@@ -1,4 +1,4 @@
-<!--Worksheet 3: Definitions and functions-->
+<!--Worksheet 3: Definitions and functions/worksheets-->
 Remember that @rot@ can be applied twice to a picture to
 turn it upside down:
 {{GeomPic|3004|rot(rot(man))|*}}
@@ -8,22 +8,16 @@ be used when we want two successive rotations to be applied
 to a picture, as in the examples above.
 We can do this using an expression with @define@, like this:
 :@define rot2(p) = rot(rot(p))@
-The command @define@ sets the expression that follows
-it on the left hand side of the = (or ''equality'')
-sign to be the same as the expression on the right of the equality sign.
+The command @define@ makes the expression that follows
+it on the left hand side of the = sign to stand for the expression on the right of the = sign.
 
 When you type this definition in place of an expression, GeomLab
 responds with the message
-:@--- rot2 = <function>@
+:@--- rot2 = &lt;function&gt;@
 This shows the @rot2@ has been defined as a <i>function</i>:
 it is not a picture in itself, but it produces a picture when we
-supply an argument (i.e., the picture that is to be rotated). Now
-typing @rot2(man)@ into GeomLab produces the message
-:@--> <picture>@
-and an image appears in the other window, since a picture ''is''
-produced when @rot2@ is applied to an argument picture.
-
-Now that we have defined the function @rot2@, we can use
+supply an argument (i.e., the picture that is to be rotated).
+Having defined the function @rot2@, we can use
 it in the same way as any other function:
 {{GeomPic|3028|rot2(man)|*}}
 In order to use a defined function in an expression, we just type both
@@ -49,7 +43,7 @@ picture:
 What will the image produced by @f(man) $ tree@ look
 like? Sketch the picture here:
 {{GeomPic|3043|f(man) $ tree}}
-Check your answer in GeomLab.
+Check your answer in GeomLab: again, you must enter simultaneously both the definition of @f@ and the expression that uses it.
 
 Here is the image produced by @f(man $ tree)@:
 {{GeomPic|3047|f(man $ tree)|*}}
@@ -66,15 +60,13 @@ Now look at the picture @f(f(man))@:
 {{GeomPic|3060|f(f(man))|*}}
 Looking at the picture above, there are ''nine'' men produced by
 applying function @f@ twice to @man@.
-What happens if we apply function @f@ ''three'' times to
-@man@, as in @f(f(f(man)))@?  How many men do
+What happens if we apply function @f@ ''three'' times to @man@, as in @f(f(f(man)))@?  How many men do
 you think will be in the picture? Write your answer in the space
 below, and give a brief explanation:
 {{bigspace}}
-As described in Worksheet 2, a function takes one or more
-''arguments''. For example, the function @f@ that we
+As described in Worksheet 2, a function takes one or more ''arguments''. For example, the function @f@ that we
 defined earlier takes one argument, which could be @man@,
-@woman@ or any other expression.
+@woman@ or any other picture expression.
 
 Let us define a function g that takes two arguments:
 :@define g(p, q) = (p & q) $ (q & p)@

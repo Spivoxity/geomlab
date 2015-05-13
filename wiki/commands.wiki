@@ -1,44 +1,29 @@
-<!--GeomLab commands-->
+<!--GeomLab commands/using-->
 ==File Menu== 
 {{Markup|dl}}
-;Load ...
-:Displays a dialog that allows you to choose a text file containing expressions and definitions that is then loaded into GeomLab. 
-;Load session ...
-:Displays a dialog that allows you to choose a file containing a saved GeomLab session (extension .gls) to be loaded into GeomLab.  When a saved session is loaded, all definitions that have been made in the current session are lost, unless you first saved the session in a file. 
-;Save session ...
-:Displays a dialog that allows you to choose the name of a file (with extension .gls); all the definitions in the current GeomLab session are saved in the file, so that they can subsequently be re-loaded with  "Load session ...". The '.gls' file that results cannot be opened with a normal text editor, but the text of the definitions is not lost, and can be accessed again after the file is loaded into GeomLab. 
-;Print image ...
-:Displays a print dialog for sending the current image to a printer. 
-;Image setup ...
-:Displays a dialog that allows you to choose the 'mean size' used for subsequent "Save image ..." commands.  When an image is saved, the width and height of the image in pixels is chosen so that they have approximately the right ratio to suit the picture, and so that the product of the width and height is approximately the square of the mean size chosen here. 
-;Save image ...
-:Displays a dialog that allows you to choose the name of a file; the current image is then saved in the file in Portable Network Graphics ('.png') format.  This format can be displayed by all modern graphics programs and web browsers. 
-;Exit
-:Exits from GeomLab.  All definitions that have not been saved are  lost.  
+;Load ...: Displays a dialog that allows you to choose a text file containing expressions and definitions that is then loaded into GeomLab. 
+;Load session ...: Displays a dialog that allows you to choose a file containing a saved GeomLab session (extension .gls) to be loaded into GeomLab.  When a saved session is loaded, all definitions that have been made in the current session are lost, unless you first saved the session in a file. 
+;Save session ...: Displays a dialog that allows you to choose the name of a file (with extension .gls); all the definitions in the current GeomLab session are saved in the file, so that they can subsequently be re-loaded with  "Load session ...". The '.gls' file that results cannot be opened with a normal text editor, but the text of the definitions is not lost, and can be accessed again after the file is loaded into GeomLab. 
+;Print image ...: Displays a print dialog for sending the current image to a printer. 
+;Image setup ...: Displays a dialog that allows you to choose the 'mean size' used for subsequent "Save image ..." commands.  When an image is saved, the width and height of the image in pixels is chosen so that they have approximately the right ratio to suit the picture, and so that the product of the width and height is approximately the square of the mean size chosen here. 
+;Save image ...: Displays a dialog that allows you to choose the name of a file; the current image is then saved in the file in Portable Network Graphics ('.png') format.  This format can be displayed by all modern graphics programs and web browsers. 
+;Exit: Exits from GeomLab.  All definitions that have not been saved are  lost.  
 {{Markup|/dl}}
 
 ==Tools menu==  
 
 {{Markup|dl}}
-;Evaluate expression
-:Submits the expression currently in the bottom pane for evaluation by GeomLab.  Alternatives to this command are to press <code>Shift-Return</code> while typing in the bottom pane, and to click on the "Go" button next to the bottom pane. 
-;List defined names
-:Pastes a list of all names that have been defined in the interpreter -- both those that are part of the GeomLab library, and those that have been defined during the current session -- into the top pane. 
-;Find definition
-:Before invoking this command, you should type a single name into the bottom pane.  The command finds the text that defines this name, and  inserts the text into the bottom pane in place of the name that you typed. This definition can then be edited before submitting it to GeomLab again; this is a good way to fix minor errors.  Note that names that are pre-defined do not have a defining text.  
+;Evaluate expression: Submits the expression currently in the bottom pane for evaluation by GeomLab.  Alternatives to this command are to press <code>Shift-Return</code> while typing in the bottom pane, and to click on the "Go" button next to the bottom pane. 
+;List defined names: Pastes a list of all names that have been defined in the interpreter -- both those that are part of the GeomLab library, and those that have been defined during the current session -- into the top pane. 
+;Find definition: Before invoking this command, you should type a single name into the bottom pane.  The command finds the text that defines this name, and  inserts the text into the bottom pane in place of the name that you typed. This definition can then be edited before submitting it to GeomLab again; this is a good way to fix minor errors.  Note that names that are pre-defined do not have a defining text.  
 {{Markup|/dl}}
 
 ==Options menu== 
 
 {{Markup|dl}}
-;Match brackets
-:If this option is enabled, then each closing bracket  (either ')' or&nbsp;']') that is typed in the bottom pane highlights all the text back to the matching opening bracket with a blue line. If the brackets do not match properly, or there are more closing than opening brackets, then the line appears in red instead.  This option makes it easier to type complicated expressions, especially ones that end with a lot of closing brackets. 
-;Count reduction steps
-:If this option is enabled, then GeomLab counts the number of 'reduction steps' that are needed to evaluate each expression, and displays the total together with the value of the expression. 
-;Larger font
-:This command increases the size of the text in the two panes of the main GeomLab window. 
-;Smaller font
-:This command decreases the size of the text.
-;Smoother screen display
-:This option causes GeomLab to use a more refined method for drawing both the text in the main window and the lines that appear in the picture display. This gives a more pleasing result at the expense of being slower. The more refined method is always used when images are saved in a file or sent for printing, so this option has no effect on the saved or printed results. 
+;Match brackets: If this option is enabled, then each closing bracket  (either ')' or&nbsp;']') that is typed in the bottom pane highlights all the text back to the matching opening bracket with a blue line. If the brackets do not match properly, or there are more closing than opening brackets, then the line appears in red instead.  This option makes it easier to type complicated expressions, especially ones that end with a lot of closing brackets. 
+;Count reduction steps: If this option is enabled, then GeomLab counts the number of 'reduction steps' that are needed to evaluate each expression, and displays the total together with the value of the expression. 
+;Larger font: This command increases the size of the text in the two panes of the main GeomLab window. 
+;Smaller font: This command decreases the size of the text.
+;Smoother screen display: This option causes GeomLab to use a more refined method for drawing both the text in the main window and the lines that appear in the picture display. This gives a more pleasing result at the expense of being slower. The more refined method is always used when images are saved in a file or sent for printing, so this option has no effect on the saved or printed results. 
 {{Markup|/dl}}

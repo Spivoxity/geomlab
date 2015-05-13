@@ -1,21 +1,23 @@
-<!--Building GeomLab-->
+<!--Building GeomLab/download-->
 GeomLab consists of two layers: a Java layer that implements FunCode, a virtual machine for functional programming, and a second layer, including most of the compiler for the GeomLab language, that runs on the FunCode machine.  The Java layer is divided into several Java packages:
+{{Markup|ul}}
 * the programming environment, implemented as a Java Swing application (geomlab), 
 * the FunCode virtual machine (funbase), 
 * a dynamic translator that translates FunCode programs into JVM code (funjit), and 
 * a collection of plug-in features, including graphics (plugins).
+{{Markup|/ul}}
 The GeomLab compiler is written (all apart from the scanner) in its own input language, so the build process for GeomLab requires a bootstrap copy of the FunCode translation of the compiler.
-
 The complete build process goes as follows:
+{{Markup|ol}}
 # Compile the Java source, using a command such as<br/>@javac funbase/*.java funjit/*.java geomlab/*.java plugins/*.java@
 # Use the bootstrap code to compile the compiler:<br/>@java geomlab.RunScript -b boot.txt compiler.txt &gt;stage1.boot@
 # Use the compiler to compile itself:<br/>@java geomlab.RunScript -b stage1.boot compiler.txt &gt;stage2.boot@
 # Use the compiler to compile itself again:<br/>@java geomlab.RunScript -b stage2.boot compiler.txt &gt;stage3.boot@<br/>The files @stage2.boot@ and @stage3.boot@ should be identical.
 # Make a session image containing the compiler and the prelude:<br/>@java geomlab.RunScript -b stage2.boot prelude.txt -e '_dump("geomlab.gls")'@
+{{Markup|/ol}}
 Now it should be possible to run the GeomLab application
 with @java geomlab.GeomLab@.  By default, this initially
 loads the session image @geomlab.gls@ prepared above.
-
 Strictly speaking, it is not necessary to go through stages (2),
 (3) and (4) of the build process shown here: the bootstrap
 file @boot.txt@ can be used directly in place of @stage2.boot@ in stage (5).  However, if there have been changes to the compiler, the whole process is necessary in order to get the system into a stable state.

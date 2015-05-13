@@ -1,0 +1,230 @@
+/* GENERAL ELEMENT FORMATTING */
+
+body { 
+  font-family: sans-serif;
+  font-size: 12pt;
+}
+
+h1, h2, h3 {
+  font-weight: normal;
+  color: #330099;
+}
+
+h1 { font-size: 24pt; }
+h2 { font-size: 16pt; }
+h3 { font-size: 12pt; }
+
+a:link {
+  color: #309;
+}
+
+a:visited {
+  color: #903;
+}
+
+a img {				/* No border on image links */
+  border: 0;
+}
+
+li {
+  margin-top: 6px;
+}
+
+dt {
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+/* CONTENT */
+
+#content {
+  margin-left: 160px;
+  padding-left: 10px;
+}
+
+p.display {
+  text-align: center;
+}
+
+p.equation {
+  padding-left: 24px;
+}
+
+pre {
+  padding-left: 24px;
+}
+
+.fullwidth {
+  width: 99%;
+}
+
+.menu {					/* Menu of source files */
+  font-size: 10pt;
+}
+
+.menu td {
+  vertical-align: top;
+}
+
+
+/* PAGE HEADER AND FOOTER */
+
+#header {
+  padding-top: 12px;
+}
+
+#header p { 
+  font-size: 16pt; 
+  font-weight: bold; 
+  color: #309; /* #99c */ 
+  background-image: url(cycletpale.png);
+  padding: 3px 6px 24px;
+  margin: 12px 0px 0px;
+}
+
+#header img {
+  float: right;
+  margin: 0px 24px 24px;
+}
+
+#footer p {
+  clear: left;
+  font-size: 10pt;
+  font-style: italic;
+  color: #309;
+  border-top: 2px solid #cce; /* #99c */
+  padding-top: 6px;
+  text-align: right;
+  height: 50px;
+}
+
+#footrule {
+  height: 2px;
+  color: #cce;
+  background-color: #cce;
+}
+
+#brand {
+  float: right; 
+  margin-right: 0px;
+  margin-top: 8px;
+}
+
+
+/* NAVIGATION BAR */
+
+ul#nav {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+  margin-top: 28px;
+  font-size: 10pt;
+  text-align: center;
+  float: left;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+ul#nav li {
+  margin-top: 0;
+}
+
+/* Three kinds of links:
+	to this page: 			<span class="actnav">
+	to root of this section:	<a class="actnav">
+	to other section:		<a>
+   Only the links <a ...> should have a hover colour */
+
+ul#nav a, .actnav {
+  color: #309;
+  display: block;
+  text-align: center;
+  width: 140px;
+  text-decoration: none;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+  border: 1px solid;
+}
+
+ul#nav a {			/* Link to other section */
+  background: white;
+}
+
+ul#nav a:hover {		/* ... with hover */
+  background: #eee;
+}
+
+ul#nav .actnav {		/* Same section */
+  background: #cce;
+}  
+
+ul#nav a.actnav:hover {		/* ... with hover if a real link */
+  background: #bbd;
+}
+
+
+/* TWIN DISPLAYS */
+
+table.twin {
+  width: 80%;
+  font-family: monospace;
+  font-size: 12pt;
+}
+
+td.input {
+  padding-left: 24px;
+}
+
+td.output {
+  text-align: right;
+  padding-right: 24px;
+}
+
+
+/* BIG GREEN ARROW */
+
+/* Image is 234 x 162 */
+
+a.bga, a.bga:visited {
+  float:left;
+  display: block; 
+  background-image: url(arrow.png);
+  background-repeat: no-repeat;
+  text-decoration: none; 
+  width: 214px; height: 97px;
+  font-weight: bold;
+  color: #309;
+  padding-top: 65px;
+  padding-left: 20px;
+}
+
+/* PRINT */
+
+@media print {
+  #nav {
+    display:none;
+  }
+
+  #content {
+    margin-left: 0;
+    padding-left: 0;
+  }
+}
+
+/* FROM WIKI SKIN */
+
+/* Style the Big Green Arrow */
+a.bga2 {
+    display: block;
+    background-image: url(arrow.png);
+    background-repeat: no-repeat;
+    background-position: 0 10px;
+    text-decoration: none; 
+    width: 214px; height: 97px;
+    color: #309;
+    padding-top: 75px;
+    padding-left: 20px;
+    margin-right: 10px;
+    font-weight: bold;
+}

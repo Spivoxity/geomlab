@@ -1,4 +1,4 @@
-<!--Java is not installed-->
+<!--Java is not installed/home-->
 If you came here by clicking on the Big Green Arrow,
 then your web browser does not seem to have support for running Java
 applications via Java Web Start, perhaps because it does not have a

@@ -11,12 +11,15 @@ RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
 ICONS = icon16.png icon32.png icon64.png icon128.png
 SESSIONS = obj/geomlab.gls examples.gls
 
-default: build 
+default: build static
 
-all: build figs book
+all: build figs book static
 
 figs book: force
 	$(MAKE) -C $@ all
+
+
+### Build application
 
 build: prep .compiled $(RESOURCES:%=obj/%) $(SESSIONS) $(ICONS:%=obj/%)
 
@@ -60,7 +63,7 @@ bootstrap: stage1.boot force
 	(sed '/^ *$$/q' src/boot.txt; cat stage2.boot) >boot.tmp
 	mv boot.tmp src/boot.txt
 
-# Testing
+### Testing
 
 test: force
 	tclsh test/language
@@ -68,8 +71,13 @@ test: force
 	tclsh test/graphics
 	tclsh test/examples
 
+### Static website
 
-# Web resources
+static: force
+	@mkdir -p static
+	$(MAKE) -C static -f ../scripts/Makefile.static 
+
+### Web resources for wiki
 
 PREFIX = https://spivey.oriel.ox.ac.uk/gwiki/files
 
@@ -105,7 +113,6 @@ web/% web/files/% web/extensions/% \
 web/files/%.jnlp: res/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
 
-# TSA = http://timestamp.comodoca.com/rfc3161
 TSA = http://timestamp.globalsign.com/scripts/timestamp.dll 
 
 .signed: web/files/geomlab.jar web/files/examples.jar
@@ -114,6 +121,8 @@ TSA = http://timestamp.globalsign.com/scripts/timestamp.dll
 		-storepass `cat javakey/storepass` -tsa $(TSA) $$f geomlab; \
 	done
 	echo timestamp >$@
+
+### Publishing to wiki
 
 HOST = spivey.oriel.ox.ac.uk
 WIKI = /var/www/gwiki

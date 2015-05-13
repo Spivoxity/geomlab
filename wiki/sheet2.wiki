@@ -1,27 +1,22 @@
-<!--Worksheet 2: Rotations and reflections-->
+<!--Worksheet 2: Rotations and reflections/worksheets-->
 Another two functions that can be used on (or ''applied to'')
 pictures are @rot@ and @flip@. 
 The function @rot@ stands for ''rotate'', and twists a
-picture anticlockwise by 90 degrees. The function  
-@flip@ reflects a picture about a vertical axis, so it
+picture anticlockwise by 90 degrees. The function @flip@ reflects a picture about a vertical axis, so it
 looks like the picture has been flipped over: 
 {{GeomPic|2008|rot(man)|*}}
 {{GeomPic|2009|flip(man)|*}}
 {{GeomPic|2010|rot(flip(man))|*}}
-Look carefully at the first and third pictures above -- they are
-''not'' the same!
+Look carefully at the first and third pictures above -- they are ''not'' the same!
 
 Since @rot@ and @flip@ are functions, they
-can be applied several times to an argument. For example,
-@rot(rot(man))@ produces the following image:
+can be applied several times to an argument. For example, @rot(rot(man))@ produces the following image:
 {{GeomPic|2017|rot(rot(man))|*}}
-Similarly, @flip(flip(man))@ is allowed, although this will simply produce the original picture of  
-@man@. Try it out for yourself in GeomLab.
+Similarly, @flip(flip(man))@ is allowed, although this will simply produce the original picture of @man@. Try it out for yourself in GeomLab.
 What will @rot(rot(rot(tree)))@ look like? Sketch the image in the space below:
 {{GeomPic|2021|rot(rot(rot(tree)))}}
 Check your answer in GeomLab.
-Since the function @rot@ rotates a picture, it should be possible to get back to the original picture by using 
-@rot@ several times. Fill in the expression missing in the
+Since the function @rot@ rotates a picture, it should be possible to get back to the original picture by using  @rot@ several times. Fill in the expression missing in the
 space below -- you must use the function @rot@ 
 at least once, so don't just write "@tree@"!
 {{GeomPic|2027||rot(rot(rot(rot(tree))))}}
@@ -31,8 +26,7 @@ So far we've used rot and flip on just ''constant'' pictures
 like @man@ and @tree@.
 Now let's try the expression @rot(man & woman)@:
 {{GeomPic|2033|rot(man & woman)|*}}
-Using the picture as a guide, how can this expression be rewritten using only the functions @rot@ and  
-@$@? Fill in the expression below:
+Using the picture as a guide, how can this expression be rewritten using only the functions @rot@ and @$@? Fill in the expression below:
 {{GeomPic|2036||rot(man) $ rot(woman)}}
 Check your answer in GeomLab.
 
@@ -60,9 +54,7 @@ Now try to find expressions that result in these pictures:
 {{GeomPic|2060||man $ (rot(man $ man) & man)}}
 {{GeomPic|2061||man $ rot(man $ rot(man $ rot(man $ rot(man))))}}
 {{GeomPic|2062||rot(blank & rot(rot(rot(star))) & blank) & tree}}
-For this last picture, you will need the constant picture
-@star@, and it may help you to make the star be the
-right size if you know that @blank@ is a square picture
+For this last picture, you will need the constant picture @star@, and it may help you to make the star be the right size if you know that @blank@ is a square picture
 that is entirely blank.
 
 In this sheet, we have added more operations to our algebraic
@@ -70,8 +62,7 @@ language of pictures, so that we can now rotate and reflect pictures
 as well as putting them side-by-side or one above another.
 In addition to adding more operations, we have also found new
 algebraic identities that relate the operations to each other.
-Some of these identities make it possible to move instances of
-@rot@ and @flip@ inwards in any expression, so
+Some of these identities make it possible to move instances of @rot@ and @flip@ inwards in any expression, so
 that it becomes a combination (using @$@ and @&@
 of rotated or reflected primitive tiles.  This is more-or-less what
 the computer does in order to draw the pictures your program

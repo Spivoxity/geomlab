@@ -1,12 +1,16 @@
-<!--Downloading GeomLab-->
+<!--Downloading GeomLab/download-->
 From this page, you can download the GeomLab programming
 environment in binary, executable form.
 You can also access the source code at BitBucket.
-The software is covered by a permissive [[#Software licence|licence]] 
-that is shown at the foot of this page. You can:
+The software is covered by a permissive software licence 
+that is shown at the foot of this page. 
+
+You can:
+{{Markup|ul}}
 * Download GeomLab as a {{Resource|geomlab.jar|binary JAR file}}. (Saving this file on a Windows machine, for example, allows GeomLab to be started by double-clicking on the file.)
 * Visit our [https://bitbucket.org/Spivey/geomlab BitBucket repository] to find the source code.
-* Read instructions for [[building GeomLab]] from the source code.
+* Read instructions for {{XLink|build|building GeomLab}} from the source code.
+{{Markup|/ul}}
 
 ==Software licence==
 
@@ -17,9 +21,11 @@ Font data Copyright &copy; 2003 Bitstream, Inc.</b>
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
+{{Markup|ul}}
 * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 * The name of the author may not be used to endorse or promote products derived from this software without specific prior written permission.
+{{Markup|/ul}}
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
