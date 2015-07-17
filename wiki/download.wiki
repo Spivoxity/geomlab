@@ -15,7 +15,7 @@ You can:
 ==Software licence==
 
 <b>GeomLab version 3.0<br>
-Copyright &copy; 2005-2011 J. M. Spivey<br>
+Copyright &copy; 2005-2015 J. M. Spivey<br>
 Font data Copyright &copy; 2003 Bitstream, Inc.</b>
 
 Redistribution and use in source and binary forms, with or without

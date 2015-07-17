@@ -1,8 +1,8 @@
-<!--Contact us-->
+<!--Contact us/contact-->
 Whether you've visited this site as part of an activity organised
 in your school, or whether you have found and explored it on your own,
-we'd love to hear from you. Please use the form on this page to
-send us your comments. If you include an e-mail address, then
-we'll get back to you as soon as we can.
+we'd love to hear from you. 
 
-{{#html:ContactForm}}
+We are also keen to give what help we can with technical problems in using GeomLab on your computer.  If you'd like us to help, please give as much information you can about the web browser and operating system you are using, and what version of Java you have installed.
+
+You can contact us by sending e-mail to <a href="mailto:geomlab@cs.ox.ac.uk?subject=GeomLab">geomlab{{At}}cs.ox.ac.uk</a>.  Please mention "GeomLab" in the subject line to help us filter out spam.

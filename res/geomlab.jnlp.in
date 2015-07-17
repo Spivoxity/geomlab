@@ -7,7 +7,7 @@
     <icon type="splash" href="icon64.png"/>
     <icon href="icon32.png"/>
     <offline-allowed/>
-    <homepage href="http://spivey.oriel.ox.ac.uk/geomlab"/>
+    <homepage href="http://www.cs.ox.ac.uk/geomlab/home.html"/>
   </information>
   <security>
     <all-permissions/>

@@ -15,13 +15,12 @@ RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
 ICONS = icon16.png icon32.png icon64.png icon128.png
 SESSIONS = obj/geomlab.gls examples.gls
 
-default: build figs package static
+all: build figs package book static
 
-all: build figs book static
+book: img
 
-figs book: force
+figs book img: force
 	$(MAKE) -C $@ all
-
 
 ### Build application
 
@@ -77,12 +76,15 @@ test: force
 
 ### Static website
 
+STATHOST = linux.cs.ox.ac.uk
+STATDIR = /fs/website/geomlab
+
 static: force
 	@mkdir -p static
 	$(MAKE) -C static -f ../scripts/Makefile.static 
 
 push: force
-	rsync static/ spivey:/var/www/geomlab
+	rsync -av static/ $(STATHOST):$(STATDIR)
 
 
 ### Web resources for wiki
@@ -148,9 +150,12 @@ purge: force
 	ssh $(HOST) php $(WIKI)/maintenance/deleteOldRevisions.php --delete
 
 clean: force
-	rm -rf obj examples.gls
+	rm -rf obj examples.gls stage*.boot
 	rm -f .compiled .signed
 
 realclean: clean
+	rm -rf web static
+	rm -f examples.jar geomlab.jar
+	for d in figs book img; do $(MAKE) -C $$d $@; done
 
 force:

@@ -50,4 +50,6 @@ cleanup: force
 clean: force
 	rm -f .*-fun .*-fig $(SOURCES:%=%.fun) *.png *.eps *.jpg
 
+realclean: clean
+
 force:

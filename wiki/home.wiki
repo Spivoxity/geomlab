@@ -1,4 +1,10 @@
 <!--Welcome to GeomLab/home-->
+<div style="color: red">
+<p>''Note:'' The GeomLab application has recently been updated with a version that is properly signed with a certificate that should be accepted by most browsers.  In addition, its appearance has changed to a single window in place of the separate editing and picture windows, and it is used in a slightly different way.</p>
+
+<p>Even if you have used GeomLab before, please take a moment to look at the {{XLink|start|Getting started with GeomLab|getting started}} page for instructions.</p>
+</div>
+
 This web site will introduce you to some of the most important
 ideas in computer programming in an interactive, visual way through a
 guided activity. The activity is about a language for describing

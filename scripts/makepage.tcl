@@ -79,13 +79,14 @@ regsub -all {{{Markup\|(.*?)}}} $content {<\1>} content
 regsub -line -all {^;(.*?): *(.*?)$} $content {<dt>\1</dt><dd>\2</dd>} content
 regsub -all {{{Message\|(.*?)\|(.*?)\|(.*?)}}} $content \
     {<a name="\1">\2: \3</a>} content
-regsub -all {{{LibDef\|(.*?)}}} $content {\1} content
 regsub -all {{{Cons}}} $content ":" content
+regsub -all {{{LibDef\|(.*?)}}} $content {\1} content
 regsub -line -all {^:(.*)$} $content {<p class="equation">\1</p>} content
 regsub -line -all {^#(.*)$} $content {<li>\1</li>} content
 regsub -line -all {^\*(.*)$} $content {<li>\1</li>} content
 regsub -all {@\\\\@} $content {<code>\\</code>} content
 regsub -all {@(.*?)@} $content {<code>\1</code>} content
+regsub -all {{{At}}} $content {@} content
 
 regsub -all \
     {\n+((([^ <\n]|<code>|<a )[^\n]*\n)*([^ <\n]|<code>|<a )[^\n]*)\n} \

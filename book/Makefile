@@ -26,6 +26,8 @@ $(TRAN): %.tex: ../wiki/%.wiki ../scripts/textran.tcl
 clean: force
 	rm -f .publish workbook.pdf workbook.ps *.dvi *.bkm *.log *.bko $(TRAN) 
 
+realclean: clean
+
 .DELETE_ON_ERROR:
 
 export TEXINPUTS = .:../figs:../img:

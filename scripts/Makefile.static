@@ -1,7 +1,7 @@
 PAGES =	home build commands download errors \
 	language library nojava sheet1 sheet2 sheet3 sheet4 \
 	sheet5 sheet6 sheet7 sheet8 \
-	start teachers tiles tips using worksheets help
+	start teachers tiles tips using worksheets help contact
 
 IMAGES := $(notdir $(wildcard ../figs/*.png) $(wildcard ../figs/*.jpg))
 
@@ -10,13 +10,15 @@ FILES = index.html geomlab.css cycletpale.png arrow.png quad96.png \
 	.htaccess icon32.png icon64.png \
 	GeomLab-1.png GeomLab-2.png GeomLab-3.png GeomLab-4.png GeomLab-5.png \
 	GeomLab-talk.ppt ATM-article.pdf CAS-article.pdf \
-	geomlab.jnlp geomlab.jar examples.jar
+	geomlab.jnlp geomlab.jar examples.jar workbook.pdf
 
-LOCATION = http://spivey.oriel.ox.ac.uk/geomlab
+LOCATION = http://www.cs.ox.ac.uk/geomlab
 
 ALL = $(PAGES:%=%.html) $(IMAGES) $(FIXED) $(FILES) 
 
 all: $(ALL)
+
+home.html: ../wiki/BigGreenArrow.tmpl
 
 webcheck: force
 	(grep -o '<a href=[^>]*>' *.html | sed 's/.*"\(.*\)".*/\1/' \
@@ -29,9 +31,11 @@ webcheck: force
 vpath %.wiki ../wiki
 vpath %.tmpl ../wiki
 
+.htaccess: ../res/htaccess; cp $< $@
+%.png:: ../obj/%.png; cp $< $@
 %:: ../res/%; cp $< $@
 %:: ../img/%; cp $< $@
-%:: ../web/files/%; cp $< $@
+%:: ../book/%; cp $< $@
 geomlab.jar examples.jar: %: ../%; cp $< $@
 
 geomlab.jnlp: ../res/geomlab.jnlp.in

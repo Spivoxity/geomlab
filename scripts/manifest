@@ -1,3 +1,4 @@
+Application-name: GeomLab
 Main-Class: geomlab/GeomLab
 Permissions: all-permissions
-Codebase: *
+Codebase: *.ox.ac.uk
