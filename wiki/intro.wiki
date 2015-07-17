@@ -1,4 +1,4 @@
-<!--Introduction-->
+<!--Introduction/intro-->
 This {{IfWiki|website|booklet}} will introduce you to some of the most important ideas
 in computer programming in an interactive, visual way through a guided
 activity. The activity is about a language for describing

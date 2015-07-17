@@ -37,9 +37,8 @@ Is it also true that
 Try it out on some examples in GeomLab, and see if the images
 produced are the same.
 
-If the two expressions are ''not'' the same, suggest in the space
-below an equation that ''is'' true:
-{{bigspace}}
+If the two expressions are ''not'' the same, suggest an equation that ''is'' true{{IfBook|:
+{{bigspace}}|.}}
 We can create a variety of different images using the functions rot
 and flip on the constant picture&nbsp;@man@: 
 {{GeomPic|2051|man|*}}
@@ -47,8 +46,9 @@ and flip on the constant picture&nbsp;@man@:
 {{GeomPic|2053|rot(flip(man))|*}}
 How many different pictures are there? How many pictures can we
 create using the functions @rot@ and @flip@?
-Write your answer with an explanation in the space below:
-{{bigspace}}
+{{IfBook|Write your answer with an explanation in the space below:
+{{bigspace}}}}
+
 Now try to find expressions that result in these pictures:
 {{GeomPic|2059||man $ flip(man)}}
 {{GeomPic|2060||man $ (rot(man $ man) & man)}}

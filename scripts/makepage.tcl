@@ -1,38 +1,8 @@
-#!/usr/bin/tclsh
+# makepage.tcl
 
-proc lsplit {xs args} {
-    set n [llength $args]
-    for {set i 0} {$i < $n} {incr i} {
-	uplevel [list set [lindex $args $i] [lindex $xs $i]]
-    }
-}
+set scriptdir [file dirname [info script]]
 
-proc get-string {s loc} {
-    lsplit $loc b e
-    return [string range $s $b $e]
-}
-
-proc put-string {s loc t} {
-    lsplit $loc b e
-    return [string replace $s $b $e $t]
-}
-
-# extract -- match regexp or raise error
-proc extract {regexp string args} {
-    if {[llength $args] == 0} {
-	# return one match as the result
-	if {! [regexp $regexp $string _ result]} {
-	    error "Matching failed"
-	}
-	return $result
-    } else {
-	# set one or more variables from the match
-	if {! [uplevel [list regexp $regexp $string _] $args]} {
-	    error "Matching failed"
-	}
-	return {}
-    }
-}
+source "$scriptdir/common.tcl"
 
 proc read-file {name} {
     set f [open $name r]
@@ -46,10 +16,9 @@ proc read-file {name} {
 
 set fname [lindex $argv 0]
 
-set srcdir [file dirname $argv0]
 set incdir [file dirname $fname]
 
-set template [read-file "$srcdir/skeleton.html"]
+set template [read-file "$incdir/skeleton.html"]
 set content [read-file $fname]
 
 # Find the content title and section
@@ -100,7 +69,10 @@ regsub -all {\[(https?:[^ ]*) ([^\]]*)\]} $content \
 regsub -all {{{=}}} $content = content
 
 regsub -all {{{IfBook\|([^|]*)\|([^{|}]*)}}} $content {\2} content
+regsub -all {{{IfBook\|([^|]*)}}} $content {} content
 regsub -all {{{IfWiki\|([^{|}]*)}}} $content {\1} content
+
+if {[regexp {{{bigspace}}} $content]} {error bigspace}
 
 regsub -all {''(.*?)''} $content {<i>\1</i>} content
 regsub -all {{{Markup\|(.*?)}}} $content {<\1>} content
@@ -114,7 +86,6 @@ regsub -line -all {^#(.*)$} $content {<li>\1</li>} content
 regsub -line -all {^\*(.*)$} $content {<li>\1</li>} content
 regsub -all {@\\\\@} $content {<code>\\</code>} content
 regsub -all {@(.*?)@} $content {<code>\1</code>} content
-# regsub -all "\n\n" $content "\n\n<p>" content
 
 regsub -all \
     {\n+((([^ <\n]|<code>|<a )[^\n]*\n)*([^ <\n]|<code>|<a )[^\n]*)\n} \

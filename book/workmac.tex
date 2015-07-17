@@ -25,6 +25,9 @@
     \noalign{\hskip\parindent}}}
   \afterdisplay\ignorespaces}
 
+\def\picture#1{\beforedisplay\hbox to\pagewidth{\hskip\blockindent
+  \def\epsfsize##1##2{0.5##1}\epsfbox{#1.eps}}\afterdisplay\ignorespaces}
+
 % \bigspace is indeed big enough to write something
 \def\bigspace{\par\nobreak\vskip 8\baselineskip}
 

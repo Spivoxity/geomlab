@@ -61,9 +61,8 @@ Now look at the picture @f(f(man))@:
 Looking at the picture above, there are ''nine'' men produced by
 applying function @f@ twice to @man@.
 What happens if we apply function @f@ ''three'' times to @man@, as in @f(f(f(man)))@?  How many men do
-you think will be in the picture? Write your answer in the space
-below, and give a brief explanation:
-{{bigspace}}
+you think will be in the picture? Try it!
+
 As described in Worksheet 2, a function takes one or more ''arguments''. For example, the function @f@ that we
 defined earlier takes one argument, which could be @man@,
 @woman@ or any other picture expression.

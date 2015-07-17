@@ -1,4 +1,4 @@
-# texsheet.tcl
+# textran.tcl
 
 set scriptdir [file dirname [info script]]
 
@@ -36,6 +36,7 @@ proc regsub-eval {re string cmd} {
 
 regsub -all {<!--.*?-->} $content "" content
 
+regsub -line -all {==(.*)==} $content {\section* \1.} content
 regsub -line -all {{{GeomPic\|(.*?)\|(.*?)\|(.*?)}}} $content \
     {\\example@\2@\\gives \1\\end} content
 regsub -line -all {{{GeomPic\|(.*?)\|(.*?)}}} $content \
@@ -52,11 +53,17 @@ proc verbfun {s} {
 set content [regsub-eval "(\n \[^\n]*)+" $content {verbfun "\0"}]
 
 regsub -line -all {<b>(.*?)</b>} $content {{\\bf \1}} content
+regsub -line -all {<i>(.*?)</i>} $content {{\\it \1\/}} content
 regsub -line -all {&nbsp;} $content {~} content
 regsub -line -all {''([^']*)''} $content {{\\it \1\\/}} content
 regsub -line -all {&times;} $content {$\times$} content
 regsub -line -all {^:(.*)$} $content {\quotation \1\endquote} content
 regsub -line -all {@([^@]*)<br */>([^@]*)@} $content {@\1@\\\\@\2@} content
+regsub -all {{{bigspace}}} $content {\bigspace} content
+regsub -all {&lt;} $content {<} content
+regsub -all {&gt;} $content {>} content
+
+regsub -all {\[\[Image:(.*?)\.png\]\]} $content {\picture{\1}} content
 
 puts "\\sheet{$pagetitle}"
 puts $content

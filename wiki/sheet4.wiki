@@ -16,9 +16,8 @@ another man!  So we can say:
 Similarly, we can say that @r4 = r3 $ man@
 if @r3@ is a row of three men.
 
-Writing your answers in the same way, work out equations for @r3@ and @r2@{{IfBook|in the space below:
-{{bigspace}}
-|.}}
+Writing your answers in the same way, work out equations for @r3@ and @r2@.
+{{IfBook|{{bigspace}}}}
 The expression @r1@ refers to a row of just one man, which is
 the same as the expression @man@. Hence we should write the
 equation

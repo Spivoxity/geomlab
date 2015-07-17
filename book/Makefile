@@ -28,6 +28,6 @@ clean: force
 
 .DELETE_ON_ERROR:
 
-export TEXINPUTS = .:../figs:
+export TEXINPUTS = .:../figs:../img:
 
 force:

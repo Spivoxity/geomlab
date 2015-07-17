@@ -9,7 +9,10 @@ FILES = index.html geomlab.css cycletpale.png arrow.png quad96.png \
 	deployJava.js examples.jar geomlab.jar geomlab.jnlp \
 	.htaccess icon32.png icon64.png \
 	GeomLab-1.png GeomLab-2.png GeomLab-3.png GeomLab-4.png GeomLab-5.png \
-	GeomLab-talk.ppt ATM-article.pdf CAS-article.pdf
+	GeomLab-talk.ppt ATM-article.pdf CAS-article.pdf \
+	geomlab.jnlp geomlab.jar examples.jar
+
+LOCATION = http://spivey.oriel.ox.ac.uk/geomlab
 
 ALL = $(PAGES:%=%.html) $(IMAGES) $(FIXED) $(FILES) 
 
@@ -29,10 +32,14 @@ vpath %.tmpl ../wiki
 %:: ../res/%; cp $< $@
 %:: ../img/%; cp $< $@
 %:: ../web/files/%; cp $< $@
+geomlab.jar examples.jar: %: ../%; cp $< $@
+
+geomlab.jnlp: ../res/geomlab.jnlp.in
+	sed 's=@CODEBASE@=$(LOCATION)=' $< >$@
 
 $(IMAGES): %: ../figs/%; cp $< $@
 
-%.html: %.wiki ../scripts/makepage.tcl ../scripts/skeleton.html
+%.html: %.wiki ../scripts/makepage.tcl ../wiki/skeleton.html
 	tclsh ../scripts/makepage.tcl $< >$@
 
 nojava.html help.html: HelpStart.tmpl

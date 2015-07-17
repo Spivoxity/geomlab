@@ -1,7 +1,10 @@
 FILES = GeomLab-1.png GeomLab-2.png GeomLab-3.png GeomLab-4.png \
 	GeomLab-5.png GeomLab-talk.ppt ATM-article.pdf CAS-article.pdf
 
-all:
+all: GeomLab-5.eps
+
+%.eps: %.png
+	convert $< $@
 
 publish: .publish
 

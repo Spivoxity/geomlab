@@ -1,17 +1,21 @@
 # Top level Makefile for GeomLab
 
-JAVAC = javac
+JAVADIR = /usr/local/jdk1.7/bin
+JAVA = $(JAVADIR)/java
+JAVAC = $(JAVADIR)/javac
+JAR = $(JAVADIR)/jar
+JARSIGNER = $(JAVADIR)/jarsigner
 
 PACKAGES = funbase funjit geomlab plugins
-JAVA := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
-SOURCE = $(JAVA) boot.txt compiler.txt prelude.txt 
+JSRC := $(patsubst src/%,%,$(foreach pkg,$(PACKAGES),$(wildcard src/$(pkg)/*)))
+SOURCE = $(JSRC) boot.txt compiler.txt prelude.txt 
 HELP = commands errors language library tips
 RESOURCES = VeraMono.ttf mike.jpg mikelet.jpg contents.html style.css \
 	$(HELP:%=%.html) properties sunflowers.jpg
 ICONS = icon16.png icon32.png icon64.png icon128.png
 SESSIONS = obj/geomlab.gls examples.gls
 
-default: build static
+default: build figs package static
 
 all: build figs book static
 
@@ -34,7 +38,7 @@ JFILES = $(PACKAGES:%=src/%/*.java)
 obj/%: res/%; cp $< $@
 obj/%: src/%; cp $< $@
 
-obj/%.html: wiki/%.wiki wiki/htmlframe scripts/htmltran.tcl
+obj/%.html: wiki/%.wiki wiki/htmlframe.html scripts/htmltran.tcl
 	tclsh scripts/htmltran.tcl $< >$@
 
 obj/icon128.png:
@@ -43,7 +47,7 @@ obj/icon128.png:
 obj/icon%.png: obj/icon128.png
 	convert obj/icon128.png -scale $*x$* $@
 
-RUNJAVA = java -cp obj -ea
+RUNJAVA = $(JAVA) -cp obj -ea
 RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
 stage1.boot: .compiled src/boot.txt src/compiler.txt
@@ -77,11 +81,15 @@ static: force
 	@mkdir -p static
 	$(MAKE) -C static -f ../scripts/Makefile.static 
 
+push: force
+	rsync static/ spivey:/var/www/geomlab
+
+
 ### Web resources for wiki
 
 PREFIX = https://spivey.oriel.ox.ac.uk/gwiki/files
 
-web: web-dirs update .signed
+web: web-dirs update
 
 FILES = .htaccess geomlab.jar examples.jar geomlab.jnlp \
 	deployJava.js arrow.png icon32.png icon64.png
@@ -98,13 +106,6 @@ update: $(FILES:%=web/files/%) \
 	web/LocalSettings.php \
 	web/extensions/GeomGrind.php
 
-web/files/geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
-	cd obj; jar cfm ../$@ ../scripts/manifest \
-		$(PACKAGES) $(RESOURCES) $(ICONS) geomlab.gls
-
-web/files/examples.jar: examples.gls
-	jar cf $@ $<
-
 web/files/.htaccess: res/htaccess;		cp $< $@
 web/files/%: obj/%;				cp $< $@
 web/% web/files/% web/extensions/% \
@@ -113,14 +114,24 @@ web/% web/files/% web/extensions/% \
 web/files/%.jnlp: res/%.jnlp.in
 	sed 's=@CODEBASE@=$(PREFIX)=' $< >$@
 
+### JAR packaging
+
+package: geomlab.jar examples.jar
+
 TSA = http://timestamp.globalsign.com/scripts/timestamp.dll 
 
-.signed: web/files/geomlab.jar web/files/examples.jar
-	for f in $?; do \
-	    jarsigner -keystore javakey/keystore \
-		-storepass `cat javakey/storepass` -tsa $(TSA) $$f geomlab; \
-	done
-	echo timestamp >$@
+SIGN = $(JARSIGNER) -keystore javakey/keystore \
+	-storepass `cat javakey/storepass` -tsa $(TSA)
+
+geomlab.jar: .compiled obj/geomlab.gls $(RESOURCES:%=obj/%)
+	cd obj; $(JAR) cfm ../$@ ../scripts/manifest \
+		$(PACKAGES) $(RESOURCES) $(ICONS) geomlab.gls
+	$(SIGN) $@ geomlab
+
+examples.jar: examples.gls
+	$(JAR) cf $@ $<
+	$(SIGN) $@ geomlab
+
 
 ### Publishing to wiki
 
@@ -139,5 +150,7 @@ purge: force
 clean: force
 	rm -rf obj examples.gls
 	rm -f .compiled .signed
+
+realclean: clean
 
 force:
