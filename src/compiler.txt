@@ -227,6 +227,10 @@ define __top() =
     Each cell made here has a function f that fetches the contents of
     the cell and calls it.  Later, we'll see a function f_body and an
     assignment _set(knot, f_body) that sets the cell. }
+
+  { The parameter secok indicates whether we're in a context that
+    might be an operator section like (1+) or (-). }
+
   let eknot = _new(0) in
   let p_expr0(secok) = let p = _get(eknot) in p(secok) in
   let p_expr() = p_expr0(false) in
@@ -386,8 +390,7 @@ define __top() =
       | case(_) = [#apply, [#var, w], e1, e2] in
     case(w) in
 
-  { p_term -- parse a term containing operators with priority >= min.
-      If secok is true, allow a left section (1+) or (-) }
+  { p_term -- parse a term containing operators with priority >= min }
   let p_term_body(min, secok) = 
     { p_termcont -- loop to parse a sequence of operators and operands }
     let p_termcont(e1, min) =
@@ -632,19 +635,22 @@ define __top() =
   let pgen(root, kids, traps) =
       [[#seq, root, #seq:map(fst, kids)], traps ++ concat(map(snd, kids))] in
 
+  { pleaf -- leaf pattern }
+  let pleaf(code, traps) = [code, traps] in
+
   { c_patt -- compile a pattern, assuming d+1 things on the stack }
   let c_patt([#const, v], d, env) = 
         let f = label() in 
-	pgen([#seq, [#TRAP, f], [#QUOTE, v], [#MEQ]], [], [[f, d]])
+	pleaf([#seq, [#TRAP, f], [#QUOTE, v], [#MEQ]], [[f, d]])
 
     | c_patt([#var, x], d, env) =
         let f = label() in
         if islocal(x, env) then
-	  pgen([#seq, [#TRAP, f], c_ref(x, env), [#MEQ]], [], [[f, d]])
+	  pleaf([#seq, [#TRAP, f], c_ref(x, env), [#MEQ]], [[f, d]])
         else
-          pgen([#seq, [#BIND, alloc(x, env)]], [], [])
+          pleaf([#seq, [#BIND, alloc(x, env)]], [])
 
-    | c_patt([#anon], d, env) = pgen([#POP], [], [])
+    | c_patt([#anon], d, env) = pleaf([#POP], [])
 
     | c_patt(#prim:cn:args, d, env) =
         { A constructor pattern h(args) }
@@ -671,7 +677,7 @@ define __top() =
     | c_patt([#nil], d, env) = 
         { A nil pattern [] }
         let f = label() in 
-	pgen([#seq, [#TRAP, f], [#MNIL]], [], [[f, d]])
+	pleaf([#seq, [#TRAP, f], [#MNIL]], [[f, d]])
 
     | c_patt(#list:es, d, env) =
         c_patt(listify(es), d, env)
@@ -685,10 +691,10 @@ define __top() =
   { c_arg -- compile code to match an argument }
   let c_arg(i, [#var, x], env) =
         { variable matches whole argument }
-        bind(x, #ARG, i, env) >> pgen([], [], []) when not islocal(x, env)
+        bind(x, #ARG, i, env) >> pleaf([], []) when not islocal(x, env)
     | c_arg(i, [#anon], env) = 
         { anon matches whole argument }
-	pgen([], [], [])
+	pleaf([], [])
     | c_arg(i, p, env) =
         pgen([#seq, [#ARG, i]], [c_patt(p, 0, env)], []) in
 
