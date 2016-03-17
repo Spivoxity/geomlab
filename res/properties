@@ -48,6 +48,7 @@ err#bramatch: can't find matching '['
 err#comment: unterminated comment
 err#condbool: boolean expected as condition
 err#constr: matching must use a constructor
+err#constructor: %s is not a constructor
 err#divzero: division by zero
 err#eat: I expected %s here
 err#epswrite: I/O error while writing EPS file - %s

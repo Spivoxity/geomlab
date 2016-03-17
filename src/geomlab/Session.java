@@ -95,6 +95,15 @@ public class Session {
 		    Primitive.register(p);
 		}
 	    }
+
+            // And nested classes
+            for (Class<?> c : plugin.getDeclaredClasses()) {
+                PRIMITIVE spec = c.getAnnotation(PRIMITIVE.class);
+                if (spec != null) {
+                    Primitive p = (Primitive) c.newInstance();
+                    Primitive.register(p);
+                }
+            }
 	}
 	catch (Exception e) {
 	    throw new CommandException("#exception", e); 

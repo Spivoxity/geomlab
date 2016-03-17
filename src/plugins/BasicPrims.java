@@ -199,4 +199,41 @@ public class BasicPrims {
 	    return null;
 	}
     }
+
+    @PRIMITIVE
+    public static class Pair extends Primitive.Prim2 
+            implements Primitive.Constructor {
+        public Pair() { super("_pair"); }
+
+        @Override
+        public Value apply2(Value fst, Value snd) {
+            return Value.PairValue.getInstance(fst, snd);
+        }
+
+        private Value args[] = new Value[2];
+
+        @Override
+        public Value[] pattMatch(Value obj, int nargs) {
+            if (nargs != 2) Evaluator.err_patnargs(name);
+
+            if (! (obj instanceof PairValue)) return null;
+            
+            PairValue v = (PairValue) obj;
+            args[0] = v.fst;
+            args[1] = v.snd;
+            return args;
+        }
+    };
+
+    @PRIMITIVE
+    public static Value _fst(Primitive prim, Value x) {
+        PairValue v = prim.cast(PairValue.class, x, "a pair");
+        return v.fst;
+    }
+
+    @PRIMITIVE
+    public static Value _snd(Primitive prim, Value x) {
+        PairValue v = prim.cast(PairValue.class, x, "a pair");
+        return v.snd;
+    }
 }

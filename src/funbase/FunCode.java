@@ -64,8 +64,10 @@ public class FunCode extends Value {
 		     //   x with x >= k and pushing x-k; otherwise trap
 	MEQ,         // [#meq]: pop two values and trap if not equal
 	MNIL,        // [#mnil]: pop the empty list; otherwise trap
-	MCONS,       // [#mcons]: pop a cons cell and push its tail and head
+	MCONS,       // [#mcons]: find a cons cell and push its head
 	GETTAIL,     // [#gettail]: fetch tail following MCONS
+        MPAIR,       // [#mpair]: find a pair and push its fst
+        GETSND,      // [#getsnd]: fetch snd following MPAIR
 	TCALL,       // [#tcall, n]: tail recursive call
 	PREP,        // [#prep, n]: prepare for a call with n arguments
         FRAME,       // [#frame, n]: create a free var frame with n slots
@@ -208,30 +210,45 @@ public class FunCode extends Value {
 	
 	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs)) {
 	    Value inst = prim.head(xs);
-            Name x = prim.cast(Name.class, prim.head(inst), "an opcode");
-            Opcode op = getOpcode(x.tag);
-            Value args = prim.tail(inst);
-            int rand;
+            Value opcode;
+            Value arg = null;
 
-            if (! prim.isCons(args))
-                /* No argument */
-                rand = NO_RAND;
-            else {
-                Value v = prim.head(args);
+            /*
+            if (prim.isCons(inst)) {
+                opcode = prim.head(inst);
+                Value tl = prim.tail(inst);
+                if (prim.isCons(tl)) arg = prim.head(tl);
+
+                System.out.printf("Antique: %s\n", opcode);
+            } else
+            */
+            if (inst instanceof Value.BlobValue) {
+                Value.BlobValue blob = (Value.BlobValue) inst;
+                opcode = blob.functor;
+                if (blob.args.length > 0) arg = blob.args[0];
+            } else {
+                opcode = inst;
+            }
+
+            Name x = prim.cast(Name.class, opcode, "an opcode");
+            Opcode op = getOpcode(x.tag);
+            int rand = NO_RAND;
+
+            if (arg != null) {
                 switch (op) {
                     case GLOBAL:
                     case QUOTE:
                     case MPLUS:
                         /* An argument that goes in the constant pool */
-                        rand = consts.indexOf(v);
+                        rand = consts.indexOf(arg);
                         if (rand < 0) {
                             rand = consts.size();
-                            consts.add(v);
+                            consts.add(arg);
                         }
                         break;
                     default:
                         /* An integer argument */
-                        rand = (int) prim.number(v);
+                        rand = (int) prim.number(arg);
                         break;
                 }
             }

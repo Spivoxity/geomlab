@@ -105,7 +105,7 @@ public class Scanner {
 	virgin = true;
     }
     
-    private static Name 
+    private static final Name 
 	ATOM = Name.find("atom"), BRA = Name.find("bra"),
 	COMMA = Name.find("comma"), EOF = Name.find("eof"),
 	EOL = Name.find("eol"), KET = Name.find("ket"),
@@ -282,7 +282,7 @@ public class Scanner {
 
     public Value nextToken() {
 	scan();
-	return Value.makeList(tok, sym);
+	return Value.PairValue.getInstance(tok, sym);
     }
 
     private void badToken() {

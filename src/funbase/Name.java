@@ -69,6 +69,7 @@ public final class Name extends Value implements Comparable<Name> {
     private Name(String tag) {
 	this.tag = tag;
 	nameTable.put(this.tag, this);
+        this.subr = new NameFunction();
     }
     
     /** Set the global definition */
@@ -249,6 +250,14 @@ public final class Name extends Value implements Comparable<Name> {
     }
 
     @PRIMITIVE
+    public static Value _iscons(Primitive prim, Value x) {
+        Name n = prim.name(x);
+        Value v = n.glodef;
+        boolean res = (v != null && (v.subr instanceof Primitive.Constructor));
+        return Value.BoolValue.getInstance(res);
+    }
+
+    @PRIMITIVE
     public static Value _glodef(Primitive prim, Value x) {
 	Name n = prim.name(x);
 	Value v = n.glodef;
@@ -296,5 +305,25 @@ public final class Name extends Value implements Comparable<Name> {
 	} catch (IOException e) {
 	    throw new Error(e);
 	}
+    }
+
+    private class NameFunction extends Function {
+        public NameFunction() {
+            super(-1);
+        }
+
+        public Value apply(Value args0[], int base, int nargs) {
+            Value args[] = new Value[nargs];
+            System.arraycopy(args0, base, args, 0, nargs);
+            return Value.BlobValue.getInstance(Name.this, args);
+        }
+
+        public Value[] pattMatch(Value obj, int nargs) {
+            if (! (obj instanceof Value.BlobValue)) return null;
+            Value.BlobValue blob = (Value.BlobValue) obj;
+            if (blob.functor != Name.this || blob.args.length != nargs)
+                return null;
+            return blob.args;
+        }
     }
 }

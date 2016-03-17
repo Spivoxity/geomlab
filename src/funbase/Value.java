@@ -411,4 +411,90 @@ public abstract class Value implements Serializable {
 	    return (head.equals(acons.head) && tail.equals(acons.tail));
 	}
     }
+
+    public static class PairValue extends Value {
+        private static final long serialVersionUID = 1L;
+
+        public final Value fst, snd;
+
+        private PairValue(Value fst, Value snd) {
+            this.fst = fst; this.snd = snd;
+        }
+
+        public static Value getInstance(Value fst, Value snd) {
+            Evaluator.countCons();
+            return new PairValue(fst, snd);
+        }
+
+        @Override
+        public void printOn(PrintWriter out) {
+            out.print("_pair(");
+            fst.printOn(out);
+            out.print(", ");
+            snd.printOn(out);
+            out.print(")");
+        }
+
+        @Override
+        public boolean equals(Object a) {
+            if (! (a instanceof PairValue)) return false;
+            PairValue apair = (PairValue) a;
+            return fst.equals(apair.fst) && snd.equals(apair.snd);
+        }
+
+        @Override
+        public int hashCode() {
+            return 17 + 37 * fst.hashCode() + 53 * snd.hashCode();
+        }
+    }
+
+    public static class BlobValue extends Value {
+        private static final long serialVersionUID = 1L;
+
+        public final Name functor;
+        public final Value args[];
+
+        private BlobValue(Name functor, Value args[]) {
+            this.functor = functor; this.args = args;
+        }
+        
+        public static Value getInstance(Name functor, Value args[]) {
+            Evaluator.countCons();
+            return new BlobValue(functor, args);
+        }
+
+        @Override
+        public void printOn(PrintWriter out) {
+            out.print("#");
+            out.print(functor);
+            out.print("(");
+            if (args.length > 0) {
+                args[0].printOn(out);
+                for (int i = 1; i < args.length; i++) {
+                    out.print(", ");
+                    args[i].printOn(out);
+                }
+            }
+            out.print(")");
+        }
+
+	@Override
+	public boolean equals(Object a) {
+	    if (! (a instanceof BlobValue)) return false;
+	    BlobValue ablob = (BlobValue) a;
+	    if (! functor.equals(ablob.functor) 
+                || args.length != ablob.args.length) return false;
+            for (int i = 0; i < args.length; i++)
+                if (! args[i].equals(ablob.args[i])) return false;
+            return true;
+	}
+
+        @Override
+        public int hashCode() {
+            int x = 23 + 37 * functor.hashCode();
+            if (args.length > 0)
+                x += 43 * args[0].hashCode();
+            return x;
+        }
+    }
 }

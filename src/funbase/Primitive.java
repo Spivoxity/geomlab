@@ -299,6 +299,9 @@ public abstract class Primitive extends Function {
 	};
     }
 
+    /** Marker interface for constructors */
+    public interface Constructor { }
+
     @Retention(RetentionPolicy.RUNTIME)
     public @interface PRIMITIVE {
 	public String value() default "";

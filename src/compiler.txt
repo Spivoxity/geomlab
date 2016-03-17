@@ -30,20 +30,22 @@
  
 { LEXICAL TOKENS }
 
-_update(_syntax, #function, [#function, 0, 0]);
+_update(_syntax, #function, _pair(#function, _pair(0, 0)));
 
-_iter(function (tok) _update(_syntax, tok, [tok, 0, 0]),
+_iter(function (tok) _update(_syntax, tok, _pair(tok, _pair(0, 0))),
   [#define, #else, #if, #in, #let, #then, #when, #_, #.., #<-, #>>]);
 
-_update(_syntax, #=, [#=, 3, 4]);
-_update(_syntax, #+, [#+, 5, 6]);
-_update(_syntax, #-, [#-, 5, 6]);
-_update(_syntax, #:, [#:, 7, 7]);
-_update(_syntax, #~, [#monop, 0, 0]);
-_update(_syntax, #not, [#monop, 0, 0]);
+_update(_syntax, #=, _pair(#=, _pair(3, 4)));
+_update(_syntax, #+, _pair(#+, _pair(5, 6)));
+_update(_syntax, #-, _pair(#-, _pair(5, 6)));
+_update(_syntax, #:, _pair(#:, _pair(7, 7)));
+_update(_syntax, #~, _pair(#monop, _pair(0, 0)));
+_update(_syntax, #not, _pair(#monop, _pair(0, 0)));
 
-define _infixl(tag, p) = _update(_syntax, tag, [#binop, p, p+1]);
-define _infixr(tag, p) = _update(_syntax, tag, [#binop, p, p]);
+define _infixl(tag, p) = 
+  _update(_syntax, tag, _pair(#binop, _pair(p, p+1)));
+define _infixr(tag, p) = 
+  _update(_syntax, tag, _pair(#binop, _pair(p, p)));
 
 _infixl(#or, 1);
 _infixl(#and, 2);
@@ -76,8 +78,8 @@ define reverse(xs) =
 define length([]) = 0 
   | length(x:xs) = length(xs)+1;
 
-define assoc(x, []) = [] 
-  | assoc(x, [u,v]:zs) = if x = u then v else assoc(x, zs);
+define _assoc(x, []) = [] 
+  | _assoc(x, z:zs) = if x = _fst(z) then _snd(z) else _assoc(x, zs);
       
 define map(f, []) = [] | map(f, x:xs) = f(x) : map(f, xs);
 
@@ -116,9 +118,6 @@ define __top() =
 
   let number(_, []) = []
     | number(n, x:xs) = [n, x] : number(n+1, xs) in
-
-  let fst(x:_) = x in
-  let snd(_:y:_) = y in
 
   let max(x, y) = if x > y then x else y in
 
@@ -164,25 +163,24 @@ define __top() =
   { scan -- call the lexer and set tok and val }
   let scan() =
     let t = _scan() in
-    debug(2, t) >>
+    debug(5, t) >>
     let case(#ident) =
-          let tk = _lookup(_syntax, snd(t)) in
-          _set(tok, if tk <> [] then fst(tk) else #ident) >> debug(2, _get(tok))
+          let tk = _lookup(_syntax, _snd(t)) in
+          _set(tok, if tk <> [] then _fst(tk) else #ident)
       | case(#op) =
-          let tk = _lookup(_syntax, snd(t)) in
-          if tk <> [] then _set(tok, fst(tk)) else synerror("#badtok")
+          let tk = _lookup(_syntax, _snd(t)) in
+          if tk <> [] then _set(tok, _fst(tk)) else synerror("#badtok")
       | case(x) =
           _set(tok, x) in
-    case(fst(t)) >> _set(val, snd(t)) in
+    case(_fst(t)) >> _set(val, _snd(t)) in
 
   { priority -- find priority pair for operator }
-  let _priority(op) =
-    let tk = _lookup(_syntax, op) in
-    if tk <> [] then tail(tk) else [0, 0] in
+  let _priority(op) = _snd(_lookup(_syntax, op)) in
 
+  { isbinop -- check if token is a binary operator }
   let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
 
-  { see -- test for possible token }
+  { see -- test if tok is a specific token }
   let see(t) = (_get(tok) = t) in
 
   { eat -- match and consume token or report syntax error }
@@ -223,6 +221,11 @@ define __top() =
   let p_list(p, endtok) =
     if see(endtok) or see(#eof) then [] else p_list1(p) in
 
+  { apply1, apply2, apply3 -- construct #apply nodes }
+  let apply1(f, x) = #apply(f, [x]) in
+  let apply2(f, x, y) = #apply(f, [x, y]) in
+  let apply3(f, x, y, z) = #apply(f, [x, y, z]) in
+
   { We allow mutual recursion by tying the knot with reference cells.
     Each cell made here has a function f that fetches the contents of
     the cell and calls it.  Later, we'll see a function f_body and an
@@ -245,32 +248,39 @@ define __top() =
   let p_defn() = let p = _get(dknot) in p() in
 
   { listify -- form list expression or pattern }
-  let listify(es) = foldr(function (h, t) [#cons, h, t], [#nil], es) in
+  let listify(es) = foldr(#cons, #nil, es) in
 
   let p_patterns(endtok) = p_list(p_pattern, endtok) in
 
   let p_patprim() =
     let case(#ident) = 
-    	  let x = p_sym(#ident) in
-	  if not see(#lpar) then [#var, x] else
-	    #prim:x:brack1(#lpar, p_patterns, #rpar)
-      | case(#atom) = [#const, p_sym(#atom)]
-      | case(#_) = eat(#_) >> [#anon]
-      | case(#number) = [#const, p_sym(#number)]
-      | case(#-) = eat(#-) >> [#const, -p_sym(#number)]
-      | case(#string) = [#const, p_sym(#string)]
+    	  let x = p_sym(#ident) in 
+          if not see(#lpar) then 
+            #var(x)
+          else if _iscons(x) then
+            #prim(#var(x), brack1(#lpar, p_patterns, #rpar))
+          else
+            _synerror("#constructor", [x])
+      | case(#atom) = 
+          let x = p_sym(#atom) in
+          if not see(#lpar) then #const(x) else
+            #prim(#const(x), brack1(#lpar, p_patterns, #rpar))
+      | case(#_) = eat(#_) >> #anon
+      | case(#number) = #const(p_sym(#number))
+      | case(#-) = eat(#-) >> #const(- p_sym(#number))
+      | case(#string) = #const(p_sym(#string))
       | case(#lpar) = brack(#lpar, p_pattern, #rpar)
-      | case(#bra) = #list:brack1(#bra, p_patterns, #ket)
+      | case(#bra) = #list(brack1(#bra, p_patterns, #ket))
       | case(_) = synerror("#pattern") in
     whichever(case) in
 
   let p_patfactor() =
     let p = p_patprim() in
-    if can_eat(#:) then [#cons, p, p_patfactor()] else p in
+    if can_eat(#:) then #cons(p, p_patfactor()) else p in
 
   let p_pattern_body() =
     let chain(p) =
-      if can_eat(#+) then chain([#plus, p, p_sym(#number)]) else p in
+      if can_eat(#+) then chain(#plus(p, p_sym(#number))) else p in
     chain(p_patfactor()) in
 
   { p_formals -- parse formal parameters }
@@ -279,36 +289,38 @@ define __top() =
   { p_exprs -- parse optional list of expressions }
   let p_exprs(endtok) = p_list(p_expr, endtok) in
 
+  let mapa(rules, e, a) =
+    apply3(#var(#_mapa), #function(2, rules), e, a) in
+
   { expand -- expand list comprehension into code with accumulator }
   let expand(e1, [], a) = 
         { Base case: "[ e1 | ] ++ a" = e1:a }
-        [#cons, e1, a]
-    | expand(e1, [#gen, [#var, x], e2]:gs, a) =
+        #cons(e1, a)
+    | expand(e1, #gen(#var(x), e2):gs, a) =
         { Simple generator: "[ e1 | x <- e2, ... ] ++ a" = 
 	    _mapa(function (x, b) "[ e1 | ... ] ++ b", e2, a) }
-        let b = [#var, _gensym()] in
-	[#apply, [#var, #_mapa], [#function, 2, 
-	    [[[[#var, x], b], expand(e1, gs, b)]]], e2, a]
-    | expand(e1, [#gen, patt, e2]:gs, a) =
+        let b = #var(_gensym()) in
+	mapa([#rule([#var(x), b], expand(e1, gs, b))], e2, a)
+    | expand(e1, #gen(patt, e2):gs, a) =
         { Generator : "[ e1 | patt <- e2, ... ] ++ a" =
 	    _mapa((function (patt, b) -> "[ e1 | gs ] ++ b" | (_, b) -> b),
                       e2, a) }
-	let b = [#var, _gensym()] in
-	[#apply, [#var, #_mapa], [#function, 2, 
-	    [[[patt, b], expand(e1, gs, b)], [[[#anon], b], b]]], e2, a]
-    | expand(e1, [#when, e2]:gs, a) =
+	let b = #var(_gensym()) in
+	mapa([#rule([patt, b], expand(e1, gs, b)), 
+              #rule([#anon, b], b)], e2, a)
+    | expand(e1, #when(e2):gs, a) =
         { Test: "[ e1 | when e2, ...] ++ a" =
 	    if e2 then "[e1 | ...] ++ a" else a }
-	[#if, e2, expand(e1, gs, a), a] in
+	#if(e2, expand(e1, gs, a), a) in
 
   let p_gen() = 
-    let p = p_pattern() in eat(#<-) >> [#gen, p, p_expr()] in
+    let p = p_pattern() in eat(#<-) >> #gen(p, p_expr()) in
 
   { p_gens -- parse generators for a list comprehension }
   let p_gens() =
     let p_tail() =    
       let case(#when) = 
-      	    eat(#when) >> let e = p_expr() in [#when, e] : p_tail()
+      	    eat(#when) >> let e = p_expr() in #when(e) : p_tail()
         | case(#comma) = 
 	    eat(#comma) >> let g = p_gen() in g : p_tail()
 	| case(_) = [] in
@@ -319,21 +331,21 @@ define __top() =
   let p_listexp() =
     if see(#ket) then 
       { An empty list }
-      [#nil]
+      #nil
     else
       (let e1 = p_expr() in
         let case(#comma) =
 	      { A display of two or more items }
-              #list:e1:p_tail(p_expr, #comma)
+              #list(e1:p_tail(p_expr, #comma))
           | case(#..) =
 	      { A range [e1 .. e2] }
-              eat(#..) >> [#apply, [#var, #_range], e1, p_expr()]
+              eat(#..) >> apply2(#var(#_range), e1, p_expr())
           | case(#vbar) =
 	      { A list comprehension }
-	      eat(#vbar) >> expand(e1, p_gens(), [#nil])
+	      eat(#vbar) >> expand(e1, p_gens(), #nil)
           | case(_) =
 	      { A singleton list }
- 	      [#list, e1] in
+ 	      #list([e1]) in
         whichever(case)) in
 
   { p_parenexp -- parse expression after left paren }
@@ -345,19 +357,22 @@ define __top() =
         let prio = _priority(w) in
       	if see(#rpar) then 
 	  { An operator name (+) }
-	  [#var, w] 
+	  #var(w) 
         else
 	  { A right section (+1) }
-	  [#apply, [#var, #_rsect], [#var, w], p_term(snd(prio), false)]) in
+	  apply2(#var(#_rsect), #var(w), p_term(_snd(prio), false))) in
+
+  let p_apply(func) =
+    if not see(#lpar) then func else
+      #apply(func, brack1(#lpar, p_exprs, #rpar)) in
 
   let p_primary() =
-    let case(#number) = [#const, p_sym(#number)]
-      | case(#atom) = [#const, p_sym(#atom)]
-      | case(#string) = [#const, p_sym(#string)]
+    let case(#number) = #const(p_sym(#number))
+      | case(#string) = #const(p_sym(#string))
       | case(#ident) = 
-          let x = p_sym(#ident) in
-	  if not see(#lpar) then [#var, x] else
-	    #apply:[#var, x]:brack1(#lpar, p_exprs, #rpar)
+          let x = p_sym(#ident) in p_apply(#var(x))
+      | case(#atom) = 
+          let x = p_sym(#atom) in p_apply(#const(x))
       | case(#lpar) = brack(#lpar, p_parenexp, #rpar)
       | case(#bra) = brack(#bra, p_listexp, #ket)
       | case(#eof) = synerror("#exp")
@@ -368,26 +383,26 @@ define __top() =
     let case(#monop) =
 	  let w = p_sym(#monop) in 
           if secok and see(#rpar) then 
-            [#var, w] 
+            #var(w) 
           else 
-            [#apply, [#var, w], p_factor(false)]
+            apply1(#var(w), p_factor(false))
       | case(#-) =
 	  eat(#-) >>
 	  if see(#number) then
-	    [#const, - p_sym(#number)]
+	    #const(- p_sym(#number))
 	  else if secok and see(#rpar) then 
             { (-) is the binary minus }
-            [#var, #-] 
+            #var(#-) 
           else
-	    [#apply, [#var, #~], p_factor(false)]
+	    apply1(#var(#~), p_factor(false))
       | case(_) = p_primary() in
     whichever(case) in
 
   { makebin -- create binary operator, treating 'and' and 'or' as special }
   let makebin(w, e1, e2) =
-    let case(#and) = [#if, e1, e2, [#const, false]]
-      | case(#or) = [#if, e1, [#const, true], e2]
-      | case(_) = [#apply, [#var, w], e1, e2] in
+    let case(#and) = #if(e1, e2, #const(false))
+      | case(#or) = #if(e1, #const(true), e2)
+      | case(_) = apply2(#var(w), e1, e2) in
     case(w) in
 
   { p_term -- parse a term containing operators with priority >= min }
@@ -398,14 +413,14 @@ define __top() =
       if not isbinop(t) then e1 else
 	(let w = _get(val) in
 	  let prio = _priority(w) in
-	  if fst(prio) < min then e1 else
+	  if _fst(prio) < min then e1 else
 	    (eat(t) >>
 	      if secok and see(#rpar) then
 	        { A left section }
-	        [#apply, [#var, #_lsect], [#var, w], e1]
+	        apply2(#var(#_lsect), #var(w), e1)
               else
 		{ Got an operator: look for its right operand }
-	        (let e2 = p_term(snd(prio), false) in
+	        (let e2 = p_term(_snd(prio), false) in
 		  { Continue by looking for the next operator }
 		  p_termcont(makebin(w, e1, e2), min)))) in
     p_termcont(p_factor(secok), min) in
@@ -415,7 +430,7 @@ define __top() =
     if can_eat(#if) then
       (let e1 = p_cond(false) in 
         eat(#then) >> let e2 = p_cond(false) in
-	eat(#else) >> let e3 = p_cond(false) in [#if, e1, e2, e3])
+	eat(#else) >> let e3 = p_cond(false) in #if(e1, e2, e3))
     else
       p_term(1, secok) in
 
@@ -423,13 +438,13 @@ define __top() =
   let p_expr_body(secok) =
     let case(#let) =
 	  eat(#let) >> let d = p_defn() in
-	  eat(#in) >> [#let, d, p_expr()]
+	  eat(#in) >> #let(d, p_expr())
       | case(#function) =
 	  eat(#function) >> let formals = p_formals() in
-	  [#function, length(formals), [[formals, p_expr()]]]
+	  #function(length(formals), [#rule(formals, p_expr())])
       | case(_) = 
 	  let e = p_cond(secok) in
-	  if can_eat(#>>) then [#seq, e, p_expr()] else e in
+	  if can_eat(#>>) then #seq(e, p_expr()) else e in
     whichever(case) in
 
   { p_name -- parse the name on the LHS of a definition }
@@ -442,7 +457,7 @@ define __top() =
   { p_rhs -- parse right hand side of equation } 
   let p_rhs(lhs) =
     eat(#=) >> let e = p_expr() in
-    if can_eat(#when) then [lhs, p_expr(), e] else [lhs, e] in
+    if can_eat(#when) then #crule(lhs, p_expr(), e) else #rule(lhs, e) in
 
   { p_rule -- parse one clause of a function definition }
   let p_rule(x, arity) =
@@ -460,13 +475,13 @@ define __top() =
   let p_defn_body() =
     let x = p_name() in
     if not see(#lpar) then
-      (eat(#=) >> [#val, x, p_expr()])
+      (eat(#=) >> #val(x, p_expr()))
     else
       (let lhs = p_formals() in
 	let arity = length(lhs) in
 	let rule = p_rhs(lhs) in
-	[#fun, x, arity, rule : 
-	  p_tail(function () p_rule(x, arity), #vbar)]) in
+	#fun(x, arity, rule : 
+	  p_tail(function () p_rule(x, arity), #vbar))) in
 
   { p_para -- parse a top-level paragraph }
   let p_para() =
@@ -487,14 +502,14 @@ define __top() =
 
 
   { CODE LISTS -- The compiler puts together the object code as a tree, 
-    with instructions as the leaves, and internal nodes (marked with #seq)
+    with instructions as the leaves, and internal nodes (marked with #SEQ)
     that signify concatenation of their children.  The function flatten 
     makes the tree into a list in linear time. }
  
   { flatten -- arrange instruction tree into a list }
   let flatten(c) =
-    let flat([], a) = a
-      | flat(#seq:cs, a) = foldr(flat, a, cs)
+    let flat(#NOP, a) = a
+      | flat(#SEQ(cs), a) = foldr(flat, a, cs)
       | flat(c, a) = c:a in
     flat(c, []) in
 
@@ -506,23 +521,23 @@ define __top() =
       | pass1(n, lab:code, a) = 
           _update(ltab, lab, n) >> pass1(n, code, a) when numeric(lab)
       | pass1(n, inst:code, a) = pass1(n+1, code, inst:a) in
-    let fixup([#JUMP, lab]) = [#JUMP, fixlab(lab)]
-      | fixup([#JFALSE, lab]) = [#JFALSE, fixlab(lab)]
-      | fixup([#TRAP, lab]) = [#TRAP, fixlab(lab)]
+    let fixup(#JUMP(lab)) = #JUMP(fixlab(lab))
+      | fixup(#JFALSE(lab)) = #JFALSE(fixlab(lab))
+      | fixup(#TRAP(lab)) = #TRAP(fixlab(lab))
       | fixup(inst) = inst in
     let pass2(code) = 
       foldl((function (a, inst) fixup(inst):a), [], code) in
     _assemble(f, n, pass2(pass1(0, code, []))) in
 
 
-  { ENVIRONMENTS -- An environment is a 5-list [lev, arity, dict, fvs, size], 
+  { ENVIRONMENTS -- An environment is #env(lev, arity, dict, fvs, size), 
     where
       * lev is the integer level.
       * arity is the number of arguments of the current function.
       * dict is a cell containing an a-list of variables,
-        each mapped to information needed to load it.  The triple
-	[n, i, a] represents a definition at level n that requires
-	the instruction [i, a] to load it.
+        each mapped to information needed to load it.  The pair
+	_pair(n, i) represents a definition at level n that requires
+	the instruction i to load it.
       * fvs is a cell containing a list of free variables that will be 
         present in the closure
       * size is a cell containing the current frame size
@@ -530,72 +545,76 @@ define __top() =
     first element.  Each closure has itself as the first free variable
     as a way of implementing local recursion. }
 
-  let lookup(x, [_, _, dict, _, _]) = assoc(x, _get(dict)) in
+  let lookup(x, #env(_, _, dict, _, _)) = _assoc(x, _get(dict)) in
 
   { empty -- empty environment }
-  let empty() = [0, 0, _new([]), _new([]), _new(0)] in
+  let empty() = #env(0, 0, _new([]), _new([]), _new(0)) in
 
   { newblock -- create new block for nested function }
-  let newblock(f, arity, [lev, _, dict, _, _]) =
-    let d = if f = "<function>" then [] else [[f, [lev+1, #FVAR, 0]]] in
-    [lev+1, arity, _new(d++_get(dict)), _new([]), _new(0)] in
+  let newblock(f, arity, #env(lev, _, dict, _, _)) =
+    let d = 
+      if f = "<function>" then [] else 
+        [_pair(f, _pair(lev+1, #FVAR(0)))] in
+    #env(lev+1, arity, _new(d++_get(dict)), _new([]), _new(0)) in
 
   { e_level -- get level of nesting }
-  let e_level([lev, _, _, _, _]) = lev in
+  let e_level(#env(lev, _, _, _, _)) = lev in
 
   { e_arity -- get arity }
-  let e_arity([_, arity, _, _, _]) = arity in
+  let e_arity(#env(_, arity, _, _, _)) = arity in
 
   { e_fvars -- get list of free variables }
-  let e_fvars([_, _, _, fvs, _]) = _get(fvs) in
+  let e_fvars(#env(_, _, _, fvs, _)) = _get(fvs) in
 
   { e_size -- get size of local frame }
-  let e_size([_, _, _, _, size]) = _get(size) in
+  let e_size(#env(_, _, _, _, size)) = _get(size) in
 
   { inc_size -- adjust size of local frame }
-  let inc_size([_, _, _, _, size], delta) = 
+  let inc_size(#env(_, _, _, _, size), delta) = 
     _set(size, _get(size)+delta) in
 
   { bind -- define name as local variable }
-  let bind(x, i, a, [lev, _, dict, _, _]) =
-    _set(dict, [x, [lev, i, a]] : _get(dict)) in
+  let bind(x, i, #env(lev, _, dict, _, _)) =
+    _set(dict, _pair(x, _pair(lev, i)) : _get(dict)) in
 
   { unbind -- remove local binding }
-  let unbind(x, [_, _, dict, _, _]) =
-    let h([y, _] : d) = d when x = y
-      | h(v : d) = v : h(d)
+  let unbind(x, #env(_, _, dict, _, _)) =
+    let h(v : d) = if x = _fst(v) then d else v : h(d)
       | h([]) = [] in
     _set(dict, h(_get(dict))) in
 
   { alloc -- allocate space in frame }
   let alloc(x, env) =
     let a = e_size(env) in
-    bind(x, #LOCAL, a, env) >> inc_size(env, 1) >> a in
+    bind(x, #LOCAL(a), env) >> inc_size(env, 1) >> a in
 
   { dealloc -- remove local variable and shrink frame }
   let dealloc(x, env) =
     unbind(x, env) >> inc_size(env, -1) in
 
   { alloc_fv -- allocate free variable slot }
-  let alloc_fv(x, [_, _, _, fvs, _]) =
+  let alloc_fv(x, #env(_, _, _, fvs, _)) =
     let a = length(_get(fvs)) + 1 in
     _set(fvs, _get(fvs) ++ [x]) >> a in
 
   { islocal -- test if name is a local variable }
   let islocal(x, env) = 
-    let case([n, i, _]) = (n = e_level(env)) when i = #LOCAL or i = #ARG
+    let case(_pair(n, #LOCAL(_))) = (n = e_level(env))
+      | case(_pair(n, #ARG(_))) = (n = e_level(env))
       | case(_) = false in
     case(lookup(x, env)) in
 
   { selfrec -- test if name is a recursive call of the same function }
   let selfrec(x, env) =
-    lookup(x, env) = [e_level(env), #FVAR, 0] in
+    lookup(x, env) = [e_level(env), #FVAR(0)] in
 
   { reset -- delete local variables at end of clause }
-  let reset([lev, _, dict, _, size]) =
-    let h([_, [n, i, _]]) = (n < lev) when i = #LOCAL or i = #ARG
+  let reset(#env(lev, _, dict, _, size)) =
+    let h(_pair(_, _pair(n, #LOCAL(_)))) = (n < lev)
+      | h(_pair(_, _pair(n, #ARG(_)))) = (n < lev)
       | h(_) = true in
     _set(dict, filter(h, _get(dict))) >> _set(size, 0) in
+
 
   { CODE GENERATOR -- Translate AST into funcode }
 
@@ -605,16 +624,17 @@ define __top() =
 
   { c_ref -- compile a variable reference }
   let c_ref(x, env) = 
-    let case([n, i, a]) = 
+    let case (_pair(n, #QUOTE(v))) = #QUOTE(v)
+      | case(_pair(n, i)) = 
     	  { x is a local or constant or known free variable }
-          [i, a] when n = e_level(env) or i = #QUOTE
-      | case([_, _, _]) =
+          i when n = e_level(env) or i = #QUOTE
+      | case(_pair(_, _)) =
           { x is local to an enclosing scope -- make it a free variable }
 	  let a = alloc_fv(x, env) in
-	  bind(x, #FVAR, a, env) >> [#FVAR, a]
-      | case([]) = 
+	  bind(x, #FVAR(a), env) >> #FVAR(a)
+      | case(_) = 
           { x is not bound at all -- treat it as global }
-	  [#GLOBAL, x] in
+	  #GLOBAL(x) in
     case(lookup(x, env)) in
 
   { sortby -- sort a list by some measure }
@@ -625,6 +645,15 @@ define __top() =
 	  else y:insert(x, ys) in
     foldr(insert, [], xs) in
 
+  { The functions c_rule, c_body and c_patt are mutually recursive with c_exp.
+    Since our language does not support mutual recursion for local
+    functions, we fake it by tying the knot with a reference cell. }
+
+  let knot = _new(0) in
+
+  let c_exp(e, env, tl) =
+    let f = _get(knot) in f(e, env, tl) in
+
   { The pattern matching compiler c_patt returns a pair [code, traps] where
     code is code to match the pattern, and traps is a list of pairs
     [f, d] consisting of a failure label f and a stack depth d when
@@ -632,71 +661,70 @@ define __top() =
     one pair corresponding to a compound pattern. }
 
   { pgen -- accumulate code for pattern matching }
-  let pgen(root, kids, traps) =
-      [[#seq, root, #seq:map(fst, kids)], traps ++ concat(map(snd, kids))] in
+  let pgen(root, kids) =
+      _pair(#SEQ([root, #SEQ(map(_fst, kids))]), concat(map(_snd, kids))) in
 
   { pleaf -- leaf pattern }
-  let pleaf(code, traps) = [code, traps] in
+  let pleaf(code) = _pair(code, []) in
+
+  let trap(d, code) =
+    let f = label() in
+    _pair(#SEQ([#TRAP(f), _fst(code)]), _pair(f, d):_snd(code)) in
 
   { c_patt -- compile a pattern, assuming d+1 things on the stack }
-  let c_patt([#const, v], d, env) = 
+  let c_patt(#const(v), d, env) = 
         let f = label() in 
-	pleaf([#seq, [#TRAP, f], [#QUOTE, v], [#MEQ]], [[f, d]])
+	trap(d, pleaf(#SEQ([#QUOTE(v), #MEQ])))
 
-    | c_patt([#var, x], d, env) =
+    | c_patt(#var(x), d, env) =
         let f = label() in
         if islocal(x, env) then
-	  pleaf([#seq, [#TRAP, f], c_ref(x, env), [#MEQ]], [[f, d]])
+	  trap(d, pleaf(#SEQ([c_ref(x, env), #MEQ])))
         else
-          pleaf([#seq, [#BIND, alloc(x, env)]], [])
+          pleaf(#BIND(alloc(x, env)))
 
-    | c_patt([#anon], d, env) = pleaf([#POP], [])
+    | c_patt(#anon, d, env) = pleaf(#POP)
 
-    | c_patt(#prim:cn:args, d, env) =
+    | c_patt(#prim(#var(#_pair), [x, y]), d, env) =
+        { A pair pattern _pair(x, y) }
+        trap(d, pgen(#MPAIR, 
+            [c_patt(x, d+1, env), pleaf(#GETSND), c_patt(y, d, env)]))
+
+    | c_patt(#prim(cn, args), d, env) =
         { A constructor pattern h(args) }
-        let f = label() in
 	let n = length(args) in
-	pgen([#seq, [#TRAP, f], c_ref(cn, env), [#MPRIM, n]],
-	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ]),
-             [[f, d]])
+        trap(d, pgen(#SEQ([c_exp(cn, env, false), #MPRIM(n)]),
+	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ])))
 
-    | c_patt([#cons, h, [#anon]], d, env) =
+    | c_patt(#cons(h, #anon), d, env) =
         { A cons pattern h : _ }
-        let f = label() in
-	pgen([#seq, [#TRAP, f], [#MCONS]], 
-             [c_patt(h, d+1, env), [[#POP], []]],
-	     [[f, d]])
+        trap(d, pgen(#SEQ([#MCONS]), [c_patt(h, d+1, env), pleaf(#POP)]))
 
-    | c_patt([#cons, h, t], d, env) =
+    | c_patt(#cons(h, t), d, env) =
         { A cons pattern h : t }
-        let f = label() in
-	pgen([#seq, [#TRAP, f], [#MCONS]], 
-             [c_patt(h, d+1, env), [[#GETTAIL], []], c_patt(t, d, env)], 
-	     [[f, d]])
+        trap(d, pgen(#MCONS, 
+             [c_patt(h, d+1, env), pleaf(#GETTAIL), c_patt(t, d, env)]))
 
-    | c_patt([#nil], d, env) = 
+    | c_patt(#nil, d, env) = 
         { A nil pattern [] }
-        let f = label() in 
-	pleaf([#seq, [#TRAP, f], [#MNIL]], [[f, d]])
+        trap(d, pleaf(#MNIL))
 
-    | c_patt(#list:es, d, env) =
+    | c_patt(#list(es), d, env) =
         c_patt(listify(es), d, env)
 
-    | c_patt([#plus, p1, n], d, env) =
+    | c_patt(#plus(p1, n), d, env) =
         { A plus pattern p + n }
-        let f = label() in
-	pgen([#seq, [#TRAP, f], [#MPLUS, n]], 
-	        [c_patt(p1, d, env)], [[f, d]]) in
+        trap(d, pgen(#MPLUS(n), [c_patt(p1, d, env)])) in
 
   { c_arg -- compile code to match an argument }
-  let c_arg(i, [#var, x], env) =
+  let c_arg(i, #var(x), env) =
         { variable matches whole argument }
-        bind(x, #ARG, i, env) >> pleaf([], []) when not islocal(x, env)
-    | c_arg(i, [#anon], env) = 
+        bind(x, #ARG(i), env) >> pleaf(#NOP) when not islocal(x, env)
+    | c_arg(i, #anon, env) = 
         { anon matches whole argument }
-	pleaf([], [])
+	pleaf(#NOP)
     | c_arg(i, p, env) =
-        pgen([#seq, [#ARG, i]], [c_patt(p, 0, env)], []) in
+        pgen(#ARG(i), [c_patt(p, 0, env)]) in
 
   { c_match -- compile code to match a list of arguments }
   let c_match(ps, env) =
@@ -705,30 +733,23 @@ define __top() =
       | compile(i, p:patts) =
           let x = c_arg(i, p, env) in x : compile(i+1, patts) in
     let code = compile(0, ps) in
-    [#seq:map(fst, code), concat(map(snd, code))] in
-
-  { The functions c_rule and c_body are mutually recursive with c_exp.
-    Since our language does not support mutual recursion for local
-    functions, we fake it by tying the knot with a reference cell. }
-
-  let knot = _new(0) in
+    _pair(#SEQ(map(_fst, code)), concat(map(_snd, code))) in
 
   { c_rule -- compile code for one rule in a function }
-  let c_rule([patts, body], env) =
-        let c_exp = _get(knot) in
+  let c_rule(#rule(patts, body), env) =
         let match = c_match(patts, env) in
         let eval = c_exp(body, env, true) in
         reset(env) >>
-        [[#seq, fst(match), eval], snd(match)]
+        _pair(#SEQ([_fst(match), eval]), _snd(match))
 
-    | c_rule([patts, guard, body], env) =
+    | c_rule(#crule(patts, guard, body), env) =
         let f = label() in
-        let c_exp = _get(knot) in
         let match = c_match(patts, env) in
         let test = c_exp(guard, env, false) in
         let eval = c_exp(body, env, true) in
         reset(env) >>
-        [[#seq, fst(match), test, [#JFALSE, f], eval], [f, 0]:snd(match)] in
+        _pair(#SEQ([_fst(match), test, #JFALSE(f), eval]), 
+          _pair(f, 0):_snd(match)) in
 
   { A list of traps is accumulated for the whole of a rule, each containing
     a label and the stack depth when control reaches it.  On the JVM, we
@@ -739,19 +760,18 @@ define __top() =
   { c_traps -- compile popping code for traps }
   let c_traps(traps) = 
     let h(d0, [], acc) = acc
-      | h(d0, [f, d1]:ys, acc) =
-         if d0 = d1 then h(d1, ys, f:acc)
-	 else h(d0+1, [f, d1]:ys, [#POP]:acc) in
-    #seq:h(0, traps, []) in
+      | h(d0, y:ys, acc) =
+         if d0 = _snd(y) then h(d0, ys, _fst(y):acc)
+	 else h(d0+1, y:ys, #POP:acc) in
+    #SEQ(h(0, traps, [])) in
 
   { c_body -- compile code for a function body }
-  let c_body([], env) = [#FAIL]
+  let c_body([], env) = #FAIL
     | c_body(r:rs, env) =
 	let rcode = c_rule(r, env) in
-	let flabs = map(fst, snd(rcode)) in
-	let traps = sortby(snd, snd(rcode)) in
-        [#seq, fst(rcode), if traps = [] then [] else 
-	    [#seq, c_traps(traps), c_body(rs, env)]] in
+	let traps = sortby(_snd, _snd(rcode)) in
+        #SEQ([_fst(rcode), if traps = [] then #NOP else 
+	    #SEQ([c_traps(traps), c_body(rs, env)])]) in
 
   { c_closure -- compile code to form a closure }
   let c_closure(f, n, body, env) =
@@ -760,82 +780,82 @@ define __top() =
     let fvs = e_fvars(env1) in
     let nfvs = length(fvs) in
     debug(1, code) >>
-    [#seq, [#QUOTE, assemble(f, n, code)], [#FRAME, nfvs+1],
-      #seq:[ [#seq, c_ref(x, env), [#PUTARG, i]] | [i, x] <- number(1, fvs) ],
-      [#CLOSURE, nfvs+1]] in
+    #SEQ([#QUOTE(assemble(f, n, code)), #FRAME(nfvs+1),
+      #SEQ([ #SEQ([c_ref(x, env), #PUTARG(i)]) | [i, x] <- number(1, fvs) ]),
+      #CLOSURE(nfvs+1)]) in
 
   { yield -- append RETURN instuction if needed }
   let yield(code, tl) =
-    if tl then [#seq, code, [#RETURN]] else code in
+    if tl then #SEQ([code, #RETURN]) else code in
 
-  { c_exp -- compile code for an expression, including a RETURN if tl is true }
-  let c_exp([#const, v], env, tl) = yield([#QUOTE, v], tl)
+  { c_expr -- compile code for an expression, including a RETURN if tl is true }
+  let c_expr(#const(v), env, tl) = yield(#QUOTE(v), tl)
 
-    | c_exp([#var, x], env, tl) = yield(c_ref(x, env), tl)
+    | c_expr(#var(x), env, tl) = yield(c_ref(x, env), tl)
 
-    | c_exp(#apply:[#var, f]:args, env, tl) =
+    | c_expr(#apply(#var(f), args), env, tl) =
         { Tail call to the same function }
-	[#seq, #seq:[ c_exp(e, env, false) | e <- args ],
-	  [#TCALL, length(args)]]
+	#SEQ([#SEQ([ c_expr(e, env, false) | e <- args ]),
+	  #TCALL(length(args))])
       when tl and selfrec(f, env) and length(args) = e_arity(env)
 
-    | c_exp(#apply:f:args, env, tl) = 
+    | c_expr(#apply(f, args), env, tl) = 
         { A general function call -- PREP and PUTARG provide hooks
 	  for the back end to do inlining of primitives }
         let nargs = length(args) in
-      	yield([#seq, c_exp(f, env, false), [#PREP, nargs],
-  	    #seq:[ [#seq, c_exp(e, env, false), [#PUTARG, i]]
-	    	     | [i, e] <- number(0, args) ],
-	    [#CALL, nargs]], tl)
+      	yield(#SEQ([c_expr(f, env, false), #PREP(nargs),
+  	    #SEQ([ #SEQ([c_expr(e, env, false), #PUTARG(i)])
+	    	     | [i, e] <- number(0, args) ]),
+	    #CALL(nargs)]), tl)
 
-    | c_exp([#if, e1, e2, e3], env, tl) =
+    | c_expr(#if(e1, e2, e3), env, tl) =
         let l1 = label() in let l2 = label() in
 	if tl then
-  	  [#seq, c_exp(e1, env, false), [#JFALSE, l1],
-	    c_exp(e2, env, true), l1, c_exp(e3, env, true)]
+  	  #SEQ([c_expr(e1, env, false), #JFALSE(l1),
+	    c_expr(e2, env, true), l1, c_expr(e3, env, true)])
 	else
-	  [#seq, c_exp(e1, env, false), [#JFALSE, l1],
-	    c_exp(e2, env, false), [#JUMP, l2], 
-	    l1, c_exp(e3, env, false), l2]
+	  #SEQ([c_expr(e1, env, false), #JFALSE(l1),
+	    c_expr(e2, env, false), #JUMP(l2), 
+	    l1, c_expr(e3, env, false), l2])
 
-    | c_exp([#let, [#val, x, [#const, v]], e2], env, tl) =
+    | c_expr(#let(#val(x, #const(v)), e2), env, tl) =
         { Special case: treat constants by substituting them }
-        bind(x, #QUOTE, v, env) >>
-        let c2 = c_exp(e2, env, tl) in
+        bind(x, #QUOTE(v), env) >>
+        let c2 = c_expr(e2, env, tl) in
         unbind(x, env) >> c2
 
-    | c_exp([#let, [#val, x, e1], e2], env, tl) =
+    | c_expr(#let(#val(x, e1), e2), env, tl) =
         { Local value definition  let x = e1 in e2 }
-	let c1 = c_exp(e1, env, false) in
+	let c1 = c_expr(e1, env, false) in
         let a = alloc(x, env) in
-        let c2 = c_exp(e2, env, tl) in
-        dealloc(x, env) >> [#seq, c1, [#BIND, a], c2]
+        let c2 = c_expr(e2, env, tl) in
+        dealloc(x, env) >> #SEQ([c1, #BIND(a), c2])
 
-    | c_exp([#let, [#fun, f, n, rules], e2], env, tl) =
+    | c_expr(#let(#fun(f, n, rules), e2), env, tl) =
         { Local function definition }
 	let c1 = c_closure(f, n, rules, env) in
         let a = alloc(f, env) in
-        let c2 = c_exp(e2, env, tl) in
+        let c2 = c_expr(e2, env, tl) in
         dealloc(f, env) >>
-	[#seq, c1, [#BIND, a], c2]
+	#SEQ([c1, #BIND(a), c2])
 
-    | c_exp([#function, n, rules], env, tl) =
+    | c_expr(#function(n, rules), env, tl) =
       	{ A lambda expression  function (patt_1, ..., patt_n) e1 ... }
 	yield(c_closure("<function>", n, rules, env), tl)
 
-    | c_exp([#cons, e1, e2], env, tl) =
-        yield([#seq, c_exp(e1, env, false), 
-			c_exp(e2, env, false), [#CONS]], tl)
+    | c_expr(#cons(e1, e2), env, tl) =
+        yield(#SEQ([c_expr(e1, env, false), 
+			c_expr(e2, env, false), #CONS]), tl)
 
-    | c_exp([#nil], env, tl) = yield([#NIL], tl)
+    | c_expr(#nil, env, tl) = yield(#NIL, tl)
 
-    | c_exp(#list:es, env, tl) = c_exp(listify(es), env, tl)
+    | c_expr(#list(es), env, tl) = c_expr(listify(es), env, tl)
 
-    | c_exp([#seq, e1, e2], env, tl) =
+    | c_expr(#seq(e1, e2), env, tl) =
         { Sequential composition e1 >> e2 }
-	[#seq, c_exp(e1, env, false), [#POP], c_exp(e2, env, tl)] in
+	#SEQ([c_expr(e1, env, false), #POP, c_expr(e2, env, tl)]) in
 
-  _set(knot, c_exp) >> 
+  _set(knot, c_expr) >> 
 
   { i_func -- compile a function for the interpreter }
   let i_func(f, n, body, env) =
@@ -847,41 +867,43 @@ define __top() =
     is itself compiled. }
 
   { interp -- interpret an expression, compiling any embedded functions }
-  let interp([#const, v], env) = v
-    | interp([#var, x], env) = 
-        let case([_, #QUOTE, v]) = v
-	  | case([]) = _glodef(x) in
+  let interp(#const(v), env) = v
+    | interp(#var(x), env) = 
+        let case(_pair(_, #QUOTE(v))) = v
+	  | case(_) = _glodef(x) in
 	case(lookup(x, env))
-    | interp(#apply:f:args, env) = 
+    | interp(#apply(f, args), env) = 
         _apply(interp(f, env), [ interp(e, env) | e <- args ])
-    | interp([#if, e1, e2, e3], env) =
+    | interp(#if(e1, e2, e3), env) =
         if interp(e1, env) then interp(e2, env) else interp(e3, env)
-    | interp([#let, [#val, x, e1], e2], env) =
-        bind(x, #QUOTE, interp(e1, env), env) >>
-	let v = interp(e2, env) in
-	unbind(x, env) >> v
-    | interp([#let, [#fun, f, n, rules], e2], env) =
-	bind(f, #QUOTE, i_func(f, n, rules, env), env) >>
-	let v = interp(e2, env) in
-	unbind(f, env) >> v
-    | interp([#function, n, rules], env) =
+    | interp(#let(#val(x, e1), e2), env) =
+        let v1 = interp(e1, env) in
+        bind(x, #QUOTE(v1), env) >>
+	let v2 = interp(e2, env) in
+	unbind(x, env) >> v2
+    | interp(#let(#fun(f, n, rules), e2), env) =
+        let v1 = i_func(f, n, rules, env) in
+	bind(f, #QUOTE(v1), env) >>
+	let v2 = interp(e2, env) in
+	unbind(f, env) >> v2
+    | interp(#function(n, rules), env) =
 	i_func("<function>", n, rules, env)
-    | interp([#cons, e1, e2], env) =
+    | interp(#cons(e1, e2), env) =
         interp(e1, env) : interp(e2, env)
-    | interp([#nil], env) =
+    | interp(#nil, env) =
         []
-    | interp(#list:es, env) =
+    | interp(#list(es), env) =
         [interp(e, env) | e <- es ]
-    | interp([#seq, e1, e2], env) =
+    | interp(#seq(e1, e2), env) =
 	interp(e1, env) >> interp(e2, env) in
 
   { exec -- execute a top-level phrase }
-  let exec([#val, x, e]) = 
+  let exec(#val(x, e)) = 
         { A global value definition }
 	_redefine(x) >>
 	_topdef(x, interp(e, empty()))
 
-    | exec([#fun, f, n, rules]) = 
+    | exec(#fun(f, n, rules)) = 
         { A global function definition }
 	_redefine(f) >>
 	_topdef(f, i_func(f, n, rules, empty()))

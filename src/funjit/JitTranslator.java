@@ -349,14 +349,14 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(CHECKCAST, ty);
     }
 
-    private void genMCons() {
-	trapCast(consval_cl);
+    private void genMCons(String cl, String field) {
+	trapCast(cl);
     	code.gen(DUP); 
-    	code.gen(GETFIELD, consval_cl, "head", value_t);
+    	code.gen(GETFIELD, cl, field, value_t);
     }
 
-    private void genGettail() {
-    	code.gen(GETFIELD, consval_cl, "tail", value_t);
+    private void genGettail(String cl, String field) {
+    	code.gen(GETFIELD, cl, field, value_t);
     }
 
     private void genMPlus(int n) {
@@ -379,8 +379,7 @@ public class JitTranslator implements FunCode.Jit {
     /** Match a primitive as constructor */
     private void genMPrim(int n) {
     	// temp = ((Function) cons).subr.pattMatch(obj, n)
-	cast(funval_cl, new Crash("pattmatch"));
-	code.gen(GETFIELD, funval_cl, "subr", function_t);
+	code.gen(GETFIELD, value_cl, "subr", function_t);
     	code.gen(SWAP);				// obj, subr
     	code.gen(CONST, n);			// n, obj, subr
     	code.gen(INVOKEVIRTUAL, function_cl, "pattMatch", fun_VI_A_t);
@@ -422,8 +421,10 @@ public class JitTranslator implements FunCode.Jit {
 	    case TCALL:   genTCall(rand); break;
 	    case MEQ:     genMEq(); break;
 	    case MPRIM:   genMPrim(rand); break;
-	    case MCONS:   genMCons(); break;
-	    case GETTAIL: genGettail(); break;
+	    case MCONS:   genMCons(consval_cl, "head"); break;
+	    case GETTAIL: genGettail(consval_cl, "tail"); break;
+            case MPAIR:   genMCons(pairval_cl, "fst"); break;
+            case GETSND:  genGettail(pairval_cl, "snd"); break;
 	    case MNIL:    genMNil(); break;
 	    case MPLUS:   genMPlus(rand); break;
 	    default:

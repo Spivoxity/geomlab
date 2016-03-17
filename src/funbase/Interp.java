@@ -262,6 +262,22 @@ public class Interp implements FunCode.Jit {
 			frame[sp-1] = ((Value.ConsValue) frame[sp-1]).tail;
 			break;
 
+                    case MPAIR: {
+                        try {
+                            Value.PairValue cell =
+                                (Value.PairValue) frame[sp-1];
+                            frame[sp++] = cell.fst;
+                        } catch (ClassCastException ex) {
+                            sp--;
+                            pc = trap;
+                        }
+                        break;
+                    }
+
+                    case GETSND:
+                        frame[sp-1] = ((Value.PairValue) frame[sp-1]).snd;
+                        break;
+
 		    case MPRIM: {
 			Value cons = frame[--sp];
 			Value obj = frame[--sp];

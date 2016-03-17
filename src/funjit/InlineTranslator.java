@@ -215,6 +215,8 @@ public class InlineTranslator extends JitTranslator {
 	register(new Comparison(">=", DCMPG, IFLT));
 	register(new ListSelect("head", "#head"));
 	register(new ListSelect("tail", "#tail"));
+        register(new Selector("_fst", pairval_cl, "pair", "fst", Kind.VALUE));
+        register(new Selector("_snd", pairval_cl, "pair", "snd", Kind.VALUE));
 	register(new Selector("rpart", color_cl, "colour", Kind.NUMBER));
 	register(new Selector("gpart", color_cl, "colour", Kind.NUMBER));
 	register(new Selector("bpart", color_cl, "colour", Kind.NUMBER));
