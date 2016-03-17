@@ -108,6 +108,7 @@ public class GeomBase {
 	log.print(prefix); log.println(message); log.flush();
 	if (status < 2) status = 2;
 	this.errtag = errtag;
+        last_val = null;
     }
  
     /** Called when a phrase has been parsed */
@@ -262,7 +263,7 @@ public class GeomBase {
 
     @PRIMITIVE
     public static Value _scan(Primitive prim) {
-	return theApp.scan();
+        return theApp.scan();
     }
 
     @PRIMITIVE
