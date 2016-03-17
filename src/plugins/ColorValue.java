@@ -139,8 +139,21 @@ public class ColorValue extends Picture {
     public void paint(int layer, int col, Stylus g, Tran2D t) {
         if (layer == FILL) {
             g.setTrans(t);
-            g.fillOval(new Vec2D(0.5f, 0.5f), 0.45f, 0.45f, this);
+            g.fillOval(new Vec2D(0.5f, 0.5f), 0.48f, 0.48f, this);
         }
+    }
+
+    @Override
+    public boolean equals(Object a) {
+        if (! (a instanceof ColorValue)) return false;
+        ColorValue acolor = (ColorValue) a;
+        return (rpart == acolor.rpart && gpart == acolor.gpart 
+                && bpart == acolor.bpart);
+    }
+
+    @Override
+    public int hashCode() {
+        return rgb;
     }
 
     /** Truncate a double argument to the range [0.0, 1.0]. */
@@ -155,7 +168,10 @@ public class ColorValue extends Picture {
     
     /** Create a colour from RGB values in the range [0, 1] */
     @PRIMITIVE
-    public static final Primitive rgbprim = new Primitive.Prim3("rgb") {
+    public static class RgbPrim extends Primitive.Prim3 
+            implements Primitive.Constructor {
+        public RgbPrim() { super("rgb"); }
+
 	@Override
 	public Value apply3(Value rpart, Value gpart, Value bpart) {
 	    Evaluator.countCons();

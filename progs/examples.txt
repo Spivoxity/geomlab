@@ -43,12 +43,31 @@ define _init() =
       "slide(function (t)",
       "  image(300, 400, pixpic(40*t+1, mike)))"],
     ["{ Nonlinear transformation }", "",
-      "slideimg(500, 500, triage([",
+      "slideimg(500, 500, stages([",
       "  function (t)   mike . shear(t/5),",      
       "  function (t) interpic(t,",
       "                 mike . shear(1/5),",
       "                 weird . mike . shear(1/5)),",
       "  function (t)   weird . mike . shear(1/5) . pp(t/250)]))"],
+    ["{ Game of Life }", "",
+      "define N = 20; define T = 65;", "",
+      "define blobify(img) = above([beside([pixel(img, [x, y]) ",
+      "  | x <- [0..width(img)-1]]) | y <- [0..height(img)-1]]);", "",
+      "define init = ",
+      "  let c = [[6,2], [7,3], [8,1], [8,2], [8,3], [14,10], [15,10], [16,10]] in",
+      "  image(N, N, function (p) if member(p, c) then black else white);", "",
+      "define region([x, y]) = [ [u, v] | u <- [x-1..x+1], v <- [y-1..y+1] ];", "",
+      "define alive(p, img) =",
+      "  let score(q) = if pixel(img, q) <> white then 1 else 0 in",
+      "  let s = sum([score(q) | q <- region(p)]) - score(p)/2 in ",
+      "  s > 2 and s < 4;", "",
+      "define fade(c) =",
+      "  if c = white then red else rgb(rpart(c)*3/4, 0, 0);", "",
+      "define next(img) = ",
+      "  image(N, N, function (p) ",
+      "    if alive(p, img) then fade(pixel(img, p)) else white);", "",
+      "let frames = repeat(T, next, init) in",
+      "  slide(function (t) blobify(nth(int((T-0.001)*t), frames)))"],
     ["{ Digits puzzle }", "",
       "define delete(d, f) =",
       "  function (x) (x <> d) and f(x);", "",
@@ -127,7 +146,7 @@ define system(0) = "F" | system(n+1) = process(rule, system(n));
 
 { Image transformations }
 
-define interp(t, x, y) = (1-t)*x + t * y;
+define interp(t, x, y) = (1-t)*x + t*y;
 
 define intercolour(t, rgb(r1,g1,b1), rgb(r2,g2,b2))
  = rgb(interp(t,r1,r2), interp(t,g1,g2), interp(t,b1,b2));
@@ -144,11 +163,8 @@ define shear(t) = function ([x, y]) [x-t*y, y];
 { pp -- quadratic transform that fixes the corners of a 300 x 400 image }
 define pp(t) = function ([x, y]) [x - t * y * (400-y), y - t * x * (300-x)];
 
-define nth(0, x:xs) = x
-  | nth(n+1, x:xs) = nth(n, xs);
-  
-{ triage -- compose a list of progressive transformations }
-define triage(fs) =
+{ stages -- compose a list of progressive transformations }
+define stages(fs) =
   function (t)
     { Avoid overflow at t = 1 }
     let tt = 0.999 * length(fs) * t in
@@ -195,15 +211,5 @@ define mfun(x, y) =
 
 define plot(w, x0, y0, s, f) =
   image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));
-
-{ Nonlinear transformation }
-
-define transmike =
-slideimg(500, 500, triage([
-  function (t)   mike . shear(t/5),
-  function (t) interpic(t,
-                 mike . shear(1/5),
-                 weird . mike . shear(1/5)),
-  function (t)   weird . mike . shear(1/5) . pp(t/250)]));
 
 _stage(2);

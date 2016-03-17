@@ -54,7 +54,7 @@ public class Evaluator {
 
     protected static int timeLimit = 30000;
     protected static int stepLimit = 500000000;
-    protected static int consLimit = 10000000;
+    protected static int consLimit = 100000000;
 
     private static class ExecThread extends Thread {
 	public Function fun;

@@ -92,7 +92,7 @@ public abstract class Native {
 	Native.factory = factory;
     }
 
-    /** Retreive the singleton factory */
+    /** Retrieve the singleton factory */
     public static Native instance() {
 	return factory;
     }
