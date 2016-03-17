@@ -94,6 +94,7 @@ public class TurtlePicture extends Picture {
 		    break;
 
 		case Command.PEN:
+                case Command.INK:
 		    break;
 	    }
 
@@ -125,6 +126,7 @@ public class TurtlePicture extends Picture {
     public void defaultDraw(Stylus g) {
 	float x = 0, y = 0, dir = 0;
 	boolean pen = true;
+        ColorValue ink = ColorValue.black;
 
 	g.setStroke(2);
 
@@ -137,7 +139,7 @@ public class TurtlePicture extends Picture {
 		    Vec2D centre = posVec(xc, yc);
 		    if (pen) 
 			g.drawArc(centre, R/(xmax-xmin), R/(ymax-ymin),
-				  dir-90, a, ColorValue.black);
+				  dir-90, a, ink);
 		    x = xc + R * Vec2D.sind(dir+a); 
 		    y = yc - R * Vec2D.cosd(dir+a);
 		    dir += a;
@@ -150,7 +152,7 @@ public class TurtlePicture extends Picture {
 		    float yc = y - R * Vec2D.cosd(dir);
 		    Vec2D centre = posVec(xc, yc);
 		    if (pen) g.drawArc(centre, R/(xmax-xmin), R/(ymax-ymin), 
-				       dir+90, -a, ColorValue.black);
+				       dir+90, -a, ink);
 		    x = xc - R * Vec2D.sind(dir-a); 
 		    y = yc + R * Vec2D.cosd(dir-a);
 		    dir -= a;
@@ -162,7 +164,7 @@ public class TurtlePicture extends Picture {
 		    x += cmd.arg * Vec2D.cosd(dir); 
 		    y += cmd.arg * Vec2D.sind(dir);
 		    Vec2D pos = posVec(x, y);
-		    if (pen) g.drawLine(oldpos, pos, ColorValue.black);
+		    if (pen) g.drawLine(oldpos, pos, ink);
 		    break;
 		}
 
@@ -173,6 +175,10 @@ public class TurtlePicture extends Picture {
 		case Command.PEN:
 		    pen = (cmd.arg != 0);
 		    break;
+
+                case Command.INK:
+                    ink = cmd.color;
+                    break;
 	    }
 	}
     }
@@ -188,7 +194,7 @@ public class TurtlePicture extends Picture {
     public static class Command extends Value {
 	/** Values for kind */
 	public static final int 
-	    LEFT = 0, RIGHT = 1, AHEAD = 2, TURN = 3, PEN = 4;
+	    LEFT = 0, RIGHT = 1, AHEAD = 2, TURN = 3, PEN = 4, INK = 5;
 	
 	/** The kind of command */
 	public final int kind;
@@ -196,21 +202,32 @@ public class TurtlePicture extends Picture {
 	/** Argument for the command */
 	public final float arg;
 	
+        /** A colour, if one is needed */
+        public final ColorValue color;
+
 	/** Name of the constructor */
 	public final String name;
 
 	public Command(int kind, float arg, String name) {
+            this(kind, arg, name, null);
+        }
+
+        public Command(int kind, float arg, String name, ColorValue color) {
 	    Evaluator.countCons();
 	    this.kind = kind;
 	    this.arg = arg;
 	    this.name = name;
+            this.color = color;
 	}
 	
 	@Override
 	public void printOn(PrintWriter pr) {
 	    pr.print(name);
 	    pr.print("(");
-	    Value.printNumber(pr, arg);
+            if (color != null)
+                color.printOn(pr);
+            else
+                Value.printNumber(pr, arg);
 	    pr.print(")");
 	}
 
@@ -220,13 +237,15 @@ public class TurtlePicture extends Picture {
 	}
 
 	public boolean equals(Command a) {
-	    return (this.kind == a.kind && this.arg == a.arg);
+	    return (this.kind == a.kind && this.arg == a.arg
+                    && (this.color == null || this.color.equals(a.color)));
 	}
     }
 
     /** A constructor primitive for commands */
-    private static class CommandPrimitive extends Primitive.Prim1 {
-	private int kind;
+    private static class CommandPrimitive extends Primitive.Prim1 
+            implements Primitive.Constructor {
+	protected int kind;
 	
 	public CommandPrimitive(String name, int kind) {
 	    super(name);
@@ -246,7 +265,10 @@ public class TurtlePicture extends Picture {
 	    try {
 		Command c = (Command) obj;
 		if (c.kind != kind) return null;
-		args[0] = NumValue.getInstance(c.arg);
+                if (c.color != null)
+                    args[0] = c.color;
+                else
+                    args[0] = NumValue.getInstance(c.arg);
 		return args;
 	    }
 	    catch (ClassCastException ex) {
@@ -261,5 +283,12 @@ public class TurtlePicture extends Picture {
 	left = new CommandPrimitive("left", Command.LEFT),
 	right = new CommandPrimitive("right", Command.RIGHT),
 	turn = new CommandPrimitive("turn", Command.TURN),
-	pen = new CommandPrimitive("pen", Command.PEN);
+	pen = new CommandPrimitive("pen", Command.PEN),
+        ink = new CommandPrimitive("ink", Command.INK) {
+                @Override
+                public Value apply1(Value arg) {
+                    return new Command(kind, 0.0f, name, 
+                               cast(ColorValue.class, arg, "a colour"));
+                }
+            };
 }
