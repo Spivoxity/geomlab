@@ -62,7 +62,7 @@ public class TofuTranslator implements FunCode.Jit {
 	    public Function newClosure(final Value func, Value fvars[]) {
 		return new Function.Closure(funcode.arity, funcode, fvars) {
 		    @Override
-		    public Value apply(Value args[], int base, int nargs) {
+		    public Value apply(int nargs, Value args[], int base) {
 			// Translate the code
 			if (code.jitcode == this_factory)
 			    code.jitcode = translator.translate(code);
@@ -72,31 +72,18 @@ public class TofuTranslator implements FunCode.Jit {
 			    func.subr = code.jitcode.newClosure(func, fvars);
 
 			// Call the new closure
-			return func.subr.apply(args, base, nargs);
+			return func.subr.apply(nargs, args, base);
 		    }
 		};
 	    }
 	};
     }
 
-    /** Use reflection to create a primitive */
-    public Primitive primitive(String name, int arity, 
-			       java.lang.reflect.Method meth) {
-	return translator.primitive(name, arity, meth);
+    public Primitive.Factory getPrimitiveFactory() {
+        return translator.getPrimitiveFactory();
     }
 
-    @Override
-    public String[] getContext(String me) {
-	return translator.getContext(me);
-    }
-
-    @Override
-    public void initStack() {
-	translator.initStack();
-    }
-
-    @Override
-    public void setRoot(Value root) {
-	translator.setRoot(root);
+    public Evaluator.Backtrace getBacktrace() {
+        return translator.getBacktrace();
     }
 }

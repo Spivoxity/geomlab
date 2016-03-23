@@ -31,6 +31,7 @@
 package funbase;
 
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
 
 import java.io.PrintWriter;
 import java.io.IOException;
@@ -48,6 +49,7 @@ import java.util.Collections;
 /** Names in the Fun program are represented by unique Name objects.
  *  These contain a shallow binding to their value in the global
  *  environment. */
+@DESCRIPTION("a name")
 public final class Name extends Value implements Comparable<Name> {
     private static final long serialVersionUID = 1L;
 	
@@ -244,60 +246,57 @@ public final class Name extends Value implements Comparable<Name> {
     // Primitives
 
     @PRIMITIVE
-    public static Value _defined(Primitive prim, Value x) {
-        Name n = prim.name(x);
-        return Value.BoolValue.getInstance(n.glodef != null);
+    public static Value name(String x) {
+	return find(x);
     }
 
     @PRIMITIVE
-    public static Value _iscons(Primitive prim, Value x) {
-        Name n = prim.name(x);
-        Value v = n.glodef;
-        boolean res = (v != null && (v.subr instanceof Primitive.Constructor));
-        return Value.BoolValue.getInstance(res);
+    public boolean _defined() {
+        return (glodef != null);
     }
 
     @PRIMITIVE
-    public static Value _glodef(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	Value v = n.glodef;
-	if (v == null) Evaluator.err_notdef(n);
-	return v;
+    public boolean _iscons() {
+        if (glodef == null) return false;
+
+        Class<?> primcl = glodef.subr.getClass();
+        return (primcl.getAnnotation(Primitive.CONSTRUCTOR.class) != null);
     }
 
     @PRIMITIVE
-        public static Value _stage(Primitive prim, Value x) {
-        stage = (int) prim.number(x);
-	return Value.nil;
+    public Value _glodef() {
+	if (glodef == null) Evaluator.err_notdef(this);
+	return glodef;
     }
 
     @PRIMITIVE
-    public static Value _redefine(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	if (n.level == 0 && stage > 0)
-	    Evaluator.error("#redef", x);
-        else if (n.level == 2 && n.glodef != null)
-            Evaluator.error("#multidef", x);
-	return Value.nil;
+    public static void _stage(int x) {
+        stage = x;
     }
 
     @PRIMITIVE
-    public static Value _spelling(Primitive prim, Value x) {
-	Name n = prim.name(x);
-	return StringValue.getInstance(n.toString());
+    public void _redefine() {
+	if (level == 0 && stage > 0)
+	    Evaluator.error("#redef", this);
+        else if (level == 2 && glodef != null)
+            Evaluator.error("#multidef", this);
+    }
+
+    @PRIMITIVE
+    public String _spelling() {
+	return this.toString();
     }
 
     private static int g = 0;
 
     @PRIMITIVE
-    public static Value _gensym(Primitive prim) {
+    public static Value _gensym() {
 	return find(String.format("$g%d", ++g));
     }
 
     @PRIMITIVE
-    public static Value _dump(Primitive prim, Value x) {
+    public static Value _dump(String fname) {
 	try {
-	    String fname = prim.string(x);
 	    PrintWriter out = 
 		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
 	    dumpNames(out);
@@ -309,16 +308,17 @@ public final class Name extends Value implements Comparable<Name> {
 
     private class NameFunction extends Function {
         public NameFunction() {
-            super(-1);
+            super("#"+tag, -1);
         }
 
-        public Value apply(Value args0[], int base, int nargs) {
+        public Value apply(int nargs, Value args0[], int base) {
             Value args[] = new Value[nargs];
             System.arraycopy(args0, base, args, 0, nargs);
             return Value.BlobValue.getInstance(Name.this, args);
         }
 
-        public Value[] pattMatch(Value obj, int nargs) {
+        @Override
+        public Value[] pattMatch(int nargs, Value obj) {
             if (! (obj instanceof Value.BlobValue)) return null;
             Value.BlobValue blob = (Value.BlobValue) obj;
             if (blob.functor != Name.this || blob.args.length != nargs)

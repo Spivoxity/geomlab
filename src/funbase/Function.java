@@ -42,19 +42,22 @@ import java.io.Serializable;
 public abstract class Function implements Serializable {
     private static final long serialVersionUID = 1L;
     
+    public final String name;
+
     public final int arity;
     
-    public Function(int arity) {
+    public Function(String name, int arity) {
+        this.name = name;
 	this.arity = arity;
     }
 
     /** Apply the function to a list of arguments. */
-    public Value apply(Value args[], int nargs) {
-	return apply(args, 0, nargs);
+    public Value apply(Value args[]) {
+	return apply(args.length, args, 0);
     }
 
     /** Apply the function to a list of arguments with base. */
-    public abstract Value apply(Value args[], int base, int nargs);
+    public abstract Value apply(int nargs, Value args[], int base);
     
     /* The default is for the apply<n> methods to delegate to the
        general apply method.  For JIT functions with a small number of
@@ -65,48 +68,54 @@ public abstract class Function implements Serializable {
        the number of arguments is correct.  The other apply<n> methods
        remain as delegating to the general one, and so let the general
        method give an error message when the number of arguments is
-       wrong. */
+       wrong. 
+
+       With the funcode interpreter and reflection-based primitives,
+       it's best to define the method apply(nargs, args[], base)
+       and have the apply(args[]) method delegate to it.  With the JIT,
+       it's best to go the other way, since it is apply(args[]) that
+       is called.  The other apply method can be redefined (inefficiently,
+       to be sure) for completeness, but will never be used. */
 
     /** Apply the function to 0 arguments */
     public Value apply0() {
-	return apply(null, 0);
+	return apply(new Value[0]);
     }
 
     /** Apply the function to 1 argument */
     public Value apply1(Value x) {
-	return apply(new Value[] { x }, 1);
+	return apply(new Value[] { x });
     }
 
     /** Apply the function to 2 arguments */
     public Value apply2(Value x, Value y) {
-	return apply(new Value[] { x, y }, 2);
+	return apply(new Value[] { x, y });
     }
 
     /** Apply the function to 3 arguments */
     public Value apply3(Value x, Value y, Value z) {
-	return apply(new Value[] { x, y, z }, 3);
+	return apply(new Value[] { x, y, z });
     }
 
     /** Apply the function to 4 arguments */
-    public Value apply4(Value x, Value y, Value z,
-			Value u) {
-	return apply(new Value[] { x, y, z, u }, 4);
+    public Value apply4(Value x, Value y, Value z, Value u) {
+	return apply(new Value[] { x, y, z, u });
     }
 
     /** Apply the function to 5 arguments */
     public Value apply5(Value x, Value y, Value z,
 			Value u, Value v) {
-	return apply(new Value[] { x, y, z, u, v }, 5);
+	return apply(new Value[] { x, y, z, u, v });
     }
 
     /** Apply the function to 6 arguments */
     public Value apply6(Value x, Value y, Value z,
 			Value u, Value v, Value w) {
-	return apply(new Value[] { x, y, z, u, v, w }, 6);
+	return apply(new Value[] { x, y, z, u, v, w });
     }
 
     /** Match the value as a constructor */
-    public Value[] pattMatch(Value obj, int nargs) {
+    public Value[] pattMatch(int nargs, Value obj) {
 	Evaluator.err_match();
 	return null;
     }
@@ -137,10 +146,12 @@ public abstract class Function implements Serializable {
         /** Values for the free variables of the closure */
         protected Value fvars[];
         
-        public Closure(int arity) { super(arity); }
+        public Closure(String name, int arity) { 
+            super(name, arity); 
+        }
     
         public Closure(int arity, FunCode code, Value fvars[]) {
-            super(arity);
+            super(code.name, arity);
             this.code = code;
             this.fvars = fvars;
         }
@@ -148,7 +159,7 @@ public abstract class Function implements Serializable {
 	public FunCode getCode() { return code; }
 
 	@Override
-	public Value apply(Value args[], int base, int arity) {
+	public Value apply(int nargs, Value args[], int base) {
 	    throw new Error("Calling an abstract closure");
 	}
 
@@ -198,17 +209,18 @@ public abstract class Function implements Serializable {
 	public Function newClosure(Value func, Value fvars[]);
     }
 
-    public static final Function nullFunction = new Function(-1) {
-	@Override
-	public Value apply(Value args[], int base, int nargs) {
-	    Evaluator.err_apply();
-	    return null;
-	}
+    public static final Function nullFunction = 
+        new Function("*unknown*", -1) {
+            @Override
+            public Value apply(int nargs, Value args[], int base) {
+                Evaluator.err_apply();
+                return null;
+            }
 
-	public Object readResolve() {
-	    return nullFunction;
-	}
-    };
+            public Object readResolve() {
+                return nullFunction;
+            }
+        };
 
     @PRIMITIVE
     public static Value _apply(Primitive prim, Value x, Value y) {
@@ -217,8 +229,7 @@ public abstract class Function implements Serializable {
     }
 
     @PRIMITIVE
-    public static Value _closure(Primitive prim, Value x) {
-	FunCode body = prim.cast(FunCode.class, x, "a funcode");
+    public static Value _closure(FunCode body) {
 	return body.makeClosure(new Value[1]);
     }
 }

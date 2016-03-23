@@ -34,6 +34,7 @@ import funbase.Name;
 import funbase.Primitive;
 import funbase.Scanner;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
 import funbase.FunCode;
 import funbase.FunCode.Opcode;
 import funbase.Value;
@@ -71,39 +72,8 @@ public class Session {
     public static void loadPlugin(Class<?> plugin) throws CommandException {
 	if (plugins.contains(plugin.getName())) return;
 	plugins.add(plugin.getName());
-
-	try {
-	    // Look for the PRIMITIVE annotation on methods
-	    for (Method m : plugin.getDeclaredMethods()) {
-		PRIMITIVE spec = m.getAnnotation(PRIMITIVE.class);
-		if (spec != null) {
-		    String name = spec.value();
-		    if (name.equals("")) name = m.getName();
-		    Class params[] = m.getParameterTypes();
-		    // Cross your fingers
-		    int arity = params.length-1;
-		    Primitive p = FunCode.primitive(name, arity, m);
-		    Primitive.register(p);
-		}
-	    }
-
-	    // Class variables too
-	    for (Field f : plugin.getDeclaredFields()) {
-		PRIMITIVE spec = f.getAnnotation(PRIMITIVE.class);
-		if (spec != null) {
-		    Primitive p = (Primitive) f.get(null);
-		    Primitive.register(p);
-		}
-	    }
-
-            // And nested classes
-            for (Class<?> c : plugin.getDeclaredClasses()) {
-                PRIMITIVE spec = c.getAnnotation(PRIMITIVE.class);
-                if (spec != null) {
-                    Primitive p = (Primitive) c.newInstance();
-                    Primitive.register(p);
-                }
-            }
+        try {
+            Primitive.scanClass(plugin);
 	}
 	catch (Exception e) {
 	    throw new CommandException("#exception", e); 
@@ -200,6 +170,8 @@ public class Session {
             loadPlugin(geomlab.GeomBase.class);
             loadPlugin(funbase.FunCode.class);
             loadPlugin(funbase.Name.class);
+            loadPlugin(funbase.Value.class);
+            loadPlugin(funbase.Value.PairValue.class);
             loadPlugin(funbase.Evaluator.class);
             loadPlugin(funbase.Function.class);
             loadPlugin(plugins.BasicPrims.class);

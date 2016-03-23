@@ -52,7 +52,7 @@ define _init() =
     ["{ Game of Life }", "",
       "define N = 20; define T = 65;", "",
       "define blobify(img) = above([beside([pixel(img, [x, y]) ",
-      "  | x <- [0..width(img)-1]]) | y <- [0..height(img)-1]]);", "",
+      "  | x <- [0..width(img)-1]]) | y <- reverse([0..height(img)-1])]);", "",
       "define init = ",
       "  let c = [[6,2], [7,3], [8,1], [8,2], [8,3], [14,10], [15,10], [16,10]] in",
       "  image(N, N, function (p) if member(p, c) then black else white);", "",

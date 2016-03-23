@@ -57,15 +57,15 @@ public abstract class Native {
 
     /** Render a drawable picture as a pixel image */
     public abstract Image render(Stylus.Drawable pic, int width, int height, 
-				 float slider, ColorValue background);
+				 double slider, ColorValue background);
 
     /** Render a drawable picture with specified mean size */
-    public Image render(Stylus.Drawable pic, int meanSize, float slider,
+    public Image render(Stylus.Drawable pic, int meanSize, double slider,
 			ColorValue background) {
-	float aspect = pic.getAspect();
-    	float sqrtAspect = (float) Math.sqrt(aspect);
-    	int width = Math.round(meanSize * sqrtAspect);
-    	int height = Math.round(meanSize / sqrtAspect);
+	double aspect = pic.getAspect();
+    	double sqrtAspect = Math.sqrt(aspect);
+    	int width = (int) Math.round(meanSize * sqrtAspect);
+    	int height = (int) Math.round(meanSize / sqrtAspect);
 	return pic.render(width, height, slider, background);
     }
 

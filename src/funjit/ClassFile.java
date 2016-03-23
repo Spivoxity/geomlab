@@ -38,11 +38,14 @@ class ClassFile {
     /** Version number for the class format */
     public static final int version = Opcodes.V1_5;
 
+    /** The class name */
+    public final String name;
+
     /** Access flags */
     private int access;
 
     /** The class name as a string in the constant pool */
-    private ConstPool.Item name;
+    private ConstPool.Item className;
 
     /** The superclass name */
     private ConstPool.Item superName;
@@ -60,8 +63,14 @@ class ClassFile {
 
     public ClassFile(int access, String name, String superName) {
         this.access = access;
-        this.name = pool.classItem(name);
-        this.superName = superName == null ? null : pool.classItem(superName);
+        this.name = name;
+        this.className = pool.classItem(name);
+        setSuperclass(superName);
+    }
+
+    public void setSuperclass(String superName) {
+        if (superName != null)
+            this.superName = pool.classItem(superName);
     }
 
     public Field addField(int access, String name, Type ty) {
@@ -87,12 +96,12 @@ class ClassFile {
 	byte data[] = new byte[size];
         ByteVector out = new ByteVector(data);
 
-        out.putInt(0xcafebabe);
+        out.putInt(0xCAFEBABE);
         out.putInt(version);
         out.putShort(pool.nconsts());
         pool.put(out);
         out.putShort(access);
-        out.putShort(name.index);
+        out.putShort(className.index);
         out.putShort(superName.index);
         out.putShort(0); // No interfaces
         out.putShort(fields.size());

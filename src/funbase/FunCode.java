@@ -31,12 +31,15 @@
 package funbase;
 
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
 
 import java.io.PrintWriter;
 import java.util.*;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /** Code for a function body. */
+@DESCRIPTION("a function body")
 public class FunCode extends Value {
     private static final long serialVersionUID = 1L;
 
@@ -114,20 +117,12 @@ public class FunCode extends Value {
 	FunCode.translator = translator;
     }
     
-    public static Primitive primitive(String name, int arity, Method meth) {
-	return translator.primitive(name, arity, meth);
+    public static Primitive.Factory getPrimitiveFactory() {
+        return translator.getPrimitiveFactory();
     }
 
-    public static String[] getContext(String me) {
-	return translator.getContext(me);
-    }
-
-    public static void initStack() {
-	translator.initStack();
-    }
-
-    public static void setRoot(Value root) {
-	translator.setRoot(root);
+    public static Evaluator.Backtrace getBacktrace() {
+        return translator.getBacktrace();
     }
 
     @Override
@@ -201,7 +196,7 @@ public class FunCode extends Value {
     /** Assemble a list of instructions into a function body */
     @PRIMITIVE
     public static Value _assemble(Primitive prim, Value name, 
-                                  Value arity, Value code) {
+                                  int arity, Value code) {
 	int size = prim.listLength(code);
 	Opcode instrs[] = new Opcode[size];
 	int rands[] = new int[size];
@@ -213,15 +208,6 @@ public class FunCode extends Value {
             Value opcode;
             Value arg = null;
 
-            /*
-            if (prim.isCons(inst)) {
-                opcode = prim.head(inst);
-                Value tl = prim.tail(inst);
-                if (prim.isCons(tl)) arg = prim.head(tl);
-
-                System.out.printf("Antique: %s\n", opcode);
-            } else
-            */
             if (inst instanceof Value.BlobValue) {
                 Value.BlobValue blob = (Value.BlobValue) inst;
                 opcode = blob.functor;
@@ -230,7 +216,7 @@ public class FunCode extends Value {
                 opcode = inst;
             }
 
-            Name x = prim.cast(Name.class, opcode, "an opcode");
+            Name x = prim.cast(Name.class, opcode);
             Opcode op = getOpcode(x.tag);
             int rand = NO_RAND;
 
@@ -258,8 +244,7 @@ public class FunCode extends Value {
 	}
 	
 	return new FunCode(name.toString(), // Could be name or string
-                           (int) prim.number(arity), 
-                           instrs, rands,
+                           arity, instrs, rands,
 			   consts.toArray(new Value[consts.size()]));
     }
 
@@ -268,16 +253,10 @@ public class FunCode extends Value {
 	/** Translate funcode and create a factory for closures */
 	public Function.Factory translate(FunCode funcode);
 
-	/** Make a primitive by reflecting a static method */
-	public Primitive primitive(String name, int arity, Method meth);
+	/** Return a primitive factory */
+        public Primitive.Factory getPrimitiveFactory();
 
-	/** Get execution context */
-	public String[] getContext(String me);
-
-	/** Initialise stack */
-	public void initStack();
-
-	/** Set stack root */
-	public void setRoot(Value root);
+        /** Return a backtrace agent */
+        public Evaluator.Backtrace getBacktrace();
     }
 }

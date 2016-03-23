@@ -52,7 +52,7 @@ public class GraphBox extends JPanel {
 	    if (picture == null) return;
 	    
 	    try {
-		float aspect = picture.getAspect();
+		double aspect = picture.getAspect();
 	    
 		if (aspect == 0.0) return;
 
@@ -182,7 +182,7 @@ public class GraphBox extends JPanel {
         	double width = fmt.getImageableWidth();
         	double height = fmt.getImageableHeight();
         	double x = fmt.getImageableX(), y = fmt.getImageableY();
-        	float aspect = picture.getAspect();
+        	double aspect = picture.getAspect();
         	
         	if (height * aspect >= width)
         	    height = width / aspect;

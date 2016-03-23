@@ -41,6 +41,8 @@ import funbase.Primitive.PRIMITIVE;
 
 /** Basic primitives for handling numbers, booleans and lists */
 public class BasicPrims {
+    // Arithmitic primitives with special-purpose inliners
+
     @PRIMITIVE("=")
     public static Value equal(Primitive prim, Value x, Value y) {
 	return BoolValue.getInstance(x.equals(y));
@@ -98,142 +100,51 @@ public class BasicPrims {
 	return BoolValue.getInstance(prim.number(x) >= prim.number(y));
     }
 
+    // Other arithmetic primitives
+
     @PRIMITIVE
-    public static Value numeric(Primitive prim, Value x) {
-	return BoolValue.getInstance(x instanceof Value.NumValue);
+    public static boolean numeric(Value x) {
+	return (x instanceof Value.NumValue);
     }
 	
     @PRIMITIVE("int")
-    public static Value intpart(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.floor(prim.number(x)));
+    public static double intpart(double x) {
+	return Math.floor(x);
     }
 
     @PRIMITIVE
-    public static Value sqrt(Primitive prim, Value x) {
-	double arg = prim.number(x);
-	if (arg < 0.0) Evaluator.error("#sqrt");
-	return NumValue.getInstance(Math.sqrt(arg));
+    public static double sqrt(double x) {
+	if (x < 0.0) Evaluator.error("#sqrt");
+	return Math.sqrt(x);
     }
 
     @PRIMITIVE
-    public static Value exp(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.exp(prim.number(x)));
+    public static double exp(double x) {
+	return Math.exp(x);
     }
 
     @PRIMITIVE
-    public static Value sin(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.sin(prim.number(x) * Math.PI / 180));
-    }
-	
-    @PRIMITIVE
-    public static Value cos(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.cos(prim.number(x) * Math.PI / 180));
+    public static double sin(double x) {
+	return Math.sin(x * Math.PI / 180);
     }
 	
     @PRIMITIVE
-    public static Value tan(Primitive prim, Value x) {
-	return NumValue.getInstance(Math.tan(prim.number(x) * Math.PI / 180));
+    public static double cos(double x) {
+	return Math.cos(x * Math.PI / 180);
     }
 	
     @PRIMITIVE
-    public static Value atan2(Primitive prim, Value y, Value x) {
-	return NumValue.getInstance(Math.atan2(prim.number(y), prim.number(x)) 
-				  * 180 / Math.PI);
-    }
-
-    @PRIMITIVE
-    public static Value random(Primitive prim) {
-	return NumValue.getInstance(Math.random());
-    }
-
-    @PRIMITIVE
-    public static Value name(Primitive prim, Value x) {
-	return Name.find(prim.string(x));
-    }
-
-    @PRIMITIVE
-    public static final Primitive cons = new Primitive.Prim2(":") {
-	@Override
-	public Value apply2(Value hd, Value tl) {
-	    if (! isCons(tl) && ! tl.equals(Value.nil)) expect("a list");
-	    return Value.cons(hd, tl);
-	}
-	    
-	private Value args[] = new Value[2];
-
-	@Override
-	public Value[] pattMatch(Value obj, int nargs) {
-	    if (nargs != 2) Evaluator.err_patnargs(name);
-	    try {
-		Value.ConsValue cell = (Value.ConsValue) obj;
-		args[0] = cell.tail;
-		args[1] = cell.head;
-		return args;
-	    }
-	    catch (ClassCastException ex) {
-		return null;
-	    }
-	}
-    };
-
-    @PRIMITIVE
-    public static Value head(Primitive prim, Value x) {
-	try {
-	    Value.ConsValue xs = (Value.ConsValue) x;
-	    return xs.head;
-	}
-	catch (ClassCastException ex) {
-	    Evaluator.list_fail(x, "#head");
-	    return null;
-	}
+    public static double tan(double x) {
+	return Math.tan(x * Math.PI / 180);
     }
 	
     @PRIMITIVE
-    public static Value tail(Primitive prim, Value x) {
-	try {
-	    Value.ConsValue xs = (Value.ConsValue) x;
-	    return xs.tail;
-	}
-	catch (ClassCastException ex) {
-	    Evaluator.list_fail(x, "#tail");
-	    return null;
-	}
+    public static double atan2(double y, double x) {
+	return Math.atan2(y, x) * 180 / Math.PI;
     }
 
     @PRIMITIVE
-    public static class Pair extends Primitive.Prim2 
-            implements Primitive.Constructor {
-        public Pair() { super("_pair"); }
-
-        @Override
-        public Value apply2(Value fst, Value snd) {
-            return Value.PairValue.getInstance(fst, snd);
-        }
-
-        private Value args[] = new Value[2];
-
-        @Override
-        public Value[] pattMatch(Value obj, int nargs) {
-            if (nargs != 2) Evaluator.err_patnargs(name);
-
-            if (! (obj instanceof PairValue)) return null;
-            
-            PairValue v = (PairValue) obj;
-            args[0] = v.fst;
-            args[1] = v.snd;
-            return args;
-        }
-    };
-
-    @PRIMITIVE
-    public static Value _fst(Primitive prim, Value x) {
-        PairValue v = prim.cast(PairValue.class, x, "a pair");
-        return v.fst;
-    }
-
-    @PRIMITIVE
-    public static Value _snd(Primitive prim, Value x) {
-        PairValue v = prim.cast(PairValue.class, x, "a pair");
-        return v.snd;
+    public static double random() {
+	return Math.random();
     }
 }

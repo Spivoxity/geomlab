@@ -38,40 +38,40 @@ import funbase.Value.*;
 public class StringPrims {
     /** Concatenate two strings */
     @PRIMITIVE("^")
-    public static Value concat(Primitive prim, Value s1, Value s2) {
-	return StringValue.getInstance(prim.string(s1) + prim.string(s2));
+    public static String concat(String s1, String s2) {
+	return s1 + s2;
     }
 
     /** Split a string into a list of single-character strings */
     @PRIMITIVE
-    public static Value explode(Primitive prim, Value x) {
-	String s = prim.string(x);
+    public static Value explode(String s) {
 	Value result = Value.nil;
-	for (int i = s.length()-1; i >= 0; i--)
-	    result = Value.cons(StringValue.getInstance(s.charAt(i)), result);
+	for (int i = s.length()-1; i >= 0; i--) {
+            Value ch = StringValue.getInstance(s.charAt(i));
+	    result = Value.ConsValue.getInstance(ch, result);
+        }
 	return result;
     }
 
     /** Concatenate a list of strings into a single string */
     @PRIMITIVE
-    public static Value implode(Primitive prim, Value ys) {
+    public static String implode(Primitive prim, Value ys) {
 	StringBuffer result = new StringBuffer();
 	for (Value xs = ys; ! (xs instanceof Value.NilValue); 
 	     xs = prim.tail(xs))
 	    result.append(prim.string(prim.head(xs)));
-	return StringValue.getInstance(result.toString());
+	return result.toString();
     }
 
     /** Make character with specified ASCII code */
     @PRIMITIVE
-    public static Value chr(Primitive prim, Value x) {
-	return StringValue.getInstance((char) prim.number(x));
+    public static StringValue chr(int x) {
+	return StringValue.getInstance((char) x);
     }
 
     /** Return ASCII code of first character */
     @PRIMITIVE
-    public static Value ord(Primitive prim, Value x) {
-	String s = prim.string(x);
-	return NumValue.getInstance(s.length() == 0 ? 0 : s.charAt(0));
+    public static int ord(String s) {
+	return (s.length() == 0 ? 0 : s.charAt(0));
     }
 }

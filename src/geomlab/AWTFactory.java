@@ -98,7 +98,7 @@ public class AWTFactory extends Native {
 
     @Override
     public Image render(Stylus.Drawable pic, int width, int height, 
-			float slider, ColorValue background) {
+			double slider, ColorValue background) {
     	BufferedImage image = createImage(width, height);
     	Graphics2D g = (Graphics2D) image.getGraphics();
     	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

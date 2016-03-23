@@ -34,10 +34,13 @@ import java.io.PrintWriter;
 
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.CONSTRUCTOR;
+import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 import funbase.Evaluator;
 
 /** A colour wrapped as a value */
+@DESCRIPTION("a colour")
 public class ColorValue extends Picture {
     private static final long serialVersionUID = 1L;
 
@@ -49,22 +52,29 @@ public class ColorValue extends Picture {
      * lazily if it is needed. */
     
     /** RGB colour component. */
-    public final double rpart, gpart, bpart;
+    @PRIMITIVE
+    public final double rpart;
+
+    @PRIMITIVE
+    public final double gpart;
+
+    @PRIMITIVE
+    public final double bpart;
     
     /** Composite RGB value */
     public final int rgb;
     
     private ColorValue(double rf, double gf, double bf) {
-	super(1.0f);
+	super(1.0);
 	rpart = cutoff(rf); gpart = cutoff(gf); bpart = cutoff(bf);
-	int rx = Math.round(255.0f * (float) rpart); 
-	int gx = Math.round(255.0f * (float) gpart);
-	int bx = Math.round(255.0f * (float) bpart);
+	int rx = (int) Math.round(255.0 * rpart); 
+	int gx = (int) Math.round(255.0 * gpart);
+	int bx = (int) Math.round(255.0 * bpart);
 	rgb = (rx << 16) + (gx << 8) + bx;
     }
     
     private ColorValue(int rgb) {
-	super(1.0f);
+	super(1.0);
 	this.rgb = rgb;
 	rpart = ((rgb >> 16) & 0xff)/255.0;
 	gpart = ((rgb >> 8) & 0xff)/255.0;
@@ -74,31 +84,32 @@ public class ColorValue extends Picture {
     public static final ColorValue black = new ColorValue(0.0, 0.0, 0.0);
     public static final ColorValue white = new ColorValue(1.0, 1.0, 1.0);
 
-    public static ColorValue getGrey(float g) {
-	return new ColorValue(g, g, g);
+    public static ColorValue getInstance(double r, double g, double b) {
+	return new ColorValue(r, g, b);
     }
 
-    public static Value getInstance(double rf, double gf, double bf) {
-	return new ColorValue(rf, gf, bf);
-    }
-
-    public static Value getInstance(int rgb) {
+    public static ColorValue getRGB(int rgb) {
         return new ColorValue(rgb);
+    }
+
+    public static ColorValue getGrey(double g) {
+	return new ColorValue(g, g, g);
     }
 
     /** Compute a colour from Hue, Saturation and Brightness values,
      *  according to the traditional scheme. */
-    public static ColorValue getHSB(float h, float s, float b) {
-	float red, green, blue;
+    @PRIMITIVE("hsv")
+    public static ColorValue getHSB(double h, double s, double b) {
+	double red, green, blue;
 
 	h -= Math.floor(h);
-	h *= 6.0f;
+	h *= 6.0;
 	int sextant = (int) Math.floor(h);
-	float frac = h - sextant;
+	double frac = h - sextant;
 
-	float p = b * (1.0f - s);
-	float q = b * (1.0f - s * frac);
-	float t = b * (1.0f - s * (1.0f - frac));
+	double p = b * (1.0 - s);
+	double q = b * (1.0 - s * frac);
+	double t = b * (1.0 - s * (1.0 - frac));
 
 	switch (sextant) {
 	    case 0: red = b; green = t; blue = p; break;
@@ -139,7 +150,7 @@ public class ColorValue extends Picture {
     public void paint(int layer, int col, Stylus g, Tran2D t) {
         if (layer == FILL) {
             g.setTrans(t);
-            g.fillOval(new Vec2D(0.5f, 0.5f), 0.48f, 0.48f, this);
+            g.fillOval(new Vec2D(0.5, 0.5), 0.48, 0.48, this);
         }
     }
 
@@ -168,20 +179,19 @@ public class ColorValue extends Picture {
     
     /** Create a colour from RGB values in the range [0, 1] */
     @PRIMITIVE
-    public static class RgbPrim extends Primitive.Prim3 
-            implements Primitive.Constructor {
+    @CONSTRUCTOR(ColorValue.class)
+    public static class RgbPrim extends Primitive.Prim3 {
         public RgbPrim() { super("rgb"); }
 
 	@Override
 	public Value apply3(Value rpart, Value gpart, Value bpart) {
-	    Evaluator.countCons();
-	    return new ColorValue(number(rpart), number(gpart), number(bpart));
+	    return getInstance(number(rpart), number(gpart), number(bpart));
 	}
 	    
 	private Value args[] = new Value[3];
 
 	@Override
-	public Value[] pattMatch(Value obj, int nargs) {
+	public Value[] pattMatch(int nargs, Value obj) {
 	    if (nargs != 3) Evaluator.err_patnargs(name);
 	    
 	    if (! (obj instanceof ColorValue)) return null;
@@ -192,31 +202,5 @@ public class ColorValue extends Picture {
 	    args[2] = NumValue.getInstance(v.bpart);
 	    return args;
 	}
-    };
-	
-    @PRIMITIVE
-    public static Value rpart(Primitive prim, Value obj) {
-	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
-	return NumValue.getInstance(v.rpart);
-    }
-	
-    @PRIMITIVE
-    public static Value gpart(Primitive prim, Value obj) {
-	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
-	return NumValue.getInstance(v.gpart);
-    }
-	
-    @PRIMITIVE
-    public static Value bpart(Primitive prim, Value obj) {
-	ColorValue v = prim.cast(ColorValue.class, obj, "a colour");
-	return NumValue.getInstance(v.bpart);
-    }
-	
-    /* Create a colour from HSV values in the range [0, 1] */
-    @PRIMITIVE
-    public static Value hsv(Primitive prim, Value h, Value s, Value v) {
-	return getHSB((float) prim.number(h),
-		      (float) cutoff(prim.number(s)),
-		      (float) cutoff(prim.number(v)));
     }
 }

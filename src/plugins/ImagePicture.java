@@ -43,10 +43,12 @@ import java.lang.ref.*;
 
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 import funbase.Evaluator;
 
 /** A picture defined by a bitmap. */
+@DESCRIPTION("an image")
 public class ImagePicture extends Picture {
     private static final long serialVersionUID = 1L;
     
@@ -56,12 +58,21 @@ public class ImagePicture extends Picture {
     /** The bitmap itself, represented in a platform-dependent way. */
     protected transient Native.Image image;
     
+    /** Width and height */
+    @PRIMITIVE
+    public final int width;
+
+    @PRIMITIVE
+    public final int height;
+
     /** Name of a resource from which the image can be reloaded, if any */
     private String resourceName = null;
     
     private ImagePicture(Native.Image image, String resourceName) {
 	super((float) image.getWidth() / image.getHeight());
 	this.image = image;
+        this.width = image.getWidth();
+        this.height = image.getHeight();
 	this.resourceName = resourceName;
     }
     
@@ -69,9 +80,21 @@ public class ImagePicture extends Picture {
 	this(image, null);
     }
     
+    @PRIMITIVE("_pixel")
+    public ColorValue pixel(double x0, double y0) {
+	int x = (int) Math.round(x0);
+	int y = (int) Math.round(y0);
+	if (0 <= x && x < width && 0 <= y && y < height) {
+	    int rgb = image.getRGB(x, height-y-1);
+	    return ColorValue.getRGB(rgb);
+	} else {
+	    return ColorValue.white;
+	}
+    }
+	
     @Override
-    public Native.Image render(int width, int height, 
-                               float slider, ColorValue background) {
+    public Native.Image render(int width, int height, double slider, 
+                               ColorValue background) {
         // Ignore the specified dimensions
         return image;
     }
@@ -94,13 +117,13 @@ public class ImagePicture extends Picture {
     public void draw(Stylus g, int ww, int hh, ColorValue background) {
 	/* If the only thing being drawn is an image, then
 	   don't expand it beyond its natural size. */
-	int w = image.getWidth(), h = image.getHeight();
 	Tran2D t;
 
-	if (ww <= w || hh <= h)
+	if (ww <= width || hh <= height)
 	    t = Tran2D.scaling(ww, hh);
 	else
-	    t = Tran2D.translation((ww-w)/2, (hh-h)/2).scale(w, h);
+	    t = Tran2D.translation((ww-width)/2, (hh-height)/2)
+                .scale(width, height);
 	g.setTrans(t);
 	g.drawImage(image);
     }
@@ -151,7 +174,10 @@ public class ImagePicture extends Picture {
        So I don't care about the cache growing with stale entries (not 
        many distinct URL's), and I only care about caching images that
        remain strongly reachable from elsewhere (OK to use weak
-       references rather than soft ones). */
+       references rather than soft ones). 
+
+       Note: it might be time to change from weak to soft, now the
+       global environment is reset on each click of Go. */
 
     /** A cache for web images */
     private static Map<String, Reference<Native.Image>> 
@@ -175,9 +201,9 @@ public class ImagePicture extends Picture {
     }
 
     @PRIMITIVE
-    public static Value _photo(Primitive prim, Value name) {
+    public static Value _photo(String name) {
 	try {
-	    Native.Image image = cachedImage(prim.string(name));
+	    Native.Image image = cachedImage(name);
 	    return new ImagePicture(image);
 	}
 	catch (IOException e) {
@@ -187,9 +213,8 @@ public class ImagePicture extends Picture {
     }
 	
     @PRIMITIVE
-    public static Value _resource(Primitive prim, Value v) {
+    public static Value _resource(String name) {
 	try {
-	    String name = prim.string(v);
 	    return new ImagePicture(loadResource(name), name);
 	}
 	catch (IOException e) {
@@ -199,12 +224,11 @@ public class ImagePicture extends Picture {
     }
 	
     @PRIMITIVE
-    public static Value _image(Primitive prim, Value width0, 
-			       Value height0, Value fun0) {
+    public static Value _image(Primitive prim, int width, int height, 
+                               FunValue fun) {
         // Silently truncate the width and height
-	int width = Math.min((int) prim.number(width0), MAXDIM);
-	int height = Math.min((int) prim.number(height0), MAXDIM);
-	FunValue fun = prim.cast(FunValue.class, fun0, "a function");
+	width = Math.min(width, MAXDIM);
+	height = Math.min(height, MAXDIM);
 	Native factory = Native.instance();
 	Native.Image image = factory.image(width, height);
 	Value args[] = new Value[2];
@@ -214,7 +238,7 @@ public class ImagePicture extends Picture {
 	    for (int y = 0; y < height; y++) {
 		args[1] = NumValue.getInstance(y);
 		Value v = fun.apply(args);
-		ColorValue col = prim.cast(ColorValue.class, v, "a colour");
+		ColorValue col = prim.cast(ColorValue.class, v);
 		image.setRGB(x, height-y-1, col.rgb);
 	    }
 	}
@@ -223,62 +247,26 @@ public class ImagePicture extends Picture {
     }
 	
     @PRIMITIVE
-    public static Value _render(Primitive prim, Value a0, Value a1, 
-				Value a2, Value a3) {
-	Stylus.Drawable pic = 
-            prim.cast(Stylus.Drawable.class, a0, "a picture");
-	int size = (int) Math.round(prim.number(a1));
-	float slider = (float) prim.number(a2);
-	float grey = (float) prim.number(a3);
-	ColorValue bg = ColorValue.getGrey(grey);
-	pic.prerender(slider);
+    public static Value _render(Stylus.Drawable pic, int size, 
+				double slider, double grey) {
+	float s = (float) slider;
+	ColorValue bg = ColorValue.getGrey((float) grey);
+	pic.prerender(s);
 	Native factory = Native.instance();
-	Native.Image image = factory.render(pic, size, slider, bg);
+	Native.Image image = factory.render(pic, size, s, bg);
 	return new ImagePicture(image);
-    }
-
-    @PRIMITIVE
-    public static Value _pixel(Primitive prim, Value p0, 
-			       Value x0, Value y0) {
-	ImagePicture p = prim.cast(ImagePicture.class, p0, "an image");
-	int w = p.image.getWidth(), h = p.image.getHeight();
-	int x = (int) Math.round(prim.number(x0));
-	int y = (int) Math.round(prim.number(y0));
-	if (0 <= x && x < w && 0 <= y && y < h) {
-	    int rgb = p.image.getRGB(x, h-y-1);
-	    return ColorValue.getInstance(rgb);
-	} else {
-	    return ColorValue.white;
-	}
-    }
-	
-    @PRIMITIVE
-    public static Value width(Primitive prim, Value v) {
-	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
-	return NumValue.getInstance(p.image.getWidth());
-    }
-	
-    @PRIMITIVE
-    public static Value height(Primitive prim, Value v) {
-	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
-	return NumValue.getInstance(p.image.getHeight());
     }
 
     /** Save image as a file */
     @PRIMITIVE
-    public static Value _saveimg(Primitive prim, Value v, Value fmt, Value fn) {
-	ImagePicture p = prim.cast(ImagePicture.class, v, "an image");
-	String format = prim.string(fmt);
-	String fname = prim.string(fn);
+    public void _saveimg(String format, String fname) {
 	Native factory = Native.instance();
 
 	try {
-	    factory.writeImage(p.image, format, new File(fname));
+	    factory.writeImage(image, format, new File(fname));
 	}
 	catch (IOException e) {
 	    Evaluator.error("#imageio", e);
 	}
-
-	return Value.nil;
     }
 }

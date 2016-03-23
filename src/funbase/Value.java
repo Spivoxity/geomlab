@@ -33,6 +33,9 @@ package funbase;
 import java.io.*;
 import java.text.*;
 
+import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
+import funbase.Primitive.CONSTRUCTOR;
 import funbase.Evaluator.*;
 
 /** Abstract superclass of all values in GeomLab */
@@ -51,7 +54,7 @@ public abstract class Value implements Serializable {
     }
 
     public Value apply(Value args[]) {
-	return subr.apply(args, args.length);
+	return subr.apply(args);
     }
 
     @Override
@@ -74,15 +77,11 @@ public abstract class Value implements Serializable {
     
     public static final Value nil = NilValue.instance;
 
-    public static Value cons(Value hd, Value tl) {
-        return ConsValue.getInstance(hd, tl);
-    }
-    
     /** Make a list from a sequence of values */
     public static Value makeList(Value... elems) {
         Value val = nil;
         for (int i = elems.length-1; i >= 0; i--)
-            val = cons(elems[i], val);
+            val = ConsValue.getInstance(elems[i], val);
         return val;
     }
     
@@ -94,6 +93,14 @@ public abstract class Value implements Serializable {
 
     public double asNumber() throws WrongKindException {
 	throw new WrongKindException();
+    }
+
+    public int asInteger() throws WrongKindException {
+        return (int) Math.round(this.asNumber());
+    }
+
+    public String asString() throws WrongKindException {
+        throw new WrongKindException();
     }
 
     /** Print a number nicely. */
@@ -132,6 +139,7 @@ public abstract class Value implements Serializable {
     }
 
     /** A numeric value represented as a double-precision float */
+    @DESCRIPTION("a numeric")
     public static class NumValue extends Value {
 	private static final long serialVersionUID = 1L;
 
@@ -153,9 +161,9 @@ public abstract class Value implements Serializable {
 	}
 
 	private static final int MIN = -1, MAX = 2000;
-	private static Value smallints[] = new Value[MAX-MIN+1];
+	private static NumValue smallints[] = new NumValue[MAX-MIN+1];
 
-	public static Value getInstance(double val) {
+	public static NumValue getInstance(double val) {
 	    int n = (int) val;
 	    if (val != n || n < MIN || n > MAX)
 		return new NumValue(val);
@@ -165,6 +173,10 @@ public abstract class Value implements Serializable {
 		return smallints[n-MIN];
 	    }
 	}
+
+        public static NumValue getInstance(int val) {
+            return getInstance((double) val);
+        }
 
 	@Override
 	public boolean equals(Object a) {
@@ -196,6 +208,7 @@ public abstract class Value implements Serializable {
     }
     
     /** A boolean value */
+    @DESCRIPTION("a boolean")
     public static class BoolValue extends Value {
 	private static final long serialVersionUID = 1L;
 
@@ -233,7 +246,7 @@ public abstract class Value implements Serializable {
 	    truth = new BoolValue(true), 
 	    falsity = new BoolValue(false);
     
-	public static Value getInstance(boolean val) {
+	public static BoolValue getInstance(boolean val) {
 	    return (val ? truth : falsity);
 	}
     }
@@ -266,12 +279,13 @@ public abstract class Value implements Serializable {
 	    return this;
         }
 
-        public static Value getInstance(Function subr) {
+        public static FunValue getInstance(Function subr) {
             return new FunValue(subr);
         }
     }
 
     /** A string value */
+    @DESCRIPTION("a string")
     public static class StringValue extends Value {
 	private static final long serialVersionUID = 1L;
 
@@ -281,6 +295,10 @@ public abstract class Value implements Serializable {
 	    this.text = text;
 	}
 	
+        public String asString() {
+            return text;
+        }
+
 	@Override
 	public void printOn(PrintWriter out) {
 	    out.format("\"%s\"", text);
@@ -299,10 +317,10 @@ public abstract class Value implements Serializable {
         public int hashCode() { return text.hashCode(); }
 
 	/** The empty string as a value */
-	private static Value emptyString = new StringValue("");
+	private static StringValue emptyString = new StringValue("");
 
 	/** Singletons for one-character strings */
-	private static Value charStrings[] = new StringValue[256];
+	private static StringValue charStrings[] = new StringValue[256];
 
 	/* The "explode" primitive can create lists of many one-character 
 	 * strings, so we create shared instances in advance */
@@ -311,24 +329,20 @@ public abstract class Value implements Serializable {
 		charStrings[i] = new StringValue(String.valueOf((char) i));
 	}
 
-	public static Value getInstance(char ch) {
+	public static StringValue getInstance(char ch) {
 	    if (ch < 256)
 		return charStrings[ch];
-            else {
-                Evaluator.countCons();
+            else
                 return new StringValue(String.valueOf(ch));
-            }
 	}
 
-	public static Value getInstance(String text) {
+	public static StringValue getInstance(String text) {
 	    if (text.length() == 0)
 		return emptyString;
 	    else if (text.length() == 1 && text.charAt(0) < 256)
 		return charStrings[text.charAt(0)];
-	    else {
-		Evaluator.countCons();
+	    else
 		return new StringValue(text);
-	    }
 	}
 
 	/* After input from a serialized stream, readResolve lets us replace
@@ -368,6 +382,7 @@ public abstract class Value implements Serializable {
     }
     
     /** A value representing a non-empty list */
+    @DESCRIPTION("a list")
     public static class ConsValue extends Value {
 	private static final long serialVersionUID = 1L;
 
@@ -379,9 +394,10 @@ public abstract class Value implements Serializable {
 	    this.tail = tail;
 	}
 	
-        public static Value getInstance(Value head, Value tail) {
-            Evaluator.countCons();
-            return new ConsValue(head, tail);
+        public static ConsValue getInstance(Value hd, Value tl) {
+            if (! (tl instanceof ConsValue) && ! tl.equals(Value.nil)) 
+                Evaluator.expect("':'", "a list");
+            return new ConsValue(hd, tl);
         }
 
 	@Override
@@ -412,16 +428,72 @@ public abstract class Value implements Serializable {
 	}
     }
 
+    @PRIMITIVE
+    @CONSTRUCTOR(ConsValue.class)
+    public static class Cons extends Primitive.Prim2 {
+        public Cons() { super(":"); }
+
+	@Override
+	public Value apply2(Value hd, Value tl) {
+	    return Value.ConsValue.getInstance(hd, tl);
+	}
+	    
+	private Value args[] = new Value[2];
+
+	@Override
+	public Value[] pattMatch(int nargs, Value obj) {
+	    if (nargs != 2) Evaluator.err_patnargs(name);
+	    try {
+		Value.ConsValue cell = (Value.ConsValue) obj;
+		args[0] = cell.tail;
+		args[1] = cell.head;
+		return args;
+	    }
+	    catch (ClassCastException ex) {
+		return null;
+	    }
+	}
+    }
+
+    @PRIMITIVE
+    public static Value head(Value x) {
+	try {
+	    Value.ConsValue xs = (Value.ConsValue) x;
+	    return xs.head;
+	}
+	catch (ClassCastException ex) {
+	    Evaluator.list_fail(x, "#head");
+	    return null;
+	}
+    }
+	
+    @PRIMITIVE
+    public static Value tail(Value x) {
+	try {
+	    Value.ConsValue xs = (Value.ConsValue) x;
+	    return xs.tail;
+	}
+	catch (ClassCastException ex) {
+	    Evaluator.list_fail(x, "#tail");
+	    return null;
+	}
+    }
+
+    @DESCRIPTION("a pair")
     public static class PairValue extends Value {
         private static final long serialVersionUID = 1L;
 
-        public final Value fst, snd;
+        @PRIMITIVE("_fst")
+        public final Value fst;
+
+        @PRIMITIVE("_snd")
+        public final Value snd;
 
         private PairValue(Value fst, Value snd) {
             this.fst = fst; this.snd = snd;
         }
 
-        public static Value getInstance(Value fst, Value snd) {
+        public static PairValue getInstance(Value fst, Value snd) {
             Evaluator.countCons();
             return new PairValue(fst, snd);
         }
@@ -448,6 +520,29 @@ public abstract class Value implements Serializable {
         }
     }
 
+    @PRIMITIVE
+    @CONSTRUCTOR(PairValue.class)
+    public static class Pair extends Primitive.Prim2 {
+        public Pair() { super("_pair"); }
+
+        @Override
+        public Value apply2(Value fst, Value snd) {
+            return PairValue.getInstance(fst, snd);
+        }
+
+        private Value args[] = new Value[2];
+
+        @Override
+        public Value[] pattMatch(int nargs, Value obj) {
+            if (nargs != 2) Evaluator.err_patnargs(name);
+            if (! (obj instanceof PairValue)) return null;
+            PairValue v = (PairValue) obj;
+            args[0] = v.fst;
+            args[1] = v.snd;
+            return args;
+        }
+    };
+
     public static class BlobValue extends Value {
         private static final long serialVersionUID = 1L;
 
@@ -458,7 +553,7 @@ public abstract class Value implements Serializable {
             this.functor = functor; this.args = args;
         }
         
-        public static Value getInstance(Name functor, Value args[]) {
+        public static BlobValue getInstance(Name functor, Value args[]) {
             Evaluator.countCons();
             return new BlobValue(functor, args);
         }

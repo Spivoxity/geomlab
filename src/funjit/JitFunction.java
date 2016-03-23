@@ -34,19 +34,16 @@ import funbase.FunCode;
 import funbase.Function;
 import funbase.Value;
 import funbase.Evaluator;
+import funbase.Primitive;
 
 /** Superclass for all JIT-compiled functions */
 public abstract class JitFunction extends Function.Closure 
     		implements Function.Factory, Cloneable {
-    /** Name of the function (used for error messages) */
-    protected final String name;
-
     /** Pool of constant values */
     protected Value consts[];
 
     public JitFunction(String name, int arity) {
-	super(arity);
-	this.name = name;
+	super(name, arity);
     }
 
     public void init(FunCode source) {
@@ -78,7 +75,7 @@ public abstract class JitFunction extends Function.Closure
 	public abstract Value apply0();
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 0) Evaluator.err_nargs(name, nargs, 0);
 	    return apply0();
 	}
@@ -91,7 +88,7 @@ public abstract class JitFunction extends Function.Closure
 	public abstract Value apply1(Value x);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 1) Evaluator.err_nargs(name, nargs, 1);
 	    return apply1(args[base+0]);
 	}
@@ -104,7 +101,7 @@ public abstract class JitFunction extends Function.Closure
 	public abstract Value apply2(Value x, Value y);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 2) Evaluator.err_nargs(name, nargs, 2);
 	    return apply2(args[base+0], args[base+1]);
 	}
@@ -117,7 +114,7 @@ public abstract class JitFunction extends Function.Closure
 	public abstract Value apply3(Value x, Value y, Value z);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 3) Evaluator.err_nargs(name, nargs, 3);
 	    return apply3(args[base+0], args[base+1], args[base+2]);
 	}
@@ -131,7 +128,7 @@ public abstract class JitFunction extends Function.Closure
 				     Value u);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 4) Evaluator.err_nargs(name, nargs, 4);
 	    return apply4(args[base+0], args[base+1], args[base+2],
 			  args[base+3]);
@@ -146,7 +143,7 @@ public abstract class JitFunction extends Function.Closure
 				     Value u, Value v);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 5) Evaluator.err_nargs(name, nargs, 5);
 	    return apply5(args[base+0], args[base+1], args[base+2],
 			  args[base+3], args[base+4]);
@@ -161,7 +158,7 @@ public abstract class JitFunction extends Function.Closure
 				     Value u, Value v, Value w);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    if (nargs != 6) Evaluator.err_nargs(name, nargs, 6);
 	    return apply6(args[base+0], args[base+1], args[base+2],
 			  args[base+3], args[base+4], args[base+5]);
@@ -174,14 +171,34 @@ public abstract class JitFunction extends Function.Closure
 	}
 
 	@Override 
-	public abstract Value apply(Value args[], int nargs);
+	public abstract Value apply(Value args[]);
 
 	@Override 
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    // Allow JIT functions to be called from the interpreter
 	    Value args1[] = new Value[nargs];
 	    System.arraycopy(args, base, args1, 0, nargs);
-	    return apply(args1, nargs);
+	    return apply(args1);
+	}
+    }
+
+    /** A version of Primitive.PrimN that leaves apply(args[]) abstract 
+        and defines apply(nargs, args[], base) in terms of it.  This 
+        allows many-argument primitives to be defined using the same
+        interface as other JIT functions, allows them to be called from
+        the funcode interpreter if necessary, and would be marginally 
+        more efficient for calls from JITted code. */
+    public static abstract class PrimN extends Primitive {
+        public PrimN(String name, int arity) { super(name, arity); }
+
+	/** Invoke the primitive with arguments args[0..) */ 
+	public abstract Value apply(Value args[]);
+
+	@Override
+	public Value apply(int nargs, Value args[], int base) {
+	    Value args1[] = new Value[nargs];
+	    System.arraycopy(args, base, args1, 0, nargs);
+	    return apply(args1);
 	}
     }
 }

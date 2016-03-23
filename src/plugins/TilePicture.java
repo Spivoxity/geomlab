@@ -63,12 +63,12 @@ public class TilePicture extends Picture {
     protected static float stroke = 1.0f;
 
     /** Palette for Escher picture */
-    protected static float hbase = 0.3f, hstep = 0.1f, 
-	svalue = 0.5f, bvalue = 1.0f;
+    protected static double 
+        hbase = 0.3, hstep = 0.1, svalue = 0.5, bvalue = 1.0;
 
-    public static ColorValue[] makePalette(float slider) {
+    public static ColorValue[] makePalette(double slider) {
 	ColorValue palette[] = new ColorValue[4];
-	float base = hbase + 2.0f * slider - 1.0f;
+	double base = hbase + 2.0 * slider - 1.0;
 	for (int i = 0; i < 4; i++)
 	    palette[i] = 
 		ColorValue.getHSB(base + i * hstep, svalue, bvalue);
@@ -91,8 +91,8 @@ public class TilePicture extends Picture {
     }
 
     @PRIMITIVE
-    public static Value _tile(Primitive prim, Value a, Value ss, Value fs) {
-	float aspect = (float) prim.number(a);
+    public static Value _tile(Primitive prim, double a, Value ss, Value fs) {
+	float aspect = (float) a;
 	int nStrokes = prim.listLength(ss);
 	int nOutlines = prim.listLength(fs);
 	Vec2D strokes[][] = new Vec2D[nStrokes][], 
@@ -129,19 +129,19 @@ public class TilePicture extends Picture {
 
     /** Set the palette of colours used for rendering Escher picture. */
     @PRIMITIVE
-    public static Value _palette(Primitive prim, Value base, 
-				 Value step, Value sval, Value bval) {
-	hbase = (float) prim.number(base);
-	hstep = (float) prim.number(step);
-	svalue = (float) prim.number(sval);
-	bvalue = (float) prim.number(bval);
+    public static Value _palette(double base, double step, double sval, 
+                                 double bval) {
+	hbase = (float) base;
+	hstep = (float) step;
+	svalue = (float) sval;
+	bvalue = (float) bval;
 	return Value.nil;
     }
 
     /** Set the stroke width for rendering tiles. */
     @PRIMITIVE
-    public static Value _stroke(Primitive prim, Value x) {
-        stroke = (float) prim.number(x);
+    public static Value _stroke(double x) {
+        stroke = (float) x;
         return Value.nil;
     }
 }

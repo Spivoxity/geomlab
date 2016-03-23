@@ -233,7 +233,7 @@ public class EPSWriter extends Stylus {
 	writeColor(color); pr.printf("\n");
 	Vec2D a = trans.transform(from), b = trans.transform(to);
 	pr.printf("newpath %.3f %.3f moveto %.3f %.3f lineto stroke\n",
-		a.x, a.y, b.x, b.y);
+                  a.x, a.y, b.x, b.y);
     }
 
     private Set<Integer> knownTiles = new HashSet<Integer>(50);
@@ -293,17 +293,17 @@ public class EPSWriter extends Stylus {
 
     @Override
     public void drawPath(TurtlePicture pic) {
-	float R = TurtlePicture.R;
-	float xmax = pic.xmax, xmin = pic.xmin;
-	float ymax = pic.ymax, ymin = pic.ymin;
+	double R = TurtlePicture.R;
+	double xmax = pic.xmax, xmin = pic.xmin;
+	double ymax = pic.ymax, ymin = pic.ymin;
 	Tran2D t1 =
-	    trans.scale(1.0f/(xmax-xmin), 1.0f/(ymax-ymin))
+	    trans.scale(1.0/(xmax-xmin), 1.0/(ymax-ymin))
 		.translate(-xmin, -ymin);
 	pr.printf("gsave\n");
-	setStroke(2.0f);
+	setStroke(2.0);
 	writeTransform(t1);
 	
-	float x = 0, y = 0, dir = 0;
+	double x = 0, y = 0, dir = 0;
 
 	pr.printf("newpath\n");
 	pr.printf("  %.6f %.6f moveto\n", x, y);
@@ -311,34 +311,34 @@ public class EPSWriter extends Stylus {
 	for (TurtlePicture.Command cmd : pic.commands) {
 	    switch (cmd.kind) {
 		case TurtlePicture.Command.LEFT: {
-		    float a = cmd.arg;
-		    float xc = x - R * Vec2D.sind(dir);
-		    float yc = y + R * Vec2D.cosd(dir);
+		    double a = cmd.arg;
+		    double xc = x - R * BasicPrims.sin(dir);
+		    double yc = y + R * BasicPrims.cos(dir);
 		    String op = (a >= 0 ? "arc" : "arcn");
 		    pr.printf("  %.6f %.6f %.6f %.6f %.6f %s\n", 
-			    xc, yc, R, dir-90, dir-90+a, op);
-		    x = xc + R * Vec2D.sind(dir+a); 
-		    y = yc - R * Vec2D.cosd(dir+a);
+                              xc, yc, R, dir-90, dir-90+a, op);
+		    x = xc + R * BasicPrims.sin(dir+a); 
+		    y = yc - R * BasicPrims.cos(dir+a);
 		    dir += a;
 		    break;
 		}
 	
 		case TurtlePicture.Command.RIGHT: {
-		    float a = cmd.arg;
-		    float xc = x + R * Vec2D.sind(dir);
-		    float yc = y - R * Vec2D.cosd(dir);
+		    double a = cmd.arg;
+		    double xc = x + R * BasicPrims.sin(dir);
+		    double yc = y - R * BasicPrims.cos(dir);
 		    String op = (a >= 0 ? "arcn" : "arc");
 		    pr.printf("  %.6f %.6f %.6f %.6f %.6f %s\n", 
-			    xc, yc, R, dir+90, dir+90-a, op);
-		    x = xc - R * Vec2D.sind(dir-a); 
-		    y = yc + R * Vec2D.cosd(dir-a);
+                              xc, yc, R, dir+90, dir+90-a, op);
+		    x = xc - R * BasicPrims.sin(dir-a); 
+		    y = yc + R * BasicPrims.cos(dir-a);
 		    dir -= a;
 		    break;
 		}
 		    
 		case TurtlePicture.Command.AHEAD:
-		    x += cmd.arg * Vec2D.cosd(dir); 
-		    y += cmd.arg * Vec2D.sind(dir);
+		    x += cmd.arg * BasicPrims.cos(dir); 
+		    y += cmd.arg * BasicPrims.sin(dir);
 		    pr.printf("  %.6f %.6f lineto\n", x, y);
 		    break;
 	    }
@@ -350,8 +350,8 @@ public class EPSWriter extends Stylus {
     }
 
     @Override
-    public void drawArc(Vec2D centre, float xrad, float yrad,
-	    float start, float extent, ColorValue color) {
+    public void drawArc(Vec2D centre, double xrad, double yrad,
+	    double start, double extent, ColorValue color) {
 	writeColor(color); pr.printf("\n");
 	writeTransform(trans.translate(centre.x, centre.y).scale(xrad, yrad));
 	String op = (extent >= 0 ? "arc": "arcn");
@@ -360,7 +360,7 @@ public class EPSWriter extends Stylus {
     }
 
     @Override
-    public void fillOval(Vec2D centre, float xrad, float yrad, 
+    public void fillOval(Vec2D centre, double xrad, double yrad, 
 			 ColorValue color) {
 	writeColor(color); pr.printf("\n");
 	writeTransform(trans.translate(centre.x, centre.y).scale(xrad, yrad));
@@ -388,11 +388,11 @@ public class EPSWriter extends Stylus {
 	pr.printf("fill\n");
     }
     
-    private static float stroke = 1.0f;
+    private static double stroke = 1.0;
 
     @Override
-    public void setStroke(float width) {
-        final float factor = 2.0f;
+    public void setStroke(double width) {
+        final double factor = 2.0;
 
         if (stroke != width) {
             pr.printf("%.3f setlinewidth\n", width/factor);
@@ -402,34 +402,28 @@ public class EPSWriter extends Stylus {
 
     @Override
     public boolean isTiny(Tran2D t) {
-	return t.isTiny(0.5f);
+	return t.isTiny(0.5);
     }
     
     /** Save a picture as Encapsulated PostScript */
     @PRIMITIVE
-    public static Value epswrite(Primitive prim, Value a0, Value a1, 
-				 Value a2, Value a3, Value a4) {
-	Stylus.Drawable pic = 
-            prim.cast(Stylus.Drawable.class, a0, "a picture");
-	String fname = prim.string(a1);
-	float meanSize = (float) prim.number(a2);
-	float slider = (float) prim.number(a3);
-	float grey = (float) prim.number(a4);
+    public static void epswrite(Stylus.Drawable pic, String fname, 
+                                double meanSize, double slider, double grey) {
 	ColorValue background = ColorValue.getGrey(grey);
 
-        pic.prerender(slider);
+        pic.prerender((float) slider);
 
 	/* The dimensions of the image are chosen to give
 	 * the right aspect ratio, and so that the
 	 * geometric mean of width and height is meanSize */
 	float sqrtAspect = (float) Math.sqrt(pic.getAspect());
-	float width = meanSize * sqrtAspect;
-	float height = meanSize / sqrtAspect;		
+	float width = (float) meanSize * sqrtAspect;
+	float height = (float) meanSize / sqrtAspect;		
 		
 	try {
 	    final Writer out = 
 		new BufferedWriter(new FileWriter(fname));
-	    Stylus g = new EPSWriter(width, height, slider, out);
+	    Stylus g = new EPSWriter(width, height, (float) slider, out);
 	    Tran2D t = Tran2D.scaling(width, height);
             pic.draw(g, t, background);
 	    g.close();
@@ -437,7 +431,5 @@ public class EPSWriter extends Stylus {
 	catch (IOException e) {
 	    Evaluator.error("#epswrite", e);
 	}
-	
-	return Value.nil;		
     }
 }

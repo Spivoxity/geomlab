@@ -49,7 +49,7 @@ public class BushPicture extends Picture {
     static { setColours(20, 0.3f, 0.5f, 0.7f); }
 
     private String commands;
-    protected final float xmin, xmax, ymin, ymax;
+    protected final double xmin, xmax, ymin, ymax;
     
     private BushPicture(String commands) {
 	super(calcAspect(commands), true);
@@ -59,13 +59,13 @@ public class BushPicture extends Picture {
     }
 
     /* A few global variables save a lot of mess.  But yuck, nevertheless. */
-    protected static float _xmin, _xmax, _ymin, _ymax;
+    protected static double _xmin, _xmax, _ymin, _ymax;
     
-    private static float calcAspect(String commands) {
-	_xmin = _xmax = _ymin = _ymax = 0.0f;
+    private static double calcAspect(String commands) {
+	_xmin = _xmax = _ymin = _ymax = 0.0;
 	
 	for (int j = 0; j <= 10; j++) {
-	    setAngles(j / 10.0f);
+	    setAngles(j / 10.0);
 	    interp(commands, new View() {
 		@Override
 		public void move(Vec2D pos, int col, boolean draw) {
@@ -77,12 +77,12 @@ public class BushPicture extends Picture {
 	    });
 	}
 	
-	_xmin -= 1.0f; _xmax += 1.0f; _ymin -= 1.0f; _ymax += 1.0f;
+	_xmin -= 1.0; _xmax += 1.0; _ymin -= 1.0; _ymax += 1.0;
 	return (_xmax - _xmin)/(_ymax - _ymin);
     }
     
     @Override
-    public void prerender(float slider) {
+    public void prerender(double slider) {
 	setAngles(slider);
     }
     
@@ -94,13 +94,13 @@ public class BushPicture extends Picture {
 	g.setTrans(t);
 
 	interp(commands, new View() {
-	    private Vec2D oldpos = new Vec2D(0.0f, 0.0f);
+	    private Vec2D oldpos = new Vec2D(0.0, 0.0);
 	    
 	    @Override
 	    public void move(Vec2D pos, int col, boolean draw) {
 		Vec2D newpos = 
 		    new Vec2D((pos.x-xmin)/(xmax-xmin),
-			    (pos.y-ymin)/(ymax-ymin));
+                              (pos.y-ymin)/(ymax-ymin));
 			
 		if (draw)
 		    g.drawLine(oldpos, newpos, palette[col]);
@@ -111,7 +111,7 @@ public class BushPicture extends Picture {
     }
     
     private static void interp(String commands, View view) {
-	Vec2D pos = new Vec2D(0.0f, 0.0f), dir = new Vec2D(0.0f, 1.0f);
+	Vec2D pos = new Vec2D(0.0, 0.0), dir = new Vec2D(0.0, 1.0);
 	int col = 0;
 	Stack<Vec2D> pstack = new Stack<Vec2D>();
 	Stack<Vec2D> dstack = new Stack<Vec2D>();
@@ -140,10 +140,10 @@ public class BushPicture extends Picture {
 		col = (col+palette.length-1) % palette.length;
 		break;
 	    case '<':
-		dir = dir.scale(0.9f);
+		dir = dir.scale(0.9);
 		break;
 	    case '>':
-		dir = dir.scale(1/0.9f);
+		dir = dir.scale(1/0.9);
 		break;
 	    case '[':
 		pstack.push(pos); 
@@ -169,9 +169,9 @@ public class BushPicture extends Picture {
     }
     
     /** Set the angles used for + and - commands */
-    public static void setAngles(float t) {
-	rot = Tran2D.rotation(alpha - (2 * t - 1.0f) * theta);
-	invrot = Tran2D.rotation(- alpha - (2 * t - 1.0f) * theta);
+    public static void setAngles(double t) {
+	rot = Tran2D.rotation(alpha - (2 * t - 1.0) * theta);
+	invrot = Tran2D.rotation(- alpha - (2 * t - 1.0) * theta);
     }
     
     /** Set the palette of colours accessed by C and c commands */
@@ -185,19 +185,17 @@ public class BushPicture extends Picture {
     
     /** Create a fractal picture from a string of commands */
     @PRIMITIVE
-    public static Value bush(Primitive prim, Value x) {
-	return new BushPicture(prim.string(x));
+    public static Value bush(String x) {
+	return new BushPicture(x);
     }	    
 
     /** Set parameters used to interpret commands */
     @PRIMITIVE
-    public static Value _bushparams(Primitive prim, Value w, Value a, Value t,
-				    Value n, Value h, Value s, Value v) {
-	linewidth = (float) prim.number(w);
-	alpha = (float) prim.number(a);
-	theta = (float) prim.number(t);
-	setColours((int) prim.number(n), (float) prim.number(h), 
-		   (float) prim.number(s), (float) prim.number(v));
-	return Value.nil;
+    public static void _bushparams(double w, double a, double t, int n, 
+                                    double h, double s, double v) {
+	linewidth = (float) w;
+	alpha = (float) a;
+	theta = (float) t;
+	setColours(n, (float) h, (float) s, (float) v);
     }
 }

@@ -134,7 +134,9 @@ define sum(xs) = foldl((+), 0, xs);
 
 { repeat(n, f, x) = [x, f(x), f^2(x), ..., f^(n-1)(x)] }
 define repeat(n, f, x) =
-  if n = 0 then [] else if n = 1 then [x] else x : repeat(n-1, f, f(x));
+  let loop(k, y) = 
+    if k = 0 then [] else (let z = f(y) in z : loop(k-1, z)) in
+  if n = 0 then [] else x : loop(n-1, x);
 
 define opp(left(a)) = right(a)
   | opp(right(a)) = left(a)
@@ -232,7 +234,7 @@ define _super(back, front) =
   _combine(la, back, _transpic(la, front, t, 0));
 
 define beside(ps) = foldl(($), null, ps);
-define above(ps) = let f(p, q) = q & p in foldl(f, null, ps);
+define above(ps) = foldl((&), null, ps);
 
 
 { BASIC TILES }

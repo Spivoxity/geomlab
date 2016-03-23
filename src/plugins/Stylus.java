@@ -31,13 +31,15 @@
 package plugins;
 
 import funbase.Value;
+import funbase.Primitive.DESCRIPTION;
+import funbase.Primitive.PRIMPARAM;
 
 /** An abstract drawing tablet on which a picture can be drawn */
 public abstract class Stylus {
     protected final ColorValue palette[];
     protected Tran2D trans;
 
-    public Stylus(float slider) {
+    public Stylus(double slider) {
 	this.palette = TilePicture.makePalette(slider);
     }
 
@@ -45,7 +47,7 @@ public abstract class Stylus {
     public void setTrans(Tran2D trans) { this.trans = trans; }
 
     /** Set the stroke width for future drawing operations */
-    public abstract void setStroke(float width);
+    public abstract void setStroke(double width);
 
     /** Draw a polygon in black */
     public abstract void drawStroke(Vec2D stroke[]);
@@ -60,11 +62,11 @@ public abstract class Stylus {
      * x direction and yrad in the y direction.  The arc starts at
      * angle start, measured in degrees counterclockwise from the
      * x axis, and extends to angle start+extent. */
-    public abstract void drawArc(Vec2D centre, float xrad, float yrad, 
-				 float start, float extent, ColorValue color);
+    public abstract void drawArc(Vec2D centre, double xrad, double yrad, 
+				 double start, double extent, ColorValue color);
 
     /** Fill an oval */
-    public abstract void fillOval(Vec2D centre, float xrad, float yrad, 
+    public abstract void fillOval(Vec2D centre, double xrad, double yrad, 
 				  ColorValue color);
 
     /** Draw a raster image */
@@ -103,6 +105,8 @@ public abstract class Stylus {
     }
 
     /** A scalable picture that can draw itself with a Stylus */
+    @DESCRIPTION("a picture")
+    @PRIMPARAM
     public interface Drawable {
 	/** Perform any compute-intensive preparation for painting.
 	 * 
@@ -111,12 +115,12 @@ public abstract class Stylus {
 	 *  the GUI thread.  It may subsequently by prerendered again
 	 *  with a different slider value, but it must always remain
 	 *  ready for painting. */
-	public void prerender(float slider);
+	public void prerender(double slider);
 	
 	/** Compute aspect ratio width/height.
 	 * 
 	 *  The picture should be prerendered first. */
-	public float getAspect();
+	public double getAspect();
 	
 	/** Test whether the picture supports slider interaction. */
 	public boolean isInteractive();
@@ -140,6 +144,6 @@ public abstract class Stylus {
          *  This method is used for saving images on a file.  Like the
          *  draw method, it is implemented specially for ImagePictures. */
         public Native.Image render(int width, int height, 
-                                   float slider, ColorValue background);
+                                   double slider, ColorValue background);
     }
 }

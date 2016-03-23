@@ -71,7 +71,7 @@ public class Evaluator {
 
 	private void body() {
 	    try {
-		result = fun.apply(args, 0, args.length);
+		result = fun.apply(args);
 		checkpoint();
 	    }
 	    catch (StackOverflowError e) {
@@ -97,7 +97,8 @@ public class Evaluator {
 
     public static Value execute(Function fun, Value... args) {
 	runFlag = true; steps = conses = 0; timer = null;
-	FunCode.initStack();
+	Backtrace backtrace = FunCode.getBacktrace();
+        backtrace.initStack();
 	ExecThread exec = new ExecThread(fun, args);
 
 	startTimer();
@@ -193,13 +194,19 @@ public class Evaluator {
     }
 
     public static void error(String errtag, Object... args) {
-	String context[] = FunCode.getContext(null);
+        Backtrace backtrace = FunCode.getBacktrace();
+	String context[] = backtrace.getContext(null);
 	throw new EvalError(errtag, args, context[0]);
     }
 
     public static void expect(String name, String expected) {
-	String context[] = FunCode.getContext(name);
+        Backtrace backtrace = FunCode.getBacktrace();
+	String context[] = backtrace.getContext(name);
 	error("#expect", context[1], expected);
+    }
+
+    public static void expect(String name, Class<?> expected) {
+        expect(name, Primitive.description(expected));
     }
 
     /** Complain about calling a non-function */
@@ -288,17 +295,24 @@ public class Evaluator {
     }    
 
     @PRIMITIVE
-    public static Value _error(Primitive prim, Value tag, Value args) {
-	Evaluator.error(prim.string(tag), (Object []) prim.toArray(args));
+    public static Value _error(Primitive prim, String tag, Value args) {
+	Evaluator.error(tag, (Object []) prim.toArray(args));
 	return null;
     }
 
     @PRIMITIVE
-    public static Value _limit(Primitive prim, Value time, 
-			       Value steps, Value conses) {
-	Evaluator.setLimits((int) prim.number(time),
-			    (int) prim.number(steps), 
-			    (int) prim.number(conses));
-	return Value.nil;
+    public static void _limit(int time, int steps, int conses) {
+	Evaluator.setLimits(time, steps, conses);
+    }
+
+    public interface Backtrace {
+	/** Get execution context */
+	public String[] getContext(String me);
+
+	/** Initialise stack */
+	public void initStack();
+
+	/** Set stack root */
+	public void setRoot(Value root);
     }
 }

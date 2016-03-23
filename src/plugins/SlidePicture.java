@@ -45,7 +45,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     private final Value.FunValue render;
     
     /** Slider value from last update */
-    private float slider;
+    private double slider;
     
     /** Cached picture from last update */
     private Picture cache;
@@ -55,7 +55,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     }
 	
     @Override
-    public float getAspect() {
+    public double getAspect() {
 	return cache.getAspect();
     }
 
@@ -71,7 +71,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
 
     @Override
     public Native.Image render(int width, int height, 
-                               float slider, ColorValue background) {
+                               double slider, ColorValue background) {
         return cache.render(width, height, slider, background);
     }
 
@@ -84,7 +84,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     }
 
     @Override
-    public void prerender(float slider) {
+    public void prerender(double slider) {
 	if (cache != null && this.slider == slider) return;
 
 	this.slider = slider;
@@ -95,15 +95,12 @@ public class SlidePicture extends Value implements Stylus.Drawable {
 	    cache = Picture.nullPicture;
     }
 
-    private Value callRender(float slider) {
-	return Evaluator.execute(render.subr, 
-		new Value[] { NumValue.getInstance(slider) });
+    private Value callRender(double slider) {
+	return Evaluator.execute(render.subr, NumValue.getInstance(slider));
     }
 
     @PRIMITIVE
-    public static Value slide(Primitive prim, Value fun0) {
-	Value.FunValue fun = 
-	    prim.cast(Value.FunValue.class, fun0, "a function");
+    public static Value slide(FunValue fun) {
 	return new SlidePicture(fun);
     }
 }

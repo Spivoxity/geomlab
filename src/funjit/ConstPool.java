@@ -43,7 +43,7 @@ class ConstPool {
 	CLASS = 7, STR = 8, FIELD = 9, METH = 10, IMETH = 11,
     	NAME_TYPE = 12;
 
-    /** Number of items in the pool. */
+    /** Number of items in the pool -- starts at 1 for historical reasons. */
     private int nitems = 1;
     
     /** The constant pool itself. */
@@ -268,8 +268,8 @@ class ConstPool {
     /** Compute a hash code from three strings */
     protected static int hash3(String str1, String str2, String str3) {
 	int hash = str1.hashCode();
-	if (str2 != null) hash *= str2.hashCode()+1;
-	if (str3 != null) hash *= str3.hashCode()+2;
+	if (str2 != null) hash = hash * 37 + str2.hashCode();
+	if (str3 != null) hash = hash * 57 + str3.hashCode();
 	return hash;
     }
 }

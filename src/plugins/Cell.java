@@ -35,48 +35,40 @@ import java.io.PrintWriter;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 
 /** An assignable cell, as in ML.
  * 
  *  Assignable variables aren't an official feature of the GeomLab
  *  language, but the compiler makes heavy use of them for convenience.
- *  Do as I day, not as I do! */
+ *  Do as I say, not as I do! */
+@DESCRIPTION("a cell")
 public class Cell extends Value {
     private static final long serialVersionUID = 1L;
 
     /** Contents of the cell */
+    @PRIMITIVE("_get")
     public Value val;
     
     private Cell(Value val) { 
 	this.val = val; 
     }
    
-    public static Value newInstance(Value val) {
-        return new Cell(val);
+    @PRIMITIVE("_set")
+    public Value set(Value y) {
+	val = y; return y;
     }
 
+    @PRIMITIVE("_new")
+    public static Cell newInstance(Value val) {
+	Evaluator.countCons();
+        return new Cell(val);
+    }
+    
     @Override
     public void printOn(PrintWriter out) {
 	out.print("ref ");
 	val.printOn(out);
-    }
-    
-    @PRIMITIVE
-    public static Value _new(Primitive prim, Value x) {
-	Evaluator.countCons();
-	return new Cell(x); 
-    }
-
-    @PRIMITIVE
-    public static Value _get(Primitive prim, Value v) {
-	Cell x = prim.cast(Cell.class, v, "a cell");
-	return x.val;
-    }
-
-    @PRIMITIVE
-    public static Value _set(Primitive prim, Value v, Value y) {
-	Cell x = prim.cast(Cell.class, v, "a cell");
-	return (x.val = y);
     }
 }

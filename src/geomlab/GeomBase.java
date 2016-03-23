@@ -172,7 +172,7 @@ public class GeomBase {
     }
 
     public void failure(Throwable e) {
-	// e.printStackTrace(log);
+	e.printStackTrace(log);
 	evalError("Failure: ", e.toString(), "#failure");
     }
 
@@ -262,76 +262,66 @@ public class GeomBase {
     }
 
     @PRIMITIVE
-    public static Value _scan(Primitive prim) {
+    public static Value _scan() {
         return theApp.scan();
     }
 
     @PRIMITIVE
-    public static Value _synerror(Primitive prim, Value tag, Value args) {
-	theApp.scanner.syntax_error(prim.string(tag), 
-                                    (Object []) prim.toArray(args));
-	return Value.nil;
+    public static void _synerror(Primitive prim, String tag, Value args) {
+	theApp.scanner.syntax_error(tag, (Object []) prim.toArray(args));
     }
 
     @PRIMITIVE
-    public static Value _setroot(Primitive prim, Value v) {
-	FunCode.setRoot(v);
+    public static void _setroot(Value v) {
+	Evaluator.Backtrace backtrace = FunCode.getBacktrace();
+        backtrace.setRoot(v);
         Evaluator.reset();
-	return Value.nil;
     }
 
     @PRIMITIVE
-    public static Value _topval(Primitive prim, Value v) {
+    public static void _topval(Value v) {
 	theApp.exprValue(v);
-	return Value.nil;
     }
 
     @PRIMITIVE
-    public static Value _topdef(Primitive prim, Value x, Value v) {
-	Name n = prim.cast(Name.class, x, "a name");
+    public static void _topdef(Name n, Value v) {
 	theApp.defnValue(n, v);
-	return Value.nil;
     }
 
     @PRIMITIVE
-    public static Value _toptext(Primitive prim) {
+    public static void _toptext() {
 	theApp.showPhrase();
-	return Value.nil;
     }
 
     @PRIMITIVE
-    public static Value _print(Primitive prim, Value v) {
+    public static Value _print(Value v) {
 	theApp.logWrite(v);
 	Thread.yield();
 	return v;
     }
 
     @PRIMITIVE
-    public static Value _debug(Primitive prim) {
-	return NumValue.getInstance(funbase.Evaluator.debug);
+    public static int _debug() {
+	return funbase.Evaluator.debug;
     }
 
     /** Install a plug-in class with primitives. */
     @PRIMITIVE
-    public static Value _install(Primitive prim, Value name) {
-	String clname = prim.string(name);
+    public static void _install(String name) {
 	try {
-	    Session.loadPlugin(Class.forName("plugins." + clname));
+	    Session.loadPlugin(Class.forName("plugins." + name));
 	}
 	catch (Exception e) {
 	    throw new Error(e);
 	}
-	return Value.nil;
     }
 
     @PRIMITIVE
-    public static Value _save(Primitive prim, Value fname) {
+    public static void _save(String fname) {
 	try {
-	    Session.saveSession(new File(prim.string(fname)));
-	    return Value.nil;
+	    Session.saveSession(new File(fname));
 	} catch (Command.CommandException e) {
 	    Evaluator.error("#save", e);
-	    return null;
 	}
     }
 }        

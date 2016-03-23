@@ -40,7 +40,7 @@ import plugins.*;
 public class ScreenStylus extends Stylus {
     private Graphics2D gcxt;
 
-    public ScreenStylus(Graphics2D g, float slider) {
+    public ScreenStylus(Graphics2D g, double slider) {
 	super(slider);
 	gcxt = g;
     }
@@ -77,39 +77,39 @@ public class ScreenStylus extends Stylus {
     public void drawLine(Vec2D from, Vec2D to, ColorValue color) {
 	Vec2D a = trans.transform(from), b = trans.transform(to);
 	gcxt.setColor((Color) color.getNative());
-	gcxt.draw(new Line2D.Float(a.x, a.y, b.x, b.y));
+	gcxt.draw(new Line2D.Double(a.x, a.y, b.x, b.y));
     }
 
     @Override
-    public void drawArc(Vec2D centre, float xrad, float yrad,
-	    float start, float extent, ColorValue color) {
+    public void drawArc(Vec2D centre, double xrad, double yrad,
+	    double start, double extent, ColorValue color) {
 	// Java assumes a barbarian coordinate system, so we must negate
 	// the angles here:
 	Shape arc0 = 
-	    new Arc2D.Float(centre.x-xrad, centre.y-yrad, 
-		    2*xrad, 2*yrad, -start, -extent, Arc2D.OPEN);
+	    new Arc2D.Double(centre.x-xrad, centre.y-yrad, 
+                             2*xrad, 2*yrad, -start, -extent, Arc2D.OPEN);
 	AffineTransform tt = (AffineTransform) trans.getNative();
-	Path2D.Float arc = new Path2D.Float();
+	Path2D.Double arc = new Path2D.Double();
 	arc.append(arc0.getPathIterator(tt), false);
 	gcxt.setColor((Color) color.getNative());
 	gcxt.draw(arc);
     }
     
     @Override
-    public void fillOval(Vec2D centre, float xrad, float yrad, 
+    public void fillOval(Vec2D centre, double xrad, double yrad, 
 			 ColorValue color) {
-	Shape oval = new Ellipse2D.Float(centre.x-xrad, centre.y-yrad,
-					 2*xrad, 2*yrad);
+	Shape oval = new Ellipse2D.Double(centre.x-xrad, centre.y-yrad,
+                                          2*xrad, 2*yrad);
 	AffineTransform t = (AffineTransform) trans.getNative();
-	Path2D.Float path = new Path2D.Float();
+	Path2D.Double path = new Path2D.Double();
 	path.append(oval.getPathIterator(t), false);
 	gcxt.setColor((Color) color.getNative());
 	gcxt.fill(path);
     }
 
     @Override
-    public void setStroke(float width) {
-	gcxt.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, 
+    public void setStroke(double width) {
+	gcxt.setStroke(new BasicStroke((float) width, BasicStroke.CAP_ROUND, 
 				       BasicStroke.JOIN_ROUND));
     }
 
@@ -119,8 +119,8 @@ public class ScreenStylus extends Stylus {
 //	/* We draw the photo slightly large, so that it overlaps the
 //	 * bounding box slightly on all sides.  This avoids unsightly
 //	 * white lines between adjacent photos. */
-//	float u = trans.getXaxis().length(), v = trans.getYaxis().length();
-//	final float m = 1;  // Overlap in pixels
+//	double u = trans.getXaxis().length(), v = trans.getYaxis().length();
+//	final double m = 1;  // Overlap in pixels
 //	Tran2D t1 = trans.scale(1/u, 1/v).translate(-m, v+m)
 //					.scale((u+2*m)/w, -(v+2*m)/h);
         Tran2D t1 = trans.translate(0.0f, 1.0f).scale(1.0f/w, -1.0f/h);
@@ -129,7 +129,5 @@ public class ScreenStylus extends Stylus {
     }
 
     @Override
-    public boolean isTiny(Tran2D t) {
-	return t.isTiny(2.0f);
-    }
+    public boolean isTiny(Tran2D t) { return t.isTiny(2.0); }
 }

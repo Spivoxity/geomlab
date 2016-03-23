@@ -52,8 +52,8 @@ class Method {
     /** Constant pool for the enclosing class */
     private final ConstPool pool;
     
-    /** Exception handlers */
-    private List<Handler> handlers = new LinkedList<Handler>();
+    /** Try/catch blocks */
+    private List<TryBlock> tryblocks = new LinkedList<TryBlock>();
 
     /** The UTF8 string "Code" */
     private ConstPool.Item _Code_;
@@ -129,6 +129,10 @@ class Method {
 	    case IXOR:
 	    case POP:
 	    case SWAP:
+            case I2D:
+            case D2I:
+            case L2I:
+            case ARRAYLENGTH:
 		code.putByte(op);
 		break;
 	    default:
@@ -226,8 +230,12 @@ class Method {
 	        code.putByte(op);
 		code.putShort(pool.classItem(cl));
 		break;
+            case CLASS:
+                stackChange(1);
+                pushconst(pool.classItem(cl));
+                break;
 	    case CONST:
-		/* False overloading */
+		/* False overloading: a string not a classname */
 		genconst(cl);
 		break;
 	    default:
@@ -343,10 +351,20 @@ class Method {
 	}
     }
 
+    private void pushconst(ConstPool.Item i) {
+        stackChange(1);
+        if (i.index < 256) {
+            code.putByte(LDC);
+            code.putByte(i.index);
+        } else {
+            code.putByte(LDC_W);
+            code.putShort(i.index);
+        }
+    }
+
     /** Push a constant via the constant pool */
     private void genconst(Object x) {
         ConstPool.Item i = pool.constItem(x);
-        
         switch (i.type) {
             case ConstPool.LONG:
             case ConstPool.DOUBLE:
@@ -355,23 +373,16 @@ class Method {
         	code.putShort(i.index);
         	break;
             default:
-        	stackChange(1);
-        	if (i.index < 256) {
-        	    code.putByte(LDC);
-        	    code.putByte(i.index);
-        	} else {
-        	    code.putByte(LDC_W);
-        	    code.putShort(i.index);
-        	}
+                pushconst(i);
         }
     }
     
     /** Register a try .. catch block */
     public void tryCatchBlock(Label start, Label end, 
 			      Label handler, String type) {
+        ConstPool.Item it = (type != null ? pool.classItem(type) : null);
 	handler.setDepth(1);
-        handlers.add(new Handler(start, end, handler, 
-        	(type != null ? pool.classItem(type) : null)));
+        tryblocks.add(new TryBlock(start, end, handler, it));
     }
 
     /** Place a label */
@@ -398,7 +409,7 @@ class Method {
     public int getSize() {
         int size = 8;
         if (code.length() > 0)
-            size += 18 + code.length() + 8 * handlers.size();
+            size += 18 + code.length() + 8 * tryblocks.size();
         return size;
     }
 
@@ -411,28 +422,28 @@ class Method {
         if (code.length() > 0) attributeCount++;
         out.putShort(attributeCount);
         if (code.length() > 0) {
-            int size = 12 + code.length() + 8 * handlers.size();
+            int size = 12 + code.length() + 8 * tryblocks.size();
             out.putShort(_Code_);
             out.putInt(size);
             out.putShort(maxStack);
             out.putShort(maxLocals);
             out.putInt(code.length());
             code.put(out);
-            out.putShort(handlers.size());
-            for (Handler h : handlers) h.put(out);
+            out.putShort(tryblocks.size());
+            for (TryBlock h : tryblocks) h.put(out);
             out.putShort(0); // Attribute count for the code
         }
     }
 
     /** Information about an exception handler block. */
-    private static class Handler {
+    private static class TryBlock {
         private Label start, end, handler;
 
         /** Constant pool item for type of exceptions or null to catch all */
         ConstPool.Item type;
         
-        public Handler(Label start, Label end, Label handler, 
-		       ConstPool.Item type) {
+        public TryBlock(Label start, Label end, Label handler, 
+                        ConstPool.Item type) {
             this.start = start; this.end = end;
             this.handler = handler; this.type = type;
         }

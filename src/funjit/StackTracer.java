@@ -1,5 +1,5 @@
 /*
- * Hash.java
+ * JitTranslator.java
  * 
  * This file is part of GeomLab
  * Copyright (c) 2005 J. M. Spivey
@@ -28,48 +28,68 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package plugins;
+package funjit;
 
-import java.io.PrintWriter;
 import java.util.*;
 
+import java.lang.ref.WeakReference;
+
+import funbase.FunCode;
 import funbase.Evaluator;
-import funbase.Primitive;
-import funbase.Primitive.PRIMITIVE;
-import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
+import funbase.Function;
+import funbase.Value.FunValue;
+import funbase.Function.Closure;
 
-/** A mutable table. */
-@DESCRIPTION("a hashtable")
-public class Hash extends Value {
-    private static final long serialVersionUID = 1L;
+public class StackTracer implements Evaluator.Backtrace {
+    /** Table for interpreting stack traces */
+    private Map<String, WeakReference<FunCode>> classTable = 
+	new HashMap<String, WeakReference<FunCode>>();
+        /* The table will fill up with junk over time, but the weak references
+	   will at least prevent retention of stale FunCode objects */
 
-    private Map<Value, Value> mapping;
-    
-    private Hash() { 
-        mapping = new HashMap<Value, Value>();
-    }
-   
-    @PRIMITIVE("_hash")
-    public static Value newInstance() {
-	Evaluator.countCons();
-	return new Hash(); 
-    }
+    private FunCode root = null;
 
-    @PRIMITIVE("_lookup")
-    public Value lookup(Value x) {
-        Value y = mapping.get(x);
-        return (y != null ? y : Value.nil);
+    public void put(String name, FunCode code) {
+	classTable.put(name, new WeakReference<FunCode>(code));
     }
 
-    @PRIMITIVE("_update")
-    public Value update(Value x, Value y) {
-        mapping.put(x, y);
-        return y;
+    @Override 
+    public String[] getContext(String me) {
+	Thread thread = Thread.currentThread();
+	StackTraceElement stack[] = thread.getStackTrace();
+	String caller = null, callee = me;
+
+	for (int i = 0; i < stack.length; i++) {
+	    WeakReference<FunCode> fr = 
+		classTable.get(stack[i].getClassName());
+	    if (fr == null) continue;
+	    FunCode f = fr.get();
+	    if (f == null) 
+                throw new Error("stack map entry disappeared");
+
+	    if (f == root) break;
+
+	    if (f.frozen) 
+		callee = f.name;
+	    else {
+		caller = f.name;
+		break;
+	    }
+	}
+
+	return new String[] { caller, callee };
     }
 
     @Override
-    public void printOn(PrintWriter out) {
-	out.print("<hash>");
+    public void initStack() { }
+
+    @Override
+    public void setRoot(Value root) {
+	if (root instanceof FunValue) {
+	    Function f = ((FunValue) root).subr;
+	    if (f instanceof Closure)
+		this.root = ((Closure) f).getCode();
+	}
     }
 }

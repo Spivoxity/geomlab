@@ -35,6 +35,8 @@ import java.io.PrintWriter;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.CONSTRUCTOR;
+import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 
 
@@ -43,9 +45,9 @@ public class TurtlePicture extends Picture {
     private static final long serialVersionUID = 1L;
     
     public final Command commands[];
-    public final float xmin, xmax, ymin, ymax;
+    public final double xmin, xmax, ymin, ymax;
     
-    public static final float R = 0.5f;
+    public static final double R = 0.5;
 
     public TurtlePicture(Command commands[]) {
 	super(calcAspect(commands));
@@ -55,38 +57,38 @@ public class TurtlePicture extends Picture {
     }
 
     // Global variables (yuck!) for values returned by calcAspect
-    private static float _xmin, _xmax, _ymin, _ymax;
+    private static double _xmin, _xmax, _ymin, _ymax;
 
     /** Calculate aspect ratio and set _xmin, etc. */
     public static float calcAspect(Command commands[]) {
-	float x = 0, y = 0, dir = 0;
-	float xmin = -1, xmax = 1, ymin = -1, ymax = 1;
+	double x = 0, y = 0, dir = 0;
+	double xmin = -1, xmax = 1, ymin = -1, ymax = 1;
 	
 	for (Command cmd : commands) {
 	    switch (cmd.kind) {
 		case Command.LEFT: {
-		    float a = cmd.arg;
-		    float xc = x - R * Vec2D.sind(dir);
-		    float yc = y + R * Vec2D.cosd(dir);
-		    x = xc + R * Vec2D.sind(dir+a); 
-		    y = yc - R * Vec2D.cosd(dir+a);
+		    double a = cmd.arg;
+		    double xc = x - R * BasicPrims.sin(dir);
+		    double yc = y + R * BasicPrims.cos(dir);
+		    x = xc + R * BasicPrims.sin(dir+a); 
+		    y = yc - R * BasicPrims.cos(dir+a);
 		    dir += a;
 		    break;
 		}
 
 		case Command.RIGHT: {
-		    float a = cmd.arg;
-		    float xc = x + R * Vec2D.sind(dir);
-		    float yc = y - R * Vec2D.cosd(dir);
-		    x = xc - R * Vec2D.sind(dir-a); 
-		    y = yc + R * Vec2D.cosd(dir-a);
+		    double a = cmd.arg;
+		    double xc = x + R * BasicPrims.sin(dir);
+		    double yc = y - R * BasicPrims.cos(dir);
+		    x = xc - R * BasicPrims.sin(dir-a); 
+		    y = yc + R * BasicPrims.cos(dir-a);
 		    dir -= a;
 		    break;
 		}
 
 		case Command.AHEAD:
-		    x += cmd.arg * Vec2D.cosd(dir);
-		    y += cmd.arg * Vec2D.sind(dir);
+		    x += cmd.arg * BasicPrims.cos(dir);
+		    y += cmd.arg * BasicPrims.sin(dir);
 		    break;
 
 		case Command.TURN:
@@ -107,11 +109,11 @@ public class TurtlePicture extends Picture {
 	
 	_xmin = xmin; _xmax = xmax;
 	_ymin = ymin; _ymax = ymax; 
-	return (xmax - xmin)/(ymax - ymin); 
+	return (float) ((xmax - xmin)/(ymax - ymin)); 
     }
     
     /** Make a vector by scaling coords */
-    private Vec2D posVec(float x, float y) {
+    private Vec2D posVec(double x, double y) {
 	return new Vec2D((x-xmin)/(xmax-xmin), (y-ymin)/(ymax-ymin));
     }
     
@@ -124,7 +126,7 @@ public class TurtlePicture extends Picture {
     }
     
     public void defaultDraw(Stylus g) {
-	float x = 0, y = 0, dir = 0;
+	double x = 0, y = 0, dir = 0;
 	boolean pen = true;
         ColorValue ink = ColorValue.black;
 
@@ -133,36 +135,36 @@ public class TurtlePicture extends Picture {
 	for (Command cmd : commands) {
 	    switch (cmd.kind) {
 		case Command.LEFT: {
-		    float a = cmd.arg;
-		    float xc = x - R * Vec2D.sind(dir);
-		    float yc = y + R * Vec2D.cosd(dir);
+		    double a = cmd.arg;
+		    double xc = x - R * BasicPrims.sin(dir);
+		    double yc = y + R * BasicPrims.cos(dir);
 		    Vec2D centre = posVec(xc, yc);
 		    if (pen) 
 			g.drawArc(centre, R/(xmax-xmin), R/(ymax-ymin),
 				  dir-90, a, ink);
-		    x = xc + R * Vec2D.sind(dir+a); 
-		    y = yc - R * Vec2D.cosd(dir+a);
+		    x = xc + R * BasicPrims.sin(dir+a); 
+		    y = yc - R * BasicPrims.cos(dir+a);
 		    dir += a;
 		    break;
 		}
 
 		case Command.RIGHT: {
-		    float a = cmd.arg;
-		    float xc = x + R * Vec2D.sind(dir);
-		    float yc = y - R * Vec2D.cosd(dir);
+		    double a = cmd.arg;
+		    double xc = x + R * BasicPrims.sin(dir);
+		    double yc = y - R * BasicPrims.cos(dir);
 		    Vec2D centre = posVec(xc, yc);
 		    if (pen) g.drawArc(centre, R/(xmax-xmin), R/(ymax-ymin), 
 				       dir+90, -a, ink);
-		    x = xc - R * Vec2D.sind(dir-a); 
-		    y = yc + R * Vec2D.cosd(dir-a);
+		    x = xc - R * BasicPrims.sin(dir-a); 
+		    y = yc + R * BasicPrims.cos(dir-a);
 		    dir -= a;
 		    break;
 		}
 		    
 		case Command.AHEAD: {
 		    Vec2D oldpos = posVec(x, y);
-		    x += cmd.arg * Vec2D.cosd(dir); 
-		    y += cmd.arg * Vec2D.sind(dir);
+		    x += cmd.arg * BasicPrims.cos(dir); 
+		    y += cmd.arg * BasicPrims.sin(dir);
 		    Vec2D pos = posVec(x, y);
 		    if (pen) g.drawLine(oldpos, pos, ink);
 		    break;
@@ -191,6 +193,7 @@ public class TurtlePicture extends Picture {
     }	    
 	
     /** A turtle command */
+    @DESCRIPTION("a command")
     public static class Command extends Value {
 	/** Values for kind */
 	public static final int 
@@ -200,7 +203,7 @@ public class TurtlePicture extends Picture {
 	public final int kind;
 
 	/** Argument for the command */
-	public final float arg;
+	public final double arg;
 	
         /** A colour, if one is needed */
         public final ColorValue color;
@@ -208,12 +211,11 @@ public class TurtlePicture extends Picture {
 	/** Name of the constructor */
 	public final String name;
 
-	public Command(int kind, float arg, String name) {
+	public Command(int kind, double arg, String name) {
             this(kind, arg, name, null);
         }
 
-        public Command(int kind, float arg, String name, ColorValue color) {
-	    Evaluator.countCons();
+        public Command(int kind, double arg, String name, ColorValue color) {
 	    this.kind = kind;
 	    this.arg = arg;
 	    this.name = name;
@@ -243,8 +245,8 @@ public class TurtlePicture extends Picture {
     }
 
     /** A constructor primitive for commands */
-    private static class CommandPrimitive extends Primitive.Prim1 
-            implements Primitive.Constructor {
+    @CONSTRUCTOR(Command.class)
+    private static class CommandPrimitive extends Primitive.Prim1 {
 	protected int kind;
 	
 	public CommandPrimitive(String name, int kind) {
@@ -254,13 +256,13 @@ public class TurtlePicture extends Picture {
 	
 	@Override
 	public Value apply1(Value arg) {
-	    return new Command(kind, (float) number(arg), name);
+	    return new Command(kind, number(arg), name);
 	}
 	
 	private Value args[] = new Value[1];
 
 	@Override
-	public Value[] pattMatch(Value obj, int nargs) {
+	public Value[] pattMatch(int nargs, Value obj) {
 	    if (nargs != 1) Evaluator.err_patnargs(name);
 	    try {
 		Command c = (Command) obj;
@@ -277,6 +279,15 @@ public class TurtlePicture extends Picture {
 	}
     }
     
+    @CONSTRUCTOR(Command.class)
+    private static class InkPrim extends CommandPrimitive {
+        public InkPrim() { super("ink", Command.INK); }
+        @Override
+        public Value apply1(Value arg) {
+            return new Command(kind, 0.0, name, cast(ColorValue.class, arg));
+        }
+    }
+
     @PRIMITIVE
     public static final Primitive 
 	ahead = new CommandPrimitive("ahead", Command.AHEAD),
@@ -284,11 +295,5 @@ public class TurtlePicture extends Picture {
 	right = new CommandPrimitive("right", Command.RIGHT),
 	turn = new CommandPrimitive("turn", Command.TURN),
 	pen = new CommandPrimitive("pen", Command.PEN),
-        ink = new CommandPrimitive("ink", Command.INK) {
-                @Override
-                public Value apply1(Value arg) {
-                    return new Command(kind, 0.0f, name, 
-                               cast(ColorValue.class, arg, "a colour"));
-                }
-            };
+        ink = new InkPrim();
 }

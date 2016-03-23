@@ -38,20 +38,24 @@ class Type {
     /** Type descriptor string */
     public final String desc;
 
+    /** If a method type, the number of arguments */
+    public final int arity;
+
     /** If a method type, the size of the arguments in words */
     public final int asize;
 
     /** The size in words of the value or (for a method) the result */
     public final int size;
 
-    private Type(String desc, int asize, int size) {
+    private Type(String desc, int arity, int asize, int size) {
 	this.desc = desc;
+        this.arity = arity;
 	this.asize = asize;
 	this.size = size;
     }
 
     private Type(String desc, int size) {
-	this(desc, 0, size);
+	this(desc, 0, 0, size);
     }
 
     /** A predefined type */
@@ -90,17 +94,20 @@ class Type {
 	s.append(")");
 	s.append(result.desc);
 
-	return new Type(s.toString(), asize, result.size);
+	return new Type(s.toString(), nargs, asize, result.size);
     }
 
     public final static String
 	object_cl = "java/lang/Object",
+        class_cl = "java/lang/Class",
 	string_cl = "java/lang/String",
+        math_cl = "java/lang/Math",
 	classcast_cl = "java/lang/ClassCastException",
 	name_cl = "funbase/Name",
 	value_cl = "funbase/Value",
 	numval_cl = "funbase/Value$NumValue",
 	boolval_cl = "funbase/Value$BoolValue",
+        stringval_cl = "funbase/Value$StringValue",
 	consval_cl = "funbase/Value$ConsValue",
         pairval_cl = "funbase/Value$PairValue",
 	nilval_cl = "funbase/Value$NilValue",
@@ -111,9 +118,14 @@ class Type {
 	jitlarge_cl = "funjit/JitFunction$FuncN",
 	jitsmall_cl = "funjit/JitFunction$Func",
 	primitive_cl = "funbase/Primitive",
+	primlarge_cl = "funjit/JitFunction$PrimN",
 	primsmall_cl = "funbase/Primitive$Prim",
-	primlarge_cl = "funbase/Primitive$PrimN",
 	evaluator_cl = "funbase/Evaluator";
+
+    public static String className(Class<?> cl) {
+        String name = cl.getName();
+        return name.replace('.', '/');
+    }
 
     public final static Type
 	object_t = class_t(object_cl),
@@ -122,31 +134,26 @@ class Type {
 	value_t = class_t(value_cl),
 	valarray_t = array_t(value_t),
 	function_t = class_t(function_cl),
-	prim_t = class_t(primitive_cl);
+	prim_t = class_t(primitive_cl),
+        class_t = class_t(class_cl),
+        consval_t = class_t(consval_cl);
     
     public final static Type
-	fun_t = func_t(void_t),
+        fun_t = func_t(void_t),
 	fun__B_t = func_t(bool_t),
-	fun__D_t = func_t(double_t),
-        fun__V_t = func_t(value_t),
 	fun_A_V_t = func_t(valarray_t, value_t),
 	fun_AII_t = func_t(valarray_t, int_t, int_t, void_t),
-	fun_D_V_t = func_t(double_t, value_t),
-	fun_B_V_t = func_t(bool_t, value_t),
-	fun_DDD_V_t = func_t(double_t, double_t, double_t, value_t),
+        fun_CV_O_t = func_t(class_t, value_t, object_t),
+        fun_D_L_t = func_t(double_t, long_t),
+	fun_IV_A_t = func_t(int_t, value_t, valarray_t),
 	fun_N_t = func_t(name_t, void_t),
-	fun_O_B_t = func_t(object_t, bool_t),
-	fun_PAI_V_t = func_t(prim_t, valarray_t, int_t, value_t),
 	fun_S_t = func_t(string_t, void_t),
-	fun_SS_t = func_t(string_t, string_t, void_t),
+        fun_SC_t = func_t(string_t, class_t, void_t),
 	fun_SI_t = func_t(string_t, int_t, void_t),
 	fun_SII_t = func_t(string_t, int_t, int_t, void_t),
 	fun_V_V_t = func_t(value_t, value_t),
-	fun_V_t = func_t(value_t, void_t),
-	fun_VV_t = func_t(value_t, value_t, void_t),
-	fun_VVV_t = func_t(value_t, value_t, value_t, void_t),
-        fun_VV_V_t = func_t(value_t, value_t, value_t),
-	fun_VI_A_t = func_t(value_t, int_t, valarray_t),
+        fun_VV_C_t = func_t(value_t, value_t, consval_t),
+	fun_O_B_t = func_t(object_t, bool_t),
 	fun_VS_t = func_t(value_t, string_t, void_t);
 
     public final static Type applyn_t[] = {
@@ -169,29 +176,7 @@ class Type {
 	func_t(value_t, value_t, value_t, value_t, value_t, value_t, void_t)
     };
 
-    private final static Type primitive_t[] = {
-	func_t(prim_t, value_t),
-	func_t(prim_t, value_t, value_t),
-	func_t(prim_t, value_t, value_t, value_t),
-	func_t(prim_t, value_t, value_t, value_t, value_t),
-	func_t(prim_t, value_t, value_t, value_t, value_t, value_t),
-	func_t(prim_t, value_t, value_t, value_t, value_t, value_t, value_t),
-	func_t(prim_t, value_t, value_t, value_t, value_t, value_t, value_t, 
-	       value_t)
-    };
-
-    public static Type make_prim_t(int arity) {
-	if (arity < primitive_t.length)
-	    return primitive_t[arity];
-
-	Type t[] = new Type[arity+2];
-	t[0] = prim_t;
-	for (int i = 0; i < arity; i++) t[i+1] = value_t;
-	t[arity+1] = value_t;
-	return func_t(t);
-    }
-
     public final static Type
-	apply_t = func_t(valarray_t, int_t, value_t),
-	applyN_t = func_t(valarray_t, int_t, value_t);
+        apply_t = func_t(valarray_t, value_t),
+        applyN_t = func_t(valarray_t, int_t, value_t);
 }

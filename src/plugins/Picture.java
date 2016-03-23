@@ -35,6 +35,7 @@ import java.io.PrintWriter;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 import funbase.FunCode;
 
@@ -53,34 +54,30 @@ import funbase.FunCode;
  work neatly. */
 
 /** A rectangular graphical object of scalable size but fixed aspect ratio */
+@DESCRIPTION("a picture")
 public class Picture extends Value implements Stylus.Drawable {
     private static final long serialVersionUID = 1L;
 
-    public final float aspect;	       // = width / height
+    public final double aspect;	       // = width / height
     private final boolean interactive; // whether we use slider value
     
-    protected Picture(float aspect) { this(aspect, false); }
+    protected Picture(double aspect) { this(aspect, false); }
     
-    protected Picture(float aspect, boolean interactive) {
+    protected Picture(double aspect, boolean interactive) {
 	Evaluator.countCons();
 	this.aspect = aspect;
 	this.interactive = interactive;
     }
     
     @Override
-    public float getAspect() { return aspect; }
+    @PRIMITIVE("aspect")
+    public double getAspect() { return aspect; }
     
-    @PRIMITIVE
-    public static Value aspect(Primitive prim, Value x) {
-	Picture pic = prim.cast(Picture.class, x, "a picture");
-	return NumValue.getInstance(pic.aspect);
-    }
-
     @Override
     public boolean isInteractive() { return interactive; }
     
     @Override
-    public void prerender(float slider) { }
+    public void prerender(double slider) { }
     
     @Override
     public void draw(Stylus g, int ww, int hh, ColorValue background) {
@@ -99,7 +96,8 @@ public class Picture extends Value implements Stylus.Drawable {
     public static final int DRAW = 1, FILL = 2;
     
     public static final Vec2D unitsquare[] = { 
-	new Vec2D(0, 0), new Vec2D(1, 0), new Vec2D(1, 1), new Vec2D(0, 1) 
+	new Vec2D(0.0, 0.0), new Vec2D(1.0, 0.0), 
+        new Vec2D(1.0, 1.0), new Vec2D(0.0, 1.0) 
     };
     
     public final void paintPart(int layer, int col, Stylus g, Tran2D t) { 
@@ -132,7 +130,7 @@ public class Picture extends Value implements Stylus.Drawable {
     
     @Override
     public Native.Image render(int width, int height, 
-                               float slider, ColorValue background) {
+                               double slider, ColorValue background) {
         Native factory = Native.instance();
         return factory.render(this, width, height, slider, background);
     }
@@ -145,7 +143,7 @@ public class Picture extends Value implements Stylus.Drawable {
     public static final Picture nullPicture = new Picture(0.0f);
 
     @PRIMITIVE
-    public static Value _null(Primitive prim) {
+    public static Value _null() {
 	return nullPicture;
     }
 
@@ -158,13 +156,13 @@ public class Picture extends Value implements Stylus.Drawable {
 	/** One of the component pictures. */
 	protected final Picture left, right;
 	
-	private BinaryPicture(float aspect, Picture left, Picture right) {
+	private BinaryPicture(double aspect, Picture left, Picture right) {
 	    super(aspect, left.isInteractive() || right.isInteractive());
 	    this.left = left; this.right = right;
 	}
 	
 	@Override
-	public void prerender(float slider) {
+	public void prerender(double slider) {
 	    left.prerender(slider);
 	    right.prerender(slider);
 	}
@@ -177,10 +175,8 @@ public class Picture extends Value implements Stylus.Drawable {
     }
 
     @PRIMITIVE
-    public static Value _combine(Primitive prim, Value x, Value y, Value z) {
-	return new BinaryPicture((float) prim.number(x), 
-				 prim.cast(Picture.class, y, "a picture"),
-				 prim.cast(Picture.class, z, "a picture"));
+    public static Value _combine(double x, Picture y, Picture z) {
+	return new BinaryPicture(x, y, z);
     }
 
     private static class BesidePicture extends BinaryPicture {
@@ -190,7 +186,8 @@ public class Picture extends Value implements Stylus.Drawable {
             this(left, left.getAspect(), right, right.getAspect());
         }
 
-        private BesidePicture(Picture left, float la, Picture right, float ra) {
+        private BesidePicture(Picture left, double la, 
+                              Picture right, double ra) {
             super(la+ra, left, right);
             tleft = new Tran2D(la/(la+ra), 0, 0, 1, 0, 0);
             tright = new Tran2D(ra/(la+ra), 0, 0, 1, la/(la+ra), 0);
@@ -204,9 +201,8 @@ public class Picture extends Value implements Stylus.Drawable {
     }
 
     @PRIMITIVE
-    public static Value _beside(Primitive prim, Value x, Value y) {
-	return new BesidePicture(prim.cast(Picture.class, x, "a picture"),
-				 prim.cast(Picture.class, y, "a picture"));
+    public static Value _beside(Picture x, Picture y) {
+	return new BesidePicture(x, y);
     }
 
     private static class AbovePicture extends BinaryPicture {
@@ -216,7 +212,8 @@ public class Picture extends Value implements Stylus.Drawable {
             this(top, top.getAspect(), bottom, bottom.getAspect());
         }
 
-        private AbovePicture(Picture top, float ta, Picture bottom, float ba) {
+        private AbovePicture(Picture top, double ta, 
+                             Picture bottom, double ba) {
             super(ta*ba/(ta + ba), top, bottom);
             ttop = new Tran2D(1, 0, 0, ba/(ta+ba), 0, ta/(ta+ba));
             tbot = new Tran2D(1, 0, 0, ta/(ta+ba), 0, 0);
@@ -230,9 +227,8 @@ public class Picture extends Value implements Stylus.Drawable {
     }
 
     @PRIMITIVE
-    public static Value _above(Primitive prim, Value x, Value y) {
-	return new AbovePicture(prim.cast(Picture.class, x, "a picture"),
-                                prim.cast(Picture.class, y, "a picture"));
+    public static Value _above(Picture x, Picture y) {
+	return new AbovePicture(x, y);
     }
 
     /** A picture that is drawn with a specified transformation.
@@ -252,14 +248,14 @@ public class Picture extends Value implements Stylus.Drawable {
 	/** The increment to be added to the colour index. */
 	private final int inc;
 	
-	private TransPicture(float aspect, Picture base, 
+	private TransPicture(double aspect, Picture base, 
                              Tran2D trans, int inc) {
 	    super(aspect, base.isInteractive());
 	    this.base = base; this.trans = trans; this.inc = inc;
 	}
 	
 	@Override
-	public void prerender(float slider) {
+	public void prerender(double slider) {
 	    base.prerender(slider);
 	}
 
@@ -271,17 +267,13 @@ public class Picture extends Value implements Stylus.Drawable {
     }
 
     @PRIMITIVE
-    public static Value _transpic(Primitive prim, Value aspect, 
-				  Value base, Value trans, Value inc) {
-	return new TransPicture((float) prim.number(aspect),
-				prim.cast(Picture.class, base, "a picture"),
-				prim.cast(Tran2D.class, trans, "a transform"),
-				(int) prim.number(inc));
+    public static Value _transpic(double aspect, Picture base, Tran2D trans, 
+                                  int inc) {
+	return new TransPicture(aspect, base, trans, inc);
     }
 
     @PRIMITIVE
-    public static Value colour(Primitive prim, Value x) {
-	final Picture pic = prim.cast(Picture.class, x, "a picture");
+    public static Value colour(Picture pic) {
 	return new Picture(pic.aspect, true) {
 	    @Override
 	    public void paint(int layer, int col, Stylus g, Tran2D t) {

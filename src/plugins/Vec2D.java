@@ -35,20 +35,27 @@ import java.io.PrintWriter;
 import funbase.Value;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
+import funbase.Primitive.DESCRIPTION;
+import funbase.Primitive.CONSTRUCTOR;
 import funbase.Evaluator;
 
 /** Floating point vectors in 2D */
+@DESCRIPTION("a vector")
 public class Vec2D extends Value {
     private static final long serialVersionUID = 1L;
 
-    public final float x, y;
+    public final double x, y;
     private Object peer;
     
-    public Vec2D(float x, float y) {
+    public Vec2D(double x, double y) {
 	this.x = x;
 	this.y = y;
     }
     
+    public static Vec2D getInstance(double x, double y) {
+        return new Vec2D(x, y);
+    }
+
     /** Return the native counterpart of the vector, computed
      *  using the installed Native factory. */
     public Object getNative() {
@@ -60,24 +67,24 @@ public class Vec2D extends Value {
 	return peer;
     }
 
-    public float length() {
-	return (float) Math.sqrt(x*x + y*y);
+    public double length() {
+	return Math.sqrt(x*x + y*y);
     }
     
     public Vec2D add(Vec2D a) {
 	return new Vec2D(x + a.x, y + a.y);
     }
     
-    public Vec2D add(float dx, float dy) {
+    public Vec2D add(double dx, double dy) {
 	return new Vec2D(x + dx, y + dy);
     }
 
-    public Vec2D scale(float r) {
+    public Vec2D scale(double r) {
 	return new Vec2D(r*x, r*y);
     }
     
-    public Vec2D rotate(float angle) {
-	float c = cosd(angle), s = sind(angle);
+    public Vec2D rotate(double angle) {
+	double c = BasicPrims.cos(angle), s = BasicPrims.sin(angle);
 	return new Vec2D(c*x-s*y, s*x+c*y);
     }
     
@@ -88,26 +95,20 @@ public class Vec2D extends Value {
 	Value.printNumber(out, y); out.print(")");
     }
 
-    public static float cosd(float arg) {
-        return (float) Math.cos(arg * Math.PI/180);
-    }
-
-    public static float sind(float arg) {
-        return (float) Math.sin(arg * Math.PI/180);
-    }
-
     @PRIMITIVE
-    public static final Primitive vector = new Primitive.Prim2("_vector") {
+    @CONSTRUCTOR(Vec2D.class)
+    public static class VecPrim extends Primitive.Prim2 {
+        public VecPrim() { super("_vector"); }
+
 	@Override
 	public Value apply2(Value x, Value y) {
-	    Evaluator.countCons();
-	    return new Vec2D((float) number(x), (float) number(y));
+	    return getInstance(number(x), number(y));
 	}
 
 	private Value args[] = new Value[2];
 
 	@Override
-	public Value[] pattMatch(Value obj, int nargs) {
+	public Value[] pattMatch(int nargs, Value obj) {
 	    if (nargs != 2) Evaluator.err_patnargs(name);
 
 	    if (! (obj instanceof Vec2D)) return null;
@@ -117,5 +118,5 @@ public class Vec2D extends Value {
 	    args[1] = NumValue.getInstance(v.y);
 	    return args;
 	}
-    };
+    }
 }

@@ -32,11 +32,12 @@ package funbase;
 
 import java.util.Stack;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 import funbase.Value.WrongKindException;
 
 /** A trivial runtime translator that interprets the funcode */
-public class Interp implements FunCode.Jit {
+public class Interp implements FunCode.Jit, Evaluator.Backtrace {
     private static Stack<FunCode> backtrace = new Stack<FunCode>();
     private FunCode root = null;
 
@@ -51,9 +52,14 @@ public class Interp implements FunCode.Jit {
 	};
     }  
 
-    /** Use reflection to create a primitive */
-    public Primitive primitive(String name, int arity, Method meth) {
-	return Primitive.reflect(name, arity, meth);
+    private Primitive.Factory primFactory = new ReflectionFactory();
+
+    public Primitive.Factory getPrimitiveFactory() {
+        return primFactory;
+    }
+
+    public Evaluator.Backtrace getBacktrace() {
+        return this;
     }
 
     @Override
@@ -97,7 +103,6 @@ public class Interp implements FunCode.Jit {
         private static final int FRAME = 16;
 
         private Value[] expand(Value frame[], int sp, int fsize) {
-            System.out.println("Expand");
             int n = frame.length;
             Value newframe[] = new Value[2*n];
             System.arraycopy(frame, 0, newframe, 0, sp);
@@ -106,7 +111,7 @@ public class Interp implements FunCode.Jit {
         }
 
 	@Override
-	public Value apply(Value args[], int base, int nargs) {
+	public Value apply(int nargs, Value args[], int base) {
 	    backtrace.push(code);
 
 	    if (nargs != arity) 
@@ -167,13 +172,14 @@ public class Interp implements FunCode.Jit {
 
 		    case CONS:
 			sp--;
-			frame[sp-1] = Value.cons(frame[sp-1], frame[sp]);
+			frame[sp-1] = 
+                            Value.ConsValue.getInstance(frame[sp-1], frame[sp]);
 			break;
 
 		    case CALL:
 			sp -= rand;
 			Value fun = frame[sp-1];
-			frame[sp-1] = fun.subr.apply(frame, sp, rand);
+			frame[sp-1] = fun.subr.apply(rand, frame, sp);
 			break;
 
 		    case TCALL:
@@ -281,7 +287,7 @@ public class Interp implements FunCode.Jit {
 		    case MPRIM: {
 			Value cons = frame[--sp];
 			Value obj = frame[--sp];
-			Value vs[] = cons.subr.pattMatch(obj, rand);
+			Value vs[] = cons.subr.pattMatch(rand, obj);
 			if (vs == null)
 			    pc = trap;
 			else {
