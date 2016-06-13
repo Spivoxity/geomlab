@@ -162,6 +162,10 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 			sp--;
 			break;
 
+                    case PUSH:
+                        frame[sp++] = Value.NumValue.getInstance(rand);
+                        break;
+
 		    case QUOTE:
 			frame[sp++] = code.consts[rand];
 			break;

@@ -325,7 +325,7 @@ public class GeomLab extends GeomBase {
 	app.logWrite(properties.getProperty("welcome", "Welcome to GeomLab"));
 	
 	funbase.FunCode.install
-	    (new funjit.TofuTranslator(new funjit.SmartTranslator()));
+	    (new funjit.TofuTranslator(new funjit.InlineTranslator()));
 
 	try {
 	    if (sessfile != null)

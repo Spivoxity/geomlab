@@ -158,6 +158,7 @@ public class Evaluator {
 	Evaluator.consLimit = consLimit;
     }
     
+    /** Print statistics about cost of evaluation */
     public static void printStats(PrintWriter log) {
         log.format("(%d %s, %d %s)\n", 
 		   steps, (steps == 1 ? "step" : "steps"), 
@@ -165,22 +166,22 @@ public class Evaluator {
     }
 
     /** An exception defined by an error tag */
-    public static abstract class MyError extends Error {
+    public static abstract class TaggedError extends Error {
 	public final String errtag;
 	public final Object args[];
 
-	public MyError(String errtag, Object args[]) {
+	public TaggedError(String errtag, Object args[]) {
 	    this.errtag = errtag;
 	    this.args = args;
 	}
 
-	public MyError(String errtag) {
+	public TaggedError(String errtag) {
 	    this(errtag, null);
 	}
     }
 
     /** An exception raised because of a run-time error */
-    public static class EvalError extends MyError {
+    public static class EvalError extends TaggedError {
 	public final String context;
 
         public EvalError(String errtag, Object args[], String context) {
@@ -199,6 +200,7 @@ public class Evaluator {
 	throw new EvalError(errtag, args, context[0]);
     }
 
+    /** Message "<primitive> expects a <kind> argument" */
     public static void expect(String name, String expected) {
         Backtrace backtrace = FunCode.getBacktrace();
 	String context[] = backtrace.getContext(name);
@@ -241,6 +243,8 @@ public class Evaluator {
 	else
 	    error("#match", buf);
     }
+
+    // Variants of err_nomatch for calling from JIT code
 
     public static void err_nomatch0() {
 	err_nomatch(null, 0, 0);
@@ -289,6 +293,12 @@ public class Evaluator {
 	error("#patnargs", name);
     }
 
+    /** Report division by zero */
+    public static void err_divzero() {
+        error("#divzero");
+    }
+
+    /** Complain about failure of head or tail */
     public static void list_fail(Value xs, String msg) {
 	error(msg, (xs instanceof Value.NilValue 
 		    ? "the empty list" : "a non-list"));
@@ -305,14 +315,15 @@ public class Evaluator {
 	Evaluator.setLimits(time, steps, conses);
     }
 
+    /** Interface for an agent that can trace back the execution stack. */
     public interface Backtrace {
-	/** Get execution context */
+	/** Get execution context as two strings */
 	public String[] getContext(String me);
 
 	/** Initialise stack */
 	public void initStack();
 
-	/** Set stack root */
+	/** Set stack root: the last system routine before user code */
 	public void setRoot(Value root);
     }
 }

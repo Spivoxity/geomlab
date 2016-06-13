@@ -130,7 +130,7 @@ public class RunScript extends GeomBase {
 	    
 	if (translator == null) 
 	    translator = 
-		new funjit.TofuTranslator(new funjit.SmartTranslator());
+		new funjit.TofuTranslator(new funjit.InlineTranslator());
 	funbase.FunCode.install(translator);
 
 	try {

@@ -82,7 +82,7 @@ public class GraphBox extends JPanel {
 	}
     };
     
-    private JSlider slider = new JSlider();
+    private JSlider slider = new JSlider(0, 1000);
     
     private Worker worker = new Worker();
 
@@ -111,7 +111,7 @@ public class GraphBox extends JPanel {
 	prerender(pic);
     }
     
-    public float sliderValue() { return slider.getValue() / 100.0f; }
+    public float sliderValue() { return slider.getValue() / 1000.0f; }
     
     protected void prerender(Stylus.Drawable pic) {
 	worker.prerender(pic, sliderValue());

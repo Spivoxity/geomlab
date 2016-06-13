@@ -146,6 +146,7 @@ class Type {
         fun_CV_O_t = func_t(class_t, value_t, object_t),
         fun_D_L_t = func_t(double_t, long_t),
 	fun_IV_A_t = func_t(int_t, value_t, valarray_t),
+        fun_I_V_t = func_t(int_t, value_t),
 	fun_N_t = func_t(name_t, void_t),
 	fun_S_t = func_t(string_t, void_t),
         fun_SC_t = func_t(string_t, class_t, void_t),

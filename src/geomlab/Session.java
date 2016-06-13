@@ -178,6 +178,7 @@ public class Session {
             loadPlugin(plugins.StringPrims.class);
             loadPlugin(plugins.Cell.class);
             loadPlugin(plugins.Hash.class);
+            // loadPlugin(plugins.Test.class);
         }
         catch (CommandException e) {
             throw new Error(e);

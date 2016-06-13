@@ -64,36 +64,61 @@ public class ColorValue extends Picture {
     /** Composite RGB value */
     public final int rgb;
     
-    private ColorValue(double rf, double gf, double bf) {
+    private ColorValue(double r, double g, double b, int comp) {
 	super(1.0);
-	rpart = cutoff(rf); gpart = cutoff(gf); bpart = cutoff(bf);
-	int rx = (int) Math.round(255.0 * rpart); 
-	int gx = (int) Math.round(255.0 * gpart);
-	int bx = (int) Math.round(255.0 * bpart);
-	rgb = (rx << 16) + (gx << 8) + bx;
+        rpart = r; gpart = g; bpart = b; rgb = comp;
     }
-    
-    private ColorValue(int rgb) {
-	super(1.0);
-	this.rgb = rgb;
-	rpart = ((rgb >> 16) & 0xff)/255.0;
-	gpart = ((rgb >> 8) & 0xff)/255.0;
-	bpart = (rgb & 0xff)/255.0;
-    }
-    
-    public static final ColorValue black = new ColorValue(0.0, 0.0, 0.0);
-    public static final ColorValue white = new ColorValue(1.0, 1.0, 1.0);
 
-    public static ColorValue getInstance(double r, double g, double b) {
-	return new ColorValue(r, g, b);
+    private static int P = 509;
+
+    private static ColorValue cache[] = new ColorValue[P];
+
+    private static ColorValue cachedInstance(double r, double g, double b, 
+                                             int rgb) {
+        // It's tempting but wrong to use the rgb value as the hash.  Doing
+        // so means that putting a colour into an image and getting it out
+        // again creates two slightly different colours with the same hash,
+        // and we want to be able to cache both of them.  It's also important 
+        // to check that the reddish colours created in the Life example 
+        // don't clash with each other: choose P by experiment.
+
+        long rx = Double.doubleToLongBits(r);
+        long bx = Double.doubleToLongBits(g);
+        long gx = Double.doubleToLongBits(b);
+        long h0 = rx ^ (gx << 16) ^ (gx >>> 48) ^ (bx << 32) ^ (bx >>> 32);
+        int h = (int) ((h0 & 0x7fffffffffffffffL) % P);
+        ColorValue p = cache[h];
+
+        if (p == null || p.rpart != r || p.gpart != g || p.bpart != b) {
+            // System.out.printf("Color %f %f %f %d %d\n", r, g, b, rgb, h);
+            p = new ColorValue(r, g, b, rgb);
+            cache[h] = p;
+        }
+
+        return p;
     }
+
+    public static ColorValue getInstance(double rr, double gg, double bb) {
+	double r = cutoff(rr), g = cutoff(gg), b = cutoff(bb);
+	int rx = (int) Math.round(255.0 * r); 
+	int gx = (int) Math.round(255.0 * g);
+	int bx = (int) Math.round(255.0 * b);
+	int rgb = (rx << 16) + (gx << 8) + bx;
+        return cachedInstance(r, g, b, rgb);
+    }
+    
+    public static final ColorValue black = getInstance(0.0, 0.0, 0.0);
+    public static final ColorValue white = getInstance(1.0, 1.0, 1.0);
 
     public static ColorValue getRGB(int rgb) {
-        return new ColorValue(rgb);
+        double rpart = ((rgb >> 16) & 0xff)/255.0;
+	double gpart = ((rgb >> 8) & 0xff)/255.0;
+	double bpart = (rgb & 0xff)/255.0;
+        return cachedInstance(rpart, gpart, bpart, rgb & 0xffffff);
     }
 
     public static ColorValue getGrey(double g) {
-	return new ColorValue(g, g, g);
+	return getInstance(g, g, g);
     }
 
     /** Compute a colour from Hue, Saturation and Brightness values,
@@ -122,7 +147,7 @@ public class ColorValue extends Picture {
 		throw new Error("HSB");
 	}
 
-	return new ColorValue(red, green, blue);
+	return getInstance(red, green, blue);
     }
 
     /** The native colour object corresponding to this colour */

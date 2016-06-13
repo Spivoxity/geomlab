@@ -117,7 +117,8 @@ public class JitPrimFactory implements Primitive.Factory {
 
         if (! Modifier.isStatic(m.getModifiers())) {
             // A dynamic method
-            noteMethod(name, cl, m.getName(), false, pkinds, rkind);
+            noteMethod(name, clstring, m.getName(), 
+                       Species.find(cl), pkinds, rkind);
             beginPrim(name, m.getName(), nparams+1);
             castArg(clstring, 0);
             primArgs(0, 1, pkinds);
@@ -132,7 +133,7 @@ public class JitPrimFactory implements Primitive.Factory {
         }
         else {
             // An ordinary static method
-            noteMethod(name, cl, m.getName(), true, pkinds, rkind);
+            noteMethod(name, clstring, m.getName(), null, pkinds, rkind);
             beginPrim(name, m.getName(), nparams);
             primArgs(0, 0, pkinds);
             code.gen(INVOKESTATIC, clstring, m.getName(), mtype);
@@ -168,13 +169,13 @@ public class JitPrimFactory implements Primitive.Factory {
         java.lang.reflect.Method m = findFactoryMethod(cl);
         Species pkinds[] = getParamKinds(m);
         Species rkind = getReturnKind(m);
-        noteMethod(name, cl, m.getName(), true, pkinds, rkind);
+        noteMethod(name, Type.className(cl), m.getName(), 
+                   null, pkinds, rkind);
     }
 
     // Hooks for subclasses
-    protected void noteMethod(String name, Class<?> cl, String mname,
-                              boolean stat, Species pkinds[], 
-                              Species rkind) { }
+    protected void noteMethod(String name, String cl, String mname,
+                              Species rcvr, Species pkinds[], Species rkind) { }
 
     protected void noteSelector(String name, Species cl, String fname, 
                                 Species rkind) { }

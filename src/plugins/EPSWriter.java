@@ -62,7 +62,7 @@ public class EPSWriter extends Stylus {
 	pr.printf("/palette [\n");
 	for (int i = 0; i < 4; i++) {
 	    pr.printf("  { ");
-	    writeColor(palette[i]);
+	    writeColor(paletteColor(i));
 	    pr.printf(" } bind\n");
 	}
 	pr.printf("] def\n");

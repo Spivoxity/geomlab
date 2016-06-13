@@ -118,12 +118,14 @@ class Method {
 	    case DADD:
 	    case DMUL:
 	    case DSUB:
+            case DDIV:
 	    case DNEG:
 	    case DCMPL:
 	    case DCMPG:
 	    case DUP:
 	    case DUP_X1:
 	    case DUP_X2:
+            case DUP2:
 	    case IADD:
 	    case ISUB:
 	    case IXOR:

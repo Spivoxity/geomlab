@@ -59,6 +59,39 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 
+/** A parser for bootfiles.
+
+Bootfile syntax:
+
+    file = { def } END
+
+    def = atom value
+
+    value = 
+        BOOLEAN int
+      | NAME atom
+      | STRING string
+      | NUMBER int
+      | BYTECODE bytecode
+      | CLOSURE bytecode
+
+    bytecode = BYTECODE string { opcode [ int ] } END { value } END
+
+    closure = CLOSURE bytecode
+
+    Keywords: BOOLEAN NAME STRING NUMBER BYTECODE CLOSURE END (all
+        appear in lower case)
+    Terminals: atom int string ident
+
+A bytecode has a name, a list of instructions (each a mnemonic opcode 
+and an optional integer operand), and a list of values that go in the 
+constant pool.
+
+There is no support for closures with free variables.  Neither is
+there support for other kinds of values: non-integer numbers, lists, 
+colours, pictures, etc.  Once the system is booted, it's possible to 
+load such values and save an image using serialization. */
+
 public class BootLoader {
     private Scanner scanner;
     
@@ -110,8 +143,8 @@ public class BootLoader {
 	else if (t == BYTECODE)
             return bytecode();
 	else if (t == CLOSURE)
-            return closure((FunCode) value());
-	else
+            return closure(bytecode());
+        else
 	    throw new Error("BootLoader.value " + t);
     }
     
@@ -119,7 +152,7 @@ public class BootLoader {
         return body.makeClosure(new Value[1]);
     }
 
-    private Value bytecode() {
+    private FunCode bytecode() {
         /* Bytecode for a function. */
         String name = getString();
         int arity = getInt();
@@ -131,7 +164,7 @@ public class BootLoader {
             if (see(END)) break;
             Value op = get(IDENT);
             ops.add(FunCode.getOpcode(op.toString()));
-            if (scanner.tok != NUMBER)
+            if (scanner.tok != NUMBER && scanner.tok != OP)
                 rands.add(FunCode.NO_RAND);
             else
                 rands.add(getInt());
@@ -192,7 +225,7 @@ public class BootLoader {
         }
         try {
             Value x = get(NUMBER);
-            int n = (int) x.asNumber();
+            int n = x.asInteger();
             return (neg ? -n : n);
         }
         catch (WrongKindException ex) {

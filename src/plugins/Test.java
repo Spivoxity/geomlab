@@ -17,5 +17,11 @@ public class Test {
 
     @PRIMITIVE
     public static int inc(int x) { return x+1; }
+
+    @PRIMITIVE
+    public static int round(double x) { return (int) (x+0.5); }
+
+    @PRIMITIVE
+    public static int round2(double x) { return (int) Math.round(x); }
 }
 

@@ -285,7 +285,7 @@ public abstract class Command extends AbstractAction {
 	return menu;
     }
 
-    public static class CommandException extends Evaluator.MyError {
+    public static class CommandException extends Evaluator.TaggedError {
 	public CommandException(String errtag, Object... args) {
 	    super(errtag, args);
 	}

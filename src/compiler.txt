@@ -30,6 +30,11 @@
  
 { LEXICAL TOKENS }
 
+{ At this point, the syntax table may be empty, so no keywords will
+  be recognised, even though after bootstrapping all the functions
+  defined below are already present.  Luckily we can create the keyword
+  'function' without using any keywords, then use it to create the others. }
+
 _update(_syntax, #function, _pair(#function, _pair(0, 0)));
 
 _iter(function (tok) _update(_syntax, tok, _pair(tok, _pair(0, 0))),
@@ -177,8 +182,11 @@ define __top() =
   { priority -- find priority pair for operator }
   let _priority(op) = _snd(_lookup(_syntax, op)) in
 
+  { binops -- list of binary operator tokens }
+  let binops = [#binop, #=, #-, #+, #:] in
+
   { isbinop -- check if token is a binary operator }
-  let isbinop(t) = member(t, [#binop, #=, #-, #+, #:]) in
+  let isbinop(t) = member(t, binops) in
 
   { see -- test if tok is a specific token }
   let see(t) = (_get(tok) = t) in
@@ -294,23 +302,24 @@ define __top() =
 
   { expand -- expand list comprehension into code with accumulator }
   let expand(e1, [], a) = 
-        { Base case: "[ e1 | ] ++ a" = e1:a }
+        { Base case: [ e1 | ] ++ a = e1:a }
         #cons(e1, a)
+
     | expand(e1, #gen(#var(x), e2):gs, a) =
-        { Simple generator: "[ e1 | x <- e2, ... ] ++ a" = 
-	    _mapa(function (x, b) "[ e1 | ... ] ++ b", e2, a) }
+        { Simple generator: [ e1 | x <- e2, ... ] ++ a = 
+	    _mapa(function (x, b) [ e1 | ... ] ++ b, e2, a) }
         let b = #var(_gensym()) in
 	mapa([#rule([#var(x), b], expand(e1, gs, b))], e2, a)
+
     | expand(e1, #gen(patt, e2):gs, a) =
-        { Generator : "[ e1 | patt <- e2, ... ] ++ a" =
-	    _mapa((function (patt, b) -> "[ e1 | gs ] ++ b" | (_, b) -> b),
-                      e2, a) }
+        { Pattern generator : [ e1 | p <- e2, ... ] ++ a =
+	    _mapa((function (p, b) -> [ e1 | gs ] ++ b | (_, b) -> b), e2, a) }
 	let b = #var(_gensym()) in
-	mapa([#rule([patt, b], expand(e1, gs, b)), 
-              #rule([#anon, b], b)], e2, a)
+	mapa([#rule([patt, b], expand(e1, gs, b)), #rule([#anon, b], b)], e2, a)
+
     | expand(e1, #when(e2):gs, a) =
-        { Test: "[ e1 | when e2, ...] ++ a" =
-	    if e2 then "[e1 | ...] ++ a" else a }
+        { Test: [ e1 | when e2, ...] ++ a =
+	    if e2 then [e1 | ...] ++ a else a }
 	#if(e2, expand(e1, gs, a), a) in
 
   let p_gen() = 
@@ -789,7 +798,10 @@ define __top() =
     if tl then #SEQ([code, #RETURN]) else code in
 
   { c_expr -- compile code for an expression, including a RETURN if tl is true }
-  let c_expr(#const(v), env, tl) = yield(#QUOTE(v), tl)
+  let c_expr(#const(n), env, tl) = yield(#PUSH(n), tl)
+        when numeric(n) and int(n) = n
+
+    | c_expr(#const(v), env, tl) = yield(#QUOTE(v), tl)
 
     | c_expr(#var(x), env, tl) = yield(c_ref(x, env), tl)
 
@@ -912,6 +924,9 @@ define __top() =
         { A top-level expression }
 	_topval(interp(exp, empty())) in
 
+  { When we get here after bootstrapping, the syntax table is not
+    present, so we must create it.  The very next thing is that this
+    file is loaded, and it begins by initialising the syntax table. }
   if _defined(#_syntax) then [] else _topdef(#_syntax, _hash()) >>
 
   { The read-eval-print routine }

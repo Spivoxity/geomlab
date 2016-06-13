@@ -70,7 +70,6 @@ public class CodeInput extends JTextArea {
 	});
     }
     
-    
     private void installKeymap() {
 	Keymap keymap = JTextComponent.addKeymap(null, getKeymap());
 	

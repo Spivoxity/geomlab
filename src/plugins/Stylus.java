@@ -36,11 +36,12 @@ import funbase.Primitive.PRIMPARAM;
 
 /** An abstract drawing tablet on which a picture can be drawn */
 public abstract class Stylus {
-    protected final ColorValue palette[];
+    private final double slider;
+    private ColorValue palette[] = null;
     protected Tran2D trans;
 
     public Stylus(double slider) {
-	this.palette = TilePicture.makePalette(slider);
+        this.slider = slider;
     }
 
     /** Set the transform for future drawing operations */
@@ -72,14 +73,20 @@ public abstract class Stylus {
     /** Draw a raster image */
     public abstract void drawImage(Native.Image image);
     
+    /** Get a palette colour */
+    public ColorValue paletteColor(int index) {
+        if (palette == null)
+            palette = TilePicture.makePalette(slider);
+        return palette[index & 0x3];
+    }
+
     /** Fill an outline, using the palette for indexed colours */
     public void fillOutline(Vec2D outline[], Object spec, int col) {
 	if (spec instanceof ColorValue) {
 	    fillOutline(outline, (ColorValue) spec);
 	} else if (spec instanceof Integer && col >= 0) {
 	    int index = ((Integer) spec).intValue();
-	    ColorValue color = palette[(index + col) % palette.length];
-	    fillOutline(outline, color);
+	    fillOutline(outline, paletteColor(index + col));
 	}
     }
 

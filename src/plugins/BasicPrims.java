@@ -41,66 +41,41 @@ import funbase.Primitive.PRIMITIVE;
 
 /** Basic primitives for handling numbers, booleans and lists */
 public class BasicPrims {
-    // Arithmitic primitives with special-purpose inliners
-
     @PRIMITIVE("=")
-    public static Value equal(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(x.equals(y));
-    }
+    public static boolean equal(Value x, Value y) { return x.equals(y); }
     
     @PRIMITIVE("<>")
-    public static Value unequal(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(! x.equals(y));
-    }
+    public static boolean unequal(Value x, Value y) { return ! x.equals(y); }
 	
     @PRIMITIVE("+")
-    public static Value plus(Primitive prim, Value x, Value y) {
-	return NumValue.getInstance(prim.number(x) + prim.number(y));
-    }
+    public static double plus(double x, double y) { return x + y; }
 
     @PRIMITIVE("-")
-    public static Value minus(Primitive prim, Value x, Value y) {
-	return NumValue.getInstance(prim.number(x) - prim.number(y));
-    }
+    public static double minus(double x, double y) { return x - y; }
 
     @PRIMITIVE("*")
-    public static Value times(Primitive prim, Value x, Value y) {
-	return NumValue.getInstance(prim.number(x) * prim.number(y));
-    }
+    public static double times(double x, double y) { return x * y; }
 
     @PRIMITIVE("/")
-    public static Value divide(Primitive prim, Value x, Value y) {
-	double yy = prim.number(y);
-	if (yy == 0.0) Evaluator.error("#divzero");
-	return NumValue.getInstance(prim.number(x) / yy);
+    public static double divide(double x, double y) {
+	if (y == 0.0) Evaluator.err_divzero();
+	return x / y;
     }
 	
     @PRIMITIVE("~")
-    public static Value uminus(Primitive prim, Value x) {
-        return NumValue.getInstance(- prim.number(x));
-    };
+    public static double uminus(double x) { return - x; };
 
     @PRIMITIVE("<")
-    public static Value less(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) < prim.number(y));
-    }
+    public static boolean less(double x, double y) { return (x < y); }
 
     @PRIMITIVE("<=")
-    public static Value lesseq(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) <= prim.number(y));
-    }
+    public static boolean lesseq(double x, double y) { return (x <= y); }
 
     @PRIMITIVE(">")
-    public static Value greater(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) > prim.number(y));
-    }
+    public static boolean greater(double x, double y) { return (x > y); }
 
     @PRIMITIVE(">=")
-    public static Value greatereq(Primitive prim, Value x, Value y) {
-	return BoolValue.getInstance(prim.number(x) >= prim.number(y));
-    }
-
-    // Other arithmetic primitives
+    public static boolean greatereq(double x, double y) { return (x >= y); }
 
     @PRIMITIVE
     public static boolean numeric(Value x) {

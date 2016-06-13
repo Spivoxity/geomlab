@@ -88,12 +88,6 @@ public class GeomBase {
 	log.flush();
     }
 
-    public void logWrite(Value v) {
-	v.printOn(log);
-	log.println();
-	log.flush();
-    }
-
     public void logMessage(String msg) {
 	logWrite("[" + msg + "]");
     }
@@ -111,13 +105,6 @@ public class GeomBase {
         last_val = null;
     }
  
-    /** Called when a phrase has been parsed */
-    protected void showPhrase() {
-	if (echo) {
-	    logWrite(scanner.getText());
-	}
-    }
-
     /** Called when evaluation of a top-level expression is complete */
     protected void exprValue(Value v) {
 	last_val = v;
@@ -148,11 +135,7 @@ public class GeomBase {
 	}
     }
 
-    protected Value scan() {
-	return scanner.nextToken();
-    }
-
-    public String formatError(Evaluator.MyError err) {
+    public String formatError(Evaluator.TaggedError err) {
         // Just print the tag literally if it isn't defined
 	String msg = properties.getProperty("err"+err.errtag, err.errtag);
 	return String.format(msg, err.args);
@@ -263,7 +246,7 @@ public class GeomBase {
 
     @PRIMITIVE
     public static Value _scan() {
-        return theApp.scan();
+	return theApp.scanner.nextToken();
     }
 
     @PRIMITIVE
@@ -290,12 +273,15 @@ public class GeomBase {
 
     @PRIMITIVE
     public static void _toptext() {
-	theApp.showPhrase();
+        if (theApp.echo)
+            theApp.logWrite(theApp.scanner.getText());
     }
 
     @PRIMITIVE
     public static Value _print(Value v) {
-	theApp.logWrite(v);
+	v.printOn(theApp.log);
+	theApp.log.println();
+	theApp.log.flush();
 	Thread.yield();
 	return v;
     }

@@ -200,10 +200,11 @@ public abstract class Value implements Serializable {
 
 	@Override
         public void dump(PrintWriter out) {
-	    if (val == (int) val)
-		out.printf("number %d\n", (int) val);
+            int n = (int) Math.round(val);
+	    if (val == n)
+		out.printf("number %d\n", n);
 	    else
-		out.printf("number %.12g\n", val);
+		throw new Error("Can't dump a non-integer");
 	}
     }
     

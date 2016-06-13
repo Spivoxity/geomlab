@@ -1,5 +1,5 @@
 /*
- * InlineTranslator.java
+ * NewInlineTranslator.java
  * 
  * This file is part of GeomLab
  * Copyright (c) 2005 J. M. Spivey
@@ -30,279 +30,247 @@
 
 package funjit;
 
+import java.util.*;
+
+import funbase.FunCode;
 import funbase.FunCode.Opcode;
-import funbase.Name;
-import funbase.Value;
 import funbase.Function;
 import funbase.Primitive;
+import funbase.Evaluator;
+import funbase.Name;
+import funbase.Value;
 import funbase.Value.WrongKindException;
 
+import static funjit.Opcodes.*;
 import static funjit.Opcodes.Op.*;
 import static funjit.Type.*;
 
-import java.util.*;
-
-/** A JIT translator with inlining of some primitives, allowing unboxed
-    intermediate values in expressions.  This class contains just the
-    framework, and rules for specific primitives are added elsewhere. */
-public class InlineTranslator extends RuleTranslator {
-    /** Stack to track inlinable primitives in a nest of calls */
-    private Stack<Inliner> funstack = new Stack<Inliner>();
-    
-    /** Dictionary mapping primitive names to their inline
-        code generators */
-    private Map<String, Inliner> primdict = new HashMap<>();
-
-    /** Register an inline code generator */
-    protected void register(AbstractInliner c) {
-	primdict.put(c.name, c);
-    }
-
+public class InlineTranslator extends JitTranslator {
     public InlineTranslator() {
-	// Add hooks to the parent to spot specific code sequences,
-	// general ones before specific ones
+	// Inliners for various common primitives
+	register(new Equality("=", true));
+	register(new Equality("<>", false));
+	register(new Operator("+", DADD));
+	register(new Operator("-", DSUB));
+	register(new Operator("*", DMUL));
+	register(new Operator("_uminus", DNEG));
+	register(new Comparison("<", DCMPG, IFGE));
+	register(new Comparison("<=", DCMPG, IFGT));
+	register(new Comparison(">", DCMPL, IFLE));
+	register(new Comparison(">=", DCMPG, IFLT));
+	register(new ListSelect("head", "#head"));
+	register(new ListSelect("tail", "#tail"));
 
-	/* Hook to watch for PUTARG instructions not matched below */
-	addHook(new CodeHook(Opcode.PUTARG) {
-	    @Override
-	    public boolean compile(int rands[], int ip) {
-		return convertArg(rands[ip], Species.VALUE);
-	    }
-	});
+        register(new Inliner("numeric") {
+            @Override
+            public Species call() {
+                code.gen(INSTANCEOF, numval_cl);
+                return Species.BOOL;
+            }
+        });
 
-	/* Hook for other CALL instructions */
-	addHook(new CodeHook(Opcode.CALL) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		Inliner gen = funstack.pop(); // Pop anyway
-		Species k = gen.call();
-		if (k == null) 
-                    return false;
-                code.widen(k);
-                nstack.pop();
-                return true;
-	    }
-	});
+        register(new Inliner("/") {
+            @Override
+            public Species argkind(int i) { return Species.NUMBER; }
 
-	/** Hook to watch for GLOBAL / PREP pairs */
-	addHook(new CodeHook(Opcode.GLOBAL, Opcode.PREP) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		Name f = (Name) funcode.consts[rands[ip]];
-                Value v = f.getGlodef();
-
-		if (f.isFrozen() && v != null && v instanceof Value.FunValue) {
-		    Function fun = ((Value.FunValue) v).subr;
-                    // Calling a known function
-		    if ((fun instanceof Primitive) 
-                        && fun.arity == rands[ip+1]) {
-                        // Calling a primitive with the correct arity
-			Primitive p = (Primitive) fun;
-			Inliner z = primdict.get(p.name);
-			if (z != null) {
-                            // Calling a primitive we know how to inline
-			    funstack.push(z);
-                            // Push a dummy argcollector
-                            ArgCollector c = new ArgCollector(0);
-                            nstack.push(c);
-			    return true;
-			}
-		    }
-		}
-
-		return false;
-	    }
-	});
-
-	addHook(new CodeHook(Opcode.QUOTE, Opcode.PUTARG) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		Inliner gen = funstack.peek();
-		Value v = funcode.consts[rands[ip]];
-		Species k = gen.argkind(rands[ip+1]);
-
-		// Put numeric constants in the JVM constant pool
-		if (k == Species.NUMBER) {
-		    try {
-			code.gen(CONST, v.asNumber());
-			return true;
-		    }
-		    catch (WrongKindException ex) { /* PUNT */ }
-		}
-		
-		return false;
-	    }
-	});
-
-	/* Hook to watch for CALL / PUTARG */
-	addHook(new CodeHook(Opcode.CALL, Opcode.PUTARG) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		Inliner gen = funstack.peek();
-                int i = rands[ip+1];
-		Species k = gen.call();
-		if (k == null) 
-                    return false;
-                funstack.pop();
-                nstack.pop();
-                if (!convertArg(i, k)) 
-                    translate(Opcode.PUTARG, i);
-                return true;
-	    }
-	});
-
-	addHook(new CodeHook(Opcode.CALL, Opcode.JFALSE) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		Inliner gen = funstack.peek();
-		if (gen.jcall(rands[ip+1])) {
-		    funstack.pop();
-                    nstack.pop();
-		    return true;
-		}
-		return false;
-	    }
-	});
-	
-	/* Notice FVAR 0 / PREP, but leave it to the existing rule to
-	   translate it */
-	addHook(new CodeHook(Opcode.FVAR, Opcode.PREP) {
-	    @Override
-            public boolean compile(int rands[], int ip) {
-		if (rands[ip] == 0) funstack.push(nullInliner);
-		return false;
-	    }
-	});
-
-	/* Also notice other PREP instructions */
-	addHook(new CodeHook(Opcode.PREP) {
-	    @Override
-	    public boolean compile(int rands[], int nargs) {
-		funstack.push(nullInliner);
-		return false;
-	    }
-	});
-
-        /* And also FRAME instructions */
-	addHook(new CodeHook(Opcode.FRAME) {
-	    @Override
-	    public boolean compile(int rands[], int nargs) {
-		funstack.push(nullInliner);
-		return false;
-	    }
-	});
-
-        /* And then again CLOSURE instructions */
-	addHook(new CodeHook(Opcode.CLOSURE) {
-	    @Override
-	    public boolean compile(int rands[], int nargs) {
-		funstack.pop();
-		return false;
-	    }
-	});
+            public Species call() {
+                Label lab = new Label();
+                code.gen(DUP2);
+                code.gen(CONST, 0.0);
+                code.gen(DCMPL);
+                code.gen(IFNE, lab);
+                code.gen(INVOKESTATIC, evaluator_cl, "err_divzero", fun_t);
+                code.label(lab);
+                code.gen(DDIV);
+                return Species.NUMBER;
+            }
+        });
     }
 
-    /** Convert a value on the stack from species k1 to species k2.  
-        May fail, naming primitive |name| in the message. */
-    protected void convert(String name, Species k1, Species k2) {
-	if (k1 == k2) return;
+    /** Inliner for = and <> */
+    public class Equality extends Inliner {
+	private boolean sense;
 
-        if (k1 == Species.INT && k2 == Species.NUMBER) {
-            code.gen(I2D);
-            return;
+	public Equality(String name, boolean sense) {
+	    super(name);
+	    this.sense = sense;
+	}
+
+	@Override 
+	public Species call() {
+	    code.gen(INVOKEVIRTUAL, object_cl, "equals", fun_O_B_t);
+	    if (! sense) {
+		code.gen(CONST, 1); code.gen(IXOR);
+	    }
+	    return Species.BOOL;
+	}
+
+	@Override 
+	public void jcall(Label lab) {
+	    code.gen(INVOKEVIRTUAL, object_cl, "equals", fun_O_B_t);
+	    code.gen((sense ? IFEQ : IFNE), lab);
+	}
+    }
+
+    /** Inliner for numeric operations */
+    public class Operator extends Inliner {
+	private Op op;
+
+	public Operator(String name, Op op) {
+	    super(name);
+	    this.op = op;
+	}
+
+        @Override
+        public Species argkind(int i) { return Species.NUMBER; }
+
+	@Override
+	public Species call() {
+	    code.gen(op);
+	    return Species.NUMBER;
+	}
+    }
+
+    /** Inliner for numeric comparisons */
+    public class Comparison extends Inliner {
+	private Op cmp_op;	// Double comparison op DCMPL or DCMPG
+	private Op jump_op;	// Conditional branch if condition false
+
+	public Comparison(String name, Op cmp_op, Op jump_op) {
+	    super(name);
+	    this.cmp_op = cmp_op; 
+            this.jump_op = jump_op;
+	}
+
+        @Override
+        public Species argkind(int i) { return Species.NUMBER; }
+
+	@Override 
+	public Species call() {
+	    Label lab = new Label(), lab2 = new Label();    
+	    code.gen(cmp_op);
+	    code.gen(jump_op, lab);
+	    code.gen(CONST, 1);
+	    code.gen(GOTO, lab2);
+	    code.label(lab);
+	    code.gen(CONST, 0);
+	    code.label(lab2);
+	    return Species.BOOL;
+	}
+
+	@Override 
+	public void jcall(Label lab) {
+	    code.gen(cmp_op);
+	    code.gen(jump_op, lab);
+	}
+    }
+
+    /** Inliner for head and tail */
+    public class ListSelect extends Inliner {
+	String errtag;
+
+	public ListSelect(String name, String errtag) {
+	    super(name);
+	    this.errtag = errtag;
+	}
+
+	@Override 
+	public Species call() {
+	    code.gen(DUP);
+	    code.gen(ASTORE, _temp);
+	    code.cast(consval_cl, code.new Handler(name, "list") {
+                @Override 
+                public void compile() {
+                    // Evaluator.list_fail(<msg>);
+                    code.gen(ALOAD, _temp);
+                    code.gen(CONST, errtag);
+                    code.gen(INVOKESTATIC, evaluator_cl, 
+                             "list_fail", fun_VS_t);
+                }
+            });
+	    code.gen(GETFIELD, consval_cl, name, value_t);
+	    return Species.VALUE;
+	}
+    }	
+
+    /** An inliner that calls a specific method */
+    private class Invoker extends Inliner {
+        String cl, mname;
+        Species rcvr;
+        Species pkinds[];
+        Species rkind;
+        Type mtype;
+
+        public Invoker(String name, String cl, String mname, 
+                       Species rcvr, Species pkinds[], Species rkind) {
+            super(name);
+            this.cl = cl; this.mname = mname; this.rcvr = rcvr;
+            this.pkinds = pkinds; this.rkind = rkind; 
+            this.mtype = Species.methType(pkinds, rkind);
         }
 
-        if (k1 == Species.NUMBER && k2 == Species.INT) {
-            code.gen(INVOKESTATIC, math_cl, "round", fun_D_L_t);
-            code.gen(L2I);
-            return;
-        }
-
-	// All other useful conversions can go via Value.  Conversions 
-        // between different kinds like NUMBER and BOOL will always fail, 
-        // but we generate the failing code without complaint.
-
-        code.widen(k1);
-        code.narrow(k2, name);
-    }
-
-    /** Convert i'th argument to suit function being called. */
-    protected boolean convertArg(int i, Species k) {
-	Inliner gen = funstack.peek();
-	return gen.putArg(i, k);
-    }
-
-    /** Prepare for new function */
-    @Override 
-    protected void init() {
-	super.init();
-	funstack.clear();
-    }
-
-    /** A code generator for a specific primitive */
-    public interface Inliner {
-	/** Return the preferred kind for an argument */
-	public Species argkind(int i);
-
-	/** Compile code for an argument, return true if done */
-	public boolean putArg(int i, Species k);
-
-	/** Compile code for a call, or return null to punt */
-	public Species call();
-
-	/** Compile code for a call followed by JFALSE, return true if done */
-	public boolean jcall(int addr);
-    }
-
-    public abstract class AbstractInliner implements Inliner {
-	public final String name;
-
-	public AbstractInliner(String name) {
-	    this.name = name;
-	}
-
-	/** Compile code for an argument, return true if done */
-	public boolean putArg(int i, Species k) {
-	    convert(name, k, argkind(i));
-	    return true;
-	}
-
-	/** Compile code for a call followed by JFALSE */
-	public boolean jcall(int addr) {
-	    Species k = call();
-            if (k == null)
-                return false;
-
-	    if (k == Species.BOOL) 
-                code.gen(IFEQ, makeLabel(addr));
-            else {
-                code.widen(k);
-                translate(Opcode.JFALSE, addr);
-	    }
-
-            return true;
-	}
-    }
-
-    /** An inliner that represents an ordinary, non-inlinable function */
-    private Inliner nullInliner = new Inliner() {
+        @Override
         public Species argkind(int i) {
-            return Species.VALUE;
+            if (rcvr == null)
+                return pkinds[i];
+            else
+                return (i == 0 ? rcvr : pkinds[i-1]);
         }
 
-	public boolean putArg(int i, Species k) {
-	    // Convert argument to Value and punt
-	    code.widen(k);
-	    return false;
-	}
+        @Override
+        public Species call() {
+            // We don't inline the method call, but we do inline
+            // the boilerplate code that prepares for it.
+            if (rcvr == null)
+                code.gen(INVOKESTATIC, cl, mname, mtype);
+            else
+                code.gen(INVOKEVIRTUAL, cl, mname, mtype);
 
-	public Species call() { 
-	    // Refuse to handle the call
-	    return null;
-	}
-
-        public boolean jcall(int addr) {
-            return false;
+            return rkind;
         }
-    };
+    }
+
+    /** Inliner for generic field selection function */
+    public class Selector extends Inliner {
+	private final String fname;
+	private final Species cl, kind;
+
+	public Selector(String name, Species cl, String fname, Species kind) {
+	    super(name);
+	    this.cl = cl; this.fname = fname; this.kind = kind;
+	}
+
+        @Override
+        public Species argkind(int i) {
+            return cl;
+        }
+
+	@Override 
+	public Species call() {
+	    code.gen(GETFIELD, cl.clname, fname, kind.type);
+	    return kind;
+	}
+    }
+
+    /** A primitive factory that catches primitives that are implemented
+        by methods or field access and creates inliners for them. */
+    class InliningPrimFactory extends JitPrimFactory {
+        @Override
+        protected void noteMethod(String name, String cl, String mname,
+                                  Species rcvr, Species pkinds[], 
+                                  Species rkind) { 
+            register(new Invoker(name, cl, mname, rcvr, pkinds, rkind));
+        }
+
+        @Override
+        protected void noteSelector(String name, Species cl, String fname, 
+                                    Species rkind) {
+            register(new Selector(name, cl, fname, rkind));
+        }
+    }
+
+    @Override
+    public Primitive.Factory makePrimitiveFactory() {
+        return new InliningPrimFactory();
+    }
 }

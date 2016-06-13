@@ -304,7 +304,7 @@ public class Scanner {
 			       start_char, char_num, error_chars());
     }
 
-    public static class SyntaxError extends Evaluator.MyError {
+    public static class SyntaxError extends Evaluator.TaggedError {
 	public final int line, start, end;
 	public final String errtok;
 	

@@ -54,6 +54,7 @@ public class FunCode extends Value {
 	POP,         // [#pop]: pop and discard a value
 	QUOTE,       // [#quote, x] becomes QUOTE i where consts[i] = x:
 		     //   push the constant x
+        PUSH,        // #push(n): push the integer constant n
 	NIL,	     // [#nil]: push the empty list
 	CONS,        // [#cons]: pop a tail then a head, push a cons
 	TRAP,        // [#trap, lab] becomes TRAP i: set trap register
@@ -132,7 +133,12 @@ public class FunCode extends Value {
     
     @Override
     public void dump(PrintWriter out) {
-	out.printf("bytecode \"%s\" %d\n", name, arity);
+	out.printf("bytecode ");
+        dumpCode(out);
+    }
+
+    public void dumpCode(PrintWriter out) {
+        out.printf("\"%s\" %d\n", name, arity);
 
         for (int i = 0; i < instrs.length; i++) {
             if (rands[i] == NO_RAND)

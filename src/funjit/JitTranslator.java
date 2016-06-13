@@ -38,13 +38,15 @@ import funbase.Function;
 import funbase.Primitive;
 import funbase.Evaluator;
 import funbase.Name;
+import funbase.Value;
+import funbase.Value.WrongKindException;
 
 import static funjit.Opcodes.Op.*;
 import static funjit.Type.*;
 
 public class JitTranslator implements FunCode.Jit {
-    protected FunCode funcode;
-    protected int arity;
+    private FunCode funcode;
+    private int arity;
     protected FunctionClass code;
 
     /* Stack layout:
@@ -63,7 +65,7 @@ public class JitTranslator implements FunCode.Jit {
 
     public final static int MANY = 7;
 
-    protected final static int 
+    private final static int 
 	_this = 0, _args = 1;
 
     protected int _temp, _frame;
@@ -94,7 +96,8 @@ public class JitTranslator implements FunCode.Jit {
     private Map<Integer, Label> labdict = 
         new HashMap<Integer, Label>();
     
-    protected final Label makeLabel(int addr) {
+    /** Make a label attached to an address in the FunCode */
+    private final Label makeLabel(int addr) {
 	Label lab = labdict.get(addr);
 
 	if (lab == null) {
@@ -105,24 +108,73 @@ public class JitTranslator implements FunCode.Jit {
 	return lab;
     }
 
-    protected boolean isLabelled(int addr) {
+    /** Test if a FunCode address has any labels. */
+    private boolean isLabelled(int addr) {
         return (labdict.get(addr) != null);
     }
 
-    /** Stack of argument collectors for calls in progress. */
-    protected Stack<ArgCollector> nstack = new Stack<>();
+    /** Dictionary of inliners for primitives */
+    private Map<String, FuncRule> rulestore = new HashMap<>();
 
-    protected class ArgCollector {
+    protected void register(Inliner rule) {
+        // Ignore all but the first inliner, so hand-built inliners can
+        // override automatic ones added later.
+        if (rulestore.get(rule.name) == null)
+            rulestore.put(rule.name, rule);
+    }
+
+    /** Stack of function rules for calls in progress. */
+    private Stack<FuncRule> funstack = new Stack<>();
+
+    public abstract class FuncRule {
+        /** Compile the code before first argument */
+        public void init(int i) { }
+
+	/** Return the preferred kind for an argument */
+	public Species argkind(int i) { return Species.VALUE; }
+
+	/** Compile code to store an argument */
+	public void putArg(int i, Species k) {
+	    code.widen(k);
+	}
+
+	/** Compile code for the call */
+	public abstract Species call();
+
+	/** Compile code for a call followed by JFALSE */
+	public void jcall(Label lab) {
+            Species k = call();
+            if (k != Species.BOOL) {
+                code.widen(k);
+                code.access("asBoolean", fun__B_t, code.new Crash("boolcond"));
+            }
+            code.gen(IFEQ, lab);
+        }
+
+        /** Make a closure */
+        public void closure() {
+            throw new Error("closure");
+        }
+    }
+
+    public abstract class Inliner extends FuncRule {
+        public final String name;
+
+        public Inliner(String name) { this.name = name; }
+
+        public void putArg(int i, Species k) {
+            convert(name, k, argkind(i));
+        }
+    }
+
+    private class ArgCollector extends FuncRule {
         public final int n;
 
         public ArgCollector(int n) { this.n = n; }
 
-        public void init(int i) { }
-
-        public void arg(int i) { }
-
-        public void call() { 
+        public Species call() { 
 	    code.gen(INVOKEVIRTUAL, function_cl, "apply"+n, applyn_t[n]);
+            return Species.VALUE;
         }
 
         public void closure() {
@@ -130,7 +182,7 @@ public class JitTranslator implements FunCode.Jit {
         }
     }
 
-    protected class BigCollector extends ArgCollector {
+    private class BigCollector extends ArgCollector {
         public BigCollector(int n) { super(n); }
         
         public void init(int i) {
@@ -140,7 +192,8 @@ public class JitTranslator implements FunCode.Jit {
             code.gen(CONST, i);
         }
 
-        public void arg(int i) {
+        public void putArg(int i, Species k) {
+	    code.widen(k);
             code.gen(AASTORE);
             if (i+1 < n) {
                 code.gen(DUP);
@@ -148,9 +201,10 @@ public class JitTranslator implements FunCode.Jit {
             }
         }
 
-        public void call() {
+        public Species call() {
 	    code.gen(CONST, n);
 	    code.gen(INVOKEVIRTUAL, function_cl, "apply", apply_t);
+            return Species.VALUE;
         }
 
         public void closure() {
@@ -158,7 +212,7 @@ public class JitTranslator implements FunCode.Jit {
         }
     }
 
-    protected ArgCollector makeCollector(int n) {
+    private FuncRule makeCollector(int n) {
         if (n < MANY)
             return new ArgCollector(n);
         else
@@ -203,7 +257,7 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     /** Cast value on stack and goto trap on failure: uses top cache */
-    protected final void trapCast(String ty) {
+    private final void trapCast(String ty) {
 	if (cache < 0) {
 	    code.gen(DUP);
 	    code.gen(ASTORE, _temp);
@@ -215,12 +269,76 @@ public class JitTranslator implements FunCode.Jit {
 	code.gen(CHECKCAST, ty);
     }
 
-    /** Default translation of each opcode, if not overridden by rules */
-    protected void translate(Opcode op, int rand) {
-        ArgCollector c;
+    private void init() {
+	labdict.clear(); funstack.clear();
+	trap = null; cache = -1;
+    }	
+
+    /** Convert a value on the stack from species k1 to species k2.  
+        May fail, naming primitive |name| in the message. */
+    protected void convert(String name, Species k1, Species k2) {
+	if (k1 == k2) return;
+
+        if (k1 == Species.INT && k2 == Species.NUMBER) {
+            code.gen(I2D);
+            return;
+        }
+
+        if (k1 == Species.NUMBER && k2 == Species.INT) {
+            code.gen(INVOKESTATIC, math_cl, "round", fun_D_L_t);
+            code.gen(L2I);
+            return;
+        }
+
+	// All other useful conversions can go via Value.  Conversions 
+        // between different kinds like NUMBER and BOOL will always fail, 
+        // but we generate the failing code without complaint.
+
+        code.widen(k1);
+        code.narrow(k2, name);
+    }
+
+    /** Convert i'th argument to suit function being called. */
+    private void convertArg(int i, Species k) {
+	FuncRule gen = funstack.peek();
+	gen.putArg(i, k);
+    }
+
+    private boolean match(int ip, FunCode.Opcode op) {
+        return (funcode.instrs[ip] == op && ! isLabelled(ip));
+    }
+
+    private int translate(int ip) {
+        FunCode.Opcode op = funcode.instrs[ip];
+        int rand = funcode.rands[ip];
+        FuncRule c;
+        Species k;
 
 	switch (op) {
 	    case GLOBAL:  
+                if (match(ip+1, Opcode.PREP)) {
+                    // Calling a global function
+                    Name f = (Name) funcode.consts[rand];
+                    Value v = f.getGlodef();
+
+                    if (f.isFrozen() && v != null 
+                        && v instanceof Value.FunValue) {
+                        Function fun = ((Value.FunValue) v).subr;
+                        // Calling a known function
+                        if ((fun instanceof Primitive) 
+                            && fun.arity == funcode.rands[ip+1]) {
+                            // Calling a primitive with the correct arity
+                            Primitive p = (Primitive) fun;
+                            FuncRule z = rulestore.get(p.name);
+                            if (z != null) {
+                                // Calling a primitive we know how to inline
+                                funstack.push(z);
+                                return 2;
+                            }
+                        }
+                    }
+                }
+
                 getGlobal(rand); 
                 break;
 
@@ -232,11 +350,31 @@ public class JitTranslator implements FunCode.Jit {
                 code.gen(ASTORE, _frame+rand); 
                 break;
 
+            case PUSH:
+                code.gen(CONST, rand);
+                if (match(ip+1, Opcode.PUTARG)) {
+                    c = funstack.peek();
+                    c.putArg(funcode.rands[ip+1], Species.INT);
+                    return 2;
+                }
+
+                code.widen(Species.INT);
+                break;
+
 	    case QUOTE:   
                 getSlot("consts", rand); 
                 break;
 
 	    case FVAR:    
+                if (rand == 0 && match(ip+1, Opcode.PREP)) {
+                    // A recursive call
+                    code.gen(ALOAD, _this);
+                    c = makeCollector(funcode.rands[ip+1]);
+                    c.init(0);
+                    funstack.push(c);
+                    return 2;
+                }
+
                 getSlot("fvars", rand); 
                 break;
 
@@ -267,7 +405,7 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case CLOSURE: 
-                c = nstack.pop();
+                c = funstack.pop();
                 c.closure();
                 break;
 
@@ -277,7 +415,6 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case FAIL:    
-                // ErrContext.err_nomatch(args, 0, arity);
                 if (arity < MANY) {
                     for (int i = 0; i < arity; i++)
                         code.gen(ALOAD, _args+i);
@@ -292,7 +429,6 @@ public class JitTranslator implements FunCode.Jit {
                              "err_nomatch", fun_AII_t);
                 }
 
-                // return null;
                 code.gen(ACONST_NULL);
                 code.gen(ARETURN);
                 break;
@@ -310,24 +446,38 @@ public class JitTranslator implements FunCode.Jit {
                 code.gen(GETFIELD, value_cl, "subr", function_t);
                 c = makeCollector(rand);
                 c.init(0);
-                nstack.push(c);
+                funstack.push(c);
                 break;
 
 	    case PUTARG:  
-                c = nstack.peek();
-                c.arg(rand);
+                convertArg(rand, Species.VALUE);
                 break;
 
             case FRAME:	  
                 code.gen(CHECKCAST, funcode_cl);
                 c = makeCollector(rand);
                 c.init(1);
-                nstack.push(c);
+                funstack.push(c);
                 break;
 
 	    case CALL:    
-                c = nstack.pop();
-                c.call();
+                c = funstack.pop();
+
+                if (match(ip+1, Opcode.JFALSE)) {
+                    // Jump on result of call
+                    c.jcall(makeLabel(funcode.rands[ip+1]));
+                    return 2;
+                }
+
+                if (match(ip+1, Opcode.PUTARG)) {
+                    // One call as an argument to another
+                    k = c.call();
+                    convertArg(funcode.rands[ip+1], k);
+                    return 2;
+                }
+
+                k = c.call();
+                code.widen(k);
                 break;
 
 	    case TCALL:   
@@ -411,17 +561,7 @@ public class JitTranslator implements FunCode.Jit {
 	    default:
 		throw new Error("Bad opcode " + op);
 	}
-    }
 
-    protected void init() {
-	labdict.clear(); nstack.clear();
-	trap = null; cache = -1;
-    }	
-
-    protected int translate(int ip) {
-        FunCode.Opcode op = funcode.instrs[ip];
-        int rand = funcode.rands[ip];
-        translate(op, rand);
         return 1;
     }
 
@@ -430,11 +570,13 @@ public class JitTranslator implements FunCode.Jit {
     	start(funcode);
 
     	for (int ip = 0; ip < funcode.instrs.length; ) {
+            // Place any label for this address
 	    Label lab = labdict.get(ip);
 	    if (lab != null) {
 		code.label(lab);
 		cache = -1;
 	    }
+
 	    nextcache = -1;
             ip += translate(ip);
 	    cache = nextcache;
@@ -444,7 +586,6 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     /** Translate a function body into JVM code */
-    @Override 
     public Function.Factory translate(FunCode funcode) {
 	if (Evaluator.debug > 2) {
 	    System.out.printf("JIT: %s ", funcode.name);
@@ -465,9 +606,9 @@ public class JitTranslator implements FunCode.Jit {
 	return body;
     }
 
+
     private Primitive.Factory factory = null;
 
-    // May be overridden in subclasses
     protected Primitive.Factory makePrimitiveFactory() {
         return new JitPrimFactory();
     }
