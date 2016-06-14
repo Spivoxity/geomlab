@@ -47,3 +47,6 @@ book/.publish
 wiki/.settings
 img/.publish
 javakey
+life.gls
+progs/life.tcl
+progs/life.txt

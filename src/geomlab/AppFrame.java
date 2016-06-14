@@ -100,7 +100,7 @@ public class AppFrame extends JFrame {
 	buttons.add(clearButton);
 	buttons.add(goButton);
 
-	input.setLineWrap(true);
+	input.setLineWrap(false);
 	input.setBorder(myborder);
         JScrollPane scroller1 =
             new JScrollPane(input,

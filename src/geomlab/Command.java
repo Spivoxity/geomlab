@@ -222,7 +222,7 @@ public abstract class Command extends AbstractAction {
 		@Override
 		public void perform() {
 		    app.frame.input.setText(ex);
-		    app.frame.input.performAction();
+		    // app.frame.input.performAction();
 		}
 	    });
 	}

@@ -145,11 +145,9 @@ define foldl(f, a, []) = a | foldl(f, a, x:xs) = foldl(f, f(a, x), xs);
 
 define sum(xs) = foldl((+), 0, xs);
 
-{ repeat(n, f, x) = [x, f(x), f^2(x), ..., f^(n-1)(x)] }
+{ repeat(n, f, x) = [x, f(x), f^2(x), ..., f^n(x)] }
 define repeat(n, f, x) =
-  let loop(k, y) = 
-    if k = 0 then [] else (let z = f(y) in z : loop(k-1, z)) in
-  if n = 0 then [] else x : loop(n-1, x);
+  if n = 0 then [x] else x : repeat(n-1, f, f(x));
 
 define opp(left(a)) = right(a)
   | opp(right(a)) = left(a)

@@ -53,6 +53,12 @@ obj/geomlab.gls: .compiled stage1.boot src/prelude.txt
 examples.gls: obj/geomlab.gls progs/examples.txt
 	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'
 
+life.gls: obj/geomlab.gls progs/life.txt
+	$(RUNSCRIPT) progs/life.txt -e '_save("$@")'
+
+progs/life.txt: progs/life.tcl
+	tclsh $< >$@
+
 bootstrap: stage1.boot force
 	$(RUNSCRIPT) -b stage1.boot src/compiler.txt -e '_dump("stage2.boot")'
 	$(RUNSCRIPT) -b stage2.boot src/compiler.txt -e '_dump("stage3.boot")'
