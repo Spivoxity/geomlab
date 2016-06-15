@@ -34,14 +34,15 @@ obj/%: src/%; cp $< $@
 obj/%.html: wiki/%.wiki wiki/htmlframe scripts/htmltran.tcl
 	tclsh scripts/htmltran.tcl $< >$@
 
+RUNJAVA = java -cp obj -ea
+RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
+
 obj/icon128.png:
-	runscript progs/solutions.txt -e 'savepic(colour(T), "$@", 128, 0.5, 0)'
+	$(RUNSCRIPT) progs/solutions.txt \
+		-e 'savepic(colour(T), "$@", 128, 0.5, 0)'
 
 obj/icon%.png: obj/icon128.png
 	convert obj/icon128.png -scale $*x$* $@
-
-RUNJAVA = java -cp obj -ea
-RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
 stage1.boot: .compiled src/boot.txt src/compiler.txt
 	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("$@")'

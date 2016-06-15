@@ -114,7 +114,8 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     /** Dictionary of inliners for primitives */
-    private Map<String, FuncRule> rulestore = new HashMap<>();
+    private Map<String, FuncRule> rulestore =
+	new HashMap<String, FuncRule>();
 
     protected void register(Inliner rule) {
         // Ignore all but the first inliner, so hand-built inliners can
@@ -124,7 +125,7 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     /** Stack of function rules for calls in progress. */
-    private Stack<FuncRule> funstack = new Stack<>();
+    private Stack<FuncRule> funstack = new Stack<FuncRule>();
 
     public abstract class FuncRule {
         /** Compile the code before first argument */

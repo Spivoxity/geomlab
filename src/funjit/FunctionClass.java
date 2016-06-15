@@ -199,7 +199,8 @@ public class FunctionClass extends ClassFile {
 	}
     }
 	
-    private Map<Handler, Handler> handlers = new HashMap<>();
+    private Map<Handler, Handler> handlers =
+	new HashMap<Handler, Handler>();
 
     private Label makeHandler(Handler handler) {
 	Handler handler1 = handlers.get(handler);

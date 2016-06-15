@@ -15,11 +15,11 @@ define next(state) =
     if viable(p, state) then black else white);
 
 { viable -- test if cell is alive in next state }
-define viable(p, img) =
-  let val(q) = if pixel(img, q) <> white then 1 else 0 in
+define viable(p, state) =
+  let val(q) = if pixel(state, q) <> white then 1 else 0 in
   let s = sum([ val(q) | q <- region(p) ]) + val(p)/2 in s > 2 and s < 4;
 
-{ region -- neighbours of a call }
+{ region -- neighbours of a cell }
 define region([x, y]) = 
   [ [u, v] | u <- [x-1..x+1], v <- [y-1..y+1] when u <> x or v <> y ];}
 
@@ -29,11 +29,11 @@ define next(state) =
     if viable(p, state) then fade(pixel(state, p)) else white);
 
 { viable -- test if cell is alive in next state }
-define viable(p, img) =
-  let val(q) = if pixel(img, q) <> white then 1 else 0 in
+define viable(p, state) =
+  let val(q) = if pixel(state, q) <> white then 1 else 0 in
   let s = sum([ val(q) | q <- region(p) ]) + val(p)/2 in s > 2 and s < 4;
 
-{ region -- neighbours of a call }
+{ region -- neighbours of a cell }
 define region([x, y]) = 
   [ [u, v] | u <- [x-1..x+1], v <- [y-1..y+1] when u <> x or v <> y ];
 
@@ -67,8 +67,8 @@ define next(state) =
   image(W, H, function (p) 
     if viable(p, state) then fade(pixel(state, p)) else white);
 
-define viable(p, img) =
-  let score(q) = if pixel(img, q) <> white then 1 else 0 in
+define viable(p, state) =
+  let score(q) = if pixel(state, q) <> white then 1 else 0 in
   let s = sum([ score(q) | q <- region(p) ]) + score(p)/2 in s > 2 and s < 4;
 
 define region([x, y]) = 

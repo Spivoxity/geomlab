@@ -273,7 +273,7 @@ public class Picture extends Value implements Stylus.Drawable {
     }
 
     @PRIMITIVE
-    public static Value colour(Picture pic) {
+    public static Value colour(final Picture pic) {
 	return new Picture(pic.aspect, true) {
 	    @Override
 	    public void paint(int layer, int col, Stylus g, Tran2D t) {

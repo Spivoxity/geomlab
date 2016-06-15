@@ -59,7 +59,8 @@ public class Species {
     }
 
     /** Table of species encountered so far */
-    private static Map<Class<?>, Species> table = new HashMap<>();
+    private static Map<Class<?>, Species> table =
+	new HashMap<Class<?>, Species>();
 
     /** Register a species */
     private static void register(Species s) {
