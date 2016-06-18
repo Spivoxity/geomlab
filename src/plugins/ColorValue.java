@@ -71,6 +71,7 @@ public class ColorValue extends Picture {
 
     private static int P = 509;
 
+    /** A direct-mapped cache of colours, at most one per hash */
     private static ColorValue cache[] = new ColorValue[P];
 
     private static ColorValue cachedInstance(double r, double g, double b, 

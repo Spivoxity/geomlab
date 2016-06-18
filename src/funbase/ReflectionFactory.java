@@ -71,7 +71,7 @@ public class ReflectionFactory implements Primitive.Factory {
         }
 
         private Value promote(Object o) {
-            if (rtype == Value.class)
+            if (Value.class.isAssignableFrom(rtype))
                 return (Value) o;
             else if (rtype == Double.TYPE)
                 return Value.NumValue.getInstance((Double) o);

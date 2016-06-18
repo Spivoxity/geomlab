@@ -104,6 +104,7 @@ public class CodeInput extends JTextArea {
     public void setText(String s) {
 	removeLowlight();
 	super.setText(s);
+	super.setCaretPosition(0);
     }
     
     public void clear() {

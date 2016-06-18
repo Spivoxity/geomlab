@@ -1,5 +1,5 @@
 /*
- * NewInlineTranslator.java
+ * InlineTranslator.java
  * 
  * This file is part of GeomLab
  * Copyright (c) 2005 J. M. Spivey

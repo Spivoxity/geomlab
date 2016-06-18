@@ -1,5 +1,7 @@
 set DEFN {define N = 30;}
 
+set REPEAT {repeat(10, (+2), 3)}
+
 set INIT {{ init -- initial state }
 define init = 
   let c = [[6,2], [7,3], [8,1], [8,2], [8,3], [19,15], [20,15], [21,15]] in
@@ -115,6 +117,7 @@ puts {define _init() =
   examples([}
 
 examples \
+    [list {{ repeat }} $REPEAT] \
     [list {{ colours }} {black $ white $ red $ rgb(3/4, 1/4, 1/2)}] \
     [list {{ images }} $IMAGES] \
     [list {{ init }} $DEFN $INIT init] \
