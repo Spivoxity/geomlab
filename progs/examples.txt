@@ -214,4 +214,17 @@ define mfun(x, y) =
 define plot(w, x0, y0, s, f) =
   image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));
 
+{ Nonlinear transformation }
+
+define Mike(p) = pixel(mike, p);
+
+define transmike =
+  slideimg(500, 500, stages([
+    function (t)   Mike . shear(t/5),
+    function (t) interpic(t,
+                   Mike . shear(1/5),
+                   weird . Mike . shear(1/5)),
+    function (t)   weird . Mike . shear(1/5) . pp(t/250)]));
+
 _stage(2);
+

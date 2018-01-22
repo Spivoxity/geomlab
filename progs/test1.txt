@@ -7,11 +7,11 @@ define flic(n, x) =
 
 define two3(x, [_, x, _]) = true | two3(_, _) = false;
 
-define oppx = 
-  let links = left in let f(links(x)) = right(x) in f;
+{ define oppx = 
+  let links = left in let f(links(x)) = right(x) in f; }
 
-_update(_syntax, #!, [#monop, 0, 0]); 
-_update(_syntax, #:=, [#binop, 1, 1]);
+_update(_syntax, #!, _pair(#monop, _pair(0, 0))); 
+_update(_syntax, #:=, _pair(#binop, _pair(1, 1)));
 define ! = _get;
 define := = _set;
 

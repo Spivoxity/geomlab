@@ -26,9 +26,6 @@ test letlet {} {(let x = 4 in x*x) + (let x = 5 in x*x)} {41}
 
 test fac test1.txt {fac(6)} {720}
 
-# Local synonyms for primitive constructors can be used for pattern matching
-test patsyn test1.txt {oppx(left(30))} {right(30)}
-
 test or {} {[false or false, false or true, true or 1/0 > 0]} \
     {[false, true, true]}
 

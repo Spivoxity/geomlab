@@ -45,26 +45,26 @@ public class FunCode extends Value {
 
     /** Enumerated type of opcodes for the Fun machine */
     public enum Opcode {
-	GLOBAL,      // [#global, x] becomes GLOBAL i where consts[i] = x:
+	GLOBAL(1),   // [#global, x] becomes GLOBAL i where consts[i] = x:
 		     //   push value of global name x
-	LOCAL,       // [#local, n]: push value of local variable n
-	ARG,	     // [#arg, n]: push value of argument n
-	FVAR,        // [#fvar, n]: push value of free variable n
-	BIND,        // [#bind, n]: pop value and store as local n
+	LOCAL(1),    // [#local, n]: push value of local variable n
+	ARG(1),	     // [#arg, n]: push value of argument n
+	FVAR(1),     // [#fvar, n]: push value of free variable n
+	BIND(1),     // [#bind, n]: pop value and store as local n
 	POP,         // [#pop]: pop and discard a value
-	QUOTE,       // [#quote, x] becomes QUOTE i where consts[i] = x:
+	QUOTE(1),    // [#quote, x] becomes QUOTE i where consts[i] = x:
 		     //   push the constant x
-        PUSH,        // #push(n): push the integer constant n
+        PUSH(1),     // #push(n): push the integer constant n
 	NIL,	     // [#nil]: push the empty list
 	CONS,        // [#cons]: pop a tail then a head, push a cons
-	TRAP,        // [#trap, lab] becomes TRAP i: set trap register
+	TRAP(1),     // [#trap, lab] becomes TRAP i: set trap register
 	FAIL,        // [#fail]: die with "no clause matched"
-	JFALSE,      // [#jfalse, lab] becomes JFALSE n:
+	JFALSE(1),   // [#jfalse, lab] becomes JFALSE n:
 		     //   pop a boolean and jump if false
-	JUMP,        // [#jump, lab] becomes JUMP n:
+	JUMP(1),     // [#jump, lab] becomes JUMP n:
 		     //   jump to instruction at offset n
 	RETURN,      // [#return]: return from function
-	MPLUS,       // [#mplus, k]: match an n+k pattern by popping integer
+	MPLUS(1),    // [#mplus, k]: match an n+k pattern by popping integer
 		     //   x with x >= k and pushing x-k; otherwise trap
 	MEQ,         // [#meq]: pop two values and trap if not equal
 	MNIL,        // [#mnil]: pop the empty list; otherwise trap
@@ -72,15 +72,22 @@ public class FunCode extends Value {
 	GETTAIL,     // [#gettail]: fetch tail following MCONS
         MPAIR,       // [#mpair]: find a pair and push its fst
         GETSND,      // [#getsnd]: fetch snd following MPAIR
-	TCALL,       // [#tcall, n]: tail recursive call
-	PREP,        // [#prep, n]: prepare for a call with n arguments
-        FRAME,       // [#frame, n]: create a free var frame with n slots
-	PUTARG,      // [#putarg, i]: mark i'th argument of a call
-        CALL,        // [#call, n]: call a function with n arguments
-        CLOSURE,     // [#closure, n]: form a closure with n free variables
-        MPRIM;       // [#mprim, n]: pattern match a constructor with n args
+	TCALL(1),    // [#tcall, n]: tail recursive call
+	PREP(1),     // [#prep, n]: prepare for a call with n arguments
+        FRAME(1),    // [#frame, n]: create a free var frame with n slots
+	PUTARG(1),   // [#putarg, i]: mark i'th argument of a call
+        CALL(1),     // [#call, n]: call a function with n arguments
+        CLOSURE(1),  // [#closure, n]: form a closure with n free variables
+        MPRIM(1);    // [#mprim, n]: pattern match a constructor with n args
+
+        public final int nrands;
+
+        private Opcode() { nrands = 0; }
+        private Opcode(int nrands) { this.nrands = nrands; }
     }
     
+    public static final Opcode decode[] = Opcode.values();
+
     /** Name of the function (used for error messages) */
     public final String name;
 
@@ -90,27 +97,25 @@ public class FunCode extends Value {
     /** Whether to freeze the error context on entry */
     public final boolean frozen = Name.getFreezer();
 
-    /** Opcodes for the instructions */
-    public final Opcode instrs[];
-
-    /** Operands for the instructions */
-    public final int rands[];
+    /** New-style code */
+    public final int code[];
 
     /** Constant pool */
     public final Value consts[];
-
-    /** Value for rand if no operand */
-    public static final int NO_RAND = 0x8000000;
 
     public transient Function.Factory jitcode;
     
     private static Jit translator;
     
-    public FunCode(String name, int arity, 
-                   Opcode instrs[], int rands[], Value consts[]) {
+    public FunCode(String name, int arity, int code[], Value consts[]) {
 	this.name = name; this.arity = arity;
-	this.instrs = instrs; this.rands = rands; 
-	this.consts = consts;
+	this.code = code; this.consts = consts;
+    }
+
+    public FunCode(String name, int arity, List<Integer> code,
+                   List<Value> consts) {
+        this(name, arity, makeIntArray(code),
+             consts.toArray(new Value[consts.size()]));
     }
 
     /** Install a translator to call before building a closure */
@@ -133,18 +138,13 @@ public class FunCode extends Value {
     
     @Override
     public void dump(PrintWriter out) {
-	out.printf("bytecode ");
-        dumpCode(out);
-    }
-
-    public void dumpCode(PrintWriter out) {
-        out.printf("\"%s\" %d\n", name, arity);
-
-        for (int i = 0; i < instrs.length; i++) {
-            if (rands[i] == NO_RAND)
-                out.printf("%s\n", instrs[i].name());
+        out.printf("bytecode \"%s\" %d\n", name, arity);
+        for (int i = 0; i < code.length; ) {
+            Opcode op = decode[code[i++]];
+            if (op.nrands == 0)
+                out.printf("%s\n", op.name());
             else
-                out.printf("%s %d\n", instrs[i].name(), rands[i]);
+                out.printf("%s %d\n", op.name(), code[i++]);
         }
         out.printf("end\n");
         
@@ -202,14 +202,11 @@ public class FunCode extends Value {
     /** Assemble a list of instructions into a function body */
     @PRIMITIVE
     public static Value _assemble(Primitive prim, Value name, 
-                                  int arity, Value code) {
-	int size = prim.listLength(code);
-	Opcode instrs[] = new Opcode[size];
-	int rands[] = new int[size];
-	int ip = 0;
-	List<Value> consts = new ArrayList<Value>();
+                                  int arity, Value codelist) {
+        List<Integer> code = new ArrayList<>();
+	List<Value> consts = new ArrayList<>();
 	
-	for (Value xs = code; prim.isCons(xs); xs = prim.tail(xs)) {
+	for (Value xs = codelist; prim.isCons(xs); xs = prim.tail(xs)) {
 	    Value inst = prim.head(xs);
             Value opcode;
             Value arg = null;
@@ -224,9 +221,11 @@ public class FunCode extends Value {
 
             Name x = prim.cast(Name.class, opcode);
             Opcode op = getOpcode(x.tag);
-            int rand = NO_RAND;
+            code.add(op.ordinal());
 
             if (arg != null) {
+                int rand;
+                
                 switch (op) {
                     case GLOBAL:
                     case QUOTE:
@@ -243,15 +242,19 @@ public class FunCode extends Value {
                         rand = (int) prim.number(arg);
                         break;
                 }
-            }
 
-            instrs[ip] = op; rands[ip] = rand;
-            ip++;
+                code.add(rand);
+            }
 	}
 	
-	return new FunCode(name.toString(), // Could be name or string
-                           arity, instrs, rands,
-			   consts.toArray(new Value[consts.size()]));
+	return new FunCode(name.toString(), arity, code, consts);
+    }
+
+    private static int[] makeIntArray(List<Integer> xs) {
+        int i = 0, n = xs.size();
+        int result[] = new int[n];
+        for (Integer a : xs) result[i++] = a;
+        return result;
     }
 
     /** Interface for JIT translators */

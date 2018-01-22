@@ -19,7 +19,7 @@ test aspect {} {aspect(man)} {0.54545456}
 test aspect2 {} {aspect(man $ man)} {1.0909091}
 test aspect3 {} {aspect(rot(man))} {1.8333333}
 
-test pixel {} {mike([20, 20])} \
+test pixel {} {pixel(mike, [20, 20])} \
     {rgb(0.039215686, 0.047058824, 0.094117647)}
 
 

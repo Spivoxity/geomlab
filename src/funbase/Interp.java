@@ -119,8 +119,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 
 	    if (--Evaluator.quantum <= 0) Evaluator.checkpoint();
 
-	    FunCode.Opcode instrs[] = code.instrs;
-	    int rands[] = code.rands;
+	    int prog[] = code.code;
             Value frame[] = new Value[FRAME];
 	    int pc = 0, trap = -1, sp = 0, fsize = 0;
 
@@ -128,9 +127,9 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
                 if (sp + 1 > frame.length - fsize)
                     frame = expand(frame, sp, fsize);
 
-		FunCode.Opcode op = instrs[pc];
-		int rand = rands[pc];
-		pc++;
+		FunCode.Opcode op = FunCode.decode[prog[pc++]];
+		int rand = 0;
+                if (op.nrands > 0) rand = prog[pc++];
 		
 		switch (op) {
 		    case GLOBAL: {

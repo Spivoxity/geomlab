@@ -58,6 +58,8 @@ import java.io.FileNotFoundException;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /** A parser for bootfiles.
 
@@ -72,12 +74,10 @@ Bootfile syntax:
       | NAME atom
       | STRING string
       | NUMBER int
-      | BYTECODE bytecode
+      | bytecode
       | CLOSURE bytecode
 
     bytecode = BYTECODE string { opcode [ int ] } END { value } END
-
-    closure = CLOSURE bytecode
 
     Keywords: BOOLEAN NAME STRING NUMBER BYTECODE CLOSURE END (all
         appear in lower case)
@@ -143,12 +143,20 @@ public class BootLoader {
 	else if (t == BYTECODE)
             return bytecode();
 	else if (t == CLOSURE)
-            return closure(bytecode());
+            return closure();
         else
 	    throw new Error("BootLoader.value " + t);
     }
     
-    private Value closure(FunCode body) {
+    private Value closure() {
+        Value t = get(IDENT);
+        FunCode body = null;
+
+        if (t == BYTECODE)
+            body = bytecode();
+        else
+            throw new Error("BootLoader.closure " + t);
+        
         return body.makeClosure(new Value[1]);
     }
 
@@ -156,18 +164,23 @@ public class BootLoader {
         /* Bytecode for a function. */
         String name = getString();
         int arity = getInt();
-        List<Opcode> ops = new ArrayList<Opcode>();
-        List<Integer> rands = new ArrayList<Integer>();
+        List<Integer> code = new ArrayList<>();
         List<Value> consts = new ArrayList<Value>();
 
         while (true) {
             if (see(END)) break;
-            Value op = get(IDENT);
-            ops.add(FunCode.getOpcode(op.toString()));
-            if (scanner.tok != NUMBER && scanner.tok != OP)
-                rands.add(FunCode.NO_RAND);
-            else
-                rands.add(getInt());
+
+            if (scanner.tok == IDENT) {
+                Value x = get(IDENT);
+                FunCode.Opcode op = FunCode.getOpcode(x.toString());
+                code.add(op.ordinal());
+            }
+            else if (scanner.tok == NUMBER || scanner.tok == OP) {
+                code.add(getInt());
+            }
+            else {
+                throw new Error("Bootloader.bytecode");
+            }
         }
         scanner.scan();
         while (true) {
@@ -175,18 +188,7 @@ public class BootLoader {
             consts.add(value());
         }
         scanner.scan();
-
-        return new FunCode(name, arity,
-                           ops.toArray(new Opcode[ops.size()]), 
-                           makeIntArray(rands), 
-                           consts.toArray(new Value[consts.size()]));
-    }
-
-    private int[] makeIntArray(List<Integer> xs) {
-        int i = 0, n = xs.size();
-        int result[] = new int[n];
-        for (Integer a : xs) result[i++] = a;
-        return result;
+        return new FunCode(name, arity, code, consts);
     }
 
     private boolean see(Name t) {

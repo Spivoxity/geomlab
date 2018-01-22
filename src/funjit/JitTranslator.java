@@ -93,8 +93,7 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     /** Table mapping addresses in the funcode to labels in the JVM code */
-    private Map<Integer, Label> labdict = 
-        new HashMap<Integer, Label>();
+    private Map<Integer, Label> labdict = new HashMap<>();
     
     /** Make a label attached to an address in the FunCode */
     private final Label makeLabel(int addr) {
@@ -304,18 +303,20 @@ public class JitTranslator implements FunCode.Jit {
     }
 
     private boolean match(int ip, FunCode.Opcode op) {
-        return (funcode.instrs[ip] == op && ! isLabelled(ip));
+        return (funcode.code[ip] == op.ordinal() && ! isLabelled(ip));
     }
 
     private int translate(int ip) {
-        FunCode.Opcode op = funcode.instrs[ip];
-        int rand = funcode.rands[ip];
+        FunCode.Opcode op = FunCode.decode[funcode.code[ip++]];
+        int rand = 0;
         FuncRule c;
         Species k;
 
+        if (op.nrands > 0) rand = funcode.code[ip++];
+
 	switch (op) {
 	    case GLOBAL:  
-                if (match(ip+1, Opcode.PREP)) {
+                if (match(ip, Opcode.PREP)) {
                     // Calling a global function
                     Name f = (Name) funcode.consts[rand];
                     Value v = f.getGlodef();
@@ -325,14 +326,14 @@ public class JitTranslator implements FunCode.Jit {
                         Function fun = ((Value.FunValue) v).subr;
                         // Calling a known function
                         if ((fun instanceof Primitive) 
-                            && fun.arity == funcode.rands[ip+1]) {
+                            && fun.arity == funcode.code[ip+1]) {
                             // Calling a primitive with the correct arity
                             Primitive p = (Primitive) fun;
                             FuncRule z = rulestore.get(p.name);
                             if (z != null) {
                                 // Calling a primitive we know how to inline
                                 funstack.push(z);
-                                return 2;
+                                return ip+2;
                             }
                         }
                     }
@@ -351,10 +352,10 @@ public class JitTranslator implements FunCode.Jit {
 
             case PUSH:
                 code.gen(CONST, rand);
-                if (match(ip+1, Opcode.PUTARG)) {
+                if (match(ip, Opcode.PUTARG)) {
                     c = funstack.peek();
-                    c.putArg(funcode.rands[ip+1], Species.INT);
-                    return 2;
+                    c.putArg(funcode.code[ip+1], Species.INT);
+                    return ip+2;
                 }
 
                 code.widen(Species.INT);
@@ -365,13 +366,13 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case FVAR:    
-                if (rand == 0 && match(ip+1, Opcode.PREP)) {
+                if (rand == 0 && match(ip, Opcode.PREP)) {
                     // A recursive call
                     code.gen(ALOAD, _this);
-                    c = makeCollector(funcode.rands[ip+1]);
+                    c = makeCollector(funcode.code[ip+1]);
                     c.init(0);
                     funstack.push(c);
-                    return 2;
+                    return ip+2;
                 }
 
                 getSlot("fvars", rand); 
@@ -462,17 +463,17 @@ public class JitTranslator implements FunCode.Jit {
 	    case CALL:    
                 c = funstack.pop();
 
-                if (match(ip+1, Opcode.JFALSE)) {
+                if (match(ip, Opcode.JFALSE)) {
                     // Jump on result of call
-                    c.jcall(makeLabel(funcode.rands[ip+1]));
-                    return 2;
+                    c.jcall(makeLabel(funcode.code[ip+1]));
+                    return ip+2;
                 }
 
-                if (match(ip+1, Opcode.PUTARG)) {
+                if (match(ip, Opcode.PUTARG)) {
                     // One call as an argument to another
                     k = c.call();
-                    convertArg(funcode.rands[ip+1], k);
-                    return 2;
+                    convertArg(funcode.code[ip+1], k);
+                    return ip+2;
                 }
 
                 k = c.call();
@@ -561,14 +562,14 @@ public class JitTranslator implements FunCode.Jit {
 		throw new Error("Bad opcode " + op);
 	}
 
-        return 1;
+        return ip;
     }
 
     private void process(FunCode funcode) {
 	init();
     	start(funcode);
 
-    	for (int ip = 0; ip < funcode.instrs.length; ) {
+    	for (int ip = 0; ip < funcode.code.length; ) {
             // Place any label for this address
 	    Label lab = labdict.get(ip);
 	    if (lab != null) {
@@ -577,7 +578,7 @@ public class JitTranslator implements FunCode.Jit {
 	    }
 
 	    nextcache = -1;
-            ip += translate(ip);
+            ip = translate(ip);
 	    cache = nextcache;
 	}
 

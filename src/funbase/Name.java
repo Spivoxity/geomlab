@@ -251,6 +251,11 @@ public final class Name extends Value implements Comparable<Name> {
     }
 
     @PRIMITIVE
+    public static Value _isname(Value x) {
+        return Value.BoolValue.instance(x instanceof Name);
+    }
+
+    @PRIMITIVE
     public boolean _defined() {
         return (glodef != null);
     }
@@ -258,7 +263,6 @@ public final class Name extends Value implements Comparable<Name> {
     @PRIMITIVE
     public boolean _iscons() {
         if (glodef == null) return false;
-
         Class<?> primcl = glodef.subr.getClass();
         return (primcl.getAnnotation(Primitive.CONSTRUCTOR.class) != null);
     }

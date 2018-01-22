@@ -236,8 +236,8 @@ define __top() =
 
   { We allow mutual recursion by tying the knot with reference cells.
     Each cell made here has a function f that fetches the contents of
-    the cell and calls it.  Later, we'll see a function f_body and an
-    assignment _set(knot, f_body) that sets the cell. }
+    the cell and calls it.  Later, we'll see a function _f and an
+    assignment _set(fknot, _f) that sets the cell. }
 
   { The parameter secok indicates whether we're in a context that
     might be an operator section like (1+) or (-). }
@@ -250,7 +250,7 @@ define __top() =
   let p_term(min, secok) = let p = _get(tknot) in p(min, secok) in
 
   let pknot = _new(0) in
-  let p_pattern() = let p = _get(pknot) in p() in
+  let p_patt() = let p = _get(pknot) in p() in
 
   let dknot = _new(0) in
   let p_defn() = let p = _get(dknot) in p() in
@@ -258,7 +258,7 @@ define __top() =
   { listify -- form list expression or pattern }
   let listify(es) = foldr(#cons, #nil, es) in
 
-  let p_patterns(endtok) = p_list(p_pattern, endtok) in
+  let p_patts(endtok) = p_list(p_patt, endtok) in
 
   let p_patprim() =
     let case(#ident) = 
@@ -266,19 +266,19 @@ define __top() =
           if not see(#lpar) then 
             #var(x)
           else if _iscons(x) then
-            #prim(#var(x), brack1(#lpar, p_patterns, #rpar))
+            #prim(#var(x), brack1(#lpar, p_patts, #rpar))
           else
             _synerror("#constructor", [x])
       | case(#atom) = 
           let x = p_sym(#atom) in
           if not see(#lpar) then #const(x) else
-            #prim(#const(x), brack1(#lpar, p_patterns, #rpar))
+            #prim(#const(x), brack1(#lpar, p_patts, #rpar))
       | case(#_) = eat(#_) >> #anon
       | case(#number) = #const(p_sym(#number))
       | case(#-) = eat(#-) >> #const(- p_sym(#number))
       | case(#string) = #const(p_sym(#string))
-      | case(#lpar) = brack(#lpar, p_pattern, #rpar)
-      | case(#bra) = #list(brack1(#bra, p_patterns, #ket))
+      | case(#lpar) = brack(#lpar, p_patt, #rpar)
+      | case(#bra) = #list(brack1(#bra, p_patts, #ket))
       | case(_) = synerror("#pattern") in
     whichever(case) in
 
@@ -286,13 +286,13 @@ define __top() =
     let p = p_patprim() in
     if can_eat(#:) then #cons(p, p_patfactor()) else p in
 
-  let p_pattern_body() =
+  let _p_patt() =
     let chain(p) =
       if can_eat(#+) then chain(#plus(p, p_sym(#number))) else p in
     chain(p_patfactor()) in
 
   { p_formals -- parse formal parameters }
-  let p_formals() = brack1(#lpar, p_patterns, #rpar) in
+  let p_formals() = brack1(#lpar, p_patts, #rpar) in
 
   { p_exprs -- parse optional list of expressions }
   let p_exprs(endtok) = p_list(p_expr, endtok) in
@@ -323,7 +323,7 @@ define __top() =
 	#if(e2, expand(e1, gs, a), a) in
 
   let p_gen() = 
-    let p = p_pattern() in eat(#<-) >> #gen(p, p_expr()) in
+    let p = p_patt() in eat(#<-) >> #gen(p, p_expr()) in
 
   { p_gens -- parse generators for a list comprehension }
   let p_gens() =
@@ -415,7 +415,7 @@ define __top() =
     case(w) in
 
   { p_term -- parse a term containing operators with priority >= min }
-  let p_term_body(min, secok) = 
+  let _p_term(min, secok) = 
     { p_termcont -- loop to parse a sequence of operators and operands }
     let p_termcont(e1, min) =
       let t = _get(tok) in
@@ -444,7 +444,7 @@ define __top() =
       p_term(1, secok) in
 
   { p_expr -- parse an expression or perhaps a left section }
-  let p_expr_body(secok) =
+  let _p_expr(secok) =
     let case(#let) =
 	  eat(#let) >> let d = p_defn() in
 	  eat(#in) >> #let(d, p_expr())
@@ -481,7 +481,7 @@ define __top() =
     p_rhs(lhs) in
 
   { p_defn -- parse a definition }
-  let p_defn_body() =
+  let _p_defn() =
     let x = p_name() in
     if not see(#lpar) then
       (eat(#=) >> #val(x, p_expr()))
@@ -502,10 +502,10 @@ define __top() =
 	else [] >> 
         p) in
 
-  _set(eknot, p_expr_body) >>
-  _set(tknot, p_term_body) >>
-  _set(pknot, p_pattern_body) >>
-  _set(dknot, p_defn_body) >>
+  _set(eknot, _p_expr) >>
+  _set(tknot, _p_term) >>
+  _set(pknot, _p_patt) >>
+  _set(dknot, _p_defn) >>
 
   let parser() = scan() >> p_para() in
 
@@ -529,7 +529,8 @@ define __top() =
     let pass1(n, [], a) = a
       | pass1(n, lab:code, a) = 
           _update(ltab, lab, n) >> pass1(n, code, a) when numeric(lab)
-      | pass1(n, inst:code, a) = pass1(n+1, code, inst:a) in
+      | pass1(n, inst:code, a) = {pass1(n+1, code, inst:a)}
+          pass1((if _isname(inst) then n+1 else n+2), code, inst:a) in
     let fixup(#JUMP(lab)) = #JUMP(fixlab(lab))
       | fixup(#JFALSE(lab)) = #JFALSE(fixlab(lab))
       | fixup(#TRAP(lab)) = #TRAP(fixlab(lab))

@@ -168,7 +168,7 @@ public abstract class Function implements Serializable {
             if (fvars != null && fvars.length > 1)
         	throw new Error("Dumping a closure with free variables");
             out.printf("closure ");
-            code.dumpCode(out);
+            code.dump(out);
         }
 
         @Override
