@@ -394,7 +394,7 @@ class Method {
 
         label.resolve(code.length(), code);
 	label.setDepth(stack);
-	stack = label.getDepth();
+	stack = label.depth();
     }
 
     /** Note stack depth at jump target. */
@@ -408,7 +408,7 @@ class Method {
     }
 
     /** Return the size of the bytecode of this method. */
-    public int getSize() {
+    public int size() {
         int size = 8;
         if (code.length() > 0)
             size += 18 + code.length() + 8 * tryblocks.size();

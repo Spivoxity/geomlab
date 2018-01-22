@@ -89,8 +89,8 @@ class ClassFile {
     public byte[] toByteArray() {
 	// Compute the real size of the bytecode
         int size = 24;
-	for (Field f : fields) size += f.getSize();
-        for (Method m : methods) size += m.getSize();
+	for (Field f : fields) size += f.size();
+        for (Method m : methods) size += m.size();
         size += pool.size();
 
 	byte data[] = new byte[size];

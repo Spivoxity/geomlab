@@ -52,7 +52,7 @@ public class Vec2D extends Value {
 	this.y = y;
     }
     
-    public static Vec2D getInstance(double x, double y) {
+    public static Vec2D instance(double x, double y) {
         return new Vec2D(x, y);
     }
 
@@ -102,7 +102,7 @@ public class Vec2D extends Value {
 
 	@Override
 	public Value apply2(Value x, Value y) {
-	    return getInstance(number(x), number(y));
+	    return instance(number(x), number(y));
 	}
 
 	private Value args[] = new Value[2];
@@ -114,8 +114,8 @@ public class Vec2D extends Value {
 	    if (! (obj instanceof Vec2D)) return null;
 
 	    Vec2D v = (Vec2D) obj;
-	    args[0] = NumValue.getInstance(v.x);
-	    args[1] = NumValue.getInstance(v.y);
+	    args[0] = NumValue.instance(v.x);
+	    args[1] = NumValue.instance(v.y);
 	    return args;
 	}
     }

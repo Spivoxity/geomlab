@@ -184,7 +184,7 @@ public abstract class Function implements Serializable {
             Value fvars1[] = new Value[fvars.length];
             System.arraycopy(fvars, 1, fvars1, 1, fvars.length-1);
             Value result = 
-        	FunValue.getInstance(new Function.Closure(arity, code, fvars1));
+        	FunValue.instance(new Function.Closure(arity, code, fvars1));
             fvars1[0] = result;
             return result;
         }

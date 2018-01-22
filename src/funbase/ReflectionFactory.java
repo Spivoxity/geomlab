@@ -74,13 +74,13 @@ public class ReflectionFactory implements Primitive.Factory {
             if (Value.class.isAssignableFrom(rtype))
                 return (Value) o;
             else if (rtype == Double.TYPE)
-                return Value.NumValue.getInstance((Double) o);
+                return Value.NumValue.instance((Double) o);
             else if (rtype == Boolean.TYPE)
-                return Value.BoolValue.getInstance((Boolean) o);
+                return Value.BoolValue.instance((Boolean) o);
             else if (rtype == Integer.TYPE)
-                return Value.NumValue.getInstance((Integer) o);
+                return Value.NumValue.instance((Integer) o);
             else if (rtype == String.class)
-                return Value.StringValue.getInstance((String) o);
+                return Value.StringValue.instance((String) o);
             else if (rtype == Void.TYPE)
                 return Value.nil;
             else

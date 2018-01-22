@@ -99,7 +99,7 @@ public class ColorValue extends Picture {
         return p;
     }
 
-    public static ColorValue getInstance(double rr, double gg, double bb) {
+    public static ColorValue instance(double rr, double gg, double bb) {
 	double r = cutoff(rr), g = cutoff(gg), b = cutoff(bb);
 	int rx = (int) Math.round(255.0 * r); 
 	int gx = (int) Math.round(255.0 * g);
@@ -108,8 +108,8 @@ public class ColorValue extends Picture {
         return cachedInstance(r, g, b, rgb);
     }
     
-    public static final ColorValue black = getInstance(0.0, 0.0, 0.0);
-    public static final ColorValue white = getInstance(1.0, 1.0, 1.0);
+    public static final ColorValue black = instance(0.0, 0.0, 0.0);
+    public static final ColorValue white = instance(1.0, 1.0, 1.0);
 
     public static ColorValue getRGB(int rgb) {
         double rpart = ((rgb >> 16) & 0xff)/255.0;
@@ -119,7 +119,7 @@ public class ColorValue extends Picture {
     }
 
     public static ColorValue getGrey(double g) {
-	return getInstance(g, g, g);
+	return instance(g, g, g);
     }
 
     /** Compute a colour from Hue, Saturation and Brightness values,
@@ -148,7 +148,7 @@ public class ColorValue extends Picture {
 		throw new Error("HSB");
 	}
 
-	return getInstance(red, green, blue);
+	return instance(red, green, blue);
     }
 
     /** The native colour object corresponding to this colour */
@@ -211,7 +211,7 @@ public class ColorValue extends Picture {
 
 	@Override
 	public Value apply3(Value rpart, Value gpart, Value bpart) {
-	    return getInstance(number(rpart), number(gpart), number(bpart));
+	    return instance(number(rpart), number(gpart), number(bpart));
 	}
 	    
 	private Value args[] = new Value[3];
@@ -223,9 +223,9 @@ public class ColorValue extends Picture {
 	    if (! (obj instanceof ColorValue)) return null;
 
 	    ColorValue v = (ColorValue) obj;
-	    args[0] = NumValue.getInstance(v.rpart);
-	    args[1] = NumValue.getInstance(v.gpart);
-	    args[2] = NumValue.getInstance(v.bpart);
+	    args[0] = NumValue.instance(v.rpart);
+	    args[1] = NumValue.instance(v.gpart);
+	    args[2] = NumValue.instance(v.bpart);
 	    return args;
 	}
     }

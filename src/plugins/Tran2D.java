@@ -63,8 +63,8 @@ public class Tran2D extends Value {
 		m_yx * a.x + m_yy * a.y + m_y);
     }
     
-    public static Tran2D getInstance(double m_xx, double m_yx, double m_xy, 
-                                     double m_yy, double m_x, double m_y) {
+    public static Tran2D instance(double m_xx, double m_yx, double m_xy, 
+                                  double m_yy, double m_x, double m_y) {
         return new Tran2D(m_xx, m_yx, m_xy, m_yy, m_x, m_y);
     }
 
@@ -180,8 +180,8 @@ public class Tran2D extends Value {
 	@Override
 	public Value apply6(Value m_xx, Value m_yx, Value m_xy, 
 			    Value m_yy, Value m_x, Value m_y) {
-            return getInstance(number(m_xx), number(m_yx), number(m_xy), 
-                               number(m_yy), number(m_x), number(m_y));
+            return instance(number(m_xx), number(m_yx), number(m_xy), 
+                            number(m_yy), number(m_x), number(m_y));
         }
 
 	private Value args[] = new Value[6];
@@ -191,12 +191,12 @@ public class Tran2D extends Value {
 	    if (nargs != 6) Evaluator.err_patnargs(name);
 	    if (! (obj instanceof Tran2D)) return null;
 	    Tran2D v = (Tran2D) obj;
-	    args[0] = NumValue.getInstance(v.m_xx); 
-	    args[1] = NumValue.getInstance(v.m_yx);
-	    args[2] = NumValue.getInstance(v.m_xy); 
-	    args[3] = NumValue.getInstance(v.m_yy);
-	    args[4] = NumValue.getInstance(v.m_x); 
-	    args[5] = NumValue.getInstance(v.m_y);
+	    args[0] = NumValue.instance(v.m_xx); 
+	    args[1] = NumValue.instance(v.m_yx);
+	    args[2] = NumValue.instance(v.m_xy); 
+	    args[3] = NumValue.instance(v.m_yy);
+	    args[4] = NumValue.instance(v.m_x); 
+	    args[5] = NumValue.instance(v.m_y);
 	    return args;
 	}
     }

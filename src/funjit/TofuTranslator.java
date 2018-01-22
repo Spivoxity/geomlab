@@ -79,11 +79,11 @@ public class TofuTranslator implements FunCode.Jit {
 	};
     }
 
-    public Primitive.Factory getPrimitiveFactory() {
-        return translator.getPrimitiveFactory();
+    public Primitive.Factory primitiveFactory() {
+        return translator.primitiveFactory();
     }
 
-    public Evaluator.Backtrace getBacktrace() {
-        return translator.getBacktrace();
+    public Evaluator.Backtrace backtrace() {
+        return translator.backtrace();
     }
 }

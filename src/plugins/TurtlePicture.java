@@ -270,7 +270,7 @@ public class TurtlePicture extends Picture {
                 if (c.color != null)
                     args[0] = c.color;
                 else
-                    args[0] = NumValue.getInstance(c.arg);
+                    args[0] = NumValue.instance(c.arg);
 		return args;
 	    }
 	    catch (ClassCastException ex) {

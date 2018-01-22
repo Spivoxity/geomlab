@@ -36,7 +36,6 @@ import java.lang.reflect.Modifier;
 
 import funbase.Value;
 import funbase.Primitive;
-import funbase.Primitive.DESCRIPTION;
 
 import static funjit.Opcodes.Op.*;
 import static funjit.Type.*;
@@ -85,7 +84,7 @@ public class JitPrimFactory implements Primitive.Factory {
         }
     }
 
-    private Species[] getParamKinds(java.lang.reflect.Method m) {
+    private Species[] paramKinds(java.lang.reflect.Method m) {
         Class<?> ptypes[] = m.getParameterTypes();
         Species pkinds[] = new Species[ptypes.length];
         for (int i = 0; i < ptypes.length; i++) 
@@ -93,14 +92,14 @@ public class JitPrimFactory implements Primitive.Factory {
         return pkinds;
     }
 
-    private Species getReturnKind(java.lang.reflect.Method m) {
+    private Species returnKind(java.lang.reflect.Method m) {
         return Species.find(m.getReturnType());
     }
 
     private java.lang.reflect.Method findFactoryMethod(Class<?> cl) {
         for (java.lang.reflect.Method m : cl.getDeclaredMethods()) {
             String name = m.getName();
-            if (name.equals("getInstance"))
+            if (name.equals("instance"))
                 return m;
         }
         throw new Error("findFactoryMethod " + cl);
@@ -109,8 +108,8 @@ public class JitPrimFactory implements Primitive.Factory {
     /** Make a primitive from a method or class method. */
     public Primitive reflect(String name, java.lang.reflect.Method m) {
         Class<?> cl = m.getDeclaringClass();
-        Species pkinds[] = getParamKinds(m);
-        Species rkind = getReturnKind(m);
+        Species pkinds[] = paramKinds(m);
+        Species rkind = returnKind(m);
         int nparams = pkinds.length;
         Type mtype = Species.methType(pkinds, rkind);
         String clstring = Type.className(cl);
@@ -167,8 +166,8 @@ public class JitPrimFactory implements Primitive.Factory {
     @Override
     public void constructor(String name, Class<?> cl) { 
         java.lang.reflect.Method m = findFactoryMethod(cl);
-        Species pkinds[] = getParamKinds(m);
-        Species rkind = getReturnKind(m);
+        Species pkinds[] = paramKinds(m);
+        Species rkind = returnKind(m);
         noteMethod(name, Type.className(cl), m.getName(), 
                    null, pkinds, rkind);
     }

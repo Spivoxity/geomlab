@@ -133,13 +133,13 @@ public class BootLoader {
     private Value value() {
 	Value t = get(IDENT);
 	if (t == BOOLEAN)
-	    return BoolValue.getInstance(getInt() != 0);
+	    return BoolValue.instance(getInt() != 0);
 	else if (t == NAME)
 	    return get(ATOM);
 	else if (t == STRING)
 	    return get(STRING);
 	else if (t == NUMBER)
-	    return NumValue.getInstance(getInt());
+	    return NumValue.instance(getInt());
 	else if (t == BYTECODE)
             return bytecode();
 	else if (t == CLOSURE)

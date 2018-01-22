@@ -54,11 +54,11 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 
     private Primitive.Factory primFactory = new ReflectionFactory();
 
-    public Primitive.Factory getPrimitiveFactory() {
+    public Primitive.Factory primitiveFactory() {
         return primFactory;
     }
 
-    public Evaluator.Backtrace getBacktrace() {
+    public Evaluator.Backtrace backtrace() {
         return this;
     }
 
@@ -76,7 +76,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
     }
 
     @Override
-    public String[] getContext(String me) {
+    public String[] context(String me) {
 	String caller = null, callee = me;
 
 	for (int i = backtrace.size()-1; i >= 0; i--) {
@@ -163,7 +163,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 			break;
 
                     case PUSH:
-                        frame[sp++] = Value.NumValue.getInstance(rand);
+                        frame[sp++] = Value.NumValue.instance(rand);
                         break;
 
 		    case QUOTE:
@@ -177,7 +177,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 		    case CONS:
 			sp--;
 			frame[sp-1] = 
-                            Value.ConsValue.getInstance(frame[sp-1], frame[sp]);
+                            Value.ConsValue.instance(frame[sp-1], frame[sp]);
 			break;
 
 		    case CALL:
@@ -252,7 +252,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 			break;
 
 		    case MNIL:
-			if (! (frame[--sp] instanceof Value.NilValue))
+			if (frame[--sp] != Value.nil)
 			    pc = trap;
 			break;
 

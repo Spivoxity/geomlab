@@ -294,14 +294,11 @@ public abstract class Primitive extends Function {
         public Class<?> value();
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface PRIMPARAM { }
-
 
     /** Register a new primitive */
     public static void register(Primitive p) {
         Name n = Name.find(p.name);
-        n.setGlodef(FunValue.getInstance(p));
+        n.setGlodef(FunValue.instance(p));
     }
     
     /** Find a registered primitive */
@@ -350,7 +347,7 @@ public abstract class Primitive extends Function {
 
     public static void scanClass(Class<?> plugin) 
         throws IllegalAccessException, InstantiationException {
-        Factory factory = FunCode.getPrimitiveFactory();
+        Factory factory = FunCode.primitiveFactory();
 
         // Look for the PRIMITIVE annotation on methods
         for (Method m : plugin.getDeclaredMethods()) {

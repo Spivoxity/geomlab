@@ -81,7 +81,7 @@ public abstract class Value implements Serializable {
     public static Value makeList(Value... elems) {
         Value val = nil;
         for (int i = elems.length-1; i >= 0; i--)
-            val = ConsValue.getInstance(elems[i], val);
+            val = ConsValue.instance(elems[i], val);
         return val;
     }
     
@@ -163,7 +163,7 @@ public abstract class Value implements Serializable {
 	private static final int MIN = -1, MAX = 2000;
 	private static NumValue smallints[] = new NumValue[MAX-MIN+1];
 
-	public static NumValue getInstance(double val) {
+	public static NumValue instance(double val) {
 	    int n = (int) val;
 	    if (val != n || n < MIN || n > MAX)
 		return new NumValue(val);
@@ -174,8 +174,8 @@ public abstract class Value implements Serializable {
 	    }
 	}
 
-        public static NumValue getInstance(int val) {
-            return getInstance((double) val);
+        public static NumValue instance(int val) {
+            return instance((double) val);
         }
 
 	@Override
@@ -193,7 +193,7 @@ public abstract class Value implements Serializable {
 	    double inc = ((NumValue) iv).val;
 	    double x = val - inc;
 	    if (inc > 0 && x >= 0 && x == (int) x)
-		return NumValue.getInstance(x);
+		return NumValue.instance(x);
 	    else
 		return null;
 	}
@@ -236,7 +236,7 @@ public abstract class Value implements Serializable {
 	
 	/* After input from a serialized stream, readResolve lets us replace
 	 * the constructed instance with one of the standard instances. */
-	public Object readResolve() { return getInstance(val); }
+	public Object readResolve() { return instance(val); }
 	
 	@Override
 	public void dump(PrintWriter out) {
@@ -247,7 +247,7 @@ public abstract class Value implements Serializable {
 	    truth = new BoolValue(true), 
 	    falsity = new BoolValue(false);
     
-	public static BoolValue getInstance(boolean val) {
+	public static BoolValue instance(boolean val) {
 	    return (val ? truth : falsity);
 	}
     }
@@ -280,7 +280,7 @@ public abstract class Value implements Serializable {
 	    return this;
         }
 
-        public static FunValue getInstance(Function subr) {
+        public static FunValue instance(Function subr) {
             return new FunValue(subr);
         }
     }
@@ -330,14 +330,14 @@ public abstract class Value implements Serializable {
 		charStrings[i] = new StringValue(String.valueOf((char) i));
 	}
 
-	public static StringValue getInstance(char ch) {
+	public static StringValue instance(char ch) {
 	    if (ch < 256)
 		return charStrings[ch];
             else
                 return new StringValue(String.valueOf(ch));
 	}
 
-	public static StringValue getInstance(String text) {
+	public static StringValue instance(String text) {
 	    if (text.length() == 0)
 		return emptyString;
 	    else if (text.length() == 1 && text.charAt(0) < 256)
@@ -350,7 +350,7 @@ public abstract class Value implements Serializable {
 	 * the constructed instance with a singleton. */
 	public Object readResolve() {
 	    if (text.length() < 2)
-		return getInstance(text);
+		return instance(text);
 	    else
 		return this;
 	}
@@ -395,7 +395,7 @@ public abstract class Value implements Serializable {
 	    this.tail = tail;
 	}
 	
-        public static ConsValue getInstance(Value hd, Value tl) {
+        public static ConsValue instance(Value hd, Value tl) {
             if (! (tl instanceof ConsValue) && ! tl.equals(Value.nil)) 
                 Evaluator.expect("':'", "a list");
             return new ConsValue(hd, tl);
@@ -436,7 +436,7 @@ public abstract class Value implements Serializable {
 
 	@Override
 	public Value apply2(Value hd, Value tl) {
-	    return Value.ConsValue.getInstance(hd, tl);
+	    return Value.ConsValue.instance(hd, tl);
 	}
 	    
 	private Value args[] = new Value[2];
@@ -494,7 +494,7 @@ public abstract class Value implements Serializable {
             this.fst = fst; this.snd = snd;
         }
 
-        public static PairValue getInstance(Value fst, Value snd) {
+        public static PairValue instance(Value fst, Value snd) {
             Evaluator.countCons();
             return new PairValue(fst, snd);
         }
@@ -528,7 +528,7 @@ public abstract class Value implements Serializable {
 
         @Override
         public Value apply2(Value fst, Value snd) {
-            return PairValue.getInstance(fst, snd);
+            return PairValue.instance(fst, snd);
         }
 
         private Value args[] = new Value[2];
@@ -554,7 +554,7 @@ public abstract class Value implements Serializable {
             this.functor = functor; this.args = args;
         }
         
-        public static BlobValue getInstance(Name functor, Value args[]) {
+        public static BlobValue instance(Name functor, Value args[]) {
             Evaluator.countCons();
             return new BlobValue(functor, args);
         }

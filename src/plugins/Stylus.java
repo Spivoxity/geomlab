@@ -32,7 +32,6 @@ package plugins;
 
 import funbase.Value;
 import funbase.Primitive.DESCRIPTION;
-import funbase.Primitive.PRIMPARAM;
 
 /** An abstract drawing tablet on which a picture can be drawn */
 public abstract class Stylus {
@@ -113,7 +112,6 @@ public abstract class Stylus {
 
     /** A scalable picture that can draw itself with a Stylus */
     @DESCRIPTION("a picture")
-    @PRIMPARAM
     public interface Drawable {
 	/** Perform any compute-intensive preparation for painting.
 	 * 

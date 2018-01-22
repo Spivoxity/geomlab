@@ -256,7 +256,7 @@ public class GeomBase {
 
     @PRIMITIVE
     public static void _setroot(Value v) {
-	Evaluator.Backtrace backtrace = FunCode.getBacktrace();
+	Evaluator.Backtrace backtrace = FunCode.backtrace();
         backtrace.setRoot(v);
         Evaluator.reset();
     }

@@ -96,7 +96,7 @@ public class SlidePicture extends Value implements Stylus.Drawable {
     }
 
     private Value callRender(double slider) {
-	return Evaluator.execute(render.subr, NumValue.getInstance(slider));
+	return Evaluator.execute(render.subr, NumValue.instance(slider));
     }
 
     @PRIMITIVE

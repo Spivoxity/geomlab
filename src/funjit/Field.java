@@ -64,7 +64,7 @@ class Field {
     }
 
     /** Return the size of the classfile representation of this field */
-    public int getSize() {
+    public int size() {
 	int size = 8;
 	if (init != null) size += 8;
 	return size;

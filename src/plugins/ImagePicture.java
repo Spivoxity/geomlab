@@ -234,9 +234,9 @@ public class ImagePicture extends Picture {
 	Value args[] = new Value[2];
 		
 	for (int x = 0; x < width; x++) {
-	    args[0] = NumValue.getInstance(x);
+	    args[0] = NumValue.instance(x);
 	    for (int y = 0; y < height; y++) {
-		args[1] = NumValue.getInstance(y);
+		args[1] = NumValue.instance(y);
 		Value v = fun.apply(args);
 		ColorValue col = prim.cast(ColorValue.class, v);
 		image.setRGB(x, height-y-1, col.rgb);

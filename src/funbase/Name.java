@@ -314,7 +314,7 @@ public final class Name extends Value implements Comparable<Name> {
         public Value apply(int nargs, Value args0[], int base) {
             Value args[] = new Value[nargs];
             System.arraycopy(args0, base, args, 0, nargs);
-            return Value.BlobValue.getInstance(Name.this, args);
+            return Value.BlobValue.instance(Name.this, args);
         }
 
         @Override

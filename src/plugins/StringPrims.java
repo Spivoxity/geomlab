@@ -47,8 +47,8 @@ public class StringPrims {
     public static Value explode(String s) {
 	Value result = Value.nil;
 	for (int i = s.length()-1; i >= 0; i--) {
-            Value ch = StringValue.getInstance(s.charAt(i));
-	    result = Value.ConsValue.getInstance(ch, result);
+            Value ch = StringValue.instance(s.charAt(i));
+	    result = Value.ConsValue.instance(ch, result);
         }
 	return result;
     }
@@ -57,8 +57,7 @@ public class StringPrims {
     @PRIMITIVE
     public static String implode(Primitive prim, Value ys) {
 	StringBuffer result = new StringBuffer();
-	for (Value xs = ys; ! (xs instanceof Value.NilValue); 
-	     xs = prim.tail(xs))
+	for (Value xs = ys; xs != Value.nil; xs = prim.tail(xs))
 	    result.append(prim.string(prim.head(xs)));
 	return result.toString();
     }
@@ -66,7 +65,7 @@ public class StringPrims {
     /** Make character with specified ASCII code */
     @PRIMITIVE
     public static StringValue chr(int x) {
-	return StringValue.getInstance((char) x);
+	return StringValue.instance((char) x);
     }
 
     /** Return ASCII code of first character */

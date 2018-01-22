@@ -118,12 +118,12 @@ public class FunCode extends Value {
 	FunCode.translator = translator;
     }
     
-    public static Primitive.Factory getPrimitiveFactory() {
-        return translator.getPrimitiveFactory();
+    public static Primitive.Factory primitiveFactory() {
+        return translator.primitiveFactory();
     }
 
-    public static Evaluator.Backtrace getBacktrace() {
-        return translator.getBacktrace();
+    public static Evaluator.Backtrace backtrace() {
+        return translator.backtrace();
     }
 
     @Override
@@ -155,7 +155,7 @@ public class FunCode extends Value {
 
     /** Construct a wrapped closure and tie the knot for local recursion */
     public Value makeClosure(Value fvars[]) {
-	Value result = FunValue.getInstance(null);
+	Value result = FunValue.instance(null);
 	result.subr = buildClosure(result, fvars);
 	fvars[0] = result;
 	return result;
@@ -260,9 +260,9 @@ public class FunCode extends Value {
 	public Function.Factory translate(FunCode funcode);
 
 	/** Return a primitive factory */
-        public Primitive.Factory getPrimitiveFactory();
+        public Primitive.Factory primitiveFactory();
 
         /** Return a backtrace agent */
-        public Evaluator.Backtrace getBacktrace();
+        public Evaluator.Backtrace backtrace();
     }
 }

@@ -55,7 +55,7 @@ public class StackTracer implements Evaluator.Backtrace {
     }
 
     @Override 
-    public String[] getContext(String me) {
+    public String[] context(String me) {
 	Thread thread = Thread.currentThread();
 	StackTraceElement stack[] = thread.getStackTrace();
 	String caller = null, callee = me;

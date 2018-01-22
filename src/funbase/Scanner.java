@@ -183,7 +183,7 @@ public class Scanner {
 		    }
 		    if (ch == '"') {
 			tok = STRING;
-			sym = StringValue.getInstance(string.toString());
+			sym = StringValue.instance(string.toString());
 		    } else {
 			pushBack(ch);
 			start_char = char_num;
@@ -255,7 +255,7 @@ public class Scanner {
 			pushBack(ch);
 			tok = NUMBER; 
 			double val = Double.parseDouble(buf.toString());
-			sym = NumValue.getInstance(val);
+			sym = NumValue.instance(val);
 		    } else if (isOpChar(ch)) {
 			// A symbolic operator
 			StringBuilder buf = new StringBuilder(10);
@@ -282,7 +282,7 @@ public class Scanner {
 
     public Value nextToken() {
 	scan();
-	return Value.PairValue.getInstance(tok, sym);
+	return Value.PairValue.instance(tok, sym);
     }
 
     private void badToken() {

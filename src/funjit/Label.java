@@ -116,7 +116,7 @@ class Label {
 	    throw new Error("inconsistent depth info");
     }
 
-    public int getDepth() {
+    public int depth() {
 	if (depth == UNKNOWN)
 	    throw new Error("unknown label depth at " + toString());
 

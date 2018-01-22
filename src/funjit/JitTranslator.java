@@ -238,15 +238,13 @@ public class JitTranslator implements FunCode.Jit {
     	code.gen(CHECKCAST, name_cl);
 
 	// We assume that a global name defined now will not become undefined
-	if (x.getGlodef() != null) 
+	if (x.glodef != null) 
 	    // Value v = x.glodef;
-            // code.gen(INVOKEVIRTUAL, name_cl, "getGlodef", fun__V_t);
             code.gen(GETFIELD, name_cl, "glodef", value_t);
 	else {
 	    code.gen(DUP);
 	    code.gen(ASTORE, _temp);
 	    // Value v = x.glodef;
-            // code.gen(INVOKEVIRTUAL, name_cl, "getGlodef", fun__V_t);
 	    code.gen(GETFIELD, name_cl, "glodef", value_t);
     	    code.gen(DUP);		
     	    // if (v == null) ErrContext.err_notdef(x);
@@ -402,7 +400,7 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case CONS:    
-                code.gen(INVOKESTATIC, consval_cl, "getInstance", fun_VV_C_t);
+                code.gen(INVOKESTATIC, consval_cl, "instance", fun_VV_C_t);
                 break;
 
 	    case CLOSURE: 
@@ -614,7 +612,7 @@ public class JitTranslator implements FunCode.Jit {
         return new JitPrimFactory();
     }
 
-    public Primitive.Factory getPrimitiveFactory() {
+    public Primitive.Factory primitiveFactory() {
         // Construct the factory lazily to avoid calls to overridden
         // methods from the constructor.
         if (factory == null)
@@ -625,7 +623,7 @@ public class JitTranslator implements FunCode.Jit {
 
     private StackTracer backtrace = new StackTracer();
 
-    public Evaluator.Backtrace getBacktrace() {
+    public Evaluator.Backtrace backtrace() {
         return backtrace;
     }
 }

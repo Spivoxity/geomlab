@@ -97,7 +97,7 @@ public class Evaluator {
 
     public static Value execute(Function fun, Value... args) {
 	runFlag = true; steps = conses = 0; timer = null;
-	Backtrace backtrace = FunCode.getBacktrace();
+	Backtrace backtrace = FunCode.backtrace();
         backtrace.initStack();
 	ExecThread exec = new ExecThread(fun, args);
 
@@ -195,15 +195,15 @@ public class Evaluator {
     }
 
     public static void error(String errtag, Object... args) {
-        Backtrace backtrace = FunCode.getBacktrace();
-	String context[] = backtrace.getContext(null);
+        Backtrace backtrace = FunCode.backtrace();
+	String context[] = backtrace.context(null);
 	throw new EvalError(errtag, args, context[0]);
     }
 
     /** Message "<primitive> expects a <kind> argument" */
     public static void expect(String name, String expected) {
-        Backtrace backtrace = FunCode.getBacktrace();
-	String context[] = backtrace.getContext(name);
+        Backtrace backtrace = FunCode.backtrace();
+	String context[] = backtrace.context(name);
 	error("#expect", context[1], expected);
     }
 
@@ -318,7 +318,7 @@ public class Evaluator {
     /** Interface for an agent that can trace back the execution stack. */
     public interface Backtrace {
 	/** Get execution context as two strings */
-	public String[] getContext(String me);
+	public String[] context(String me);
 
 	/** Initialise stack */
 	public void initStack();

@@ -98,14 +98,14 @@ public class Species {
     }
 
     /** Find a species, or create one for a new Value subclass,
-        or a class annotated with PRIMPARAM. */
+        or for an interface. */
     public static Species find(Class<?> c) {
         Species s = table.get(c);
 
         if (s == null) {
             if (Value.class.isAssignableFrom(c))
                 s = new SubclassSpecies(c);
-            else if (c.getAnnotation(Primitive.PRIMPARAM.class) != null)
+            else if (c.isInterface())
                 s = new ParamSpecies(c);
             else
                 throw new Error("no species for " + c);
@@ -141,7 +141,7 @@ public class Species {
         }
 
         public void widen(FunctionClass code) {
-            code.gen(INVOKESTATIC, wrap_cl, "getInstance", wrap_t);
+            code.gen(INVOKESTATIC, wrap_cl, "instance", wrap_t);
         }
 
         public void narrow(String prim, FunctionClass code) {
