@@ -121,11 +121,6 @@ public final class Name extends Value implements Comparable<Name> {
     
     @Override
     public void dump(PrintWriter out) {
-	out.printf("name #%s\n", tag);
-    }
-
-    @Override
-    public void jdump(PrintWriter out) {
 	out.printf("N(\"%s\")", tag);
     }
 
@@ -196,29 +191,8 @@ public final class Name extends Value implements Comparable<Name> {
         return names;
     }
     
-    /** Save globally defined names in portable boot format */
-    public static void dumpNames(PrintWriter out) {
-	// Sort the entries to help us reach a fixpoint
-	ArrayList<String> names = new ArrayList<String>(nameTable.size());
-	names.addAll(nameTable.keySet());
-	Collections.sort(names);
-
-	for (String k : names) {
-            if (k.equals("_syntax")) continue;
-
-	    Name x = find(k);
-	    if (x.glodef != null && !x.inherited 
-                && !(x.glodef.subr instanceof Primitive)) {
-		out.printf("#%s ", x.tag);
-		x.glodef.dump(out);
-	    }
-	}
-	out.printf("end\n");
-	out.close();
-    }
-
     /** Save globally defined names in Java boot format */
-    public static void jdumpNames(String name, PrintWriter out) {
+    public static void dumpNames(String name, PrintWriter out) {
 	// Sort the entries to help us reach a fixpoint
 	ArrayList<String> names = new ArrayList<String>(nameTable.size());
 	names.addAll(nameTable.keySet());
@@ -236,7 +210,7 @@ public final class Name extends Value implements Comparable<Name> {
 	    if (x.glodef != null && !x.inherited 
                 && !(x.glodef.subr instanceof Primitive)) {
 		out.printf("    D(\"%s\", ", x.tag);
-		x.glodef.jdump(out);
+		x.glodef.dump(out);
                 out.printf(");\n");
 	    }
 	}
@@ -332,24 +306,12 @@ public final class Name extends Value implements Comparable<Name> {
     }
 
     @PRIMITIVE
-    public static Value _dump(String fname) {
-	try {
-	    PrintWriter out = 
-		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-	    dumpNames(out);
-	    return Value.nil;
-	} catch (IOException e) {
-	    throw new Error(e);
-	}
-    }
-
-    @PRIMITIVE
-    public static Value _jdump(String name) {
+    public static Value _dump(String name) {
         String fname = name + ".java";
 	try {
 	    PrintWriter out = 
 		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
-	    jdumpNames(name, out);
+	    dumpNames(name, out);
 	    return Value.nil;
 	} catch (IOException e) {
 	    throw new Error(e);

@@ -67,14 +67,9 @@ public abstract class Value implements Serializable {
     /** Print the value on a stream */
     public abstract void printOn(PrintWriter out);
     
-    /** Dump the value in portable format */
+    /** Dump the value in Java format */
     public void dump(PrintWriter out) {
 	throw new Error(String.format("can't dump %s", this.getClass()));
-    }
-    
-    /** Dump the value in Java format */
-    public void jdump(PrintWriter out) {
-	throw new Error(String.format("can't jdump %s", this.getClass()));
     }
     
 
@@ -236,11 +231,6 @@ public abstract class Value implements Serializable {
 	
 	@Override
 	public void dump(PrintWriter out) {
-	    out.printf("boolean %d\n", (val ? 1 : 0));
-	}
-
-	@Override
-	public void jdump(PrintWriter out) {
 	    out.printf("B(%s)", (val ? "true" : "false"));
 	}
 
@@ -269,11 +259,6 @@ public abstract class Value implements Serializable {
 	@Override
 	public void dump(PrintWriter out) {
 	    subr.dump(out);
-	}
-
-	@Override
-	public void jdump(PrintWriter out) {
-	    subr.jdump(out);
 	}
 
 	protected Object writeReplace() {
@@ -363,11 +348,6 @@ public abstract class Value implements Serializable {
 	
 	@Override
 	public void dump(PrintWriter out) {
-	    out.printf("string \"%s\"\n", text);
-	}
-
-	@Override
-	public void jdump(PrintWriter out) {
 	    out.printf("S(\"%s\")", text);
 	}
     }

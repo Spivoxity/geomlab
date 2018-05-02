@@ -64,20 +64,12 @@ life.gls: obj/geomlab.gls progs/life.txt
 progs/life.txt: progs/life.tcl
 	tclsh $< >$@
 
-bootstrap: force
-	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("stage1.boot")'
-	$(RUNSCRIPT) -b stage1.boot src/compiler.txt -e '_dump("stage2.boot")'
-	$(RUNSCRIPT) -b stage2.boot src/compiler.txt -e '_dump("stage3.boot")'
-	cmp stage2.boot stage3.boot
-	(sed '/^ *$$/q' src/boot.txt; cat stage2.boot) >boot.tmp
-	mv boot.tmp src/boot.txt
-
-jbootstrap: Boot.class force
-	$(RUNSCRIPT) -B Boot src/compiler.txt -e '_jdump("Boot1")'
+bootstrap: Boot.class force
+	$(RUNSCRIPT) -B Boot src/compiler.txt -e '_dump("Boot1")'
 	$(JAVAC) -d . -cp obj Boot1.java
-	$(RUNSCRIPT) -B Boot1 src/compiler.txt -e '_jdump("Boot2")'
+	$(RUNSCRIPT) -B Boot1 src/compiler.txt -e '_dump("Boot2")'
 	$(JAVAC) -d . -cp obj Boot2.java
-	$(RUNSCRIPT) -B Boot2 src/compiler.txt -e '_jdump("Boot3")'
+	$(RUNSCRIPT) -B Boot2 src/compiler.txt -e '_dump("Boot3")'
 	sed 's/Boot2/Boot3/' Boot2.java | cmp - Boot3.java
 	(sed '/^ *$$/q' src/Boot.java; sed 's/Boot2/Boot/' Boot2.java) >tmpa
 	mv tmpa src/Boot.java

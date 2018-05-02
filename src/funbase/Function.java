@@ -124,10 +124,6 @@ public abstract class Function implements Serializable {
 	throw new Error("dumping a dummy function");
     }
 
-    public void jdump(PrintWriter out) {
-	throw new Error("jdumping a dummy function");
-    }
-
     /** Method called by FunValue.writeReplace to determine a proxy. */
     public Object serialProxy(Value.FunValue funval) {
 	return funval;
@@ -171,16 +167,8 @@ public abstract class Function implements Serializable {
         public void dump(PrintWriter out) {
             if (fvars != null && fvars.length > 1)
         	throw new Error("dumping a closure with free variables");
-            out.printf("closure ");
-            code.dump(out);
-        }
-
-        @Override
-        public void jdump(PrintWriter out) {
-            if (fvars != null && fvars.length > 1)
-        	throw new Error("jdumping a closure with free variables");
             out.printf("C(");
-            code.jdump0(out);
+            code.dump0(out);
             out.printf(")");
         }
 

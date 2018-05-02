@@ -112,15 +112,12 @@ public class RunScript extends GeomBase {
 	
 	int i = 0;
 	funbase.FunCode.Jit translator = null;
-        File bootfile = null;
         String bootclass = null;
 	File sessfile = null;
 
 	for (; i < args.length; i++) {
 	    if (args[i].equals("-i"))
 		translator = new funbase.Interp();
-	    else if (i+1 < args.length && args[i].equals("-b"))
-		bootfile = new File(args[++i]);
 	    else if (i+1 < args.length && args[i].equals("-B"))
 		bootclass = args[++i];
 	    else if (i+1 < args.length && args[i].equals("-s"))
@@ -137,9 +134,7 @@ public class RunScript extends GeomBase {
 	funbase.FunCode.install(translator);
 
 	try {
-            if (bootfile != null)
-                BootLoader.bootstrap(bootfile);
-            else if (bootclass != null) {
+            if (bootclass != null) {
                 Bootstrap boot = null;
                 try {
                     Class<?> bootcl = Class.forName(bootclass);

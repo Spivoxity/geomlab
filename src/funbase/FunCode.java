@@ -136,32 +136,15 @@ public class FunCode extends Value {
 	out.printf("<funcode>");
     }
     
-    @Override
-    public void dump(PrintWriter out) {
-        out.printf("bytecode \"%s\" %d\n", name, arity);
-        for (int i = 0; i < code.length; ) {
-            Opcode op = decode[code[i++]];
-            if (op.nrands == 0)
-                out.printf("%s\n", op.name());
-            else
-                out.printf("%s %d\n", op.name(), code[i++]);
-        }
-        out.printf("end\n");
-        
-        for (int i = 0; i < consts.length; i++)
-            consts[i].dump(out);
-        out.printf("end\n");
-    }
-
     private static int level = 4;
     private static int vcount = 0;
 
-    public void jdump0(PrintWriter out) {
-        vcount = 0; jdump(out);
+    public void dump0(PrintWriter out) {
+        vcount = 0; dump(out);
     }
 
     @Override
-    public void jdump(PrintWriter out) {
+    public void dump(PrintWriter out) {
         if (vcount > 0)
             out.printf("\n%"+level+"s", "");
         out.printf("F(\"%s\", %d,", name, arity);
@@ -195,7 +178,7 @@ public class FunCode extends Value {
                 out.printf(",\n%"+level+"s", "");
                 vcount = 0;
             }
-            consts[i].jdump(out);
+            consts[i].dump(out);
             vcount++;
         }
 
