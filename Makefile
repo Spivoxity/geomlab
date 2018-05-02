@@ -28,13 +28,16 @@ JFILES = $(PACKAGES:%=src/%/*.java)
 	$(JAVAC) -d obj $(JFILES)
 	echo timestamp >$@
 
+Boot.class: src/Boot.java .compiled
+	$(JAVAC) -d . -cp obj $<
+
 obj/%: res/%; cp $< $@
 obj/%: src/%; cp $< $@
 
 obj/%.html: wiki/%.wiki wiki/htmlframe scripts/htmltran.tcl
 	tclsh scripts/htmltran.tcl $< >$@
 
-RUNJAVA = java -cp obj -ea
+RUNJAVA = java -cp .:obj -ea
 RUNSCRIPT = $(RUNJAVA) geomlab.RunScript
 
 obj/icon128.png:
@@ -44,11 +47,12 @@ obj/icon128.png:
 obj/icon%.png: obj/icon128.png
 	convert obj/icon128.png -scale $*x$* $@
 
-stage1.boot: .compiled src/boot.txt src/compiler.txt
-	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("$@")'
+obj/geomlab.gls: .compiled Boot.class src/prelude.txt
+	$(RUNSCRIPT) -B Boot src/compiler.txt \
+		src/prelude.txt -e '_save("$@")'
 
-obj/geomlab.gls: .compiled stage1.boot src/prelude.txt
-	$(RUNSCRIPT) -b stage1.boot src/compiler.txt \
+geomlab0.gls: .compiled src/boot.txt src/prelude.txt
+	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt \
 		src/prelude.txt -e '_save("$@")'
 
 examples.gls: obj/geomlab.gls progs/examples.txt
@@ -60,12 +64,23 @@ life.gls: obj/geomlab.gls progs/life.txt
 progs/life.txt: progs/life.tcl
 	tclsh $< >$@
 
-bootstrap: stage1.boot force
+bootstrap: force
+	$(RUNSCRIPT) -b src/boot.txt src/compiler.txt -e '_dump("stage1.boot")'
 	$(RUNSCRIPT) -b stage1.boot src/compiler.txt -e '_dump("stage2.boot")'
 	$(RUNSCRIPT) -b stage2.boot src/compiler.txt -e '_dump("stage3.boot")'
 	cmp stage2.boot stage3.boot
 	(sed '/^ *$$/q' src/boot.txt; cat stage2.boot) >boot.tmp
 	mv boot.tmp src/boot.txt
+
+jbootstrap: Boot.class force
+	$(RUNSCRIPT) -B Boot src/compiler.txt -e '_jdump("Boot1")'
+	$(JAVAC) -d . -cp obj Boot1.java
+	$(RUNSCRIPT) -B Boot1 src/compiler.txt -e '_jdump("Boot2")'
+	$(JAVAC) -d . -cp obj Boot2.java
+	$(RUNSCRIPT) -B Boot2 src/compiler.txt -e '_jdump("Boot3")'
+	sed 's/Boot2/Boot3/' Boot2.java | cmp - Boot3.java
+	(sed '/^ *$$/q' src/Boot.java; sed 's/Boot2/Boot/' Boot2.java) >tmpa
+	mv tmpa src/Boot.java
 
 # Testing
 
@@ -135,7 +150,7 @@ purge: force
 	ssh $(HOST) php $(WIKI)/maintenance/deleteOldRevisions.php --delete
 
 clean: force
-	rm -rf obj examples.gls
+	rm -rf obj examples.gls Boot.class stage*.boot
 	rm -f .compiled .signed
 
 force:

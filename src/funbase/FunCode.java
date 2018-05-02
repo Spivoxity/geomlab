@@ -153,6 +153,56 @@ public class FunCode extends Value {
         out.printf("end\n");
     }
 
+    private static int level = 4;
+    private static int vcount = 0;
+
+    public void jdump0(PrintWriter out) {
+        vcount = 0; jdump(out);
+    }
+
+    @Override
+    public void jdump(PrintWriter out) {
+        if (vcount > 0)
+            out.printf("\n%"+level+"s", "");
+        out.printf("F(\"%s\", %d,", name, arity);
+        level += 2; vcount = 99;
+
+        out.printf(" (() -> {");
+        for (int i = 0; i < code.length; ) {
+            Opcode op = decode[code[i++]];
+
+            if (vcount < 4)
+                out.printf(" ");
+            else {
+                out.printf("\n%"+level+"s", "");
+                vcount = 0;
+            }
+            
+            if (op.nrands == 0)
+                out.printf("I(%s);", op.name());
+            else
+                out.printf("I(%s, %d);", op.name(), code[i++]);
+
+            vcount++;
+        }
+        out.printf(" })");
+
+        vcount = 99;
+        for (int i = 0; i < consts.length; i++) {
+            if (vcount < 4)
+                out.printf(", ");
+            else {
+                out.printf(",\n%"+level+"s", "");
+                vcount = 0;
+            }
+            consts[i].jdump(out);
+            vcount++;
+        }
+
+        level -= 2; vcount = 99;
+        out.printf(")");
+    }
+
     /** Construct a wrapped closure and tie the knot for local recursion */
     public Value makeClosure(Value fvars[]) {
 	Value result = FunValue.instance(null);

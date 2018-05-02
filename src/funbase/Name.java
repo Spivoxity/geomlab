@@ -124,6 +124,11 @@ public final class Name extends Value implements Comparable<Name> {
 	out.printf("name #%s\n", tag);
     }
 
+    @Override
+    public void jdump(PrintWriter out) {
+	out.printf("N(\"%s\")", tag);
+    }
+
     /** A global mapping of strings to Name objects */
     private static Map<String, Name> nameTable = new HashMap<String, Name>(200);
     
@@ -209,6 +214,34 @@ public final class Name extends Value implements Comparable<Name> {
 	    }
 	}
 	out.printf("end\n");
+	out.close();
+    }
+
+    /** Save globally defined names in Java boot format */
+    public static void jdumpNames(String name, PrintWriter out) {
+	// Sort the entries to help us reach a fixpoint
+	ArrayList<String> names = new ArrayList<String>(nameTable.size());
+	names.addAll(nameTable.keySet());
+	Collections.sort(names);
+
+        out.printf("import static funbase.FunCode.Opcode.*;\n\n");
+        out.printf("public class %s extends geomlab.Bootstrap {\n", name);
+        out.printf("  @Override\n");
+        out.printf("  public void boot() {\n");
+
+	for (String k : names) {
+            if (k.equals("_syntax")) continue;
+
+	    Name x = find(k);
+	    if (x.glodef != null && !x.inherited 
+                && !(x.glodef.subr instanceof Primitive)) {
+		out.printf("    D(\"%s\", ", x.tag);
+		x.glodef.jdump(out);
+                out.printf(");\n");
+	    }
+	}
+	out.printf("  }\n");
+        out.printf("}\n");
 	out.close();
     }
 
@@ -304,6 +337,19 @@ public final class Name extends Value implements Comparable<Name> {
 	    PrintWriter out = 
 		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
 	    dumpNames(out);
+	    return Value.nil;
+	} catch (IOException e) {
+	    throw new Error(e);
+	}
+    }
+
+    @PRIMITIVE
+    public static Value _jdump(String name) {
+        String fname = name + ".java";
+	try {
+	    PrintWriter out = 
+		new PrintWriter(new BufferedWriter(new FileWriter(fname)));
+	    jdumpNames(name, out);
 	    return Value.nil;
 	} catch (IOException e) {
 	    throw new Error(e);

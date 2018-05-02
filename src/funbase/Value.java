@@ -72,6 +72,11 @@ public abstract class Value implements Serializable {
 	throw new Error(String.format("can't dump %s", this.getClass()));
     }
     
+    /** Dump the value in Java format */
+    public void jdump(PrintWriter out) {
+	throw new Error(String.format("can't jdump %s", this.getClass()));
+    }
+    
 
     // Factory methods
     
@@ -197,15 +202,6 @@ public abstract class Value implements Serializable {
 	    else
 		return null;
 	}
-
-	@Override
-        public void dump(PrintWriter out) {
-            int n = (int) Math.round(val);
-	    if (val == n)
-		out.printf("number %d\n", n);
-	    else
-		throw new Error("Can't dump a non-integer");
-	}
     }
     
     /** A boolean value */
@@ -243,6 +239,11 @@ public abstract class Value implements Serializable {
 	    out.printf("boolean %d\n", (val ? 1 : 0));
 	}
 
+	@Override
+	public void jdump(PrintWriter out) {
+	    out.printf("B(%s)", (val ? "true" : "false"));
+	}
+
 	public static final BoolValue 
 	    truth = new BoolValue(true), 
 	    falsity = new BoolValue(false);
@@ -268,6 +269,11 @@ public abstract class Value implements Serializable {
 	@Override
 	public void dump(PrintWriter out) {
 	    subr.dump(out);
+	}
+
+	@Override
+	public void jdump(PrintWriter out) {
+	    subr.jdump(out);
 	}
 
 	protected Object writeReplace() {
@@ -358,6 +364,11 @@ public abstract class Value implements Serializable {
 	@Override
 	public void dump(PrintWriter out) {
 	    out.printf("string \"%s\"\n", text);
+	}
+
+	@Override
+	public void jdump(PrintWriter out) {
+	    out.printf("S(\"%s\")", text);
 	}
     }
     
