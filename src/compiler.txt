@@ -129,7 +129,7 @@ define __top() =
 
   { PARSER -- a slightly hacked-up recursive descent parser.  The global
     variable tok contains the next token, and each parser routine p_thing
-    recognises an instance of a <thing> and returns the AST, expecting tok
+    recognises an instance of <thing> and returns the AST, expecting tok
     to contain the first token of the <thing> on entry, and leaving it with
     the first token after the <thing>.  The trickiness surrounds operator
     sections like (2*x+), where we discover that it is a section only after 
