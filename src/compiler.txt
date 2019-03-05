@@ -634,10 +634,10 @@ define __top() =
 
   { c_ref -- compile a variable reference }
   let c_ref(x, env) = 
-    let case (_pair(n, #QUOTE(v))) = #QUOTE(v)
+    let case(_pair(n, #QUOTE(v))) = #QUOTE(v)
       | case(_pair(n, i)) = 
-    	  { x is a local or constant or known free variable }
-          i when n = e_level(env) or i = #QUOTE
+    	  { x is a local or known free variable }
+          i when n = e_level(env)
       | case(_pair(_, _)) =
           { x is local to an enclosing scope -- make it a free variable }
 	  let a = alloc_fv(x, env) in

@@ -1365,26 +1365,22 @@ public class Boot extends geomlab.Bootstrap {
           I(GETSND); I(TRAP, 27); I(QUOTE, 0); I(MPRIM, 1);
           I(BIND, 1); I(QUOTE, 0); I(PREP, 1); I(LOCAL, 1);
           I(PUTARG, 0); I(CALL, 1); I(RETURN); I(ARG, 0);
-          I(TRAP, 84); I(MPAIR); I(BIND, 0); I(GETSND);
+          I(TRAP, 64); I(MPAIR); I(BIND, 0); I(GETSND);
           I(BIND, 1); I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0);
           I(PUTARG, 0); I(FVAR, 1); I(PREP, 1); I(FVAR, 2);
           I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
-          I(JFALSE, 65); I(QUOTE, 2); I(JUMP, 79); I(GLOBAL, 1);
-          I(PREP, 2); I(LOCAL, 1); I(PUTARG, 0); I(QUOTE, 0);
-          I(PUTARG, 1); I(CALL, 2); I(JFALSE, 84); I(LOCAL, 1);
-          I(RETURN); I(ARG, 0); I(TRAP, 146); I(MPAIR);
-          I(POP); I(GETSND); I(POP); I(FVAR, 3);
-          I(PREP, 2); I(FVAR, 4); I(PUTARG, 0); I(FVAR, 2);
-          I(PUTARG, 1); I(CALL, 2); I(BIND, 0); I(FVAR, 5);
-          I(PREP, 3); I(FVAR, 4); I(PUTARG, 0); I(QUOTE, 3);
+          I(JFALSE, 64); I(LOCAL, 1); I(RETURN); I(ARG, 0);
+          I(TRAP, 126); I(MPAIR); I(POP); I(GETSND);
+          I(POP); I(FVAR, 3); I(PREP, 2); I(FVAR, 4);
+          I(PUTARG, 0); I(FVAR, 2); I(PUTARG, 1); I(CALL, 2);
+          I(BIND, 0); I(FVAR, 5); I(PREP, 3); I(FVAR, 4);
+          I(PUTARG, 0); I(QUOTE, 2); I(PREP, 1); I(LOCAL, 0);
+          I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(FVAR, 2);
+          I(PUTARG, 2); I(CALL, 3); I(POP); I(QUOTE, 2);
           I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-          I(PUTARG, 1); I(FVAR, 2); I(PUTARG, 2); I(CALL, 3);
-          I(POP); I(QUOTE, 3); I(PREP, 1); I(LOCAL, 0);
-          I(PUTARG, 0); I(CALL, 1); I(RETURN); I(QUOTE, 4);
-          I(PREP, 1); I(FVAR, 4); I(PUTARG, 0); I(CALL, 1);
-          I(RETURN); }),
-          N("QUOTE"), N("="), B(true), N("FVAR"),
-          N("GLOBAL"))),
+          I(RETURN); I(QUOTE, 3); I(PREP, 1); I(FVAR, 4);
+          I(PUTARG, 0); I(CALL, 1); I(RETURN); }),
+          N("QUOTE"), N("="), N("FVAR"), N("GLOBAL"))),
       F("sortby", 2, (() -> {
         I(QUOTE, 0); I(FRAME, 2); I(ARG, 0); I(PUTARG, 1);
         I(CLOSURE, 2); I(BIND, 0); I(GLOBAL, 1); I(PREP, 3);
