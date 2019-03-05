@@ -58,6 +58,9 @@ geomlab0.gls: .compiled src/boot.txt src/prelude.txt
 examples.gls: obj/geomlab.gls progs/examples.txt
 	$(RUNSCRIPT) progs/examples.txt -e '_save("$@")'
 
+progs/examples.txt: progs/examples.in progs/exprep.tcl
+	tclsh progs/exprep.tcl $< >$@
+
 life.gls: obj/geomlab.gls progs/life.txt
 	$(RUNSCRIPT) progs/life.txt -e '_save("$@")'
 
@@ -142,7 +145,7 @@ purge: force
 	ssh $(HOST) php $(WIKI)/maintenance/deleteOldRevisions.php --delete
 
 clean: force
-	rm -rf obj examples.gls Boot.class stage*.boot
+	rm -rf obj examples.gls Boot?.java Boot?.class
 	rm -f .compiled .signed
 
 force:

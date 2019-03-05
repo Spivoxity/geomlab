@@ -1,2 +1,0 @@
-#!/bin/sh
-java -ea -cp obj geomlab.RunScript "$@"

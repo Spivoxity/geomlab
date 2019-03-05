@@ -6,79 +6,151 @@ define join([]) = ""
 define _init() =
   let examples(menu) =
     _examples(map(join, menu)) in
-  examples(["man", "man $ woman", "man & man",
-    "man $ (woman & tree)", "(man $ woman) & tree",
-    ["define f(p) = p $ (p & p);", "", "f(man)"],
-    "f(woman)", "f(man $ tree)", "f(f(man))", "f(f(f(man)))",
-    ["{ row }", "",
-      "define row(1, p) = p", 
-      "  | row(n, p) = p $ row(n-1, p) when n > 1;",
-      "", "row(4, man)"],
-    ["{ crowd }", "",
-      "define crowd(a, a, p) = row(a, p)",
-      "  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;",
-      "", "crowd(5, 10, man)"],
-    "spiral(10)", "zagzig(10)", 
-    "colour((T & blank) $ T)", "colour((T & rot(T)) $ T)",
-    "colour(side(2) $ T)", "colour(frame(blank, side(2), U))",
-    "colour(frame(corner(2), side(2), U))", "colour(invlimit(8))",
-    "hilbert(5)", "hilbslide", "turtle(dragon(12))", "bush(system(4))",
-    ["{ Mandelbrot set }", "",
-      "define forever = 1000;", "",
-      "define mandel(cx, cy) =",
-      "  let loop(n, x, y) =",
-      "    if n >= forever then -1",
-      "    else if x*x + y*y > 4 then n",
-      "    else loop(n+1, x*x - y*y + cx, 2*x*y + cy) in",
-      "  loop(0, 0, 0);", "",
-      "define mfun(x, y) =",
-      "  let m = mandel(x, y) in",
-      "  if m < 0 then black else hsv(m/forever, 0.7, 1);", "",
-      "define plot(w, x0, y0, s, f) =",
-      "  image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));",
-      "", "plot(600, -1, 0.285, 0.02, mfun)"], 
-    ["{ Pixellation }", "",
-      "define snap(p) = pixel(mike, p);", "",
-      "define pixpic(n, f) =",
-      "  function ([x, y]) f([n*(x div n), n*(y div n)]);", "",
-      "slide(function (t)",
-      "  image(300, 400, pixpic(40*t+1, snap)))"],
-    ["{ Nonlinear transformation }", "",
-      "define snap(p) = pixel(mike, p);", "",
-      "slideimg(500, 500, stages([",
-      "  function (t)   snap . shear(t/5),",      
-      "  function (t) interpic(t,",
-      "                 snap . shear(1/5),",
-      "                 weird . snap . shear(1/5)),",
-      "  function (t)   weird . snap . shear(1/5) . pp(t/250)]))"],
-    ["{ Game of Life }", "",
-      "define N = 20; define T = 65;", "",
-      "define blobify(img) = above([beside([pixel(img, [x, y]) ",
-      "  | x <- [0..width(img)-1]]) | y <- reverse([0..height(img)-1])]);", "",
-      "define init = ",
-      "  let c = [[6,2], [7,3], [8,1], [8,2], [8,3], [14,10], [15,10], [16,10]] in",
-      "  image(N, N, function (p) if member(p, c) then black else white);", "",
-      "define region([x, y]) = [ [u, v] | u <- [x-1..x+1], v <- [y-1..y+1] ];", "",
-      "define alive(p, img) =",
-      "  let score(q) = if pixel(img, q) <> white then 1 else 0 in",
-      "  let s = sum([score(q) | q <- region(p)]) - score(p)/2 in ",
-      "  s > 2 and s < 4;", "",
-      "define fade(c) =",
-      "  if c = white then red else rgb(rpart(c)*3/4, 0, 0);", "",
-      "define next(img) = ",
-      "  image(N, N, function (p) ",
-      "    if alive(p, img) then fade(pixel(img, p)) else white);", "",
-      "let frames = repeat(T, next, init) in",
-      "  slide(function (t) blobify(nth(int((T-0.001)*t), frames)))"],
-    ["{ Digits puzzle }", "",
-      "define delete(d, f) =",
-      "  function (x) (x <> d) and f(x);", "",
-      "define search(k, n, avail) =",
-      "  if k = 9 then [n] else",
-      "    [ s | d <- [1..9] when avail(d),",
-      "          n1 <- [10*n+d] when n1 mod (k+1) = 0,",
-      "          s <- search(k+1, n1, delete(d, avail)) ];", "",
-      "search(0, 0, function (x) true);"]]);
+  examples([
+=====
+man
+-----
+man $ woman
+-----
+man & man
+-----
+man $ (woman & tree)
+-----
+(man $ woman) & tree
+-----
+define f(p) = p $ (p & p);
+
+f(man)
+-----
+f(woman)
+-----
+f(man $ tree)
+-----
+f(f(man))
+-----
+f(f(f(man)))
+-----
+{ row }
+
+define row(1, p) = p, 
+  | row(n, p) = p $ row(n-1, p) when n > 1;
+
+row(4, man)
+-----
+{ crowd }
+
+define crowd(a, a, p) = row(a, p)
+  | crowd(a, b, p) = crowd(a+1, b, p) & row(a, p) when a < b;
+
+crowd(5, 10, man)
+-----
+spiral(10)
+-----
+zagzig(10), 
+-----
+colour((T & blank) $ T)
+-----
+colour((T & rot(T)) $ T)
+-----
+colour(side(2) $ T)
+-----
+colour(frame(blank, side(2), U))
+-----
+colour(frame(corner(2), side(2), U))
+-----
+colour(invlimit(8))
+-----
+hilbert(5)
+-----
+hilbslide
+-----
+turtle(dragon(12))
+-----
+bush(system(4))
+-----
+{ Mandelbrot set }
+
+define forever = 1000;
+
+define mandel(cx, cy) =
+  let loop(n, x, y) =
+    if n >= forever then -1
+    else if x*x + y*y > 4 then n
+    else loop(n+1, x*x - y*y + cx, 2*x*y + cy) in
+  loop(0, 0, 0);
+
+define mfun(x, y) =
+  let m = mandel(x, y) in
+  if m < 0 then black else hsv(m/forever, 0.7, 1);
+
+define plot(w, x0, y0, s, f) =
+  image(w, w, function ([x, y]) f(x0 + s*(x/w-0.5), y0 + s*(y/w-0.5)));
+
+plot(600, -1, 0.285, 0.02, mfun)
+-----
+{ Pixellation }
+
+define snap(p) = pixel(mike, p);
+
+define pixpic(n, f) =
+  function ([x, y]) f([n*(x div n), n*(y div n)]);
+
+slide(function (t)
+  image(300, 400, pixpic(40*t+1, snap)))
+-----
+{ Nonlinear transformation }
+
+define snap(p) = pixel(mike, p);
+
+slideimg(500, 500, stages([
+  function (t)   snap . shear(t/5),
+  function (t) interpic(t,
+                 snap . shear(1/5),
+                 weird . snap . shear(1/5)),
+  function (t)   weird . snap . shear(1/5) . pp(t/250)]))
+-----
+{ Game of Life }
+
+define N = 20; define T = 65;
+
+define blobify(img) = above([beside([pixel(img, [x, y]) 
+  | x <- [0..width(img)-1]]) | y <- reverse([0..height(img)-1])]);
+
+define init = 
+  let c = [[6,2], [7,3], [8,1], [8,2], [8,3], [14,10], [15,10], [16,10]] in
+  image(N, N, function (p) if member(p, c) then black else white);
+
+define region([x, y]) = [ [u, v] | u <- [x-1..x+1], v <- [y-1..y+1] ];
+
+define alive(p, img) =
+  let score(q) = if pixel(img, q) <> white then 1 else 0 in
+  let s = sum([score(q) | q <- region(p)]) - score(p)/2 in 
+  s > 2 and s < 4;
+
+define fade(c) =
+  if c = white then red else rgb(rpart(c)*3/4, 0, 0);
+
+define next(img) = 
+  image(N, N, function (p) 
+    if alive(p, img) then fade(pixel(img, p)) else white);
+
+let frames = repeat(T, next, init) in
+  slide(function (t) blobify(nth(int((T-0.001)*t), frames)))
+-----
+{ Digits puzzle }
+
+define delete(d, f) =
+  function (x) (x <> d) and f(x);
+
+define search(k, n, avail) =
+  if k = 9 then [n] else
+    [ s | d <- [1..9] when avail(d),
+          n1 <- [10*n+d] when n1 mod (k+1) = 0,
+          s <- search(k+1, n1, delete(d, avail)) ];
+
+search(0, 0, function (x) true);
+=====
+]);
   
 _stage(1); { These definitions are defaults }
 
