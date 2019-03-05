@@ -133,14 +133,18 @@ public class GraphBox extends JPanel {
 	public void run() {
 	    for (;;) {
 		synchronized(this) {
-		    while (newpic == null 
-			    || (picture == newpic && slider == newslider)) {
+		    while (true) {
+                        if (newpic == null)
+                            picture = null;
+                        else if (picture != newpic || slider != newslider)
+                            break;
+
 			// Up to date: wait to be woken
 			try {
 			    wait();
 			}	
 			catch (InterruptedException ex) {
-			    return;
+			    continue;
 			}
 		    }
 		    
