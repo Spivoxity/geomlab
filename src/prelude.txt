@@ -212,7 +212,7 @@ define stretch(r, p) = _transpic(r * aspect(p), p, _identity, 0);
 _infixl(#$, 6);
 _infixl(#&, 5);
 
-{ $ an & can be defined in terms of _combine and _transpic as shown
+{ $ and & can be defined in terms of _combine and _transpic as shown
   in the commented-out code below, but it's better to provide specialised
   primitives in order to reduce the recursion depth in rendering complex
   pictures. }

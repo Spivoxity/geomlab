@@ -114,12 +114,13 @@ public class ImagePicture extends Picture {
     
     /** The draw method from Drawable */
     @Override
-    public void draw(Stylus g, int ww, int hh, ColorValue background) {
+    public void draw(Stylus g, int ww, int hh,
+                     ColorValue background, boolean force) {
 	/* If the only thing being drawn is an image, then
 	   don't expand it beyond its natural size. */
 	Tran2D t;
 
-	if (ww <= width || hh <= height)
+	if (force || ww <= width || hh <= height)
 	    t = Tran2D.scaling(ww, hh);
 	else
 	    t = Tran2D.translation((ww-width)/2,

@@ -416,16 +416,15 @@ public class EPSWriter extends Stylus {
 	/* The dimensions of the image are chosen to give
 	 * the right aspect ratio, and so that the
 	 * geometric mean of width and height is meanSize */
-	float sqrtAspect = (float) Math.sqrt(pic.getAspect());
-	float width = (float) meanSize * sqrtAspect;
-	float height = (float) meanSize / sqrtAspect;		
+	double sqrtAspect = Math.sqrt(pic.getAspect());
+	int width = (int) Math.round(meanSize * sqrtAspect);
+	int height = (int) Math.round(meanSize / sqrtAspect);		
 		
 	try {
 	    final Writer out = 
 		new BufferedWriter(new FileWriter(fname));
 	    Stylus g = new EPSWriter(width, height, (float) slider, out);
-	    Tran2D t = Tran2D.scaling(width, height);
-            pic.draw(g, t, background);
+            pic.draw(g, width, height, background, true);
 	    g.close();
 	}
 	catch (IOException e) {

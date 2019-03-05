@@ -60,13 +60,9 @@ public class SlidePicture extends Value implements Drawable {
     }
 
     @Override
-    public void draw(Stylus g, Tran2D t, ColorValue background) {
-	cache.draw(g, t, background);
-    }
-
-    @Override
-    public void draw(Stylus g, int ww, int hh, ColorValue background) {
-        cache.draw(g, ww, hh, background);
+    public void draw(Stylus g, int ww, int hh,
+                     ColorValue background, boolean force_size) {
+        cache.draw(g, ww, hh, background, force_size);
     }
 
     @Override

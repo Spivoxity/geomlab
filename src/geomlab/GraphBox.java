@@ -74,7 +74,7 @@ public class GraphBox extends JPanel {
 	    
 		g2.translate((w - ww)/2, (h + hh)/2); g2.scale(1, -1);
                 Stylus s = new AWTStylus(g2, sliderValue());
-		picture.draw(s, ww, hh, ColorValue.white);
+		picture.draw(s, ww, hh, ColorValue.white, false);
 	    }
 	    catch (Throwable e) {
 		GeomBase.theApp.failure(e);
@@ -190,12 +190,13 @@ public class GraphBox extends JPanel {
         	else
         	    width = height * aspect;
         	
-                int ww = (int) width, hh = (int) height;
+                int ww = (int) Math.round(width),
+                    hh = (int) Math.round(height);
 
         	Graphics2D g2 = (Graphics2D) g;
         	g2.translate(x, y+hh); g2.scale(1, -1);
         	Stylus s = new AWTStylus(g2, sliderValue());
-        	picture.draw(s, ww, hh, ColorValue.white);
+        	picture.draw(s, ww, hh, ColorValue.white, false);
         	return Printable.PAGE_EXISTS;
             }
         });

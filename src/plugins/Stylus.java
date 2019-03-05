@@ -111,9 +111,6 @@ public abstract class Stylus {
         /** Compute aspect ratio width/height. */
         public double getAspect();
 
-        /** Draw the image in the unit square with specified transformation. */
-        public void draw(Stylus g, Tran2D t, ColorValue background);
-
         /** Draw the image in a specified rectangle
          *
          *  The default implementation of drawing in a screen rectangle is
@@ -121,6 +118,7 @@ public abstract class Stylus {
          *  ImagePictures look bad if they are scaled up too much,
          *  so they override this method to add a blank border when
          *  necessary. */
-        public void draw(Stylus g, int ww, int hh, ColorValue background);
+        public void draw(Stylus g, int ww, int hh,
+                         ColorValue background, boolean force_size);
     }
 }

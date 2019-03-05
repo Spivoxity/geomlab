@@ -105,7 +105,7 @@ public class AWTFactory extends Native {
 			   RenderingHints.VALUE_ANTIALIAS_ON);
 	g.translate(0, height); g.scale(1, -1);
         Stylus s = new AWTStylus(g, slider);
-   	pic.draw(s, width, height, background);
+   	pic.draw(s, width, height, background, false);
 	return new AWTImage(image);
     }
 

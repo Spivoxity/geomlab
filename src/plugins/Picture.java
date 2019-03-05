@@ -80,17 +80,13 @@ public class Picture extends Value implements Drawable {
     public void prerender(double slider) { }
     
     @Override
-    public void draw(Stylus g, int ww, int hh, ColorValue background) {
+    public void draw(Stylus g, int ww, int hh,
+                     ColorValue background, boolean force_size) {
         Tran2D t = Tran2D.scaling(ww, hh);
-        draw(g, t, background);
-    }
-
-    @Override
-    public void draw(Stylus gc, Tran2D t, ColorValue background) {
-	gc.setTrans(t);
-	gc.fillOutline(unitsquare, background);
-	paintPart(FILL, -1, gc, t);
-	paintPart(DRAW, -1, gc, t);
+	g.setTrans(t);
+	g.fillOutline(unitsquare, background);
+	paintPart(FILL, -1, g, t);
+	paintPart(DRAW, -1, g, t);
     }
     
     public static final int DRAW = 1, FILL = 2;
