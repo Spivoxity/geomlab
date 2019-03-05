@@ -1,5 +1,5 @@
 /*
- * ScreenStylus.java
+ * AWTStylus.java
  * 
  * This file is part of GeomLab
  * Copyright (c) 2005 J. M. Spivey
@@ -37,10 +37,10 @@ import java.awt.image.BufferedImage;
 import plugins.*;
 
 /** Painting context for drawing on the screen */
-public class ScreenStylus extends Stylus {
+public class AWTStylus extends Stylus {
     private Graphics2D gcxt;
 
-    public ScreenStylus(Graphics2D g, double slider) {
+    public AWTStylus(Graphics2D g, double slider) {
 	super(slider);
 	gcxt = g;
     }

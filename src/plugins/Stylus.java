@@ -30,9 +30,6 @@
 
 package plugins;
 
-import funbase.Value;
-import funbase.Primitive.DESCRIPTION;
-
 /** An abstract drawing tablet on which a picture can be drawn */
 public abstract class Stylus {
     private final double slider;
@@ -110,30 +107,12 @@ public abstract class Stylus {
 	pic.defaultDraw(this);
     }
 
-    /** A scalable picture that can draw itself with a Stylus */
-    @DESCRIPTION("a picture")
-    public interface Drawable {
-	/** Perform any compute-intensive preparation for painting.
-	 * 
-	 *  Once a Drawable has been prerendered (typically in a worker
-	 *  thread), it must be ready to be painted in a short time from
-	 *  the GUI thread.  It may subsequently by prerendered again
-	 *  with a different slider value, but it must always remain
-	 *  ready for painting. */
-	public void prerender(double slider);
-	
-	/** Compute aspect ratio width/height.
-	 * 
-	 *  The picture should be prerendered first. */
-	public double getAspect();
-	
-	/** Test whether the picture supports slider interaction. */
-	public boolean isInteractive();
+    public interface Sketch {
+        /** Compute aspect ratio width/height. */
+        public double getAspect();
 
-	/** Draw the image in the unit square with specified transformation.
-	 * 
-	 *  The picture should be prerendered first. */
-	public void draw(Stylus g, Tran2D t, ColorValue background);
+        /** Draw the image in the unit square with specified transformation. */
+        public void draw(Stylus g, Tran2D t, ColorValue background);
 
         /** Draw the image in a specified rectangle
          *
@@ -143,12 +122,5 @@ public abstract class Stylus {
          *  so they override this method to add a blank border when
          *  necessary. */
         public void draw(Stylus g, int ww, int hh, ColorValue background);
-
-        /** Render the image
-         *
-         *  This method is used for saving images on a file.  Like the
-         *  draw method, it is implemented specially for ImagePictures. */
-        public Native.Image render(int width, int height, 
-                                   double slider, ColorValue background);
     }
 }

@@ -38,7 +38,7 @@ import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 
 /** A picture given as a program dependent on the slider */
-public class SlidePicture extends Value implements Stylus.Drawable {
+public class SlidePicture extends Value implements Drawable {
     private static final long serialVersionUID = 1L;
 
     /** Function value that is invoked to compute the image */

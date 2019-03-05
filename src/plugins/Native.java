@@ -55,18 +55,18 @@ public abstract class Native {
     /** Create a blank image */
     public abstract Image image(int w, int h);
 
-    /** Render a drawable picture as a pixel image */
-    public abstract Image render(Stylus.Drawable pic, int width, int height, 
+    /** Render a picture as a pixel image */
+    public abstract Image render(Stylus.Sketch pic, int width, int height, 
 				 double slider, ColorValue background);
 
-    /** Render a drawable picture with specified mean size */
-    public Image render(Stylus.Drawable pic, int meanSize, double slider,
+    /** Render a picture with specified mean size */
+    public Image render(Stylus.Sketch pic, int meanSize, double slider,
 			ColorValue background) {
 	double aspect = pic.getAspect();
     	double sqrtAspect = Math.sqrt(aspect);
     	int width = (int) Math.round(meanSize * sqrtAspect);
     	int height = (int) Math.round(meanSize / sqrtAspect);
-	return pic.render(width, height, slider, background);
+	return render(pic, width, height, slider, background);
     }
 
     /** Read an image from a file */

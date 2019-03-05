@@ -55,7 +55,7 @@ import funbase.FunCode;
 
 /** A rectangular graphical object of scalable size but fixed aspect ratio */
 @DESCRIPTION("a picture")
-public class Picture extends Value implements Stylus.Drawable {
+public class Picture extends Value implements Drawable {
     private static final long serialVersionUID = 1L;
 
     public final double aspect;	       // = width / height

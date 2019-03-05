@@ -54,7 +54,7 @@ public class AWTFactory extends Native {
 
     @Override
     public Object vector(Vec2D v) {
-	return null;
+	throw new Error("AWTFactory.vector");
     }
 
     @Override
@@ -97,14 +97,14 @@ public class AWTFactory extends Native {
     }
 
     @Override
-    public Image render(Stylus.Drawable pic, int width, int height, 
+    public Image render(Stylus.Sketch pic, int width, int height, 
 			double slider, ColorValue background) {
     	BufferedImage image = createImage(width, height);
     	Graphics2D g = (Graphics2D) image.getGraphics();
     	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 			   RenderingHints.VALUE_ANTIALIAS_ON);
 	g.translate(0, height); g.scale(1, -1);
-        Stylus s = new ScreenStylus(g, slider);
+        Stylus s = new AWTStylus(g, slider);
    	pic.draw(s, width, height, background);
 	return new AWTImage(image);
     }

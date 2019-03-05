@@ -112,7 +112,7 @@ public class ImagePicture extends Picture {
 	g.drawImage(image);
     }
     
-    /** The draw method from Stylus.Drawable */
+    /** The draw method from Drawable */
     @Override
     public void draw(Stylus g, int ww, int hh, ColorValue background) {
 	/* If the only thing being drawn is an image, then
@@ -122,8 +122,8 @@ public class ImagePicture extends Picture {
 	if (ww <= width || hh <= height)
 	    t = Tran2D.scaling(ww, hh);
 	else
-	    t = Tran2D.translation((ww-width)/2, (hh-height)/2)
-                .scale(width, height);
+	    t = Tran2D.translation((ww-width)/2,
+                                   (hh-height)/2).scale(width, height);
 	g.setTrans(t);
 	g.drawImage(image);
     }
@@ -247,7 +247,7 @@ public class ImagePicture extends Picture {
     }
 	
     @PRIMITIVE
-    public static Value _render(Stylus.Drawable pic, int size, 
+    public static Value _render(Drawable pic, int size, 
 				double slider, double grey) {
 	float s = (float) slider;
 	ColorValue bg = ColorValue.getGrey((float) grey);

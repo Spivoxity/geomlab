@@ -407,7 +407,7 @@ public class EPSWriter extends Stylus {
     
     /** Save a picture as Encapsulated PostScript */
     @PRIMITIVE
-    public static void epswrite(Stylus.Drawable pic, String fname, 
+    public static void epswrite(Drawable pic, String fname, 
                                 double meanSize, double slider, double grey) {
 	ColorValue background = ColorValue.getGrey(grey);
 

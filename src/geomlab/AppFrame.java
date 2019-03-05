@@ -38,7 +38,7 @@ import javax.swing.border.*;
 import java.util.*;
 import javax.imageio.*;
 
-import plugins.Stylus;
+import plugins.Drawable;
 
 /** The main GUI frame for the GeomLab application */
 public class AppFrame extends JFrame {
@@ -175,7 +175,7 @@ public class AppFrame extends JFrame {
 	input.setSelectionEnd(end);
     }
     
-    public void setPicture(Stylus.Drawable pic) {
+    public void setPicture(Drawable pic) {
 	arena.setPicture(pic);
 	if (pic != null)
 	    output.setSelectedIndex(1);

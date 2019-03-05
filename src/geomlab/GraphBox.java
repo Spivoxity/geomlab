@@ -38,13 +38,14 @@ import javax.swing.event.*;
 
 import funbase.Evaluator;
 import plugins.Stylus;
+import plugins.Drawable;
 import plugins.ColorValue;
 import plugins.Native;
 import geomlab.Command.CommandException;
 
 /** A panel for displaying a Picture object */
 public class GraphBox extends JPanel {
-    protected Stylus.Drawable picture = null;
+    protected Drawable picture = null;
 
     protected final JComponent canvas = new JComponent() {
 	@Override
@@ -72,7 +73,7 @@ public class GraphBox extends JPanel {
 				    RenderingHints.VALUE_ANTIALIAS_ON);
 	    
 		g2.translate((w - ww)/2, (h + hh)/2); g2.scale(1, -1);
-                plugins.Stylus s = new ScreenStylus(g2, sliderValue());
+                Stylus s = new AWTStylus(g2, sliderValue());
 		picture.draw(s, ww, hh, ColorValue.white);
 	    }
 	    catch (Throwable e) {
@@ -104,7 +105,7 @@ public class GraphBox extends JPanel {
 	});
     }
     
-    public void setPicture(Stylus.Drawable pic) {
+    public void setPicture(Drawable pic) {
 	picture = null;
 	slider.setVisible(pic != null && pic.isInteractive());
 	slider.revalidate();
@@ -113,17 +114,17 @@ public class GraphBox extends JPanel {
     
     public float sliderValue() { return slider.getValue() / 1000.0f; }
     
-    protected void prerender(Stylus.Drawable pic) {
+    protected void prerender(Drawable pic) {
 	worker.prerender(pic, sliderValue());
     }
     
     private class Worker extends Thread {
-	private Stylus.Drawable picture = null, newpic;
+	private Drawable picture = null, newpic;
 	private float slider, newslider;
 	
 	public Worker() { }
 	
-	public synchronized void prerender(Stylus.Drawable p, float s) {
+	public synchronized void prerender(Drawable p, float s) {
 	    newpic = p; newslider = s;
 	    notify();
 	}
@@ -193,7 +194,7 @@ public class GraphBox extends JPanel {
 
         	Graphics2D g2 = (Graphics2D) g;
         	g2.translate(x, y+hh); g2.scale(1, -1);
-        	Stylus s = new ScreenStylus(g2, sliderValue());
+        	Stylus s = new AWTStylus(g2, sliderValue());
         	picture.draw(s, ww, hh, ColorValue.white);
         	return Printable.PAGE_EXISTS;
             }

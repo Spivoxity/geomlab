@@ -34,7 +34,7 @@ import funbase.Name;
 import funbase.Value;
 import funbase.Evaluator;
 import geomlab.Command.CommandException;
-import plugins.Stylus.Drawable;
+import plugins.Drawable;
 import plugins.Native;
 
 import java.awt.*;

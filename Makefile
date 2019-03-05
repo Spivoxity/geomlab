@@ -145,7 +145,7 @@ purge: force
 	ssh $(HOST) php $(WIKI)/maintenance/deleteOldRevisions.php --delete
 
 clean: force
-	rm -rf obj examples.gls Boot?.java Boot?.class
+	rm -rf obj examples.gls Boot?.java Boot?.class Boot.class
 	rm -f .compiled .signed
 
 force:
