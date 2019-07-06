@@ -110,7 +110,6 @@ class Type {
         stringval_cl = "funbase/Value$StringVal",
 	consval_cl = "funbase/Value$Cons",
         pairval_cl = "funbase/Value$Pair",
-	nilval_cl = "funbase/Value$Nil",
 	wrongkind_cl = "funbase/Value$WrongKindException",
 	function_cl = "funbase/Function",
 	funcode_cl = "funbase/FunCode",

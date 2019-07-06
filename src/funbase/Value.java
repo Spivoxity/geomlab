@@ -169,7 +169,7 @@ public abstract class Value implements Serializable {
 
     /** A numeric value represented as a double-precision float */
     @DESCRIPTION("a numeric")
-    public static class Number extends Value {
+    protected static class Number extends Value {
 	private static final long serialVersionUID = 1L;
 
 	/** The value */
@@ -231,7 +231,7 @@ public abstract class Value implements Serializable {
     
     /** A boolean value */
     @DESCRIPTION("a boolean")
-    public static class Boolean extends Value {
+    protected static class Boolean extends Value {
 	private static final long serialVersionUID = 1L;
 
 	private final boolean val;
@@ -308,7 +308,7 @@ public abstract class Value implements Serializable {
 
     /** A string value */
     @DESCRIPTION("a string")
-    public static class StringVal extends Value {
+    protected static class StringVal extends Value {
 	private static final long serialVersionUID = 1L;
 
 	public final String text;
@@ -383,7 +383,7 @@ public abstract class Value implements Serializable {
     }
     
     /** A value representing the empty list */
-    public static class Nil extends Value {
+    private static class Nil extends Value {
 	private static final long serialVersionUID = 1L;
 
 	private Nil() { super(); }
@@ -405,7 +405,7 @@ public abstract class Value implements Serializable {
     
     /** A value representing a non-empty list */
     @DESCRIPTION("a list")
-    public static class Cons extends Value {
+    protected static class Cons extends Value {
 	private static final long serialVersionUID = 1L;
 
 	public final Value head, tail;
@@ -560,7 +560,7 @@ public abstract class Value implements Serializable {
         }
     };
 
-    public static class Blob extends Value {
+    protected static class Blob extends Value {
         private static final long serialVersionUID = 1L;
 
         public final Name functor;
