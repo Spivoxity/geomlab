@@ -322,8 +322,8 @@ public class JitTranslator implements FunCode.Jit {
                     Value v = f.getGlodef();
 
                     if (f.isFrozen() && v != null 
-                        && v instanceof Value.FunValue) {
-                        Function fun = ((Value.FunValue) v).subr;
+                        && v instanceof Value.Lambda) {
+                        Function fun = ((Value.Lambda) v).subr;
                         // Calling a known function
                         if ((fun instanceof Primitive) 
                             && fun.arity == funcode.code[ip+1]) {
@@ -544,8 +544,8 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case MNIL:    
-                code.gen(INSTANCEOF, nilval_cl);
-                code.gen(IFEQ, trap);
+                code.gen(GETSTATIC, value_cl, "nil", value_t); 
+                code.gen(IF_ACMPNE, trap);
                 break;
 
 	    case MPLUS:   

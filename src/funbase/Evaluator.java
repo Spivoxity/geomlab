@@ -57,14 +57,14 @@ public class Evaluator {
     protected static int consLimit = 100000000;
 
     private static class ExecThread extends Thread {
-	public Function fun;
+	public Value fun;
 	public Value args[];
 	public Value result;
 	public Error error = null;
 
 	private static int thrcount = 0;
 
-	public ExecThread(Function fun, Value args[]) {
+	public ExecThread(Value fun, Value args[]) {
 	    super(null, null, "exec" + thrcount++, 16*1024*1024);
 	    this.fun = fun; this.args = args;
 	}
@@ -95,7 +95,7 @@ public class Evaluator {
         steps = conses = 0;
     }
 
-    public static Value execute(Function fun, Value... args) {
+    public static Value execute(Value fun, Value... args) {
 	runFlag = true; steps = conses = 0; timer = null;
 	Backtrace backtrace = FunCode.backtrace();
         backtrace.initStack();
@@ -300,8 +300,7 @@ public class Evaluator {
 
     /** Complain about failure of head or tail */
     public static void list_fail(Value xs, String msg) {
-	error(msg, (xs instanceof Value.NilValue 
-		    ? "the empty list" : "a non-list"));
+	error(msg, (xs == Value.nil ? "the empty list" : "a non-list"));
     }    
 
     @PRIMITIVE

@@ -47,8 +47,8 @@ public class StringPrims {
     public static Value explode(String s) {
 	Value result = Value.nil;
 	for (int i = s.length()-1; i >= 0; i--) {
-            Value ch = StringValue.instance(s.charAt(i));
-	    result = Value.ConsValue.instance(ch, result);
+            Value ch = Value.string(s.charAt(i));
+	    result = Value.cons(ch, result);
         }
 	return result;
     }
@@ -64,8 +64,8 @@ public class StringPrims {
 
     /** Make character with specified ASCII code */
     @PRIMITIVE
-    public static StringValue chr(int x) {
-	return StringValue.instance((char) x);
+    public static Value chr(int x) {
+	return Value.string((char) x);
     }
 
     /** Return ASCII code of first character */

@@ -38,8 +38,6 @@ import funbase.FunCode;
 import funbase.Evaluator;
 import funbase.Value;
 import funbase.Function;
-import funbase.Value.FunValue;
-import funbase.Function.Closure;
 
 public class StackTracer implements Evaluator.Backtrace {
     /** Table for interpreting stack traces */
@@ -86,10 +84,10 @@ public class StackTracer implements Evaluator.Backtrace {
 
     @Override
     public void setRoot(Value root) {
-	if (root instanceof FunValue) {
-	    Function f = ((FunValue) root).subr;
-	    if (f instanceof Closure)
-		this.root = ((Closure) f).getCode();
+	if (root instanceof Value.Lambda) {
+	    Function f = ((Value.Lambda) root).subr;
+	    if (f instanceof Function.Closure)
+		this.root = ((Function.Closure) f).getCode();
 	}
     }
 }

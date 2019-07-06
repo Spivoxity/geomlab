@@ -48,7 +48,6 @@ import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Scanner;
 import funbase.Value;
-import funbase.Value.NumValue;
 import funbase.FunCode;
 
 /** Common superclass for classes that provide a read-eval-print loop */
@@ -174,10 +173,9 @@ public class GeomBase {
 
 	while (true) {
 	    try {
-                Name top = Name.find("_top");
-                Value.FunValue toplev = (Value.FunValue) top.getGlodef();
+                Value top = Name.find("_top").getGlodef();
                 scanner.resetText();
-		if (Evaluator.execute(toplev.subr) != Value.BoolValue.truth)
+		if (Evaluator.execute(top) != Value.bool(true))
 		    return true;
 
 		if (display) {

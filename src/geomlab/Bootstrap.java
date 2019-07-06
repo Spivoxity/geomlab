@@ -15,11 +15,11 @@ public abstract class Bootstrap {
     }
 
     public Value B(boolean b) {
-        return Value.BoolValue.instance(b);
+        return Value.bool(b);
     }
 
     public Value S(String s) {
-        return Value.StringValue.instance(s);
+        return Value.string(s);
     }
 
     public Value N(String s) { return Name.find(s); }

@@ -226,7 +226,7 @@ public class ImagePicture extends Picture {
 	
     @PRIMITIVE
     public static Value _image(Primitive prim, int width, int height, 
-                               FunValue fun) {
+                               Value fun) {
         // Silently truncate the width and height
 	width = Math.min(width, MAXDIM);
 	height = Math.min(height, MAXDIM);
@@ -235,9 +235,9 @@ public class ImagePicture extends Picture {
 	Value args[] = new Value[2];
 		
 	for (int x = 0; x < width; x++) {
-	    args[0] = NumValue.instance(x);
+	    args[0] = Value.number(x);
 	    for (int y = 0; y < height; y++) {
-		args[1] = NumValue.instance(y);
+		args[1] = Value.number(y);
 		Value v = fun.apply(args);
 		ColorValue col = prim.cast(ColorValue.class, v);
 		image.setRGB(x, height-y-1, col.rgb);

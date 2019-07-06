@@ -188,7 +188,7 @@ public class FunCode extends Value {
 
     /** Construct a wrapped closure and tie the knot for local recursion */
     public Value makeClosure(Value fvars[]) {
-	Value result = FunValue.instance(null);
+	Value result = Lambda.instance(null);
 	result.subr = buildClosure(result, fvars);
 	fvars[0] = result;
 	return result;
@@ -244,8 +244,8 @@ public class FunCode extends Value {
             Value opcode;
             Value arg = null;
 
-            if (inst instanceof Value.BlobValue) {
-                Value.BlobValue blob = (Value.BlobValue) inst;
+            if (inst instanceof Value.Blob) {
+                Value.Blob blob = (Value.Blob) inst;
                 opcode = blob.functor;
                 if (blob.args.length > 0) arg = blob.args[0];
             } else {

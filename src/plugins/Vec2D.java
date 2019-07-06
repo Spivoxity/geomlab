@@ -114,8 +114,8 @@ public class Vec2D extends Value {
 	    if (! (obj instanceof Vec2D)) return null;
 
 	    Vec2D v = (Vec2D) obj;
-	    args[0] = NumValue.instance(v.x);
-	    args[1] = NumValue.instance(v.y);
+	    args[0] = Value.number(v.x);
+	    args[1] = Value.number(v.y);
 	    return args;
 	}
     }

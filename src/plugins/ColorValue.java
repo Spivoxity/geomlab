@@ -223,9 +223,9 @@ public class ColorValue extends Picture {
 	    if (! (obj instanceof ColorValue)) return null;
 
 	    ColorValue v = (ColorValue) obj;
-	    args[0] = NumValue.instance(v.rpart);
-	    args[1] = NumValue.instance(v.gpart);
-	    args[2] = NumValue.instance(v.bpart);
+	    args[0] = Value.number(v.rpart);
+	    args[1] = Value.number(v.gpart);
+	    args[2] = Value.number(v.bpart);
 	    return args;
 	}
     }

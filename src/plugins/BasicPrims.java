@@ -77,11 +77,6 @@ public class BasicPrims {
     @PRIMITIVE(">=")
     public static boolean greatereq(double x, double y) { return (x >= y); }
 
-    @PRIMITIVE
-    public static boolean numeric(Value x) {
-	return (x instanceof Value.NumValue);
-    }
-	
     @PRIMITIVE("int")
     public static double intpart(double x) {
 	return Math.floor(x);

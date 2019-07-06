@@ -259,7 +259,7 @@ public final class Name extends Value implements Comparable<Name> {
 
     @PRIMITIVE
     public static Value _isname(Value x) {
-        return Value.BoolValue.instance(x instanceof Name);
+        return Value.bool(x instanceof Name);
     }
 
     @PRIMITIVE
@@ -326,13 +326,13 @@ public final class Name extends Value implements Comparable<Name> {
         public Value apply(int nargs, Value args0[], int base) {
             Value args[] = new Value[nargs];
             System.arraycopy(args0, base, args, 0, nargs);
-            return Value.BlobValue.instance(Name.this, args);
+            return Value.Blob.instance(Name.this, args);
         }
 
         @Override
         public Value[] pattMatch(int nargs, Value obj) {
-            if (! (obj instanceof Value.BlobValue)) return null;
-            Value.BlobValue blob = (Value.BlobValue) obj;
+            if (! (obj instanceof Value.Blob)) return null;
+            Value.Blob blob = (Value.Blob) obj;
             if (blob.functor != Name.this || blob.args.length != nargs)
                 return null;
             return blob.args;

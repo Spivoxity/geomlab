@@ -36,7 +36,6 @@ import java.lang.reflect.*;
 import java.lang.annotation.*;
 
 import funbase.Evaluator.*;
-import funbase.Value.FunValue;
 import funbase.Value.WrongKindException;
 
 /** A value that represents a primitive function like 'sqrt' or '+'. */
@@ -82,25 +81,25 @@ public abstract class Primitive extends Function {
 
     /** Fetch value of a StringValue object, or throw EvalException */ 
     public String string(Value a) {
-	Value.StringValue s = cast(Value.StringValue.class, a);
+	Value.StringVal s = cast(Value.StringVal.class, a);
 	return s.text;
     }
     
-    /** Fetch head of a ConsValue object, or throw EvalException */ 
+    /** Fetch head of a Cons object, or throw EvalException */ 
     public Value head(Value xs) {
-	Value.ConsValue cell = cast(Value.ConsValue.class, xs);
+	Value.Cons cell = cast(Value.Cons.class, xs);
 	return cell.head;
     }
 
-    /** Fetch tail of a ConsValue object, or throw EvalException */ 
+    /** Fetch tail of a Cons object, or throw EvalException */ 
     public Value tail(Value xs) {
-	Value.ConsValue cell = cast(Value.ConsValue.class, xs);
+	Value.Cons cell = cast(Value.Cons.class, xs);
 	return cell.tail;
     }
 
     /** Test if a value is a cons */
     public boolean isCons(Value xs) {
-	return xs instanceof Value.ConsValue;
+	return xs instanceof Value.Cons;
     }
 
     /** Compute length of a list argument */ 
@@ -298,7 +297,7 @@ public abstract class Primitive extends Function {
     /** Register a new primitive */
     public static void register(Primitive p) {
         Name n = Name.find(p.name);
-        n.setGlodef(FunValue.instance(p));
+        n.setGlodef(Value.Lambda.instance(p));
     }
     
     /** Find a registered primitive */

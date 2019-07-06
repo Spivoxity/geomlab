@@ -38,7 +38,6 @@ import funbase.Primitive.DESCRIPTION;
 import funbase.FunCode;
 import funbase.FunCode.Opcode;
 import funbase.Value;
-import funbase.Value.FunValue;
 
 import geomlab.Command.CommandException;
 
@@ -154,7 +153,8 @@ public class Session {
         	out.flush();
             }
             catch (IOException e) {
-        	throw new CommandException("#writefail", file.getName(), e);
+                throw new Error(e);
+        	// throw new CommandException("#writefail", file.getName(), e);
             }
             finally {
         	try { outraw.close(); } catch (IOException e) { /* Ignore */ }
@@ -171,14 +171,13 @@ public class Session {
             loadPlugin(funbase.FunCode.class);
             loadPlugin(funbase.Name.class);
             loadPlugin(funbase.Value.class);
-            loadPlugin(funbase.Value.PairValue.class);
+            loadPlugin(funbase.Value.Pair.class);
             loadPlugin(funbase.Evaluator.class);
             loadPlugin(funbase.Function.class);
             loadPlugin(plugins.BasicPrims.class);
             loadPlugin(plugins.StringPrims.class);
             loadPlugin(plugins.Cell.class);
             loadPlugin(plugins.Hash.class);
-            // loadPlugin(plugins.Test.class);
         }
         catch (CommandException e) {
             throw new Error(e);

@@ -36,7 +36,6 @@ import java.lang.reflect.*;
 import java.lang.annotation.*;
 
 import funbase.Evaluator.*;
-import funbase.Value.FunValue;
 import funbase.Value.WrongKindException;
 
 public class ReflectionFactory implements Primitive.Factory {
@@ -74,13 +73,13 @@ public class ReflectionFactory implements Primitive.Factory {
             if (Value.class.isAssignableFrom(rtype))
                 return (Value) o;
             else if (rtype == Double.TYPE)
-                return Value.NumValue.instance((Double) o);
+                return Value.number((Double) o);
             else if (rtype == Boolean.TYPE)
-                return Value.BoolValue.instance((Boolean) o);
+                return Value.bool((Boolean) o);
             else if (rtype == Integer.TYPE)
-                return Value.NumValue.instance((Integer) o);
+                return Value.number((Integer) o);
             else if (rtype == String.class)
-                return Value.StringValue.instance((String) o);
+                return Value.StringVal.instance((String) o);
             else if (rtype == Void.TYPE)
                 return Value.nil;
             else

@@ -353,11 +353,8 @@ public class GeomLab extends GeomBase {
             }
         }
 
-	Name init = Name.find("_init");
-	if (init.getGlodef() != null) {
-	    Value.FunValue fun = (Value.FunValue) init.getGlodef();
-	    Evaluator.execute(fun.subr, new Value[0]);
-	}
+	Value init = Name.find("_init").getGlodef();
+	if (init != null) Evaluator.execute(init);
 
 	app.log.flush();
     }

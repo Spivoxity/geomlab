@@ -30,7 +30,6 @@
 
 package funbase;
 
-import funbase.Value.FunValue;
 import funbase.Primitive.PRIMITIVE;
 
 import java.io.PrintWriter;
@@ -124,13 +123,13 @@ public abstract class Function implements Serializable {
 	throw new Error("dumping a dummy function");
     }
 
-    /** Method called by FunValue.writeReplace to determine a proxy. */
-    public Object serialProxy(Value.FunValue funval) {
+    /** Method called by Lambda.writeReplace to determine a proxy. */
+    public Object serialProxy(Value.Lambda funval) {
 	return funval;
     }
     
-    /** Method called by FunValue.readResolve to build a closure */
-    public Function resolveProxy(Value.FunValue funval) {
+    /** Method called by Lambda.readResolve to build a closure */
+    public Function resolveProxy(Value.Lambda funval) {
 	return this;
     }
 
@@ -173,7 +172,7 @@ public abstract class Function implements Serializable {
         }
 
         @Override
-        public Value serialProxy(Value.FunValue funval) {
+        public Value serialProxy(Value.Lambda funval) {
             /* All user functions serialize as funcode, and are rebuilt on
 	       loading. For JIT functions, that means that they are 
 	       translated again, typically on first use.  An interpreter
@@ -185,7 +184,7 @@ public abstract class Function implements Serializable {
             Value fvars1[] = new Value[fvars.length];
             System.arraycopy(fvars, 1, fvars1, 1, fvars.length-1);
             Value result = 
-        	FunValue.instance(new Function.Closure(arity, code, fvars1));
+        	Value.Lambda.instance(new Function.Closure(arity, code, fvars1));
             fvars1[0] = result;
             return result;
         }
@@ -195,12 +194,12 @@ public abstract class Function implements Serializable {
            sure that there are no other references to this memento 
            that are deserialized before readResolve() gets to replace 
            the memento with a proper JIT translation.  But it's all OK, 
-           because the only reference to the memento is from the FunValue 
-           wrapper that surrounds it.  The FunValue wrapper is not 
+           because the only reference to the memento is from the Lambda 
+           wrapper that surrounds it.  The Lambda wrapper is not 
            readResolved, so it can safely be shared. */
     
         @Override
-        public Function resolveProxy(Value.FunValue funval) {
+        public Function resolveProxy(Value.Lambda funval) {
             // Ask the body to build a closure.
             return code.buildClosure(funval, fvars);
         }

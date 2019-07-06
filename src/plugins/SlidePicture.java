@@ -33,6 +33,7 @@ package plugins;
 import java.io.PrintWriter;
 
 import funbase.Value;
+import funbase.Function;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
@@ -41,8 +42,8 @@ import funbase.Primitive.PRIMITIVE;
 public class SlidePicture extends Value implements Drawable {
     private static final long serialVersionUID = 1L;
 
-    /** Function value that is invoked to compute the image */
-    private final Value.FunValue render;
+    /** Function that is invoked to compute the image */
+    private final Value render;
     
     /** Slider value from last update */
     private double slider;
@@ -50,7 +51,7 @@ public class SlidePicture extends Value implements Drawable {
     /** Cached picture from last update */
     private Picture cache;
 
-    private SlidePicture(Value.FunValue render) { 
+    private SlidePicture(Value render) { 
         this.render = render; 
     }
 	
@@ -92,11 +93,11 @@ public class SlidePicture extends Value implements Drawable {
     }
 
     private Value callRender(double slider) {
-	return Evaluator.execute(render.subr, NumValue.instance(slider));
+	return Evaluator.execute(render, Value.number(slider));
     }
 
     @PRIMITIVE
-    public static Value slide(FunValue fun) {
+    public static Value slide(Value fun) {
 	return new SlidePicture(fun);
     }
 }

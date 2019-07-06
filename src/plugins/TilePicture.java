@@ -112,7 +112,7 @@ public class TilePicture extends Picture {
 	    Value xs = prim.head(xss);
 	    Value spec = prim.head(xs);
 
-	    if (spec instanceof Value.NumValue)
+	    if (Value.numeric(spec))
 		colours[i] = (int) prim.number(spec);
 	    else if (spec instanceof ColorValue)
 		colours[i] = spec;

@@ -30,9 +30,6 @@
 
 package funbase;
 
-import funbase.Value.NumValue;
-import funbase.Value.StringValue;
-
 import java.io.*;
 
 public class Scanner {
@@ -183,7 +180,7 @@ public class Scanner {
 		    }
 		    if (ch == '"') {
 			tok = STRING;
-			sym = StringValue.instance(string.toString());
+			sym = Value.string(string.toString());
 		    } else {
 			pushBack(ch);
 			start_char = char_num;
@@ -255,7 +252,7 @@ public class Scanner {
 			pushBack(ch);
 			tok = NUMBER; 
 			double val = Double.parseDouble(buf.toString());
-			sym = NumValue.instance(val);
+			sym = Value.number(val);
 		    } else if (isOpChar(ch)) {
 			// A symbolic operator
 			StringBuilder buf = new StringBuilder(10);
@@ -282,7 +279,7 @@ public class Scanner {
 
     public Value nextToken() {
 	scan();
-	return Value.PairValue.instance(tok, sym);
+	return Value.pair(tok, sym);
     }
 
     private void badToken() {

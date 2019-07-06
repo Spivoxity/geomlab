@@ -70,7 +70,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 
     @Override
     public void setRoot(Value root) { 
-	Value.FunValue f = (Value.FunValue) root;
+	Value.Lambda f = (Value.Lambda) root;
 	Function.Closure cl = (Function.Closure) f.subr;
 	this.root = cl.getCode();
     }
@@ -162,7 +162,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 			break;
 
                     case PUSH:
-                        frame[sp++] = Value.NumValue.instance(rand);
+                        frame[sp++] = Value.number(rand);
                         break;
 
 		    case QUOTE:
@@ -175,8 +175,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 
 		    case CONS:
 			sp--;
-			frame[sp-1] = 
-                            Value.ConsValue.instance(frame[sp-1], frame[sp]);
+			frame[sp-1] = Value.cons(frame[sp-1], frame[sp]);
 			break;
 
 		    case CALL:
@@ -232,7 +231,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 		    case MPLUS:
 			try {
 			    sp -= 1;
-			    Value.NumValue x = (Value.NumValue) frame[sp];
+			    Value.Number x = (Value.Number) frame[sp];
 			    Value v = x.matchPlus(code.consts[rand]);
 			    if (v != null)
 				frame[sp++] = v;
@@ -257,8 +256,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 
 		    case MCONS: {
 			try {
-			    Value.ConsValue cell = 
-				(Value.ConsValue) frame[sp-1];
+			    Value.Cons cell = (Value.Cons) frame[sp-1];
 			    frame[sp++] = cell.head;
 			} catch (ClassCastException ex) {
                             sp--;
@@ -268,13 +266,12 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 		    }
 
 		    case GETTAIL:
-			frame[sp-1] = ((Value.ConsValue) frame[sp-1]).tail;
+			frame[sp-1] = ((Value.Cons) frame[sp-1]).tail;
 			break;
 
                     case MPAIR: {
                         try {
-                            Value.PairValue cell =
-                                (Value.PairValue) frame[sp-1];
+                            Value.Pair cell = (Value.Pair) frame[sp-1];
                             frame[sp++] = cell.fst;
                         } catch (ClassCastException ex) {
                             sp--;
@@ -284,7 +281,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
                     }
 
                     case GETSND:
-                        frame[sp-1] = ((Value.PairValue) frame[sp-1]).snd;
+                        frame[sp-1] = ((Value.Pair) frame[sp-1]).snd;
                         break;
 
 		    case MPRIM: {

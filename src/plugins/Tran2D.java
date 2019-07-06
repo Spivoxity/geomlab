@@ -191,12 +191,12 @@ public class Tran2D extends Value {
 	    if (nargs != 6) Evaluator.err_patnargs(name);
 	    if (! (obj instanceof Tran2D)) return null;
 	    Tran2D v = (Tran2D) obj;
-	    args[0] = NumValue.instance(v.m_xx); 
-	    args[1] = NumValue.instance(v.m_yx);
-	    args[2] = NumValue.instance(v.m_xy); 
-	    args[3] = NumValue.instance(v.m_yy);
-	    args[4] = NumValue.instance(v.m_x); 
-	    args[5] = NumValue.instance(v.m_y);
+	    args[0] = Value.number(v.m_xx); 
+	    args[1] = Value.number(v.m_yx);
+	    args[2] = Value.number(v.m_xy); 
+	    args[3] = Value.number(v.m_yy);
+	    args[4] = Value.number(v.m_x); 
+	    args[5] = Value.number(v.m_y);
 	    return args;
 	}
     }
