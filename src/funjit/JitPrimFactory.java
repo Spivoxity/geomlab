@@ -32,6 +32,8 @@ package funjit;
 
 import java.util.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import funbase.Value;
@@ -84,7 +86,7 @@ public class JitPrimFactory implements Primitive.Factory {
         }
     }
 
-    private Species[] paramKinds(java.lang.reflect.Method m) {
+    private Species[] paramKinds(Method m) {
         Class<?> ptypes[] = m.getParameterTypes();
         Species pkinds[] = new Species[ptypes.length];
         for (int i = 0; i < ptypes.length; i++) 
@@ -92,21 +94,20 @@ public class JitPrimFactory implements Primitive.Factory {
         return pkinds;
     }
 
-    private Species returnKind(java.lang.reflect.Method m) {
+    private Species returnKind(Method m) {
         return Species.find(m.getReturnType());
     }
 
-    private java.lang.reflect.Method findFactoryMethod(Class<?> cl) {
-        for (java.lang.reflect.Method m : cl.getDeclaredMethods()) {
-            String name = m.getName();
-            if (name.equals("instance"))
-                return m;
+    public static Method findMethod(Class<?> cl, String name) {
+        for (Method m : cl.getDeclaredMethods()) {
+            String name1 = m.getName();
+            if (name1.equals(name)) return m;
         }
-        throw new Error("findFactoryMethod " + cl);
+        return null;
     }
 
     /** Make a primitive from a method or class method. */
-    public Primitive reflect(String name, java.lang.reflect.Method m) {
+    public Primitive reflect(String name, Method m) {
         Class<?> cl = m.getDeclaringClass();
         Species pkinds[] = paramKinds(m);
         Species rkind = returnKind(m);
@@ -146,7 +147,7 @@ public class JitPrimFactory implements Primitive.Factory {
     }
 
     /** Make a primitive that accesses an instance variable. */
-    public Primitive select(String name, java.lang.reflect.Field f) {
+    public Primitive select(String name, Field f) {
         Species cl = Species.find(f.getDeclaringClass());
         Species rkind = Species.find(f.getType());
 
@@ -164,12 +165,15 @@ public class JitPrimFactory implements Primitive.Factory {
     }
 
     @Override
-    public void constructor(String name, Class<?> cl) { 
-        java.lang.reflect.Method m = findFactoryMethod(cl);
-        Species pkinds[] = paramKinds(m);
-        Species rkind = returnKind(m);
-        noteMethod(name, Type.className(cl), m.getName(), 
-                   null, pkinds, rkind);
+    public void primitive(String name, Class<?> cl) {
+        // Look for a static invoke method
+        Method m = findMethod(cl, "invoke");
+        if (m != null) {
+            Species pkinds[] = paramKinds(m);
+            Species rkind = returnKind(m);
+            noteMethod(name, Type.className(cl), "invoke",
+                       null, pkinds, rkind);
+        }
     }
 
     // Hooks for subclasses

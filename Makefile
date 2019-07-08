@@ -47,7 +47,7 @@ obj/icon128.png:
 obj/icon%.png: obj/icon128.png
 	convert obj/icon128.png -scale $*x$* $@
 
-obj/geomlab.gls: .compiled Boot.class src/prelude.txt
+obj/geomlab.gls: .compiled Boot.class src/compiler.txt src/prelude.txt
 	$(RUNSCRIPT) -B Boot src/compiler.txt \
 		src/prelude.txt -e '_save("$@")'
 

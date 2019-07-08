@@ -171,7 +171,6 @@ public class Session {
             loadPlugin(funbase.FunCode.class);
             loadPlugin(funbase.Name.class);
             loadPlugin(funbase.Value.class);
-            loadPlugin(funbase.Value.Pair.class);
             loadPlugin(funbase.Evaluator.class);
             loadPlugin(funbase.Function.class);
             loadPlugin(plugins.BasicPrims.class);

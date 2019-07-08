@@ -113,23 +113,17 @@ public abstract class Function implements Serializable {
 	return apply(new Value[] { x, y, z, u, v, w });
     }
 
-    /** Match the value as a constructor */
-    public Value[] pattMatch(int nargs, Value obj) {
-	Evaluator.err_match();
-	return null;
-    }
-
     public void dump(PrintWriter out) {
 	throw new Error("dumping a dummy function");
     }
 
     /** Method called by Lambda.writeReplace to determine a proxy. */
-    public Object serialProxy(Value.Lambda funval) {
+    public Object serialProxy(Value funval) {
 	return funval;
     }
     
     /** Method called by Lambda.readResolve to build a closure */
-    public Function resolveProxy(Value.Lambda funval) {
+    public Function resolveProxy(Value funval) {
 	return this;
     }
 
@@ -172,7 +166,7 @@ public abstract class Function implements Serializable {
         }
 
         @Override
-        public Value serialProxy(Value.Lambda funval) {
+        public Value serialProxy(Value funval) {
             /* All user functions serialize as funcode, and are rebuilt on
 	       loading. For JIT functions, that means that they are 
 	       translated again, typically on first use.  An interpreter
@@ -184,7 +178,7 @@ public abstract class Function implements Serializable {
             Value fvars1[] = new Value[fvars.length];
             System.arraycopy(fvars, 1, fvars1, 1, fvars.length-1);
             Value result = 
-        	Value.Lambda.instance(new Function.Closure(arity, code, fvars1));
+        	Value.lambda(new Function.Closure(arity, code, fvars1));
             fvars1[0] = result;
             return result;
         }
@@ -199,7 +193,7 @@ public abstract class Function implements Serializable {
            readResolved, so it can safely be shared. */
     
         @Override
-        public Function resolveProxy(Value.Lambda funval) {
+        public Function resolveProxy(Value funval) {
             // Ask the body to build a closure.
             return code.buildClosure(funval, fvars);
         }

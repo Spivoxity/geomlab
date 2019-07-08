@@ -297,7 +297,7 @@ class Method {
         code.putByte(op);
 	code.putShort(pool.methodItem(type, owner, name, ty.desc));
         if (op == INVOKEINTERFACE) {
-	    code.putByte(ty.asize);
+	    code.putByte(ty.asize+1);
 	    code.putByte(0);
 	}
     }

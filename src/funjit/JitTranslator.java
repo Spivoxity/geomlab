@@ -321,9 +321,8 @@ public class JitTranslator implements FunCode.Jit {
                     Name f = (Name) funcode.consts[rand];
                     Value v = f.getGlodef();
 
-                    if (f.isFrozen() && v != null 
-                        && v instanceof Value.Lambda) {
-                        Function fun = ((Value.Lambda) v).subr;
+                    if (f.isFrozen() && v != null) {
+                        Function fun = v.subr;
                         // Calling a known function
                         if ((fun instanceof Primitive) 
                             && fun.arity == funcode.code[ip+1]) {
@@ -503,12 +502,13 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case MPRIM:   
-                // temp = cons.subr.pattMatch(n, obj)
+                // temp = ((Constructor) cons.subr).pattMatch(n, obj)
                 code.gen(GETFIELD, value_cl, "subr", function_t);
+                code.gen(CHECKCAST, constr_cl);
                 code.gen(SWAP);				// subr, obj
                 code.gen(CONST, rand);			
                 code.gen(SWAP);				// subr, n, obj
-                code.gen(INVOKEVIRTUAL, function_cl, "pattMatch", fun_IV_A_t);
+                code.gen(INVOKEINTERFACE, constr_cl, "pattMatch", fun_IV_A_t);
                 code.gen(DUP);				
                 code.gen(ASTORE, _temp);
 
@@ -526,22 +526,19 @@ public class JitTranslator implements FunCode.Jit {
 	    case MCONS:
                 trapCast(consval_cl);
                 code.gen(DUP); 
+                code.gen(GETFIELD, consval_cl, "tail", value_t);
+                code.gen(SWAP);
                 code.gen(GETFIELD, consval_cl, "head", value_t);
                 break;
 
-            case MPAIR:
+            case MPAIR: {
                 trapCast(pairval_cl);
-                code.gen(DUP); 
+                code.gen(DUP);
+                code.gen(GETFIELD, pairval_cl, "snd", value_t);
+                code.gen(SWAP);
                 code.gen(GETFIELD, pairval_cl, "fst", value_t);
                 break;
-
-	    case GETTAIL: 
-                code.gen(GETFIELD, consval_cl, "tail", value_t);
-                break;
-
-            case GETSND:  
-                code.gen(GETFIELD, pairval_cl, "snd", value_t);
-                break;
+            }
 
 	    case MNIL:    
                 code.gen(GETSTATIC, value_cl, "nil", value_t); 
@@ -549,9 +546,8 @@ public class JitTranslator implements FunCode.Jit {
                 break;
 
 	    case MPLUS:   
-                trapCast(numval_cl);
                 getSlot("consts", rand);
-                code.gen(INVOKEVIRTUAL, numval_cl, "matchPlus", fun_V_V_t);
+                code.gen(INVOKEVIRTUAL, value_cl, "matchPlus", fun_V_V_t);
                 code.gen(DUP);
                 code.gen(ASTORE, _temp);
                 code.gen(IFNULL, trap);

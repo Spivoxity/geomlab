@@ -697,8 +697,7 @@ define __top() =
 
     | c_patt(#prim(#var(#_pair), [x, y]), d, env) =
         { A pair pattern _pair(x, y) }
-        trap(d, pgen(#MPAIR, 
-            [c_patt(x, d+1, env), pleaf(#GETSND), c_patt(y, d, env)]))
+        trap(d, pgen(#MPAIR, [c_patt(x, d+1, env), c_patt(y, d, env)]))
 
     | c_patt(#prim(cn, args), d, env) =
         { A constructor pattern h(args) }
@@ -706,14 +705,9 @@ define __top() =
         trap(d, pgen(#SEQ([c_exp(cn, env, false), #MPRIM(n)]),
 	     reverse([ c_patt(p1, d1, env) | [d1, p1] <- number(d, args) ])))
 
-    | c_patt(#cons(h, #anon), d, env) =
-        { A cons pattern h : _ }
-        trap(d, pgen(#SEQ([#MCONS]), [c_patt(h, d+1, env), pleaf(#POP)]))
-
     | c_patt(#cons(h, t), d, env) =
         { A cons pattern h : t }
-        trap(d, pgen(#MCONS, 
-             [c_patt(h, d+1, env), pleaf(#GETTAIL), c_patt(t, d, env)]))
+        trap(d, pgen(#MCONS, [c_patt(h, d+1, env), c_patt(t, d, env)]))
 
     | c_patt(#nil, d, env) = 
         { A nil pattern [] }

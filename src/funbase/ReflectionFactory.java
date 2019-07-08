@@ -79,7 +79,7 @@ public class ReflectionFactory implements Primitive.Factory {
             else if (rtype == Integer.TYPE)
                 return Value.number((Integer) o);
             else if (rtype == String.class)
-                return Value.StringVal.instance((String) o);
+                return Value.string((String) o);
             else if (rtype == Void.TYPE)
                 return Value.nil;
             else
@@ -166,6 +166,8 @@ public class ReflectionFactory implements Primitive.Factory {
             }
         };
     }
+
+    public void primitive(String name, Class<?> c) { }
 
     public void constructor(String name, Class<?> c) { }
 }

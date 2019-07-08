@@ -68,10 +68,8 @@ public class FunCode extends Value {
 		     //   x with x >= k and pushing x-k; otherwise trap
 	MEQ,         // [#meq]: pop two values and trap if not equal
 	MNIL,        // [#mnil]: pop the empty list; otherwise trap
-	MCONS,       // [#mcons]: find a cons cell and push its head
-	GETTAIL,     // [#gettail]: fetch tail following MCONS
-        MPAIR,       // [#mpair]: find a pair and push its fst
-        GETSND,      // [#getsnd]: fetch snd following MPAIR
+	MCONS,       // [#mcons]: find a cons cell and push tail and head
+        MPAIR,       // [#mpair]: find a pair and push snd and fst
 	TCALL(1),    // [#tcall, n]: tail recursive call
 	PREP(1),     // [#prep, n]: prepare for a call with n arguments
         FRAME(1),    // [#frame, n]: create a free var frame with n slots
@@ -188,7 +186,7 @@ public class FunCode extends Value {
 
     /** Construct a wrapped closure and tie the knot for local recursion */
     public Value makeClosure(Value fvars[]) {
-	Value result = Lambda.instance(null);
+	Value result = Value.lambda(null);
 	result.subr = buildClosure(result, fvars);
 	fvars[0] = result;
 	return result;

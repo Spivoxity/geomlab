@@ -35,12 +35,12 @@ public class Boot extends geomlab.Bootstrap {
   public void boot() {
     D("++", C(F("++", 2, (() -> {
       I(ARG, 0); I(TRAP, 8); I(MNIL); I(ARG, 1);
-      I(RETURN); I(ARG, 0); I(TRAP, 45); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-      I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0);
-      I(PREP, 2); I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1);
-      I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
-      I(RETURN); I(FAIL); }),
+      I(RETURN); I(ARG, 0); I(TRAP, 44); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+      I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0); I(PREP, 2);
+      I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+      I(CALL, 2); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+      I(FAIL); }),
       N(":"))));
     D("__top", C(F("__top", 0, (() -> {
       I(QUOTE, 0); I(FRAME, 1); I(CLOSURE, 1); I(BIND, 0);
@@ -280,24 +280,24 @@ public class Boot extends geomlab.Bootstrap {
         N(">"), N("_debug"), N("_print")),
       F("member", 2, (() -> {
         I(ARG, 1); I(TRAP, 8); I(MNIL); I(GLOBAL, 0);
-        I(RETURN); I(ARG, 1); I(TRAP, 52); I(MCONS);
-        I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 1);
-        I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 0);
-        I(PUTARG, 1); I(CALL, 2); I(JFALSE, 37); I(QUOTE, 2);
-        I(RETURN); I(FVAR, 0); I(PREP, 2); I(ARG, 0);
-        I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-        I(RETURN); I(FAIL); }),
+        I(RETURN); I(ARG, 1); I(TRAP, 51); I(MCONS);
+        I(BIND, 0); I(BIND, 1); I(GLOBAL, 1); I(PREP, 2);
+        I(ARG, 0); I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1);
+        I(CALL, 2); I(JFALSE, 36); I(QUOTE, 2); I(RETURN);
+        I(FVAR, 0); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+        I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+        I(FAIL); }),
         N("false"), N("="), B(true)),
       F("number", 2, (() -> {
         I(ARG, 1); I(TRAP, 7); I(MNIL); I(NIL);
-        I(RETURN); I(ARG, 1); I(TRAP, 61); I(MCONS);
-        I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-        I(PREP, 2); I(ARG, 0); I(LOCAL, 0); I(NIL);
-        I(CONS); I(CONS); I(PUTARG, 0); I(FVAR, 0);
-        I(PREP, 2); I(GLOBAL, 1); I(PREP, 2); I(ARG, 0);
-        I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1); I(CALL, 2);
-        I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-        I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }),
+        I(RETURN); I(ARG, 1); I(TRAP, 60); I(MCONS);
+        I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+        I(ARG, 0); I(LOCAL, 0); I(NIL); I(CONS);
+        I(CONS); I(PUTARG, 0); I(FVAR, 0); I(PREP, 2);
+        I(GLOBAL, 1); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+        I(PUSH, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 0);
+        I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
+        I(CALL, 2); I(RETURN); I(FAIL); }),
         N(":"), N("+")),
       F("max", 2, (() -> {
         I(GLOBAL, 0); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
@@ -628,43 +628,42 @@ public class Boot extends geomlab.Bootstrap {
         I(ARG, 1); I(TRAP, 20); I(MNIL); I(QUOTE, 0);
         I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(ARG, 2);
         I(PUTARG, 1); I(CALL, 2); I(RETURN); I(ARG, 1);
-        I(TRAP, 123); I(MCONS); I(TRAP, 122); I(QUOTE, 1);
-        I(MPRIM, 2); I(BIND, 0); I(TRAP, 122); I(QUOTE, 2);
-        I(MPRIM, 1); I(BIND, 1); I(GETTAIL); I(BIND, 2);
-        I(QUOTE, 2); I(PREP, 1); I(GLOBAL, 3); I(PREP, 0);
-        I(CALL, 0); I(PUTARG, 0); I(CALL, 1); I(BIND, 3);
-        I(FVAR, 1); I(PREP, 3); I(QUOTE, 4); I(PREP, 2);
-        I(QUOTE, 2); I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0);
-        I(CALL, 1); I(LOCAL, 3); I(NIL); I(CONS);
-        I(CONS); I(PUTARG, 0); I(FVAR, 0); I(PREP, 3);
-        I(ARG, 0); I(PUTARG, 0); I(LOCAL, 2); I(PUTARG, 1);
-        I(LOCAL, 3); I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1);
-        I(CALL, 2); I(NIL); I(CONS); I(PUTARG, 0);
-        I(LOCAL, 0); I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2);
-        I(CALL, 3); I(RETURN); I(POP); I(ARG, 1);
-        I(TRAP, 232); I(MCONS); I(TRAP, 231); I(QUOTE, 1);
-        I(MPRIM, 2); I(BIND, 0); I(BIND, 1); I(GETTAIL);
-        I(BIND, 2); I(QUOTE, 2); I(PREP, 1); I(GLOBAL, 3);
-        I(PREP, 0); I(CALL, 0); I(PUTARG, 0); I(CALL, 1);
-        I(BIND, 3); I(FVAR, 1); I(PREP, 3); I(QUOTE, 4);
-        I(PREP, 2); I(LOCAL, 1); I(LOCAL, 3); I(NIL);
-        I(CONS); I(CONS); I(PUTARG, 0); I(FVAR, 0);
-        I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 2);
-        I(PUTARG, 1); I(LOCAL, 3); I(PUTARG, 2); I(CALL, 3);
-        I(PUTARG, 1); I(CALL, 2); I(QUOTE, 4); I(PREP, 2);
-        I(QUOTE, 5); I(LOCAL, 3); I(NIL); I(CONS);
-        I(CONS); I(PUTARG, 0); I(LOCAL, 3); I(PUTARG, 1);
-        I(CALL, 2); I(NIL); I(CONS); I(CONS);
-        I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1); I(ARG, 2);
-        I(PUTARG, 2); I(CALL, 3); I(RETURN); I(POP);
-        I(ARG, 1); I(TRAP, 284); I(MCONS); I(TRAP, 283);
-        I(QUOTE, 6); I(MPRIM, 1); I(BIND, 0); I(GETTAIL);
-        I(BIND, 1); I(QUOTE, 7); I(PREP, 3); I(LOCAL, 0);
+        I(TRAP, 122); I(MCONS); I(TRAP, 121); I(QUOTE, 1);
+        I(MPRIM, 2); I(BIND, 0); I(TRAP, 121); I(QUOTE, 2);
+        I(MPRIM, 1); I(BIND, 1); I(BIND, 2); I(QUOTE, 2);
+        I(PREP, 1); I(GLOBAL, 3); I(PREP, 0); I(CALL, 0);
+        I(PUTARG, 0); I(CALL, 1); I(BIND, 3); I(FVAR, 1);
+        I(PREP, 3); I(QUOTE, 4); I(PREP, 2); I(QUOTE, 2);
+        I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0); I(CALL, 1);
+        I(LOCAL, 3); I(NIL); I(CONS); I(CONS);
         I(PUTARG, 0); I(FVAR, 0); I(PREP, 3); I(ARG, 0);
-        I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(ARG, 2);
-        I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1); I(ARG, 2);
-        I(PUTARG, 2); I(CALL, 3); I(RETURN); I(POP);
-        I(FAIL); }),
+        I(PUTARG, 0); I(LOCAL, 2); I(PUTARG, 1); I(LOCAL, 3);
+        I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1); I(CALL, 2);
+        I(NIL); I(CONS); I(PUTARG, 0); I(LOCAL, 0);
+        I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
+        I(RETURN); I(POP); I(ARG, 1); I(TRAP, 230);
+        I(MCONS); I(TRAP, 229); I(QUOTE, 1); I(MPRIM, 2);
+        I(BIND, 0); I(BIND, 1); I(BIND, 2); I(QUOTE, 2);
+        I(PREP, 1); I(GLOBAL, 3); I(PREP, 0); I(CALL, 0);
+        I(PUTARG, 0); I(CALL, 1); I(BIND, 3); I(FVAR, 1);
+        I(PREP, 3); I(QUOTE, 4); I(PREP, 2); I(LOCAL, 1);
+        I(LOCAL, 3); I(NIL); I(CONS); I(CONS);
+        I(PUTARG, 0); I(FVAR, 0); I(PREP, 3); I(ARG, 0);
+        I(PUTARG, 0); I(LOCAL, 2); I(PUTARG, 1); I(LOCAL, 3);
+        I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1); I(CALL, 2);
+        I(QUOTE, 4); I(PREP, 2); I(QUOTE, 5); I(LOCAL, 3);
+        I(NIL); I(CONS); I(CONS); I(PUTARG, 0);
+        I(LOCAL, 3); I(PUTARG, 1); I(CALL, 2); I(NIL);
+        I(CONS); I(CONS); I(PUTARG, 0); I(LOCAL, 0);
+        I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
+        I(RETURN); I(POP); I(ARG, 1); I(TRAP, 281);
+        I(MCONS); I(TRAP, 280); I(QUOTE, 6); I(MPRIM, 1);
+        I(BIND, 0); I(BIND, 1); I(QUOTE, 7); I(PREP, 3);
+        I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0); I(PREP, 3);
+        I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1);
+        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(RETURN);
+        I(POP); I(FAIL); }),
         N("cons"), N("gen"), N("var"), N("_gensym"),
         N("rule"), N("anon"), N("when"), N("if")),
       F("p_gen", 0, (() -> {
@@ -1103,25 +1102,25 @@ public class Boot extends geomlab.Bootstrap {
           N("_lookup")),
         F("pass1", 3, (() -> {
           I(ARG, 1); I(TRAP, 8); I(MNIL); I(ARG, 2);
-          I(RETURN); I(ARG, 1); I(TRAP, 68); I(MCONS);
-          I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
+          I(RETURN); I(ARG, 1); I(TRAP, 67); I(MCONS);
+          I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 1);
+          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(JFALSE, 67);
+          I(GLOBAL, 1); I(PREP, 3); I(FVAR, 1); I(PUTARG, 0);
+          I(LOCAL, 0); I(PUTARG, 1); I(ARG, 0); I(PUTARG, 2);
+          I(CALL, 3); I(POP); I(FVAR, 0); I(PREP, 3);
+          I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+          I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(RETURN);
+          I(ARG, 1); I(TRAP, 147); I(MCONS); I(BIND, 0);
+          I(BIND, 1); I(FVAR, 0); I(PREP, 3); I(GLOBAL, 2);
           I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-          I(JFALSE, 68); I(GLOBAL, 1); I(PREP, 3); I(FVAR, 1);
-          I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1); I(ARG, 0);
-          I(PUTARG, 2); I(CALL, 3); I(POP); I(FVAR, 0);
-          I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1);
-          I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
-          I(RETURN); I(ARG, 1); I(TRAP, 149); I(MCONS);
-          I(BIND, 0); I(GETTAIL); I(BIND, 1); I(FVAR, 0);
-          I(PREP, 3); I(GLOBAL, 2); I(PREP, 1); I(LOCAL, 0);
-          I(PUTARG, 0); I(CALL, 1); I(JFALSE, 110); I(GLOBAL, 3);
-          I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(PUSH, 1);
-          I(PUTARG, 1); I(CALL, 2); I(JUMP, 124); I(GLOBAL, 3);
-          I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(PUSH, 2);
-          I(PUTARG, 1); I(CALL, 2); I(PUTARG, 0); I(LOCAL, 1);
-          I(PUTARG, 1); I(GLOBAL, 4); I(PREP, 2); I(LOCAL, 0);
-          I(PUTARG, 0); I(ARG, 2); I(PUTARG, 1); I(CALL, 2);
-          I(PUTARG, 2); I(CALL, 3); I(RETURN); I(FAIL); }),
+          I(JFALSE, 108); I(GLOBAL, 3); I(PREP, 2); I(ARG, 0);
+          I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1); I(CALL, 2);
+          I(JUMP, 122); I(GLOBAL, 3); I(PREP, 2); I(ARG, 0);
+          I(PUTARG, 0); I(PUSH, 2); I(PUTARG, 1); I(CALL, 2);
+          I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(GLOBAL, 4);
+          I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(ARG, 2);
+          I(PUTARG, 1); I(CALL, 2); I(PUTARG, 2); I(CALL, 3);
+          I(RETURN); I(FAIL); }),
           N("numeric"), N("_update"), N("_isname"), N("+"),
           N(":")),
         F("fixup", 1, (() -> {
@@ -1248,16 +1247,16 @@ public class Boot extends geomlab.Bootstrap {
         I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }),
         N("env"), 
         F("h", 1, (() -> {
-          I(ARG, 0); I(TRAP, 60); I(MCONS); I(BIND, 0);
-          I(GETTAIL); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
-          I(FVAR, 1); I(PUTARG, 0); I(GLOBAL, 1); I(PREP, 1);
-          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
-          I(CALL, 2); I(JFALSE, 37); I(LOCAL, 1); I(RETURN);
-          I(GLOBAL, 2); I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0);
-          I(FVAR, 0); I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0);
-          I(CALL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN);
-          I(ARG, 0); I(TRAP, 67); I(MNIL); I(NIL);
-          I(RETURN); I(FAIL); }),
+          I(ARG, 0); I(TRAP, 59); I(MCONS); I(BIND, 0);
+          I(BIND, 1); I(GLOBAL, 0); I(PREP, 2); I(FVAR, 1);
+          I(PUTARG, 0); I(GLOBAL, 1); I(PREP, 1); I(LOCAL, 0);
+          I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
+          I(JFALSE, 36); I(LOCAL, 1); I(RETURN); I(GLOBAL, 2);
+          I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0);
+          I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0); I(CALL, 1);
+          I(PUTARG, 1); I(CALL, 2); I(RETURN); I(ARG, 0);
+          I(TRAP, 66); I(MNIL); I(NIL); I(RETURN);
+          I(FAIL); }),
           N("="), N("_fst"), N(":")),
         N("_set"), N("_get")),
       F("alloc", 2, (() -> {
@@ -1297,17 +1296,17 @@ public class Boot extends geomlab.Bootstrap {
         I(ARG, 0); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
         I(CALL, 2); I(PUTARG, 0); I(CALL, 1); I(RETURN); }),
         F("case", 1, (() -> {
-          I(ARG, 0); I(TRAP, 38); I(MPAIR); I(BIND, 0);
-          I(GETSND); I(TRAP, 38); I(QUOTE, 0); I(MPRIM, 1);
-          I(POP); I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0);
-          I(PUTARG, 0); I(FVAR, 1); I(PREP, 1); I(FVAR, 2);
-          I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
-          I(RETURN); I(ARG, 0); I(TRAP, 76); I(MPAIR);
-          I(BIND, 0); I(GETSND); I(TRAP, 76); I(QUOTE, 2);
-          I(MPRIM, 1); I(POP); I(GLOBAL, 1); I(PREP, 2);
-          I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 1); I(PREP, 1);
-          I(FVAR, 2); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
-          I(CALL, 2); I(RETURN); I(GLOBAL, 3); I(RETURN); }),
+          I(ARG, 0); I(TRAP, 37); I(MPAIR); I(BIND, 0);
+          I(TRAP, 37); I(QUOTE, 0); I(MPRIM, 1); I(POP);
+          I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0);
+          I(FVAR, 1); I(PREP, 1); I(FVAR, 2); I(PUTARG, 0);
+          I(CALL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+          I(ARG, 0); I(TRAP, 74); I(MPAIR); I(BIND, 0);
+          I(TRAP, 74); I(QUOTE, 2); I(MPRIM, 1); I(POP);
+          I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0);
+          I(FVAR, 1); I(PREP, 1); I(FVAR, 2); I(PUTARG, 0);
+          I(CALL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+          I(GLOBAL, 3); I(RETURN); }),
           N("LOCAL"), N("="), N("ARG"), N("false"))),
       F("selfrec", 2, (() -> {
         I(GLOBAL, 0); I(PREP, 2); I(FVAR, 2); I(PREP, 2);
@@ -1332,14 +1331,13 @@ public class Boot extends geomlab.Bootstrap {
         I(RETURN); I(FAIL); }),
         N("env"), 
         F("h", 1, (() -> {
-          I(ARG, 0); I(TRAP, 35); I(MPAIR); I(POP);
-          I(GETSND); I(TRAP, 35); I(MPAIR); I(BIND, 0);
-          I(GETSND); I(TRAP, 35); I(QUOTE, 0); I(MPRIM, 1);
-          I(POP); I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0);
-          I(PUTARG, 0); I(FVAR, 1); I(PUTARG, 1); I(CALL, 2);
-          I(RETURN); I(ARG, 0); I(TRAP, 70); I(MPAIR);
-          I(POP); I(GETSND); I(TRAP, 70); I(MPAIR);
-          I(BIND, 0); I(GETSND); I(TRAP, 70); I(QUOTE, 2);
+          I(ARG, 0); I(TRAP, 33); I(MPAIR); I(POP);
+          I(TRAP, 33); I(MPAIR); I(BIND, 0); I(TRAP, 33);
+          I(QUOTE, 0); I(MPRIM, 1); I(POP); I(GLOBAL, 1);
+          I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 1);
+          I(PUTARG, 1); I(CALL, 2); I(RETURN); I(ARG, 0);
+          I(TRAP, 66); I(MPAIR); I(POP); I(TRAP, 66);
+          I(MPAIR); I(BIND, 0); I(TRAP, 66); I(QUOTE, 2);
           I(MPRIM, 1); I(POP); I(GLOBAL, 1); I(PREP, 2);
           I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 1); I(PUTARG, 1);
           I(CALL, 2); I(RETURN); I(GLOBAL, 3); I(RETURN); }),
@@ -1361,25 +1359,24 @@ public class Boot extends geomlab.Bootstrap {
         I(ARG, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 0);
         I(CALL, 1); I(RETURN); }),
         F("case", 1, (() -> {
-          I(ARG, 0); I(TRAP, 27); I(MPAIR); I(BIND, 0);
-          I(GETSND); I(TRAP, 27); I(QUOTE, 0); I(MPRIM, 1);
-          I(BIND, 1); I(QUOTE, 0); I(PREP, 1); I(LOCAL, 1);
-          I(PUTARG, 0); I(CALL, 1); I(RETURN); I(ARG, 0);
-          I(TRAP, 64); I(MPAIR); I(BIND, 0); I(GETSND);
-          I(BIND, 1); I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0);
-          I(PUTARG, 0); I(FVAR, 1); I(PREP, 1); I(FVAR, 2);
-          I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
-          I(JFALSE, 64); I(LOCAL, 1); I(RETURN); I(ARG, 0);
-          I(TRAP, 126); I(MPAIR); I(POP); I(GETSND);
-          I(POP); I(FVAR, 3); I(PREP, 2); I(FVAR, 4);
-          I(PUTARG, 0); I(FVAR, 2); I(PUTARG, 1); I(CALL, 2);
-          I(BIND, 0); I(FVAR, 5); I(PREP, 3); I(FVAR, 4);
-          I(PUTARG, 0); I(QUOTE, 2); I(PREP, 1); I(LOCAL, 0);
-          I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(FVAR, 2);
-          I(PUTARG, 2); I(CALL, 3); I(POP); I(QUOTE, 2);
-          I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-          I(RETURN); I(QUOTE, 3); I(PREP, 1); I(FVAR, 4);
-          I(PUTARG, 0); I(CALL, 1); I(RETURN); }),
+          I(ARG, 0); I(TRAP, 26); I(MPAIR); I(BIND, 0);
+          I(TRAP, 26); I(QUOTE, 0); I(MPRIM, 1); I(BIND, 1);
+          I(QUOTE, 0); I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0);
+          I(CALL, 1); I(RETURN); I(ARG, 0); I(TRAP, 62);
+          I(MPAIR); I(BIND, 0); I(BIND, 1); I(GLOBAL, 1);
+          I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 1);
+          I(PREP, 1); I(FVAR, 2); I(PUTARG, 0); I(CALL, 1);
+          I(PUTARG, 1); I(CALL, 2); I(JFALSE, 62); I(LOCAL, 1);
+          I(RETURN); I(ARG, 0); I(TRAP, 123); I(MPAIR);
+          I(POP); I(POP); I(FVAR, 3); I(PREP, 2);
+          I(FVAR, 4); I(PUTARG, 0); I(FVAR, 2); I(PUTARG, 1);
+          I(CALL, 2); I(BIND, 0); I(FVAR, 5); I(PREP, 3);
+          I(FVAR, 4); I(PUTARG, 0); I(QUOTE, 2); I(PREP, 1);
+          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
+          I(FVAR, 2); I(PUTARG, 2); I(CALL, 3); I(POP);
+          I(QUOTE, 2); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
+          I(CALL, 1); I(RETURN); I(QUOTE, 3); I(PREP, 1);
+          I(FVAR, 4); I(PUTARG, 0); I(CALL, 1); I(RETURN); }),
           N("QUOTE"), N("="), N("FVAR"), N("GLOBAL"))),
       F("sortby", 2, (() -> {
         I(QUOTE, 0); I(FRAME, 2); I(ARG, 0); I(PUTARG, 1);
@@ -1389,19 +1386,19 @@ public class Boot extends geomlab.Bootstrap {
         F("insert", 2, (() -> {
           I(ARG, 1); I(TRAP, 10); I(MNIL); I(ARG, 0);
           I(NIL); I(CONS); I(RETURN); I(ARG, 1);
-          I(TRAP, 106); I(MCONS); I(BIND, 0); I(GETTAIL);
-          I(BIND, 1); I(GLOBAL, 0); I(PREP, 2); I(FVAR, 1);
-          I(PREP, 1); I(ARG, 0); I(PUTARG, 0); I(CALL, 1);
-          I(PUTARG, 0); I(FVAR, 1); I(PREP, 1); I(LOCAL, 0);
-          I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
-          I(JFALSE, 79); I(GLOBAL, 1); I(PREP, 2); I(ARG, 0);
-          I(PUTARG, 0); I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0);
-          I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-          I(PUTARG, 1); I(CALL, 2); I(RETURN); I(GLOBAL, 1);
-          I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0);
-          I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1);
-          I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
-          I(RETURN); I(FAIL); }),
+          I(TRAP, 105); I(MCONS); I(BIND, 0); I(BIND, 1);
+          I(GLOBAL, 0); I(PREP, 2); I(FVAR, 1); I(PREP, 1);
+          I(ARG, 0); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 0);
+          I(FVAR, 1); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
+          I(CALL, 1); I(PUTARG, 1); I(CALL, 2); I(JFALSE, 78);
+          I(GLOBAL, 1); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+          I(GLOBAL, 1); I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0);
+          I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
+          I(CALL, 2); I(RETURN); I(GLOBAL, 1); I(PREP, 2);
+          I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0); I(PREP, 2);
+          I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+          I(CALL, 2); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+          I(FAIL); }),
           N("<="), N(":")),
         N("foldr")),
       F("c_exp", 3, (() -> {
@@ -1466,99 +1463,82 @@ public class Boot extends geomlab.Bootstrap {
         I(CALL, 1); I(PUTARG, 0); I(CALL, 1); I(RETURN);
         I(ARG, 0); I(TRAP, 193); I(QUOTE, 6); I(MEQ);
         I(FVAR, 3); I(PREP, 1); I(QUOTE, 7); I(PUTARG, 0);
-        I(CALL, 1); I(RETURN); I(ARG, 0); I(TRAP, 315);
-        I(QUOTE, 8); I(MPRIM, 2); I(TRAP, 314); I(MCONS);
-        I(BIND, 0); I(GETTAIL); I(TRAP, 314); I(MCONS);
-        I(BIND, 1); I(GETTAIL); I(TRAP, 314); I(MNIL);
-        I(TRAP, 315); I(QUOTE, 4); I(MPRIM, 1); I(TRAP, 315);
-        I(QUOTE, 9); I(MEQ); I(FVAR, 2); I(PREP, 2);
-        I(ARG, 1); I(PUTARG, 0); I(FVAR, 7); I(PREP, 2);
-        I(QUOTE, 10); I(PUTARG, 0); I(FVAR, 0); I(PREP, 3);
-        I(LOCAL, 0); I(PUTARG, 0); I(GLOBAL, 11); I(PREP, 2);
-        I(ARG, 1); I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1);
-        I(CALL, 2); I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2);
-        I(CALL, 3); I(FVAR, 3); I(PREP, 1); I(QUOTE, 12);
-        I(PUTARG, 0); I(CALL, 1); I(FVAR, 0); I(PREP, 3);
-        I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
-        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(NIL);
-        I(CONS); I(CONS); I(CONS); I(PUTARG, 1);
+        I(CALL, 1); I(RETURN); I(ARG, 0); I(TRAP, 302);
+        I(QUOTE, 8); I(MPRIM, 2); I(TRAP, 301); I(MCONS);
+        I(BIND, 0); I(TRAP, 301); I(MCONS); I(BIND, 1);
+        I(TRAP, 301); I(MNIL); I(TRAP, 302); I(QUOTE, 4);
+        I(MPRIM, 1); I(TRAP, 302); I(QUOTE, 9); I(MEQ);
+        I(FVAR, 2); I(PREP, 2); I(ARG, 1); I(PUTARG, 0);
+        I(FVAR, 7); I(PREP, 2); I(QUOTE, 10); I(PUTARG, 0);
+        I(FVAR, 0); I(PREP, 3); I(LOCAL, 0); I(PUTARG, 0);
+        I(GLOBAL, 11); I(PREP, 2); I(ARG, 1); I(PUTARG, 0);
+        I(PUSH, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
+        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(FVAR, 0);
+        I(PREP, 3); I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1);
+        I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
+        I(NIL); I(CONS); I(CONS); I(PUTARG, 1);
         I(CALL, 2); I(PUTARG, 1); I(CALL, 2); I(RETURN);
-        I(POP); I(ARG, 0); I(TRAP, 450); I(QUOTE, 8);
-        I(MPRIM, 2); I(BIND, 0); I(BIND, 1); I(GLOBAL, 13);
+        I(POP); I(ARG, 0); I(TRAP, 437); I(QUOTE, 8);
+        I(MPRIM, 2); I(BIND, 0); I(BIND, 1); I(GLOBAL, 12);
         I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
         I(BIND, 2); I(FVAR, 2); I(PREP, 2); I(ARG, 1);
         I(PUTARG, 0); I(FVAR, 7); I(PREP, 2); I(QUOTE, 1);
         I(PREP, 1); I(FVAR, 9); I(PREP, 3); I(LOCAL, 1);
-        I(PUTARG, 0); I(ARG, 2); I(PUTARG, 1); I(GLOBAL, 14);
-        I(PUTARG, 2); I(CALL, 3); I(QUOTE, 15); I(PREP, 1);
+        I(PUTARG, 0); I(ARG, 2); I(PUTARG, 1); I(GLOBAL, 13);
+        I(PUTARG, 2); I(CALL, 3); I(QUOTE, 14); I(PREP, 1);
         I(LOCAL, 2); I(PUTARG, 0); I(CALL, 1); I(NIL);
         I(CONS); I(CONS); I(PUTARG, 0); I(CALL, 1);
-        I(PUTARG, 0); I(GLOBAL, 16); I(PREP, 1); I(GLOBAL, 17);
-        I(PREP, 3); I(QUOTE, 18); I(FRAME, 3); I(FVAR, 0);
+        I(PUTARG, 0); I(GLOBAL, 15); I(PREP, 1); I(GLOBAL, 16);
+        I(PREP, 3); I(QUOTE, 17); I(FRAME, 3); I(FVAR, 0);
         I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CLOSURE, 3);
         I(PUTARG, 0); I(FVAR, 8); I(PREP, 2); I(ARG, 1);
         I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1); I(CALL, 2);
         I(PUTARG, 1); I(NIL); I(PUTARG, 2); I(CALL, 3);
         I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
         I(PUTARG, 1); I(CALL, 2); I(RETURN); I(ARG, 0);
-        I(TRAP, 544); I(QUOTE, 19); I(MPRIM, 2); I(TRAP, 543);
-        I(QUOTE, 6); I(MEQ); I(BIND, 0); I(FVAR, 2);
-        I(PREP, 2); I(ARG, 1); I(PUTARG, 0); I(FVAR, 7);
-        I(PREP, 2); I(QUOTE, 1); I(PREP, 1); I(QUOTE, 20);
-        I(NIL); I(CONS); I(PUTARG, 0); I(CALL, 1);
-        I(PUTARG, 0); I(FVAR, 0); I(PREP, 3); I(LOCAL, 0);
+        I(TRAP, 525); I(QUOTE, 18); I(MPRIM, 2); I(BIND, 0);
+        I(BIND, 1); I(FVAR, 2); I(PREP, 2); I(ARG, 1);
+        I(PUTARG, 0); I(FVAR, 7); I(PREP, 2); I(QUOTE, 19);
+        I(PUTARG, 0); I(FVAR, 0); I(PREP, 3); I(LOCAL, 1);
         I(PUTARG, 0); I(GLOBAL, 11); I(PREP, 2); I(ARG, 1);
         I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1); I(CALL, 2);
         I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
-        I(FVAR, 3); I(PREP, 1); I(QUOTE, 7); I(PUTARG, 0);
-        I(CALL, 1); I(NIL); I(CONS); I(CONS);
-        I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
-        I(RETURN); I(POP); I(ARG, 0); I(TRAP, 643);
-        I(QUOTE, 19); I(MPRIM, 2); I(BIND, 0); I(BIND, 1);
-        I(FVAR, 2); I(PREP, 2); I(ARG, 1); I(PUTARG, 0);
-        I(FVAR, 7); I(PREP, 2); I(QUOTE, 20); I(PUTARG, 0);
-        I(FVAR, 0); I(PREP, 3); I(LOCAL, 1); I(PUTARG, 0);
-        I(GLOBAL, 11); I(PREP, 2); I(ARG, 1); I(PUTARG, 0);
-        I(PUSH, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
-        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(FVAR, 3);
-        I(PREP, 1); I(QUOTE, 21); I(PUTARG, 0); I(CALL, 1);
         I(FVAR, 0); I(PREP, 3); I(LOCAL, 0); I(PUTARG, 0);
         I(ARG, 1); I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2);
         I(CALL, 3); I(NIL); I(CONS); I(CONS);
+        I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
+        I(RETURN); I(ARG, 0); I(TRAP, 555); I(QUOTE, 20);
+        I(MEQ); I(FVAR, 2); I(PREP, 2); I(ARG, 1);
+        I(PUTARG, 0); I(FVAR, 3); I(PREP, 1); I(QUOTE, 21);
+        I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1); I(CALL, 2);
+        I(RETURN); I(ARG, 0); I(TRAP, 592); I(QUOTE, 22);
+        I(MPRIM, 1); I(BIND, 0); I(FVAR, 0); I(PREP, 3);
+        I(FVAR, 10); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
+        I(CALL, 1); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(RETURN);
+        I(ARG, 0); I(TRAP, 657); I(QUOTE, 23); I(MPRIM, 2);
+        I(BIND, 0); I(BIND, 1); I(FVAR, 2); I(PREP, 2);
+        I(ARG, 1); I(PUTARG, 0); I(FVAR, 7); I(PREP, 2);
+        I(QUOTE, 24); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
+        I(CALL, 1); I(PUTARG, 0); I(FVAR, 0); I(PREP, 3);
+        I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+        I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(NIL);
         I(CONS); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
-        I(CALL, 2); I(RETURN); I(ARG, 0); I(TRAP, 673);
-        I(QUOTE, 22); I(MEQ); I(FVAR, 2); I(PREP, 2);
-        I(ARG, 1); I(PUTARG, 0); I(FVAR, 3); I(PREP, 1);
-        I(QUOTE, 23); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
-        I(CALL, 2); I(RETURN); I(ARG, 0); I(TRAP, 710);
-        I(QUOTE, 24); I(MPRIM, 1); I(BIND, 0); I(FVAR, 0);
-        I(PREP, 3); I(FVAR, 10); I(PREP, 1); I(LOCAL, 0);
-        I(PUTARG, 0); I(CALL, 1); I(PUTARG, 0); I(ARG, 1);
-        I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
-        I(RETURN); I(ARG, 0); I(TRAP, 775); I(QUOTE, 25);
-        I(MPRIM, 2); I(BIND, 0); I(BIND, 1); I(FVAR, 2);
-        I(PREP, 2); I(ARG, 1); I(PUTARG, 0); I(FVAR, 7);
-        I(PREP, 2); I(QUOTE, 26); I(PREP, 1); I(LOCAL, 0);
-        I(PUTARG, 0); I(CALL, 1); I(PUTARG, 0); I(FVAR, 0);
-        I(PREP, 3); I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1);
-        I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
-        I(NIL); I(CONS); I(PUTARG, 1); I(CALL, 2);
-        I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }),
+        I(CALL, 2); I(RETURN); I(FAIL); }),
         N("const"), N("SEQ"), N("QUOTE"), N("MEQ"),
         N("var"), N("BIND"), N("anon"), N("POP"),
         N("prim"), N("_pair"), N("MPAIR"), N("+"),
-        N("GETSND"), N("length"), N("false"), N("MPRIM"),
-        N("reverse"), N("_mapa"), 
+        N("length"), N("false"), N("MPRIM"), N("reverse"),
+        N("_mapa"), 
         F("<function>", 2, (() -> {
-          I(ARG, 0); I(TRAP, 39); I(MCONS); I(BIND, 0);
-          I(GETTAIL); I(TRAP, 39); I(MCONS); I(BIND, 1);
-          I(GETTAIL); I(TRAP, 39); I(MNIL); I(FVAR, 1);
-          I(PREP, 3); I(LOCAL, 1); I(PUTARG, 0); I(LOCAL, 0);
-          I(PUTARG, 1); I(FVAR, 2); I(PUTARG, 2); I(CALL, 3);
-          I(ARG, 1); I(CONS); I(RETURN); I(ARG, 1);
-          I(RETURN); })),
-        N("cons"), N("MCONS"), N("GETTAIL"), N("nil"),
-        N("MNIL"), N("list"), N("plus"), N("MPLUS")),
+          I(ARG, 0); I(TRAP, 37); I(MCONS); I(BIND, 0);
+          I(TRAP, 37); I(MCONS); I(BIND, 1); I(TRAP, 37);
+          I(MNIL); I(FVAR, 1); I(PREP, 3); I(LOCAL, 1);
+          I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1); I(FVAR, 2);
+          I(PUTARG, 2); I(CALL, 3); I(ARG, 1); I(CONS);
+          I(RETURN); I(ARG, 1); I(RETURN); })),
+        N("cons"), N("MCONS"), N("nil"), N("MNIL"),
+        N("list"), N("plus"), N("MPLUS")),
       F("c_arg", 3, (() -> {
         I(ARG, 1); I(TRAP, 72); I(QUOTE, 0); I(MPRIM, 1);
         I(BIND, 0); I(GLOBAL, 1); I(PREP, 1); I(FVAR, 1);
@@ -1594,16 +1574,16 @@ public class Boot extends geomlab.Bootstrap {
         I(CALL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN); }),
         F("compile", 2, (() -> {
           I(ARG, 1); I(TRAP, 7); I(MNIL); I(NIL);
-          I(RETURN); I(ARG, 1); I(TRAP, 76); I(MCONS);
-          I(BIND, 0); I(GETTAIL); I(BIND, 1); I(FVAR, 1);
-          I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 0);
-          I(PUTARG, 1); I(FVAR, 2); I(PUTARG, 2); I(CALL, 3);
-          I(BIND, 2); I(GLOBAL, 0); I(PREP, 2); I(LOCAL, 2);
-          I(PUTARG, 0); I(FVAR, 0); I(PREP, 2); I(GLOBAL, 1);
-          I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(PUSH, 1);
-          I(PUTARG, 1); I(CALL, 2); I(PUTARG, 0); I(LOCAL, 1);
-          I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
-          I(RETURN); I(FAIL); }),
+          I(RETURN); I(ARG, 1); I(TRAP, 75); I(MCONS);
+          I(BIND, 0); I(BIND, 1); I(FVAR, 1); I(PREP, 3);
+          I(ARG, 0); I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1);
+          I(FVAR, 2); I(PUTARG, 2); I(CALL, 3); I(BIND, 2);
+          I(GLOBAL, 0); I(PREP, 2); I(LOCAL, 2); I(PUTARG, 0);
+          I(FVAR, 0); I(PREP, 2); I(GLOBAL, 1); I(PREP, 2);
+          I(ARG, 0); I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1);
+          I(CALL, 2); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+          I(CALL, 2); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+          I(FAIL); }),
           N(":"), N("+")),
         N("_pair"), N("SEQ"), N("map"), N("_fst"),
         N("concat"), N("_snd")),
@@ -1655,46 +1635,46 @@ public class Boot extends geomlab.Bootstrap {
         I(CALL, 1); I(RETURN); }),
         F("h", 3, (() -> {
           I(ARG, 1); I(TRAP, 8); I(MNIL); I(ARG, 2);
-          I(RETURN); I(ARG, 1); I(TRAP, 136); I(MCONS);
-          I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-          I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(GLOBAL, 1);
-          I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-          I(PUTARG, 1); I(CALL, 2); I(JFALSE, 81); I(FVAR, 0);
-          I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1);
-          I(PUTARG, 1); I(GLOBAL, 2); I(PREP, 2); I(GLOBAL, 3);
-          I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-          I(PUTARG, 0); I(ARG, 2); I(PUTARG, 1); I(CALL, 2);
-          I(PUTARG, 2); I(CALL, 3); I(RETURN); I(FVAR, 0);
-          I(PREP, 3); I(GLOBAL, 4); I(PREP, 2); I(ARG, 0);
-          I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1); I(CALL, 2);
-          I(PUTARG, 0); I(GLOBAL, 2); I(PREP, 2); I(LOCAL, 0);
-          I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-          I(PUTARG, 1); I(GLOBAL, 2); I(PREP, 2); I(QUOTE, 5);
-          I(PUTARG, 0); I(ARG, 2); I(PUTARG, 1); I(CALL, 2);
-          I(PUTARG, 2); I(CALL, 3); I(RETURN); I(FAIL); }),
+          I(RETURN); I(ARG, 1); I(TRAP, 135); I(MCONS);
+          I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+          I(ARG, 0); I(PUTARG, 0); I(GLOBAL, 1); I(PREP, 1);
+          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
+          I(CALL, 2); I(JFALSE, 80); I(FVAR, 0); I(PREP, 3);
+          I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+          I(GLOBAL, 2); I(PREP, 2); I(GLOBAL, 3); I(PREP, 1);
+          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 0);
+          I(ARG, 2); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 2);
+          I(CALL, 3); I(RETURN); I(FVAR, 0); I(PREP, 3);
+          I(GLOBAL, 4); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+          I(PUSH, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 0);
+          I(GLOBAL, 2); I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0);
+          I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
+          I(GLOBAL, 2); I(PREP, 2); I(QUOTE, 5); I(PUTARG, 0);
+          I(ARG, 2); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 2);
+          I(CALL, 3); I(RETURN); I(FAIL); }),
           N("="), N("_snd"), N(":"), N("_fst"),
           N("+"), N("POP")),
         N("SEQ")),
       F("c_body", 2, (() -> {
         I(ARG, 0); I(TRAP, 8); I(MNIL); I(QUOTE, 0);
-        I(RETURN); I(ARG, 0); I(TRAP, 134); I(MCONS);
-        I(BIND, 0); I(GETTAIL); I(BIND, 1); I(FVAR, 1);
-        I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(ARG, 1);
-        I(PUTARG, 1); I(CALL, 2); I(BIND, 2); I(FVAR, 2);
-        I(PREP, 2); I(GLOBAL, 1); I(PUTARG, 0); I(GLOBAL, 1);
-        I(PREP, 1); I(LOCAL, 2); I(PUTARG, 0); I(CALL, 1);
-        I(PUTARG, 1); I(CALL, 2); I(BIND, 3); I(QUOTE, 2);
-        I(PREP, 1); I(GLOBAL, 3); I(PREP, 1); I(LOCAL, 2);
-        I(PUTARG, 0); I(CALL, 1); I(GLOBAL, 4); I(PREP, 2);
-        I(LOCAL, 3); I(PUTARG, 0); I(NIL); I(PUTARG, 1);
-        I(CALL, 2); I(JFALSE, 91); I(QUOTE, 5); I(JUMP, 126);
-        I(QUOTE, 2); I(PREP, 1); I(FVAR, 3); I(PREP, 1);
-        I(LOCAL, 3); I(PUTARG, 0); I(CALL, 1); I(FVAR, 0);
-        I(PREP, 2); I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1);
-        I(PUTARG, 1); I(CALL, 2); I(NIL); I(CONS);
-        I(CONS); I(PUTARG, 0); I(CALL, 1); I(NIL);
-        I(CONS); I(CONS); I(PUTARG, 0); I(CALL, 1);
-        I(RETURN); I(FAIL); }),
+        I(RETURN); I(ARG, 0); I(TRAP, 133); I(MCONS);
+        I(BIND, 0); I(BIND, 1); I(FVAR, 1); I(PREP, 2);
+        I(LOCAL, 0); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+        I(CALL, 2); I(BIND, 2); I(FVAR, 2); I(PREP, 2);
+        I(GLOBAL, 1); I(PUTARG, 0); I(GLOBAL, 1); I(PREP, 1);
+        I(LOCAL, 2); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
+        I(CALL, 2); I(BIND, 3); I(QUOTE, 2); I(PREP, 1);
+        I(GLOBAL, 3); I(PREP, 1); I(LOCAL, 2); I(PUTARG, 0);
+        I(CALL, 1); I(GLOBAL, 4); I(PREP, 2); I(LOCAL, 3);
+        I(PUTARG, 0); I(NIL); I(PUTARG, 1); I(CALL, 2);
+        I(JFALSE, 90); I(QUOTE, 5); I(JUMP, 125); I(QUOTE, 2);
+        I(PREP, 1); I(FVAR, 3); I(PREP, 1); I(LOCAL, 3);
+        I(PUTARG, 0); I(CALL, 1); I(FVAR, 0); I(PREP, 2);
+        I(LOCAL, 1); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+        I(CALL, 2); I(NIL); I(CONS); I(CONS);
+        I(PUTARG, 0); I(CALL, 1); I(NIL); I(CONS);
+        I(CONS); I(PUTARG, 0); I(CALL, 1); I(RETURN);
+        I(FAIL); }),
         N("FAIL"), N("_snd"), N("SEQ"), N("_fst"),
         N("="), N("NOP")),
       F("c_closure", 4, (() -> {
@@ -1729,15 +1709,15 @@ public class Boot extends geomlab.Bootstrap {
         N("length"), N("SEQ"), N("QUOTE"), N("FRAME"),
         N("+"), N("_mapa"), 
         F("<function>", 2, (() -> {
-          I(ARG, 0); I(TRAP, 56); I(MCONS); I(BIND, 0);
-          I(GETTAIL); I(TRAP, 56); I(MCONS); I(BIND, 1);
-          I(GETTAIL); I(TRAP, 56); I(MNIL); I(QUOTE, 0);
-          I(PREP, 1); I(FVAR, 1); I(PREP, 2); I(LOCAL, 1);
-          I(PUTARG, 0); I(FVAR, 2); I(PUTARG, 1); I(CALL, 2);
-          I(QUOTE, 1); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
-          I(CALL, 1); I(NIL); I(CONS); I(CONS);
-          I(PUTARG, 0); I(CALL, 1); I(ARG, 1); I(CONS);
-          I(RETURN); I(ARG, 1); I(RETURN); }),
+          I(ARG, 0); I(TRAP, 54); I(MCONS); I(BIND, 0);
+          I(TRAP, 54); I(MCONS); I(BIND, 1); I(TRAP, 54);
+          I(MNIL); I(QUOTE, 0); I(PREP, 1); I(FVAR, 1);
+          I(PREP, 2); I(LOCAL, 1); I(PUTARG, 0); I(FVAR, 2);
+          I(PUTARG, 1); I(CALL, 2); I(QUOTE, 1); I(PREP, 1);
+          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(NIL);
+          I(CONS); I(CONS); I(PUTARG, 0); I(CALL, 1);
+          I(ARG, 1); I(CONS); I(RETURN); I(ARG, 1);
+          I(RETURN); }),
           N("SEQ"), N("PUTARG")),
         N("CLOSURE")),
       F("yield", 2, (() -> {
@@ -1917,16 +1897,15 @@ public class Boot extends geomlab.Bootstrap {
           N("false")),
         N("TCALL"), N("false"), N("PREP"), 
         F("<function>", 2, (() -> {
-          I(ARG, 0); I(TRAP, 60); I(MCONS); I(BIND, 0);
-          I(GETTAIL); I(TRAP, 60); I(MCONS); I(BIND, 1);
-          I(GETTAIL); I(TRAP, 60); I(MNIL); I(QUOTE, 0);
-          I(PREP, 1); I(FVAR, 1); I(PREP, 3); I(LOCAL, 1);
-          I(PUTARG, 0); I(FVAR, 2); I(PUTARG, 1); I(GLOBAL, 1);
-          I(PUTARG, 2); I(CALL, 3); I(QUOTE, 2); I(PREP, 1);
-          I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(NIL);
-          I(CONS); I(CONS); I(PUTARG, 0); I(CALL, 1);
-          I(ARG, 1); I(CONS); I(RETURN); I(ARG, 1);
-          I(RETURN); }),
+          I(ARG, 0); I(TRAP, 58); I(MCONS); I(BIND, 0);
+          I(TRAP, 58); I(MCONS); I(BIND, 1); I(TRAP, 58);
+          I(MNIL); I(QUOTE, 0); I(PREP, 1); I(FVAR, 1);
+          I(PREP, 3); I(LOCAL, 1); I(PUTARG, 0); I(FVAR, 2);
+          I(PUTARG, 1); I(GLOBAL, 1); I(PUTARG, 2); I(CALL, 3);
+          I(QUOTE, 2); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
+          I(CALL, 1); I(NIL); I(CONS); I(CONS);
+          I(PUTARG, 0); I(CALL, 1); I(ARG, 1); I(CONS);
+          I(RETURN); I(ARG, 1); I(RETURN); }),
           N("SEQ"), N("false"), N("PUTARG")),
         N("CALL"), N("if"), N("JFALSE"), N("true"),
         N("JUMP"), N("let"), N("val"), N("BIND"),
@@ -2023,11 +2002,10 @@ public class Boot extends geomlab.Bootstrap {
         I(RETURN); I(FAIL); }),
         N("const"), N("var"), 
         F("case", 1, (() -> {
-          I(ARG, 0); I(TRAP, 18); I(MPAIR); I(POP);
-          I(GETSND); I(TRAP, 18); I(QUOTE, 0); I(MPRIM, 1);
-          I(BIND, 0); I(LOCAL, 0); I(RETURN); I(GLOBAL, 1);
-          I(PREP, 1); I(FVAR, 1); I(PUTARG, 0); I(CALL, 1);
-          I(RETURN); }),
+          I(ARG, 0); I(TRAP, 17); I(MPAIR); I(POP);
+          I(TRAP, 17); I(QUOTE, 0); I(MPRIM, 1); I(BIND, 0);
+          I(LOCAL, 0); I(RETURN); I(GLOBAL, 1); I(PREP, 1);
+          I(FVAR, 1); I(PUTARG, 0); I(CALL, 1); I(RETURN); }),
           N("QUOTE"), N("_glodef")),
         N("apply"), N("_apply"), N("_mapa"), 
         F("<function>", 2, (() -> {
@@ -2082,15 +2060,15 @@ public class Boot extends geomlab.Bootstrap {
         N("_set"), N("_setroot"), N("true")))));
     D("_assoc", C(F("_assoc", 2, (() -> {
       I(ARG, 1); I(TRAP, 7); I(MNIL); I(NIL);
-      I(RETURN); I(ARG, 1); I(TRAP, 67); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-      I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(GLOBAL, 1);
-      I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-      I(PUTARG, 1); I(CALL, 2); I(JFALSE, 52); I(GLOBAL, 2);
-      I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-      I(RETURN); I(FVAR, 0); I(PREP, 2); I(ARG, 0);
-      I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-      I(RETURN); I(FAIL); }),
+      I(RETURN); I(ARG, 1); I(TRAP, 66); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+      I(ARG, 0); I(PUTARG, 0); I(GLOBAL, 1); I(PREP, 1);
+      I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
+      I(CALL, 2); I(JFALSE, 51); I(GLOBAL, 2); I(PREP, 1);
+      I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(RETURN);
+      I(FVAR, 0); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+      I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+      I(FAIL); }),
       N("="), N("_fst"), N("_snd"))));
     D("_infixl", C(F("_infixl", 2, (() -> {
       I(GLOBAL, 0); I(PREP, 3); I(GLOBAL, 1); I(PUTARG, 0);
@@ -2112,12 +2090,12 @@ public class Boot extends geomlab.Bootstrap {
       N("_update"), N("_syntax"), N("_pair"), N("binop"))));
     D("_iter", C(F("_iter", 2, (() -> {
       I(ARG, 1); I(TRAP, 7); I(MNIL); I(NIL);
-      I(RETURN); I(ARG, 1); I(TRAP, 43); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(ARG, 0);
-      I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-      I(POP); I(FVAR, 0); I(PREP, 2); I(ARG, 0);
-      I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-      I(RETURN); I(FAIL); }))));
+      I(RETURN); I(ARG, 1); I(TRAP, 42); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(ARG, 0); I(PREP, 1);
+      I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(POP);
+      I(FVAR, 0); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+      I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+      I(FAIL); }))));
     D("_lsect", C(F("_lsect", 2, (() -> {
       I(QUOTE, 0); I(FRAME, 3); I(ARG, 0); I(PUTARG, 1);
       I(ARG, 1); I(PUTARG, 2); I(CLOSURE, 3); I(RETURN); }),
@@ -2126,12 +2104,12 @@ public class Boot extends geomlab.Bootstrap {
         I(ARG, 0); I(PUTARG, 1); I(CALL, 2); I(RETURN); })))));
     D("_mapa", C(F("_mapa", 3, (() -> {
       I(ARG, 1); I(TRAP, 8); I(MNIL); I(ARG, 2);
-      I(RETURN); I(ARG, 1); I(TRAP, 49); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(ARG, 0);
-      I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0);
-      I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1);
-      I(PUTARG, 1); I(ARG, 2); I(PUTARG, 2); I(CALL, 3);
-      I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }))));
+      I(RETURN); I(ARG, 1); I(TRAP, 48); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(ARG, 0); I(PREP, 2);
+      I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0); I(PREP, 3);
+      I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+      I(ARG, 2); I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1);
+      I(CALL, 2); I(RETURN); I(FAIL); }))));
     D("_range", C(F("_range", 2, (() -> {
       I(GLOBAL, 0); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
       I(ARG, 1); I(PUTARG, 1); I(CALL, 2); I(JFALSE, 18);
@@ -2154,58 +2132,58 @@ public class Boot extends geomlab.Bootstrap {
       N("__top"))));
     D("concat", C(F("concat", 1, (() -> {
       I(ARG, 0); I(TRAP, 7); I(MNIL); I(NIL);
-      I(RETURN); I(ARG, 0); I(TRAP, 40); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-      I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0);
-      I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0); I(CALL, 1);
-      I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }),
+      I(RETURN); I(ARG, 0); I(TRAP, 39); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+      I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0); I(PREP, 1);
+      I(LOCAL, 1); I(PUTARG, 0); I(CALL, 1); I(PUTARG, 1);
+      I(CALL, 2); I(RETURN); I(FAIL); }),
       N("++"))));
     D("false", B(false));
     D("filter", C(F("filter", 2, (() -> {
       I(ARG, 1); I(TRAP, 7); I(MNIL); I(NIL);
-      I(RETURN); I(ARG, 1); I(TRAP, 71); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(ARG, 0);
-      I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1);
-      I(JFALSE, 56); I(GLOBAL, 0); I(PREP, 2); I(LOCAL, 0);
-      I(PUTARG, 0); I(FVAR, 0); I(PREP, 2); I(ARG, 0);
-      I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2);
-      I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FVAR, 0);
-      I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1);
-      I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }),
+      I(RETURN); I(ARG, 1); I(TRAP, 70); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(ARG, 0); I(PREP, 1);
+      I(LOCAL, 0); I(PUTARG, 0); I(CALL, 1); I(JFALSE, 55);
+      I(GLOBAL, 0); I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0);
+      I(FVAR, 0); I(PREP, 2); I(ARG, 0); I(PUTARG, 0);
+      I(LOCAL, 1); I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1);
+      I(CALL, 2); I(RETURN); I(FVAR, 0); I(PREP, 2);
+      I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+      I(CALL, 2); I(RETURN); I(FAIL); }),
       N(":"))));
     D("foldl", C(F("foldl", 3, (() -> {
       I(ARG, 2); I(TRAP, 8); I(MNIL); I(ARG, 1);
-      I(RETURN); I(ARG, 2); I(TRAP, 49); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(FVAR, 0);
-      I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(ARG, 0);
-      I(PREP, 2); I(ARG, 1); I(PUTARG, 0); I(LOCAL, 0);
-      I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(LOCAL, 1);
-      I(PUTARG, 2); I(CALL, 3); I(RETURN); I(FAIL); }))));
+      I(RETURN); I(ARG, 2); I(TRAP, 48); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(FVAR, 0); I(PREP, 3);
+      I(ARG, 0); I(PUTARG, 0); I(ARG, 0); I(PREP, 2);
+      I(ARG, 1); I(PUTARG, 0); I(LOCAL, 0); I(PUTARG, 1);
+      I(CALL, 2); I(PUTARG, 1); I(LOCAL, 1); I(PUTARG, 2);
+      I(CALL, 3); I(RETURN); I(FAIL); }))));
     D("foldr", C(F("foldr", 3, (() -> {
       I(ARG, 2); I(TRAP, 8); I(MNIL); I(ARG, 1);
-      I(RETURN); I(ARG, 2); I(TRAP, 49); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(ARG, 0);
-      I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0);
-      I(PREP, 3); I(ARG, 0); I(PUTARG, 0); I(ARG, 1);
-      I(PUTARG, 1); I(LOCAL, 1); I(PUTARG, 2); I(CALL, 3);
-      I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }))));
+      I(RETURN); I(ARG, 2); I(TRAP, 48); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(ARG, 0); I(PREP, 2);
+      I(LOCAL, 0); I(PUTARG, 0); I(FVAR, 0); I(PREP, 3);
+      I(ARG, 0); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+      I(LOCAL, 1); I(PUTARG, 2); I(CALL, 3); I(PUTARG, 1);
+      I(CALL, 2); I(RETURN); I(FAIL); }))));
     D("length", C(F("length", 1, (() -> {
       I(ARG, 0); I(TRAP, 8); I(MNIL); I(PUSH, 0);
-      I(RETURN); I(ARG, 0); I(TRAP, 41); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-      I(PREP, 2); I(FVAR, 0); I(PREP, 1); I(LOCAL, 1);
-      I(PUTARG, 0); I(CALL, 1); I(PUTARG, 0); I(PUSH, 1);
-      I(PUTARG, 1); I(CALL, 2); I(RETURN); I(FAIL); }),
+      I(RETURN); I(ARG, 0); I(TRAP, 40); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+      I(FVAR, 0); I(PREP, 1); I(LOCAL, 1); I(PUTARG, 0);
+      I(CALL, 1); I(PUTARG, 0); I(PUSH, 1); I(PUTARG, 1);
+      I(CALL, 2); I(RETURN); I(FAIL); }),
       N("+"))));
     D("map", C(F("map", 2, (() -> {
       I(ARG, 1); I(TRAP, 7); I(MNIL); I(NIL);
-      I(RETURN); I(ARG, 1); I(TRAP, 52); I(MCONS);
-      I(BIND, 0); I(GETTAIL); I(BIND, 1); I(GLOBAL, 0);
-      I(PREP, 2); I(ARG, 0); I(PREP, 1); I(LOCAL, 0);
-      I(PUTARG, 0); I(CALL, 1); I(PUTARG, 0); I(FVAR, 0);
-      I(PREP, 2); I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1);
-      I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
-      I(RETURN); I(FAIL); }),
+      I(RETURN); I(ARG, 1); I(TRAP, 51); I(MCONS);
+      I(BIND, 0); I(BIND, 1); I(GLOBAL, 0); I(PREP, 2);
+      I(ARG, 0); I(PREP, 1); I(LOCAL, 0); I(PUTARG, 0);
+      I(CALL, 1); I(PUTARG, 0); I(FVAR, 0); I(PREP, 2);
+      I(ARG, 0); I(PUTARG, 0); I(LOCAL, 1); I(PUTARG, 1);
+      I(CALL, 2); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+      I(FAIL); }),
       N(":"))));
     D("not", C(F("not", 1, (() -> {
       I(ARG, 0); I(JFALSE, 7); I(GLOBAL, 0); I(RETURN);
@@ -2217,12 +2195,12 @@ public class Boot extends geomlab.Bootstrap {
       I(NIL); I(PUTARG, 1); I(CALL, 2); I(RETURN); }),
       F("reva", 2, (() -> {
         I(ARG, 0); I(TRAP, 8); I(MNIL); I(ARG, 1);
-        I(RETURN); I(ARG, 0); I(TRAP, 45); I(MCONS);
-        I(BIND, 0); I(GETTAIL); I(BIND, 1); I(FVAR, 0);
-        I(PREP, 2); I(LOCAL, 1); I(PUTARG, 0); I(GLOBAL, 0);
-        I(PREP, 2); I(LOCAL, 0); I(PUTARG, 0); I(ARG, 1);
-        I(PUTARG, 1); I(CALL, 2); I(PUTARG, 1); I(CALL, 2);
-        I(RETURN); I(FAIL); }),
+        I(RETURN); I(ARG, 0); I(TRAP, 44); I(MCONS);
+        I(BIND, 0); I(BIND, 1); I(FVAR, 0); I(PREP, 2);
+        I(LOCAL, 1); I(PUTARG, 0); I(GLOBAL, 0); I(PREP, 2);
+        I(LOCAL, 0); I(PUTARG, 0); I(ARG, 1); I(PUTARG, 1);
+        I(CALL, 2); I(PUTARG, 1); I(CALL, 2); I(RETURN);
+        I(FAIL); }),
         N(":")))));
     D("true", B(true));
   }

@@ -142,7 +142,6 @@ public class Evaluator {
 	    throw new EvalError("#time");
 	quantum = QUANTUM;
 
-        //System.out.printf("Checkpoint %d/%d\n", steps, stepLimit);
 	Thread.yield();
     }
     

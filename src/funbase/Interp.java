@@ -70,8 +70,7 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
 
     @Override
     public void setRoot(Value root) { 
-	Value.Lambda f = (Value.Lambda) root;
-	Function.Closure cl = (Function.Closure) f.subr;
+	Function.Closure cl = (Function.Closure) root.subr;
 	this.root = cl.getCode();
     }
 
@@ -228,66 +227,51 @@ public class Interp implements FunCode.Jit, Evaluator.Backtrace {
                         assert (sp == 1);
 			return frame[--sp];
 
-		    case MPLUS:
-			try {
-			    sp -= 1;
-			    Value.Number x = (Value.Number) frame[sp];
-			    Value v = x.matchPlus(code.consts[rand]);
-			    if (v != null)
-				frame[sp++] = v;
-			    else
-				pc = trap;
-			}
-			catch (ClassCastException ex) {
-			    pc = trap;
-			}
+		    case MPLUS: {
+                        Value v = frame[--sp].matchPlus(code.consts[rand]);
+                        if (v != null)
+                            frame[sp++] = v;
+                        else
+                            pc = trap;
 			break;
+                    }
 
 		    case MEQ:
 			sp -= 2;
-			if (! frame[sp].equals(frame[sp+1]))
-			    pc = trap;
+			if (! frame[sp].equals(frame[sp+1])) pc = trap;
 			break;
 
 		    case MNIL:
-			if (frame[--sp] != Value.nil)
-			    pc = trap;
+			if (frame[--sp] != Value.nil) pc = trap;
 			break;
 
-		    case MCONS: {
+		    case MCONS:
 			try {
 			    Value.Cons cell = (Value.Cons) frame[sp-1];
+                            frame[sp-1] = cell.tail;
 			    frame[sp++] = cell.head;
 			} catch (ClassCastException ex) {
-                            sp--;
-			    pc = trap;
+                            sp--; pc = trap;
 			}
-			break;
-		    }
-
-		    case GETTAIL:
-			frame[sp-1] = ((Value.Cons) frame[sp-1]).tail;
 			break;
 
                     case MPAIR: {
                         try {
                             Value.Pair cell = (Value.Pair) frame[sp-1];
+                            frame[sp-1] = cell.snd;
                             frame[sp++] = cell.fst;
-                        } catch (ClassCastException ex) {
-                            sp--;
-                            pc = trap;
+                        }
+                        catch (ClassCastException ex) {
+                            sp--; pc = trap;
                         }
                         break;
                     }
 
-                    case GETSND:
-                        frame[sp-1] = ((Value.Pair) frame[sp-1]).snd;
-                        break;
-
 		    case MPRIM: {
-			Value cons = frame[--sp];
+			Primitive.Constructor cons =
+                            (Primitive.Constructor) frame[--sp].subr;
 			Value obj = frame[--sp];
-			Value vs[] = cons.subr.pattMatch(rand, obj);
+			Value vs[] = cons.pattMatch(rand, obj);
 			if (vs == null)
 			    pc = trap;
 			else {

@@ -64,7 +64,7 @@ public class InlineTranslator extends JitTranslator {
         register(new Inliner("numeric") {
             @Override
             public Species call() {
-                code.gen(INSTANCEOF, numval_cl);
+                code.gen(INVOKESTATIC, value_cl, "numeric", fun_V_B_t);
                 return Species.BOOL;
             }
         });

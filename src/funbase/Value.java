@@ -35,7 +35,6 @@ import java.text.*;
 
 import funbase.Primitive.PRIMITIVE;
 import funbase.Primitive.DESCRIPTION;
-import funbase.Primitive.CONSTRUCTOR;
 import funbase.Evaluator.*;
 
 /** Abstract superclass of all values in GeomLab */
@@ -57,6 +56,11 @@ public abstract class Value implements Serializable {
 	return subr.apply(args);
     }
 
+    /** Match an n+k pattern */
+    public Value matchPlus(Value iv) {
+        return null;
+    }
+
     @Override
     public String toString() {
 	StringWriter buf = new StringWriter();
@@ -73,10 +77,15 @@ public abstract class Value implements Serializable {
     }
     
 
-    // Factory methods
+    // Factory methods, etc.
     
     public static Value number(double val) {
         return Number.instance(val);
+    }
+
+    /* Extra factory method needed by JIT code */
+    public static Value number(int val) {
+        return Number.instance((double) val);
     }
 
     public static Value bool(boolean val) {
@@ -89,6 +98,10 @@ public abstract class Value implements Serializable {
 
     public static Value string(char val) {
         return StringVal.instance(val);
+    }
+
+    public static Value lambda(Function f) {
+        return Lambda.instance(f);
     }
 
     public static final Value nil = Nil.instance;
@@ -112,6 +125,14 @@ public abstract class Value implements Serializable {
     @PRIMITIVE
     public static boolean numeric(Value val) {
         return (val instanceof Number);
+    }
+
+    public static boolean isCons(Value val) {
+        return (val instanceof Cons);
+    }
+
+    public static boolean isPair(Value val) {
+        return (val instanceof Pair);
     }
 
     public static class WrongKindException extends Exception { }
@@ -169,7 +190,7 @@ public abstract class Value implements Serializable {
 
     /** A numeric value represented as a double-precision float */
     @DESCRIPTION("a numeric")
-    protected static class Number extends Value {
+    private static class Number extends Value {
 	private static final long serialVersionUID = 1L;
 
 	/** The value */
@@ -203,11 +224,6 @@ public abstract class Value implements Serializable {
 	    }
 	}
 
-        /* Extra factory method needed by JIT code */
-        public static Number instance(int val) {
-            return instance((double) val);
-        }
-
 	@Override
 	public boolean equals(Object a) {
 	    return (a instanceof Number && val == ((Number) a).val);
@@ -219,6 +235,7 @@ public abstract class Value implements Serializable {
             return (int) (x ^ (x >> 32));
         }
 
+        @Override
 	public Value matchPlus(Value iv) {
 	    double inc = ((Number) iv).val;
 	    double x = val - inc;
@@ -231,7 +248,7 @@ public abstract class Value implements Serializable {
     
     /** A boolean value */
     @DESCRIPTION("a boolean")
-    protected static class Boolean extends Value {
+    private static class Boolean extends Value {
 	private static final long serialVersionUID = 1L;
 
 	private final boolean val;
@@ -274,7 +291,7 @@ public abstract class Value implements Serializable {
     }
     
     /** A function value */
-    public static class Lambda extends Value {
+    private static class Lambda extends Value {
 	private static final long serialVersionUID = 1L;
 	
 	private Lambda(Function subr) {
@@ -308,7 +325,7 @@ public abstract class Value implements Serializable {
 
     /** A string value */
     @DESCRIPTION("a string")
-    protected static class StringVal extends Value {
+    private static class StringVal extends Value {
 	private static final long serialVersionUID = 1L;
 
 	public final String text;
@@ -446,8 +463,8 @@ public abstract class Value implements Serializable {
     }
 
     @PRIMITIVE
-    @CONSTRUCTOR(Cons.class)
-    public static class _Cons extends Primitive.Prim2 {
+    public static class _Cons
+            extends Primitive.Prim2 implements Primitive.Constructor {
         public _Cons() { super(":"); }
 
 	@Override
@@ -475,7 +492,7 @@ public abstract class Value implements Serializable {
     @PRIMITIVE
     public static Value head(Value x) {
 	try {
-	    Value.Cons xs = (Value.Cons) x;
+	    Cons xs = (Cons) x;
 	    return xs.head;
 	}
 	catch (ClassCastException ex) {
@@ -487,7 +504,7 @@ public abstract class Value implements Serializable {
     @PRIMITIVE
     public static Value tail(Value x) {
 	try {
-	    Value.Cons xs = (Value.Cons) x;
+	    Cons xs = (Cons) x;
 	    return xs.tail;
 	}
 	catch (ClassCastException ex) {
@@ -497,14 +514,10 @@ public abstract class Value implements Serializable {
     }
 
     @DESCRIPTION("a pair")
-    public static class Pair extends Value {
+    protected static class Pair extends Value {
         private static final long serialVersionUID = 1L;
 
-        @PRIMITIVE("_fst")
-        public final Value fst;
-
-        @PRIMITIVE("_snd")
-        public final Value snd;
+        public final Value fst, snd;
 
         private Pair(Value fst, Value snd) {
             this.fst = fst; this.snd = snd;
@@ -538,8 +551,14 @@ public abstract class Value implements Serializable {
     }
 
     @PRIMITIVE
-    @CONSTRUCTOR(Pair.class)
-    public static class _Pair extends Primitive.Prim2 {
+    public static Value _fst(Pair p) { return p.fst; }
+
+    @PRIMITIVE
+    public static Value _snd(Pair p) { return p.snd; }
+
+    @PRIMITIVE
+    public static class _Pair
+            extends Primitive.Prim2 implements Primitive.Constructor {
         public _Pair() { super("_pair"); }
 
         @Override

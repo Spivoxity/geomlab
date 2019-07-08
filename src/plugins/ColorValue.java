@@ -34,7 +34,6 @@ import java.io.PrintWriter;
 
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
-import funbase.Primitive.CONSTRUCTOR;
 import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 import funbase.Evaluator;
@@ -91,7 +90,6 @@ public class ColorValue extends Picture {
         ColorValue p = cache[h];
 
         if (p == null || p.rpart != r || p.gpart != g || p.bpart != b) {
-            // System.out.printf("Color %f %f %f %d %d\n", r, g, b, rgb, h);
             p = new ColorValue(r, g, b, rgb);
             cache[h] = p;
         }
@@ -205,8 +203,8 @@ public class ColorValue extends Picture {
     
     /** Create a colour from RGB values in the range [0, 1] */
     @PRIMITIVE
-    @CONSTRUCTOR(ColorValue.class)
-    public static class RgbPrim extends Primitive.Prim3 {
+    public static class RgbPrim
+            extends Primitive.Prim3 implements Primitive.Constructor {
         public RgbPrim() { super("rgb"); }
 
 	@Override
@@ -214,6 +212,10 @@ public class ColorValue extends Picture {
 	    return instance(number(rpart), number(gpart), number(bpart));
 	}
 	    
+        public static Value invoke(double rpart, double gpart, double bpart) {
+            return instance(rpart, gpart, bpart);
+        }
+
 	private Value args[] = new Value[3];
 
 	@Override

@@ -118,8 +118,8 @@ public class Species {
 
     /** Species for a type that can be wrapped as a Value */
     private static class WrappedSpecies extends Species {
-        /** Name of the wrapper class */
-        private final String wrap_cl;
+        /** Name of the factory method for values */
+        private final String inject;
 
         /** Name of the projection method on values */
         private final String project;
@@ -127,27 +127,34 @@ public class Species {
         /** Name of the projection method provided by Primitive */
         private final String primget;
 
+        /** Decscription of the kind of value */
+        private final String desc;
+
         private final Type wrap_t;
         private final Type proj_t = func_t(type);
         private final Type primget_t = func_t(value_t, type);
 
-        public WrappedSpecies(Class<?> klass, Type type, String wrap_cl, 
-                              String project, String primget) {
+        public WrappedSpecies(Class<?> klass, Type type, String inject,
+                              String project, String primget, String desc) {
             super(klass, type);
-            this.wrap_cl = wrap_cl;
+            this.inject = inject;
             this.project = project;
             this.primget = primget;
-            this.wrap_t = func_t(type, class_t(wrap_cl));
+            this.desc = desc;
+            this.wrap_t = func_t(type, value_t);
         }
 
+        @Override
         public void widen(FunctionClass code) {
-            code.gen(INVOKESTATIC, wrap_cl, "instance", wrap_t);
+            code.gen(INVOKESTATIC, value_cl, inject, wrap_t);
         }
 
+        @Override
         public void narrow(String prim, FunctionClass code) {
-            code.access(project, proj_t, prim, wrap_cl);
+            code.access(project, proj_t, prim, desc);
         }
 
+        @Override
         public void primarg(int n, JitPrimFactory factory) {
             factory.accessArg(primget, n, primget_t);
         }
@@ -192,20 +199,20 @@ public class Species {
         };
 
     public static final Species NUMBER =
-        new WrappedSpecies(Double.TYPE, double_t, numval_cl, 
-                           "asNumber", "number");
+        new WrappedSpecies(Double.TYPE, double_t,
+                           "number", "asNumber", "number", "a numeric");
 
     public static final Species BOOL =
-        new WrappedSpecies(Boolean.TYPE, bool_t, boolval_cl, 
-                           "asBoolean", "boolean");
+        new WrappedSpecies(Boolean.TYPE, bool_t,
+                           "bool", "asBoolean", "bool", "a boolean");
 
     public static final Species INT =
-        new WrappedSpecies(Integer.TYPE, int_t, numval_cl, 
-                           "asInteger", "integer");
+        new WrappedSpecies(Integer.TYPE, int_t,
+                           "number", "asInteger", "integer", "an integer");
 
     public static final Species STRING =
-        new WrappedSpecies(String.class, string_t, stringval_cl, 
-                           "asString", "string");
+        new WrappedSpecies(String.class, string_t,
+                           "string", "asString", "string", "a string");
 
     public static final Species VOID =
         new Species(Void.TYPE, void_t) {

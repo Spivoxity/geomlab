@@ -144,7 +144,6 @@ public class HelpFrame extends JFrame {
     
     /** Show help after an error message */
     public static void errorHelp(String tag) {
-	System.out.println(tag);
 	openFrame();
 	URL errpage = loader.getResource("errors.html");
 	if (errpage == null) return;

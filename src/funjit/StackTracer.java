@@ -84,10 +84,8 @@ public class StackTracer implements Evaluator.Backtrace {
 
     @Override
     public void setRoot(Value root) {
-	if (root instanceof Value.Lambda) {
-	    Function f = ((Value.Lambda) root).subr;
-	    if (f instanceof Function.Closure)
-		this.root = ((Function.Closure) f).getCode();
-	}
+        Function f = root.subr;
+        if (f instanceof Function.Closure)
+            this.root = ((Function.Closure) f).getCode();
     }
 }

@@ -270,8 +270,7 @@ public final class Name extends Value implements Comparable<Name> {
     @PRIMITIVE
     public boolean _iscons() {
         if (glodef == null) return false;
-        Class<?> primcl = glodef.subr.getClass();
-        return (primcl.getAnnotation(Primitive.CONSTRUCTOR.class) != null);
+        return glodef.subr instanceof Primitive.Constructor;
     }
 
     @PRIMITIVE
@@ -318,7 +317,8 @@ public final class Name extends Value implements Comparable<Name> {
 	}
     }
 
-    private class NameFunction extends Function {
+    private class NameFunction
+            extends Function implements Primitive.Constructor {
         public NameFunction() {
             super("#"+tag, -1);
         }

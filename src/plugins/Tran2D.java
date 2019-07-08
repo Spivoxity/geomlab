@@ -36,7 +36,6 @@ import funbase.Value;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Primitive.DESCRIPTION;
-import funbase.Primitive.CONSTRUCTOR;
 import funbase.Evaluator;
 
 /** An affine transformation in 2D, represented by six real coefficients:
@@ -173,8 +172,8 @@ public class Tran2D extends Value {
     }
 
     @PRIMITIVE
-    @CONSTRUCTOR(Tran2D.class)
-    public static class TransPrim extends Primitive.Prim6 {
+    public static class TransPrim
+            extends Primitive.Prim6 implements Primitive.Constructor {
         public TransPrim() { super("_transform"); }
 
 	@Override
@@ -182,6 +181,11 @@ public class Tran2D extends Value {
 			    Value m_yy, Value m_x, Value m_y) {
             return instance(number(m_xx), number(m_yx), number(m_xy), 
                             number(m_yy), number(m_x), number(m_y));
+        }
+
+	public Value invoke(double m_xx, double m_yx, double m_xy, 
+			    double m_yy, double m_x, double m_y) {
+            return instance(m_xx, m_yx, m_xy, m_yy, m_x, m_y);
         }
 
 	private Value args[] = new Value[6];

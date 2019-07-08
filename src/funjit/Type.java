@@ -105,7 +105,6 @@ class Type {
 	classcast_cl = "java/lang/ClassCastException",
 	name_cl = "funbase/Name",
 	value_cl = "funbase/Value",
-	numval_cl = "funbase/Value$Number",
 	boolval_cl = "funbase/Value$Boolean",
         stringval_cl = "funbase/Value$StringVal",
 	consval_cl = "funbase/Value$Cons",
@@ -119,6 +118,7 @@ class Type {
 	primitive_cl = "funbase/Primitive",
 	primlarge_cl = "funjit/JitFunction$PrimN",
 	primsmall_cl = "funbase/Primitive$Prim",
+        constr_cl = "funbase/Primitive$Constructor",
 	evaluator_cl = "funbase/Evaluator";
 
     public static String className(Class<?> cl) {
@@ -151,6 +151,8 @@ class Type {
         fun_SC_t = func_t(string_t, class_t, void_t),
 	fun_SI_t = func_t(string_t, int_t, void_t),
 	fun_SII_t = func_t(string_t, int_t, int_t, void_t),
+        fun_SS_t = func_t(string_t, string_t, void_t),
+        fun_V_B_t = func_t(value_t, bool_t),
 	fun_V_V_t = func_t(value_t, value_t),
         fun_VV_C_t = func_t(value_t, value_t, consval_t),
 	fun_O_B_t = func_t(object_t, bool_t),

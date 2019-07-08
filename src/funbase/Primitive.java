@@ -79,10 +79,24 @@ public abstract class Primitive extends Function {
 	}
     }
 
-    /** Fetch value of a StringValue object, or throw EvalException */ 
+    public boolean bool(Value a) {
+        try {
+            return a.asBoolean();
+        }
+        catch (WrongKindException ex) {
+            expect("a boolean");
+            return false;
+        }
+    }
+
     public String string(Value a) {
-	Value.StringVal s = cast(Value.StringVal.class, a);
-	return s.text;
+        try {
+            return a.asString();
+        }
+        catch (WrongKindException ex) {
+            expect("a string");
+            return "";
+        }
     }
     
     /** Fetch head of a Cons object, or throw EvalException */ 
@@ -285,19 +299,13 @@ public abstract class Primitive extends Function {
         if (d != null)
             return d.value();
         else
-            return "*unknown*";
+            return cl.getName();
     }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface CONSTRUCTOR { 
-        public Class<?> value();
-    }
-
 
     /** Register a new primitive */
     public static void register(Primitive p) {
         Name n = Name.find(p.name);
-        n.setGlodef(Value.Lambda.instance(p));
+        n.setGlodef(Value.lambda(p));
     }
     
     /** Find a registered primitive */
@@ -340,8 +348,8 @@ public abstract class Primitive extends Function {
         /** Make a primitive that accesses an instance variable. */
         public Primitive select(String name, Field f);
 
-        /** Note a constructor method for possible inlining */
-        public void constructor(String name, Class<?> c);
+        /** Note a pre-made primitive that may have an invoke() method */
+        public void primitive(String name, Class<?> c);
     }
 
     public static void scanClass(Class<?> plugin) 
@@ -378,11 +386,14 @@ public abstract class Primitive extends Function {
             if (spec != null) {
                 Primitive p = (Primitive) cl.newInstance();
                 register(p);
-
-                CONSTRUCTOR spec2 = cl.getAnnotation(CONSTRUCTOR.class);
-                if (spec2 != null)
-                    factory.constructor(p.name, spec2.value());
+                factory.primitive(p.name, cl);
             }
         }
+    }
+
+    /** Interface for pattern-matching constructors. */
+    public interface Constructor {
+        /** Match the value as a constructor */
+        public Value[] pattMatch(int nargs, Value obj);
     }
 }

@@ -35,7 +35,6 @@ import java.io.PrintWriter;
 import funbase.Evaluator;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
-import funbase.Primitive.CONSTRUCTOR;
 import funbase.Primitive.DESCRIPTION;
 import funbase.Value;
 
@@ -245,8 +244,8 @@ public class TurtlePicture extends Picture {
     }
 
     /** A constructor primitive for commands */
-    @CONSTRUCTOR(Command.class)
-    private static class CommandPrimitive extends Primitive.Prim1 {
+    private static class CommandPrimitive
+          extends Primitive.Prim1 implements Primitive.Constructor {
 	protected int kind;
 	
 	public CommandPrimitive(String name, int kind) {
@@ -259,6 +258,10 @@ public class TurtlePicture extends Picture {
 	    return new Command(kind, number(arg), name);
 	}
 	
+        public Value invoke(double arg) {
+            return new Command(kind, arg, name);
+        }
+
 	private Value args[] = new Value[1];
 
 	@Override
@@ -279,12 +282,17 @@ public class TurtlePicture extends Picture {
 	}
     }
     
-    @CONSTRUCTOR(Command.class)
     private static class InkPrim extends CommandPrimitive {
         public InkPrim() { super("ink", Command.INK); }
+
         @Override
         public Value apply1(Value arg) {
             return new Command(kind, 0.0, name, cast(ColorValue.class, arg));
+        }
+
+        public Value invoke(ColorValue arg) {
+            System.out.println("InkPrim.invoke");
+            return new Command(kind, 0.0, name, arg);
         }
     }
 

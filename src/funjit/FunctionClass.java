@@ -150,7 +150,7 @@ public class FunctionClass extends ClassFile {
     }
 
     public void cast(String cl, String name) {
-        cast(cl, new Expect(name, cl));
+        cast(cl, new ExpectCl(name, cl));
     }
 
     public void cast(String cl, Handler handler) {
@@ -161,8 +161,8 @@ public class FunctionClass extends ClassFile {
 	code.label(end);
     }
 
-    public void access(String method, Type type, String prim, String cl) {
-        access(method, type, new Expect(prim, cl));
+    public void access(String method, Type type, String prim, String kind) {
+        access(method, type, new Expect(prim, kind));
     }
 
     public void access(String method, Type type, Handler handler) {
@@ -233,6 +233,21 @@ public class FunctionClass extends ClassFile {
 
     public class Expect extends Handler {
 	public Expect(String prim, String tyname) {
+	    super(prim, tyname);
+	}
+
+	@Override 
+	public void compile() {
+	    // ErrContext.expect(prim, failure);
+	    Primitive p = Primitive.find(prim);
+	    code.gen(CONST, p.name);
+	    code.gen(CONST, reason);
+	    code.gen(INVOKESTATIC, evaluator_cl, "expect", fun_SS_t);
+	}
+    }
+
+    public class ExpectCl extends Handler {
+	public ExpectCl(String prim, String tyname) {
 	    super(prim, tyname);
 	}
 

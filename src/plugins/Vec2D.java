@@ -36,7 +36,6 @@ import funbase.Value;
 import funbase.Primitive;
 import funbase.Primitive.PRIMITIVE;
 import funbase.Primitive.DESCRIPTION;
-import funbase.Primitive.CONSTRUCTOR;
 import funbase.Evaluator;
 
 /** Floating point vectors in 2D */
@@ -96,14 +95,19 @@ public class Vec2D extends Value {
     }
 
     @PRIMITIVE
-    @CONSTRUCTOR(Vec2D.class)
-    public static class VecPrim extends Primitive.Prim2 {
+    public static class VecPrim
+            extends Primitive.Prim2 implements Primitive.Constructor {
         public VecPrim() { super("_vector"); }
 
 	@Override
 	public Value apply2(Value x, Value y) {
 	    return instance(number(x), number(y));
 	}
+
+        /* Shortcut invoke method for inlining */
+        public static Value invoke(double x, double y) {
+            return instance(x, y);
+        }
 
 	private Value args[] = new Value[2];
 
