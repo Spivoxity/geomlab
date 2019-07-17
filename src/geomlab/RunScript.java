@@ -37,6 +37,7 @@ import geomlab.Command.CommandException;
 import plugins.Native;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 
 /** RunScript allows expressions to be evaluated from the command line, and
  * that is convenient for preparing images to be included in documents. */
@@ -137,8 +138,9 @@ public class RunScript extends GeomBase {
             if (bootclass != null) {
                 Bootstrap boot = null;
                 try {
-                    Class<?> bootcl = Class.forName(bootclass);
-                    boot = (Bootstrap) bootcl.newInstance();
+                    Class<?> cl = Class.forName(bootclass);
+                    Constructor<?> c = cl.getDeclaredConstructor();
+                    boot = (Bootstrap) c.newInstance();
                 }
                 catch (Exception e) {
                     System.out.println(e);

@@ -95,6 +95,8 @@ public class Vec2D extends Value {
     }
 
     @PRIMITIVE
+    public static Primitive _vector = new VecPrim();
+    
     public static class VecPrim
             extends Primitive.Prim2 implements Primitive.Constructor {
         public VecPrim() { super("_vector"); }

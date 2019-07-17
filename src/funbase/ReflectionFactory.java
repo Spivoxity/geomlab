@@ -109,6 +109,7 @@ public class ReflectionFactory implements Primitive.Factory {
         }
     }
 
+    @Override
     public Primitive reflect(String name, final Method m) {
         final Class<?> ptypes[] = m.getParameterTypes();
         final Class<?> rtype = m.getReturnType();
@@ -154,6 +155,7 @@ public class ReflectionFactory implements Primitive.Factory {
         }
     }
 
+    @Override
     public Primitive select(String name, final Field f) {
         final Class<?> cl = f.getDeclaringClass();
         final Class<?> t = f.getType();
@@ -167,8 +169,9 @@ public class ReflectionFactory implements Primitive.Factory {
         };
     }
 
-    public void primitive(String name, Class<?> c) { }
-
-    public void constructor(String name, Class<?> c) { }
+    @Override
+    public Primitive primitive(Primitive prim) {
+        return prim;
+    }
 }
 

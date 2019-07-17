@@ -349,7 +349,7 @@ public abstract class Primitive extends Function {
         public Primitive select(String name, Field f);
 
         /** Note a pre-made primitive that may have an invoke() method */
-        public void primitive(String name, Class<?> c);
+        public Primitive primitive(Primitive prim);
     }
 
     public static void scanClass(Class<?> plugin) 
@@ -371,22 +371,12 @@ public abstract class Primitive extends Function {
             PRIMITIVE spec = f.getAnnotation(PRIMITIVE.class);
             if (spec != null) {
                 if (Modifier.isStatic(f.getModifiers()))
-                    register((Primitive) f.get(null));
+                    register(factory.primitive((Primitive) f.get(null)));
                 else {
                     String name = spec.value();
                     if (name.equals("")) name = f.getName();
                     register(factory.select(name, f));
                 }
-            }
-        }
-
-        // And nested classes
-        for (Class<?> cl : plugin.getDeclaredClasses()) {
-            PRIMITIVE spec = cl.getAnnotation(PRIMITIVE.class);
-            if (spec != null) {
-                Primitive p = (Primitive) cl.newInstance();
-                register(p);
-                factory.primitive(p.name, cl);
             }
         }
     }

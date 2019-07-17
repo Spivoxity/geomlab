@@ -203,6 +203,8 @@ public class ColorValue extends Picture {
     
     /** Create a colour from RGB values in the range [0, 1] */
     @PRIMITIVE
+    public static Primitive _rgb = new RgbPrim();
+    
     public static class RgbPrim
             extends Primitive.Prim3 implements Primitive.Constructor {
         public RgbPrim() { super("rgb"); }

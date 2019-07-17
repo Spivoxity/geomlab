@@ -107,6 +107,7 @@ public class JitPrimFactory implements Primitive.Factory {
     }
 
     /** Make a primitive from a method or class method. */
+    @Override
     public Primitive reflect(String name, Method m) {
         Class<?> cl = m.getDeclaringClass();
         Species pkinds[] = paramKinds(m);
@@ -147,6 +148,7 @@ public class JitPrimFactory implements Primitive.Factory {
     }
 
     /** Make a primitive that accesses an instance variable. */
+    @Override
     public Primitive select(String name, Field f) {
         Species cl = Species.find(f.getDeclaringClass());
         Species rkind = Species.find(f.getType());
@@ -165,15 +167,18 @@ public class JitPrimFactory implements Primitive.Factory {
     }
 
     @Override
-    public void primitive(String name, Class<?> cl) {
+    public Primitive primitive(Primitive prim) {
         // Look for a static invoke method
+        Class cl = prim.getClass();
         Method m = findMethod(cl, "invoke");
         if (m != null) {
             Species pkinds[] = paramKinds(m);
             Species rkind = returnKind(m);
-            noteMethod(name, Type.className(cl), "invoke",
+            noteMethod(prim.name, Type.className(cl), "invoke",
                        null, pkinds, rkind);
         }
+
+        return prim;
     }
 
     // Hooks for subclasses

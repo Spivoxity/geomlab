@@ -32,6 +32,8 @@ package funjit;
 
 import funbase.Evaluator;
 
+import java.lang.reflect.Constructor;
+
 class ByteClassLoader extends ClassLoader {
     private String name;
 
@@ -46,18 +48,21 @@ class ByteClassLoader extends ClassLoader {
 	return defineClass(name, b, 0, b.length);
     }
 
+    /*
     @Override 
     public void finalize() {
 	if (Evaluator.debug > 2)
 	    System.out.printf("Discarding class %s\n", name);
     }
+    */
 
     public static Object instantiate(String name, byte code[]) {
 	ByteClassLoader loader = new ByteClassLoader(name);
 	Class<?> cl = loader.defineClass(code);
 
 	try {
-	    return cl.newInstance();
+            Constructor<?> c = cl.getDeclaredConstructor();
+            return c.newInstance();
 	}
 	catch (Exception e) {
 	    throw new Error(e);

@@ -172,6 +172,8 @@ public class Tran2D extends Value {
     }
 
     @PRIMITIVE
+    public static Primitive _transform = new TransPrim();
+    
     public static class TransPrim
             extends Primitive.Prim6 implements Primitive.Constructor {
         public TransPrim() { super("_transform"); }

@@ -463,6 +463,8 @@ public abstract class Value implements Serializable {
     }
 
     @PRIMITIVE
+    public static Primitive _cons = new _Cons();
+
     public static class _Cons
             extends Primitive.Prim2 implements Primitive.Constructor {
         public _Cons() { super(":"); }
@@ -557,6 +559,8 @@ public abstract class Value implements Serializable {
     public static Value _snd(Pair p) { return p.snd; }
 
     @PRIMITIVE
+    public static Primitive _pair = new _Pair();
+
     public static class _Pair
             extends Primitive.Prim2 implements Primitive.Constructor {
         public _Pair() { super("_pair"); }

@@ -89,7 +89,7 @@ public class CodeInput extends JTextArea {
 	
 	keymap.addActionForKeyStroke(
 	    KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 
-		    InputEvent.SHIFT_MASK),
+		    InputEvent.SHIFT_DOWN_MASK),
 		    new AbstractAction("perform-action") {
 		@Override
 		public void actionPerformed(ActionEvent e) {

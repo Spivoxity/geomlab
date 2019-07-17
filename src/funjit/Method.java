@@ -159,7 +159,7 @@ class Method {
 		    code.putByte(SIPUSH);
 		    code.putShort(rand);
 		} else {
-		    genconst(new Integer(rand));
+		    genconst(Integer.valueOf(rand));
 		}
 		break;
 	    case NEWARRAY:
@@ -331,7 +331,7 @@ class Method {
 		    code.putByte(DCONST_1);
 		}
 		else {
-		    genconst(new Double(rand));
+		    genconst(Double.valueOf(rand));
 		}
 		break;
 	    default:

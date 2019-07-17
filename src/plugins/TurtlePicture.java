@@ -258,10 +258,6 @@ public class TurtlePicture extends Picture {
 	    return new Command(kind, number(arg), name);
 	}
 	
-        public Value invoke(double arg) {
-            return new Command(kind, arg, name);
-        }
-
 	private Value args[] = new Value[1];
 
 	@Override
@@ -288,11 +284,6 @@ public class TurtlePicture extends Picture {
         @Override
         public Value apply1(Value arg) {
             return new Command(kind, 0.0, name, cast(ColorValue.class, arg));
-        }
-
-        public Value invoke(ColorValue arg) {
-            System.out.println("InkPrim.invoke");
-            return new Command(kind, 0.0, name, arg);
         }
     }
 

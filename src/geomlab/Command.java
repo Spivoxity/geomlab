@@ -48,7 +48,7 @@ public abstract class Command extends AbstractAction {
     private GeomLab app;
     
     private static int modifier =
-	Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+	Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
     public Command(String text, GeomLab app) {
 	super(text);
@@ -57,7 +57,7 @@ public abstract class Command extends AbstractAction {
     
     public Command(String text, int mnemonic, GeomLab app) {
 	super(text);
-	putValue(MNEMONIC_KEY, new Integer(mnemonic));
+	putValue(MNEMONIC_KEY, Integer.valueOf(mnemonic));
 	this.app = app;
     }
     
