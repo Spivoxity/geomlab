@@ -48,7 +48,8 @@ public abstract class Command extends AbstractAction {
     private GeomLab app;
     
     private static int modifier =
-	Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+	Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        // For JDK11: Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
 
     public Command(String text, GeomLab app) {
 	super(text);
